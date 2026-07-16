@@ -61,7 +61,7 @@ This avoids having two arcs going towards the same building as inputs being on t
     - display current booster amount & maximum amount in amount column as: <currentAmount> / <maximumAmount>
     - do not display any value in the import column
 
-#2 A building definition can specify whether its excess outputs should be automatically exported
+#2 [done] A building definition can specify whether its excess outputs should be automatically exported
 - [done] when a building definition has property autoExport=false the excess outputs are not counted towards sektor exports
     - create Sektor tests which verify:
         - sektor state does not have export of resource X if building with excess output of resource X has autoExport=false
