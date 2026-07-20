@@ -608,6 +608,53 @@ test("highlights buildings importing hovered resource", async ({ page }) => {
   await expectScreenshot(page, "import-hover-highlight", "body");
 });
 
+test("highlights only buildings whose import can be increased", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  const centerX = box!.width / 2;
+  const centerY = box!.height / 2;
+
+  // Place TestFactory (outputs Food) — the Food source
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  await canvas.click({ position: { x: centerX - 90, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+
+  // Place TestProcessor (imports Food 2) — stays highlighted (import not filled)
+  await page.locator('.building-item[data-building-name="TestProcessor"]').click();
+  await page.waitForTimeout(100);
+  await canvas.click({ position: { x: centerX + 90, y: centerY - 40 } });
+  await page.waitForTimeout(200);
+
+  // Place TestHouse (imports Food 2) — will be filled to max, so not highlighted
+  await page.locator('.building-item[data-building-name="TestHouse"]').click();
+  await page.waitForTimeout(100);
+  await canvas.click({ position: { x: centerX, y: centerY + 40 } });
+  await page.waitForTimeout(200);
+
+  // Fill TestHouse's Food input (value 2) to its maximum
+  await canvas.click({ position: { x: centerX, y: centerY + 40 } });
+  await page.waitForTimeout(200);
+  await page.locator(".bf-input-clickable").first().click();
+  await page.waitForTimeout(300);
+  await page.locator(".connect-button").first().click();
+  await page.waitForTimeout(300);
+  await page.locator(".connection-amount-button").first().click();
+  await page.waitForTimeout(300);
+
+  // Deselect building by clicking empty area
+  await canvas.click({ position: { x: centerX + 140, y: centerY + 80 } });
+  await page.waitForTimeout(200);
+
+  // Hover over Food import row in sektor state panel
+  const foodRow = page.locator(".ss-row", { hasText: "Food" }).first();
+  await foodRow.hover();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "import-hover-highlight-max-input", "body");
+});
+
 test("shows error when placing building on occupied location", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();

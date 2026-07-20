@@ -155,6 +155,10 @@ export class Sektor {
     return { imports, exports, status, importRestrictions, exportRequirements };
   }
 
+  canIncreaseImport(location: BuildingLocation, resourceType: string): boolean {
+    return this.getRemainingImport(location, resourceType) > 0;
+  }
+
   private getInputs(type: string): ResourceThroughput[] {
     const def = this.buildingDefinitions.find(b => b.name === type);
     return def?.buildingFunction?.inputs ?? [];

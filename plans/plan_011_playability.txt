@@ -18,6 +18,10 @@
 - [done] create visual test
     - with several buildings having the same resource type imported
     - cursor hover event on state panel over that imported resource amount
+- [done] only buildings whose input amounts can be increased are highlighted
+    - a building is highlighted only if it can still import more of the hovered resource (remaining import > 0)
+    - buildings already at maximum input for that resource are not highlighted
+    - update/add visual test so at least one building is at max input and is not highlighted
 
 #3 [done] Building function description also displays location properties which affect it
 - [done] when a player selectes a building in the toolbar, the panel with function description also has a list of location properties which affect it

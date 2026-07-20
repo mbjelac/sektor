@@ -772,6 +772,7 @@ const sektorUi = (p: p5) => {
       for (const building of placedBuildings) {
         const def = buildingDefinitions.find(d => d.name === building.type);
         if (!def?.buildingFunction.inputs.some(input => input.name === hoveredImportResource)) continue;
+        if (!sektor.canIncreaseImport(building.location, hoveredImportResource)) continue;
         drawLocationHighlight(p, building.location, [255, 165, 0]);
       }
     }
