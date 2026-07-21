@@ -3,12 +3,20 @@ export type BodyType =
   | "pri3" | "pri4" | "pri5" | "pri6" | "pri7" | "pri8" | "pri9"
   | "sph" | "cyl" | "con" | "tor";
 
+export interface AnimateTranslate {
+  dx: number;
+  dy: number;
+  dz: number;
+  dt: number;
+}
+
 export interface CreateBody {
   type: BodyType;
   translate: [number, number, number] | null;
   rotate: [number, number, number] | null;
   scale: [number, number, number] | null;
   color: string | null;
+  animateTranslate: AnimateTranslate | null;
 }
 
 export function parseCommands(text: string): CreateBody[] {
@@ -50,7 +58,8 @@ function parseBody(type: BodyType, rest: string): CreateBody {
   const rotate = parseRotate(rest);
   const scale = parseScale(rest);
   const color = parseColor(rest);
-  return {type, translate, rotate, scale, color};
+  const animateTranslate = parseAnimateTranslate(rest);
+  return {type, translate, rotate, scale, color, animateTranslate};
 }
 
 function parseTranslate(str: string): [number, number, number] | null {
@@ -82,4 +91,15 @@ function parseColor(str: string): string | null {
   const match = str.match(/c\(#([0-9a-fA-F]{6})\)/);
   if (!match) return null;
   return `#${match[1]}`;
+}
+
+function parseAnimateTranslate(str: string): AnimateTranslate | null {
+  const match = str.match(/at\(\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/);
+  if (!match) return null;
+  return {
+    dx: parseInt(match[1]),
+    dy: parseInt(match[2]),
+    dz: parseInt(match[3]),
+    dt: parseInt(match[4]),
+  };
 }

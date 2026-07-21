@@ -783,7 +783,7 @@ const sektorUi = (p: p5) => {
       const { wx, wz } = gridToWorld(building.location.x, building.location.y);
       p.translate(wx, 0, wz);
       const commands = parseCommands(building.code);
-      applyCommands(p, commands);
+      applyCommands(p, commands, p.millis());
       p.pop();
     }
 

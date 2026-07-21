@@ -10,18 +10,17 @@ For example, if a translation was specified as 50 units to happen during 200ms, 
 steps are 20ms apart, each step should apply a change of 5 units,
 because in a timespan of 200ms there will be 10 steps.
 
-#1 Objects move around
-- when translation animation specified, modify translation (t) parameters to the specified end during the specified time
+#1 [done] Objects move around
+- [done] when translation animation specified, modify translation (t) parameters to the specified end during the specified time
     - specification for translation animation is at(dx, dy, dz, dt)
         - dx: how much to change x, 1st parameter of t function
         - dy: how much to change y, 2nd parameter of t function
         - dz: how much to change z, 3rd parameter of t function
         - dt: in what time period will the change happen
-- each translation animation has forward and backward phases
+- [done] each translation animation has forward and backward phases
     - during the forward phase, t parameters are modified to the at specs during the specified time
     - afterwards animation enters backward phase in which t parameters are modified in reverse during the specified time
         - example:
             - at(0,0,30,100) first modifies height (z) from its specified value to +30 during 100ms
             - then in the backwards phase returns to -30 back to its initial state during the next 100ms
     - after backwards phase, another forward phase starts, etc.
-

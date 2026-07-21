@@ -7,6 +7,7 @@ import {drawCone} from "./primitive/drawCone";
 import {drawTorus} from "./primitive/drawTorus";
 import {CreateBody} from "./parseCommands";
 import {BLOCK_SIZE} from "./constants";
+import {animatedTranslate} from "./animateCommands";
 
 const pyrSides: Record<string, number> = {
   pyr3: 3, pyr4: 4, pyr5: 5, pyr6: 6, pyr7: 7, pyr8: 8, pyr9: 9,
@@ -16,15 +17,16 @@ const priSides: Record<string, number> = {
   pri3: 3, pri4: 4, pri5: 5, pri6: 6, pri7: 7, pri8: 8, pri9: 9,
 };
 
-export function applyCommands(p: p5, commands: CreateBody[]) {
+export function applyCommands(p: p5, commands: CreateBody[], elapsedMilliseconds = 0) {
   for (const command of commands) {
     p.push();
-    if (command.translate) {
+    if (command.translate || command.animateTranslate) {
+      const translate = animatedTranslate(command, elapsedMilliseconds);
       const scale = BLOCK_SIZE / 100;
       p.translate(
-        command.translate[0] * scale,
-        -command.translate[2] * scale,
-        command.translate[1] * scale
+        translate[0] * scale,
+        -translate[2] * scale,
+        translate[1] * scale
       );
     }
     if (command.rotate) {

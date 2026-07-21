@@ -56,7 +56,7 @@ const sketch = (p: p5) => {
     }
 
     const commands = readCommands();
-    applyCommands(p, commands);
+    applyCommands(p, commands, p.millis());
 
     document.getElementById("canvas-container")!.dataset.rendered = "true";
   };
