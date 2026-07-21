@@ -18,3 +18,18 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
     baseTranslate[2] + animateTranslate.dz * progress,
   ];
 }
+
+export function animatedColor(command: CreateBody, elapsedMilliseconds: number): string | null {
+  const baseColor = command.color;
+  const animateColorToggle = command.animateColorToggle;
+  if (!animateColorToggle) return baseColor;
+
+  const baseColorFirstSteps = animateColorToggle.dt1 / ANIMATION_STEP_MILLISECONDS;
+  const newColorSteps = animateColorToggle.dt2 / ANIMATION_STEP_MILLISECONDS;
+  const baseColorLastSteps = animateColorToggle.dt3 / ANIMATION_STEP_MILLISECONDS;
+  const cycleSteps = baseColorFirstSteps + newColorSteps + baseColorLastSteps;
+  const cycleStep = Math.floor(elapsedMilliseconds / ANIMATION_STEP_MILLISECONDS) % cycleSteps;
+
+  const newColorActive = cycleStep >= baseColorFirstSteps && cycleStep < baseColorFirstSteps + newColorSteps;
+  return newColorActive ? animateColorToggle.color : baseColor;
+}

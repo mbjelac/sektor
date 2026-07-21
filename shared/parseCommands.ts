@@ -10,6 +10,13 @@ export interface AnimateTranslate {
   dt: number;
 }
 
+export interface AnimateColorToggle {
+  color: string;
+  dt1: number;
+  dt2: number;
+  dt3: number;
+}
+
 export interface CreateBody {
   type: BodyType;
   translate: [number, number, number] | null;
@@ -17,6 +24,7 @@ export interface CreateBody {
   scale: [number, number, number] | null;
   color: string | null;
   animateTranslate: AnimateTranslate | null;
+  animateColorToggle: AnimateColorToggle | null;
 }
 
 export function parseCommands(text: string): CreateBody[] {
@@ -59,7 +67,8 @@ function parseBody(type: BodyType, rest: string): CreateBody {
   const scale = parseScale(rest);
   const color = parseColor(rest);
   const animateTranslate = parseAnimateTranslate(rest);
-  return {type, translate, rotate, scale, color, animateTranslate};
+  const animateColorToggle = parseAnimateColorToggle(rest);
+  return {type, translate, rotate, scale, color, animateTranslate, animateColorToggle};
 }
 
 function parseTranslate(str: string): [number, number, number] | null {
@@ -101,5 +110,16 @@ function parseAnimateTranslate(str: string): AnimateTranslate | null {
     dy: parseInt(match[2]),
     dz: parseInt(match[3]),
     dt: parseInt(match[4]),
+  };
+}
+
+function parseAnimateColorToggle(str: string): AnimateColorToggle | null {
+  const match = str.match(/act\(\s*#([0-9a-fA-F]{6})\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*(?:,\s*(-?\d+)\s*)?\)/);
+  if (!match) return null;
+  return {
+    color: `#${match[1]}`,
+    dt1: parseInt(match[2]),
+    dt2: parseInt(match[3]),
+    dt3: match[4] ? parseInt(match[4]) : 0,
   };
 }

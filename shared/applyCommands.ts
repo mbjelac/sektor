@@ -7,7 +7,7 @@ import {drawCone} from "./primitive/drawCone";
 import {drawTorus} from "./primitive/drawTorus";
 import {CreateBody} from "./parseCommands";
 import {BLOCK_SIZE} from "./constants";
-import {animatedTranslate} from "./animateCommands";
+import {animatedColor, animatedTranslate} from "./animateCommands";
 
 const pyrSides: Record<string, number> = {
   pyr3: 3, pyr4: 4, pyr5: 5, pyr6: 6, pyr7: 7, pyr8: 8, pyr9: 9,
@@ -43,7 +43,7 @@ export function applyCommands(p: p5, commands: CreateBody[], elapsedMilliseconds
         toFactor(command.scale[1])
       );
     }
-    const color = command.color ?? undefined;
+    const color = animatedColor(command, elapsedMilliseconds) ?? undefined;
     const pyrN = pyrSides[command.type];
     if (pyrN) {
       drawPyramid(p, pyrN, color);
