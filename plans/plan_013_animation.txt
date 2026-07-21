@@ -42,7 +42,7 @@ because in a timespan of 200ms there will be 10 steps.
 #4 Object colors can gradually change
 - when gradual color change animation specified, object changes their color gradually from one color to another during the specified time
     - gradual color change specification is acg(c, dt)
-    - c: color to which to gradually change from object's original color
+    - c: color to which to gradually change from object's original color, can also have transparency component
     - dt: duration of time during which to arrive to the specified color
 - color changes back
     - after specified color achieved, object changes back to its original color during the same time duration
