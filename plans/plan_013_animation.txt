@@ -25,9 +25,9 @@ because in a timespan of 200ms there will be 10 steps.
             - then in the backwards phase returns to -30 back to its initial state during the next 100ms
     - after backwards phase, another forward phase starts, etc.
 
-#2 Color change
+#2 Color toggle
 - when color change animation specified, object change their color for the specified duration, then change back to original color for the other specified duration
-    - color change specification is acc(c, dt1, dt2)
+    - color change specification is act(c, dt1, dt2)
         - c: new color (also hex string prepended with #)
         - dt1: time during which new color is applied to object
         - dt2: time during which original color is applied to object
