@@ -27,7 +27,9 @@ because in a timespan of 200ms there will be 10 steps.
 
 #2 Color toggle
 - when color toggle animation specified, object change their color for the specified duration, then change back to original color for the other specified duration
-    - color toggle specification is act(c, dt1, dt2)
+    - color toggle specification is act(c, dt1, dt2, dt3)
         - c: new color (also hex string prepended with #)
-        - dt1: time during which new color is applied to object
-        - dt2: time during which original color is applied to object
+        - dt1: time during which original color is applied to object
+        - dt2: time during which new color is applied to object
+        - dt3: time during which original color is applied to object
+    - dt3 is optional; if not present, it is assumed to be 0
