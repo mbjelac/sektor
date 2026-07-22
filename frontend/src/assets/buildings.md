@@ -34,8 +34,8 @@ pri4 c(#c7c2a9) s(23,23,10) t(-30,30,0)
 
 ## Function
 
-EnergyElectric 8
-WorkTechnical 3
+EnergyElectric 3
+WorkTechnical 1
 =
 WaterPottable 4 groundwater
 
@@ -129,17 +129,18 @@ sph s(3,3,4) t(-26,-8,7) c(#248f3e)
 
 ## Function
 
-WaterPottable 1
+WaterPottable 2
 FoodRaw 5
+FoodProcessed 3
 EnergyElectric 4
 =
 Work 2
 
 ## Boosters
 
-HealthPhysical 3 = Work 1
-HealthMental 3 = Work 1
-HealthSocial 3 = Work 1
+HealthPhysical 4 = Work 1
+HealthMental 4 = Work 1
+HealthSocial 4 = Work 1
 
 # Library
 
@@ -152,7 +153,6 @@ pri4 s(20,20,20) c(#4f0515)
 ## Function
 
 EnergyElectric 1
-WaterPottable 1
 WorkEducational 1
 =
 HealthMental 3
@@ -226,11 +226,11 @@ pri4 r(90,90,0) s(4,4,30) t(17,12,8) c(#1c750b)
 
 ## Function
 
-WaterPottable 3
+WaterPottable 4
 EnergyElectric 1
-WorkTechnical 5
+WorkTechnical 2
 =
-FoodRaw 5 soil
+FoodRaw 6 soil
 
 # Dig
 
@@ -302,7 +302,7 @@ pri4 s(9,9,12) t(-23,14,-5) r(45,0,0) c(#474747)
 ## Function
 
 EnergyElectric 4
-WorkTechnical 1
+WorkTechnical 2
 =
 Ore 5 ore
 
@@ -373,7 +373,7 @@ sph s(6,6,6) t(0,0,18) c(#9a9589) r(0,0,0)
 
 WorkTechnical 1
 =
-EnergyElectric 10 insolation
+EnergyElectric 4 insolation
 
 # Arena
 
@@ -406,7 +406,7 @@ pri4 s(4,10,1) t(0,23,20) r(0,90,0) c(#fbff00)
 ## Function
 
 EnergyElectric 10
-WorkAdministrative 3
+WorkAdministrative 2
 =
 HealthSocial 10
 
