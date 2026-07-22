@@ -10,8 +10,8 @@
         - increase button becomes clickable
         - increase button icon turns back into up-triangle
 
-#3 Should not be possible to bump into output overflow
-- input arc label has increase & decrease buttons
+#3 [done] Should not be possible to bump into output overflow
+- [done] input arc label has increase & decrease buttons
     - when source building has no amount of that resource to give
         - increase button does nothing
         - button icon turns into heroicon minus-circle

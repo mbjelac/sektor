@@ -14,7 +14,7 @@ import { getSektorData, saveSektorData } from "./sektor.api";
 import { initPropertyToggler, getSelectedProperty } from "./propertyToggler.ui";
 import { propertyDefinitions } from "../properties";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
-import { trashIcon, checkCircleIcon } from "../icons";
+import { trashIcon, checkCircleIcon, minusCircleIcon } from "../icons";
 
 const GRID_SIZE = 10;
 const PANEL_FLOOR_PROPERTY = "soil";
@@ -330,7 +330,11 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
 
     const upButton = document.createElement("button");
     upButton.className = "connection-amount-button";
-    if (sektor.canIncreaseImport(placed.location, connection.resourceType)) {
+    if (!sektor.doesBuildingNeedMoreInput(placed.location, connection.resourceType)) {
+      upButton.innerHTML = checkCircleIcon;
+    } else if (!sektor.doesBuildingHaveAvailableOutput(connection.to, connection.resourceType)) {
+      upButton.innerHTML = minusCircleIcon;
+    } else {
       upButton.textContent = "▲";
       upButton.addEventListener("click", () => {
         const result = sektor.changeConnectionAmount(placed.location, connection.to, connection.resourceType, 1);
@@ -342,8 +346,6 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
           showError(result.error ?? "Cannot increase");
         }
       });
-    } else {
-      upButton.innerHTML = checkCircleIcon;
     }
     buttonsContainer.appendChild(upButton);
 
@@ -777,7 +779,7 @@ const sektorUi = (p: p5) => {
       for (const building of placedBuildings) {
         const def = buildingDefinitions.find(d => d.name === building.type);
         if (!def?.buildingFunction.inputs.some(input => input.name === hoveredImportResource)) continue;
-        if (!sektor.canIncreaseImport(building.location, hoveredImportResource)) continue;
+        if (!sektor.doesBuildingNeedMoreInput(building.location, hoveredImportResource)) continue;
         drawLocationHighlight(p, building.location, [255, 165, 0]);
       }
     }
