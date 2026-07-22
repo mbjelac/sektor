@@ -1,4 +1,4 @@
-#1 State panel resources displayed alphabetically
+#1 [done] State panel resources displayed alphabetically
 - [done] both input & output resources in the state panel should be sorted alphabetically by resource name
 
 #2 Should not be possible to bump into input overflow

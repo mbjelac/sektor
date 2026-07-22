@@ -223,6 +223,6 @@ function mergedResourceNames(values: ResourceThroughput[], thresholds: ResourceT
   for (const item of thresholds) {
     names.add(item.name);
   }
-  return Array.from(names);
+  return Array.from(names).sort((first, second) => first.localeCompare(second));
 }
 
