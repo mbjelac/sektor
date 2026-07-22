@@ -18,5 +18,10 @@
     - when input amount decreased (but connection still exists)
         - increase button becomes clickable
         - increase button icon turns back into up-triangle
+
+#4 Should be clear how much input is needed and how much output is available
 - available amount of output for that resource is displayed in the arc label
-    - label format: "currentAmount ← outputRemaining"
+    - this amount is practically the source buildings export amount for that resource
+        - or available amount if autoExport=false
+- needed amount of input (to bring imports of that input for that building to 0) is displayed in the arc label
+    - label format: "importsRemaining ← currentAmount ← exportsRemaining"
