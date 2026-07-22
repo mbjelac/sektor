@@ -47,6 +47,6 @@ because in a timespan of 200ms there will be 10 steps.
 - [done] color changes back
     - after specified color achieved, object changes back to its original color during the same time duration
 
-#5 Animations look natural
-- each animation function should begin with a random delay of 0-2000ms
+#5 [done] Animations look natural
+- [done] each animation function should begin with a random delay of 0-2000ms
     - exception: occurences of function act do not have random delay

@@ -8,7 +8,7 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
   if (!animateTranslate) return baseTranslate;
 
   const phaseSteps = animateTranslate.dt / ANIMATION_STEP_MILLISECONDS;
-  const elapsedStep = Math.floor(elapsedMilliseconds / ANIMATION_STEP_MILLISECONDS);
+  const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateTranslate.delay) / ANIMATION_STEP_MILLISECONDS);
   const cycleStep = elapsedStep % (2 * phaseSteps);
   const forwardStep = cycleStep <= phaseSteps ? cycleStep : 2 * phaseSteps - cycleStep;
   const progress = forwardStep / phaseSteps;
@@ -36,7 +36,7 @@ function toggledColor(baseColor: string | null, animateColorToggle: AnimateColor
   const newColorSteps = animateColorToggle.dt2 / ANIMATION_STEP_MILLISECONDS;
   const baseColorLastSteps = animateColorToggle.dt3 / ANIMATION_STEP_MILLISECONDS;
   const cycleSteps = baseColorFirstSteps + newColorSteps + baseColorLastSteps;
-  const cycleStep = Math.floor(elapsedMilliseconds / ANIMATION_STEP_MILLISECONDS) % cycleSteps;
+  const cycleStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateColorToggle.delay) / ANIMATION_STEP_MILLISECONDS) % cycleSteps;
 
   const newColorActive = cycleStep >= baseColorFirstSteps && cycleStep < baseColorFirstSteps + newColorSteps;
   return newColorActive ? animateColorToggle.color : baseColor;
@@ -44,7 +44,7 @@ function toggledColor(baseColor: string | null, animateColorToggle: AnimateColor
 
 function graduallyChangedColor(baseColor: string | null, animateColorGradual: AnimateColorGradual, elapsedMilliseconds: number): string {
   const phaseSteps = animateColorGradual.dt / ANIMATION_STEP_MILLISECONDS;
-  const elapsedStep = Math.floor(elapsedMilliseconds / ANIMATION_STEP_MILLISECONDS);
+  const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateColorGradual.delay) / ANIMATION_STEP_MILLISECONDS);
   const cycleStep = elapsedStep % (2 * phaseSteps);
   const forwardStep = cycleStep <= phaseSteps ? cycleStep : 2 * phaseSteps - cycleStep;
   const progress = forwardStep / phaseSteps;
@@ -57,6 +57,10 @@ function graduallyChangedColor(baseColor: string | null, animateColorGradual: An
     Math.round(fromRgba[2] + (toRgbaColor[2] - fromRgba[2]) * progress),
     Math.round(fromRgba[3] + (toRgbaColor[3] - fromRgba[3]) * progress),
   ]);
+}
+
+function delayedElapsed(elapsedMilliseconds: number, delay: number): number {
+  return Math.max(0, elapsedMilliseconds - delay);
 }
 
 function toRgba(color: string | null): [number, number, number, number] {
