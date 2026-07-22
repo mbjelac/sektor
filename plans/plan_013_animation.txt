@@ -64,4 +64,4 @@ because in a timespan of 200ms there will be 10 steps.
         - pri3 has a 3-sided hole, pri4 has a 4-sided hole, etc.
         - hole does not exist at h(0)
         - hole is equal to prism base at h(100), sides still rendered but "paper thin"
-- create visual tests for hollow objects
+- [done] create visual tests for hollow objects
