@@ -17,6 +17,11 @@ export interface AnimateColorToggle {
   dt3: number;
 }
 
+export interface AnimateColorGradual {
+  color: string;
+  dt: number;
+}
+
 export interface CreateBody {
   type: BodyType;
   translate: [number, number, number] | null;
@@ -25,6 +30,7 @@ export interface CreateBody {
   color: string | null;
   animateTranslate: AnimateTranslate | null;
   animateColorToggle: AnimateColorToggle | null;
+  animateColorGradual: AnimateColorGradual | null;
 }
 
 export function parseCommands(text: string): CreateBody[] {
@@ -68,7 +74,8 @@ function parseBody(type: BodyType, rest: string): CreateBody {
   const color = parseColor(rest);
   const animateTranslate = parseAnimateTranslate(rest);
   const animateColorToggle = parseAnimateColorToggle(rest);
-  return {type, translate, rotate, scale, color, animateTranslate, animateColorToggle};
+  const animateColorGradual = parseAnimateColorGradual(rest);
+  return {type, translate, rotate, scale, color, animateTranslate, animateColorToggle, animateColorGradual};
 }
 
 function parseTranslate(str: string): [number, number, number] | null {
@@ -97,7 +104,7 @@ function parseScale(str: string): [number, number, number] | null {
 }
 
 function parseColor(str: string): string | null {
-  const match = str.match(/c\(#([0-9a-fA-F]{6})\)/);
+  const match = str.match(/c\(#([0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?)\)/);
   if (!match) return null;
   return `#${match[1]}`;
 }
@@ -114,12 +121,21 @@ function parseAnimateTranslate(str: string): AnimateTranslate | null {
 }
 
 function parseAnimateColorToggle(str: string): AnimateColorToggle | null {
-  const match = str.match(/act\(\s*#([0-9a-fA-F]{6})\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*(?:,\s*(-?\d+)\s*)?\)/);
+  const match = str.match(/act\(\s*#([0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*(?:,\s*(-?\d+)\s*)?\)/);
   if (!match) return null;
   return {
     color: `#${match[1]}`,
     dt1: parseInt(match[2]),
     dt2: parseInt(match[3]),
     dt3: match[4] ? parseInt(match[4]) : 0,
+  };
+}
+
+function parseAnimateColorGradual(str: string): AnimateColorGradual | null {
+  const match = str.match(/acg\(\s*#([0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?)\s*,\s*(-?\d+)\s*\)/);
+  if (!match) return null;
+  return {
+    color: `#${match[1]}`,
+    dt: parseInt(match[2]),
   };
 }

@@ -34,15 +34,15 @@ because in a timespan of 200ms there will be 10 steps.
         - dt3: time during which original color is applied to object
     - dt3 is optional; if not present, it is assumed to be 0
 
-#3 Objects can be transparent
-- all colors (both in c function and act function) can have an optional alpha value also in hex code
+#3 [done] Objects can be transparent
+- [done] all colors (both in c function and act function) can have an optional alpha value also in hex code
     - color #ffffffff is fully opaque (white)
     - color #ffffff00 is fully transparent and completely invisible
 
-#4 Object colors can gradually change
-- when gradual color change animation specified, object changes their color gradually from one color to another during the specified time
+#4 [done] Object colors can gradually change
+- [done] when gradual color change animation specified, object changes their color gradually from one color to another during the specified time
     - gradual color change specification is acg(c, dt)
     - c: color to which to gradually change from object's original color, can also have transparency component
     - dt: duration of time during which to arrive to the specified color
-- color changes back
+- [done] color changes back
     - after specified color achieved, object changes back to its original color during the same time duration
