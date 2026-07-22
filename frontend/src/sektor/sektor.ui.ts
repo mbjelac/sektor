@@ -14,7 +14,7 @@ import { getSektorData, saveSektorData } from "./sektor.api";
 import { initPropertyToggler, getSelectedProperty } from "./propertyToggler.ui";
 import { propertyDefinitions } from "../properties";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
-import { trashIcon } from "../icons";
+import { trashIcon, checkCircleIcon } from "../icons";
 
 const GRID_SIZE = 10;
 const PANEL_FLOOR_PROPERTY = "soil";
@@ -330,17 +330,21 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
 
     const upButton = document.createElement("button");
     upButton.className = "connection-amount-button";
-    upButton.textContent = "▲";
-    upButton.addEventListener("click", () => {
-      const result = sektor.changeConnectionAmount(placed.location, connection.to, connection.resourceType, 1);
-      if (result.success) {
-        openBuildingPanel(placed);
-        updateSektorStatePanel(sektor.getSektorState());
-        saveState();
-      } else {
-        showError(result.error ?? "Cannot increase");
-      }
-    });
+    if (sektor.canIncreaseImport(placed.location, connection.resourceType)) {
+      upButton.textContent = "▲";
+      upButton.addEventListener("click", () => {
+        const result = sektor.changeConnectionAmount(placed.location, connection.to, connection.resourceType, 1);
+        if (result.success) {
+          openBuildingPanel(placed);
+          updateSektorStatePanel(sektor.getSektorState());
+          saveState();
+        } else {
+          showError(result.error ?? "Cannot increase");
+        }
+      });
+    } else {
+      upButton.innerHTML = checkCircleIcon;
+    }
     buttonsContainer.appendChild(upButton);
 
     const downButton = document.createElement("button");
