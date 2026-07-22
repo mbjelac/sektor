@@ -1,3 +1,11 @@
 #1 State panel resources displayed alphabetically
-- both input & output resources in the state panel should be sorted alphabetically by resource name
+- [done] both input & output resources in the state panel should be sorted alphabetically by resource name
 
+#2 Should not be possible to bump into input overflow
+- input arc label has increase & decrease buttons
+    - when input amount is on maximum of that target's input
+        - increase button does nothing
+        - button icon turns into checkCircleIcon
+    - when input amount decreased (but connection still exists)
+        - increase button becomes clickable
+        - increase button icon turns back into up-triangle
