@@ -49,3 +49,4 @@ because in a timespan of 200ms there will be 10 steps.
 
 #5 Animations look natural
 - each animation function should begin with a random delay of 0-2000ms
+    - exception: occurences of function act do not have random delay
