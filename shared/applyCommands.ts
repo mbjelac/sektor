@@ -77,13 +77,13 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
   }
   const priN = priSides[command.type];
   if (priN) {
-    drawPrism(p, priN, color);
+    drawPrism(p, priN, color, command.hollow ?? undefined);
   }
   if (command.type === "sph") {
     drawSphere(p, color);
   }
   if (command.type === "cyl") {
-    drawCylinder(p, color);
+    drawCylinder(p, color, command.hollow ?? undefined);
   }
   if (command.type === "con") {
     drawCone(p, color);
