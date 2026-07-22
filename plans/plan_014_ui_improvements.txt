@@ -19,4 +19,4 @@
         - increase button becomes clickable
         - increase button icon turns back into up-triangle
 - available amount of output for that resource is displayed in the arc label
-    - label format: "currentAmount / outputRemaining"
+    - label format: "currentAmount ← outputRemaining"
