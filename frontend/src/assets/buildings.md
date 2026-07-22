@@ -1,4 +1,4 @@
-# WaterExtractor
+# WaterWells
 
 ## Render
 
@@ -223,7 +223,7 @@ WorkTechnical 5
 =
 FoodRaw 5 soil
 
-# OreExtractor
+# Dig
 
 ## Render
 
@@ -307,7 +307,7 @@ showFloor=false
 
 ```
 tor s(62,62,28) r(0,90,0) t(0,6,40) c(#ffffff)
-tor s(60,60,12) r(0,90,0) t(0,2,40) c(#388eff)
+tor s(60,60,12) r(0,90,0) t(0,2,40) c(#388eff) acg(#F500FF, 800)
 pri3 c(#ffffff) r(0,74,-89) s(40,40,10) t(27,-1,8)
 pri3 c(#ffffff) r(93,74,-89) s(40,40,6) t(22,-4,8)
 pri3 c(#ffffff) r(0,74,-89) s(40,40,10) t(-17,-1,8)
@@ -321,6 +321,12 @@ pri3 c(#ffffff) r(0,10,90) s(45,20,4) t(-3,25,8)
 pri3 c(#ffffff) r(180,10,90) s(45,20,4) t(3,-25,8)
 pri4 s(12,7,11) t(1,-20,0) c(#d6d6d6)
 pri4 s(12,7,11) t(-1,20,0) c(#d6d6d6)
+sph c(#8fdaff00) s(1,100,1) t(0,0,34) acg(#8fdaff80, 1000)
+sph c(#8fdaff00) s(1,100,1) t(-10,0,44) acg(#8fdaff80, 1100)
+sph c(#8fdaff00) s(1,100,1) t(14,0,40) acg(#8fdaff80, 1200)
+sph c(#8fdaff00) s(1,100,1) t(-5,0,50) acg(#8fdaff80, 900)
+sph c(#8fdaff00) s(1,100,1) t(3,0,46) acg(#8fdaff80, 800)
+sph c(#8fdaff00) s(1,100,1) t(-8,0,32) acg(#8fdaff80, 1300)
 ```
 
 ## Function
@@ -360,7 +366,7 @@ WorkTechnical 1
 =
 EnergyElectric 10 insolation
 
-# Stadium
+# Arena
 
 ## Render
 
