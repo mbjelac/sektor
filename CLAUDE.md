@@ -15,6 +15,7 @@
 11. steps can have sub-steps described in indented bullets, which can also have sub-bullets, etc. do those without waiting for approval.
 12. User may nudge you forward  (approving your work) by instructions like "go", "proceed", "continue", etc. if unsure, ask the user does the instruction mean to continue with plan.
 13. When user approves a step, FIRST mark it [done] in the plan file, THEN start the next step. Never begin new work without marking the previous step done.
+14. Always stop after marking an entire section as [done]. Do not begin the next section until the user gives a fresh instruction, even if their approval sounded like a go-ahead.
 
 ## Code style
 
