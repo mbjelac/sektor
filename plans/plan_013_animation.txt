@@ -51,7 +51,7 @@ because in a timespan of 200ms there will be 10 steps.
 - [done] each animation function should begin with a random delay of 0-2000ms
     - exception: occurences of function act do not have random delay
 
-#6 Some objects can be hollow
+#6 [done] Some objects can be hollow
 - [done] for certain object types, a "hollow" function can be specified
     - hollow function is h(p)
         - p: percentage (0 - 100) of hollowness
