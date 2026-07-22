@@ -25,6 +25,7 @@
         - or available amount if autoExport=false
 - needed amount of input (to bring imports of that input for that building to 0) is displayed in the arc label
     - label format: "importsRemaining ← currentAmount ← exportsRemaining"
+    - currentAmount should be bold
 
 #5 It is easier to select a building to connect to
 - when in building selection mode, building labels which display the resource icon, available & maximum amounts also show a white icon linkIcon
