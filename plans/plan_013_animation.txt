@@ -50,3 +50,17 @@ because in a timespan of 200ms there will be 10 steps.
 #5 [done] Animations look natural
 - [done] each animation function should begin with a random delay of 0-2000ms
     - exception: occurences of function act do not have random delay
+
+#6 Some objects can be hollow
+- for certain object types, a "hollow" function can be specified
+    - hollow function is h(p)
+        - p: percentage (0 - 100) of hollowness
+            - 0 = no hollowness, like the function is not there
+            - 100 = full hollowness, depending on the object type
+    - cylinder: doughnut shaped
+        - hole does not exist at h(0)
+        - hole is equal to cylinder diameter at h(100)
+    - prisms: also "doughnut" shaped but the hole is the shape of the prism
+        - pri3 has a 3-sided hole, pri4 has a 4-sided hole, etc.
+        - hole does not exist at h(0)
+        - hole is equal to prism base at h(100), sides still rendered but "paper thin"
