@@ -714,6 +714,7 @@ const sektorUi = (p: p5) => {
       } else {
         if (displayedConnections) {
           for (const label of displayedConnections.labels) label.remove();
+          for (const label of displayedConnections.outputLabels) label.remove();
         }
         displayedConnections = null;
         openEmptyLocationPanel({ x: grid.x, y: grid.y });
