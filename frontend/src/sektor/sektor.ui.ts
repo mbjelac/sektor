@@ -191,11 +191,11 @@ function enterSelectMode(targetLocation: BuildingLocation, resourceType: string)
 
   const banner = document.createElement("div");
   banner.id = "select-banner";
-  banner.textContent = "Select building";
+  banner.textContent = "Select building to connect to";
 
   const closeButton = document.createElement("button");
   closeButton.className = "select-banner-close";
-  closeButton.textContent = "X";
+  closeButton.textContent = "Cancel";
   closeButton.addEventListener("click", exitSelectMode);
   banner.appendChild(closeButton);
 

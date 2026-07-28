@@ -443,7 +443,7 @@ body > main {
   left: 50%;
   transform: translateX(-50%);
   background: rgb(30, 30, 30);
-  border: 1px solid #888;
+  border: 1px solid gold;
   border-radius: 8px;
   padding: 8px 16px;
   z-index: 100;
