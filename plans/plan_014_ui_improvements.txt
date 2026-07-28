@@ -33,3 +33,11 @@
     - above the current data
     - centered horizontally
     - entire label is clickable to conect to that building
+
+#6 Two buildings connected with both input and output have non-overlapping arcs
+- arc anchor points are not the same
+    - draw all input arcs with anchor points a little bit above the building square center
+    - draw all output arcs with anchor points a little bit below the building square center
+- labels are not overlapping
+    - draw all input arc labels a bit to the left of the arc center
+    - draw all output arc labels a bit to the right of the arc center
