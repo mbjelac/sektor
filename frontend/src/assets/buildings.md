@@ -133,14 +133,11 @@ WaterPottable 2
 FoodRaw 5
 FoodProcessed 3
 EnergyElectric 4
+HealthPhysical 3
+HealthMental 3
+HealthSocial 3
 =
-Work 2
-
-## Boosters
-
-HealthPhysical 4 = Work 1
-HealthMental 4 = Work 1
-HealthSocial 4 = Work 1
+Work 8
 
 # Library
 
@@ -156,10 +153,6 @@ EnergyElectric 1
 WorkEducational 1
 =
 HealthMental 3
-
-## Properties
-
-autoExport=false
 
 # Agriplot
 
@@ -410,11 +403,6 @@ WorkAdministrative 2
 =
 HealthSocial 10
 
-## Properties
-
-autoExport=false
-
-
 # Polytechnic
 
 ## Render
@@ -486,12 +474,9 @@ sph c(#2c6d2d) s(4,4,10) t(43,-4,6)
 
 ## Function
 
-WorkEducational 2
+WorkEducational 4
 WorkTechnical 1
 EnergyElectric 4
+Work 24
 =
-WorkTechnical 0
-
-## Boosters
-
-Work 10 = WorkTechnical 1
+WorkTechnical 24
