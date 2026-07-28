@@ -19,7 +19,21 @@
         - increase button becomes clickable
         - increase button icon turns back into up-triangle
 
-#4 Should be clear how much input is needed and how much output is available
+#4 It is easier to select a building to connect to
+- when in building selection mode, building labels which display the resource icon, available & maximum amounts also show a white icon linkIcon
+    - above the current data
+    - centered horizontally
+    - entire label is clickable to conect to that building
+
+#5 Two buildings connected with both input and output have non-overlapping arcs
+- arc anchor points are not the same
+    - draw all input arcs with anchor points a little bit above the building square center
+    - draw all output arcs with anchor points a little bit below the building square center
+- labels are not overlapping
+    - draw all input arc labels a bit to the left of the arc center
+    - draw all output arc labels a bit to the right of the arc center
+
+#6 Should be clear how much input is needed and how much output is available
 - both amounts should be displayed in the input arc label
     - available amount of output for that resource is displayed in the arc label
         - this amount is practically the source buildings export amount for that resource
@@ -27,17 +41,3 @@
     - needed amount of input (to bring imports of that input for that building to 0) is displayed in the arc label
     - label format: "importsRemaining ← currentAmount ← exportsRemaining"
     - currentAmount should be bold
-
-#5 It is easier to select a building to connect to
-- when in building selection mode, building labels which display the resource icon, available & maximum amounts also show a white icon linkIcon
-    - above the current data
-    - centered horizontally
-    - entire label is clickable to conect to that building
-
-#6 Two buildings connected with both input and output have non-overlapping arcs
-- arc anchor points are not the same
-    - draw all input arcs with anchor points a little bit above the building square center
-    - draw all output arcs with anchor points a little bit below the building square center
-- labels are not overlapping
-    - draw all input arc labels a bit to the left of the arc center
-    - draw all output arc labels a bit to the right of the arc center
