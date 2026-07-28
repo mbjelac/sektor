@@ -26,12 +26,8 @@
     - entire label is clickable to conect to that building
 
 #5 Two buildings connected with both input and output have non-overlapping arcs
-- arc anchor points are not the same
-    - draw all input arcs with anchor points a little bit above the building square center
-    - draw all output arcs with anchor points a little bit below the building square center
-- labels are not overlapping
-    - draw all input arc labels a bit to the left of the arc center
-    - draw all output arc labels a bit to the right of the arc center
+- draw all output arcs with a bit higher peak than input arcs
+    - output arc labels should be also shifted upwards
 
 #6 Should be clear how much input is needed and how much output is available
 - both amounts should be displayed in the input arc label
