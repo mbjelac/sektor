@@ -30,13 +30,15 @@
     - output arc labels should be also shifted upwards
 
 #6 Arcs indicate direction by animation
-- output arcs are drawn with a solid line just like input arcs
+- if not test mode, output arcs are drawn with a solid line just like input arcs
 - all arcs have small dots on them
+    - dots are NOT drawn in test mode
     - distributed along the arc
     - can be approximately 10 dots per smallest arc length (buildings next to each other)
     - longer arcs have proportionally more dots
     - dots are same color as arc, only a bit darker
 - dots are animated
+    - not animated in test mode
     - dots move along the arc in the direction of the target building away from the source building
     - dots dissapear when they reach the end of the arc
         - when one dissapears, another appears on the source side of the arc
