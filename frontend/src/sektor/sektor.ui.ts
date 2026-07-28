@@ -273,6 +273,7 @@ const MAX_GRID_DISTANCE = Math.sqrt((GRID_SIZE - 1) ** 2 + (GRID_SIZE - 1) ** 2)
 const MIN_ARC_HEIGHT = BLOCK_SIZE * 0.15 * 3;
 const MAX_ARC_HEIGHT = BLOCK_SIZE * 0.15 * 9;
 const OUTPUT_ARC_PEAK_BOOST = BLOCK_SIZE * 0.15 * 2;
+const DASH_LENGTH = BLOCK_SIZE * 0.09;
 
 function drawConnectionArc(p: p5, source: BuildingLocation, target: BuildingLocation, resourceType: string, dotted: boolean = false) {
   const { wx: sourceX, wz: sourceZ } = gridToWorld(source.x, source.y);
@@ -298,11 +299,7 @@ function drawConnectionArc(p: p5, source: BuildingLocation, target: BuildingLoca
 
   const segments = 20;
   if (dotted) {
-    for (let i = 0; i < segments; i += 2) {
-      const start = arcPoint(i / segments);
-      const end = arcPoint((i + 1) / segments);
-      p.line(start.x, start.y, start.z, end.x, end.y, end.z);
-    }
+    drawDashedArc(p, arcPoint, DASH_LENGTH);
   } else {
     p.beginShape();
     for (let i = 0; i <= segments; i++) {
@@ -312,6 +309,51 @@ function drawConnectionArc(p: p5, source: BuildingLocation, target: BuildingLoca
     p.endShape();
   }
   p.pop();
+}
+
+type ArcPoint = { x: number; y: number; z: number };
+
+// Draws the arc as dashes of a constant world-space length, independent of the
+// total arc length, by walking the curve in arc-length space rather than in t.
+function drawDashedArc(p: p5, arcPoint: (t: number) => ArcPoint, dashLength: number) {
+  const fineSegments = 60;
+  let previousPoint = arcPoint(0);
+  let distanceAlongArc = 0;
+  for (let segmentIndex = 1; segmentIndex <= fineSegments; segmentIndex++) {
+    const currentPoint = arcPoint(segmentIndex / fineSegments);
+    const segmentLength = distanceBetweenPoints(previousPoint, currentPoint);
+    if (segmentLength === 0) {
+      previousPoint = currentPoint;
+      continue;
+    }
+    let positionInSegment = 0;
+    while (positionInSegment < segmentLength) {
+      const positionInDashPattern = (distanceAlongArc + positionInSegment) % (2 * dashLength);
+      const isInDash = positionInDashPattern < dashLength;
+      const distanceToNextBoundary = (isInDash ? dashLength : 2 * dashLength) - positionInDashPattern;
+      const segmentEnd = Math.min(segmentLength, positionInSegment + distanceToNextBoundary);
+      if (isInDash) {
+        const dashStart = interpolatePoints(previousPoint, currentPoint, positionInSegment / segmentLength);
+        const dashEnd = interpolatePoints(previousPoint, currentPoint, segmentEnd / segmentLength);
+        p.line(dashStart.x, dashStart.y, dashStart.z, dashEnd.x, dashEnd.y, dashEnd.z);
+      }
+      positionInSegment = segmentEnd;
+    }
+    distanceAlongArc += segmentLength;
+    previousPoint = currentPoint;
+  }
+}
+
+function distanceBetweenPoints(first: ArcPoint, second: ArcPoint): number {
+  return Math.sqrt((first.x - second.x) ** 2 + (first.y - second.y) ** 2 + (first.z - second.z) ** 2);
+}
+
+function interpolatePoints(from: ArcPoint, to: ArcPoint, fraction: number): ArcPoint {
+  return {
+    x: from.x + (to.x - from.x) * fraction,
+    y: from.y + (to.y - from.y) * fraction,
+    z: from.z + (to.z - from.z) * fraction,
+  };
 }
 
 function openBuildingPanel(placed: { type: string; location: BuildingLocation; code: string }) {
