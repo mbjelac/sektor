@@ -272,6 +272,7 @@ function parseHexColor(hex: string): [number, number, number] {
 const MAX_GRID_DISTANCE = Math.sqrt((GRID_SIZE - 1) ** 2 + (GRID_SIZE - 1) ** 2);
 const MIN_ARC_HEIGHT = BLOCK_SIZE * 0.15 * 3;
 const MAX_ARC_HEIGHT = BLOCK_SIZE * 0.15 * 9;
+const OUTPUT_ARC_PEAK_BOOST = BLOCK_SIZE * 0.15 * 2;
 
 function drawConnectionArc(p: p5, source: BuildingLocation, target: BuildingLocation, resourceType: string, dotted: boolean = false) {
   const { wx: sourceX, wz: sourceZ } = gridToWorld(source.x, source.y);
@@ -279,7 +280,7 @@ function drawConnectionArc(p: p5, source: BuildingLocation, target: BuildingLoca
 
   const distance = Math.sqrt((source.x - target.x) ** 2 + (source.y - target.y) ** 2);
   const normalizedDistance = distance / MAX_GRID_DISTANCE;
-  const arcHeight = MIN_ARC_HEIGHT + normalizedDistance * (MAX_ARC_HEIGHT - MIN_ARC_HEIGHT);
+  const arcHeight = MIN_ARC_HEIGHT + normalizedDistance * (MAX_ARC_HEIGHT - MIN_ARC_HEIGHT) + (dotted ? OUTPUT_ARC_PEAK_BOOST : 0);
 
   const colorHex = getResourceColor(resourceType);
   const [r, g, b] = parseHexColor(colorHex);
@@ -835,7 +836,7 @@ const sektorUi = (p: p5) => {
         const { wx: targetX, wz: targetZ } = gridToWorld(target.x, target.y);
         const distance = Math.sqrt((source.x - target.x) ** 2 + (source.y - target.y) ** 2);
         const normalizedDistance = distance / MAX_GRID_DISTANCE;
-        const arcHeight = MIN_ARC_HEIGHT + normalizedDistance * (MAX_ARC_HEIGHT - MIN_ARC_HEIGHT);
+        const arcHeight = MIN_ARC_HEIGHT + normalizedDistance * (MAX_ARC_HEIGHT - MIN_ARC_HEIGHT) + OUTPUT_ARC_PEAK_BOOST;
         const midX = (sourceX + targetX) / 2;
         const midY = -arcHeight;
         const midZ = (sourceZ + targetZ) / 2;

@@ -25,8 +25,8 @@
     - centered horizontally
     - entire label is clickable to conect to that building
 
-#5 Two buildings connected with both input and output have non-overlapping arcs
-- draw all output arcs with a bit higher peak than input arcs
+#5 [done] Two buildings connected with both input and output have non-overlapping arcs
+- [done] draw all output arcs with a bit higher peak than input arcs
     - output arc labels should be also shifted upwards
 
 #6 Should be clear how much input is needed and how much output is available
