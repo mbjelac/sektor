@@ -29,11 +29,14 @@
 - [done] draw all output arcs with a bit higher peak than input arcs
     - output arc labels should be also shifted upwards
 
-#6 Should be clear how much input is needed and how much output is available
-- both amounts should be displayed in the input arc label
-    - available amount of output for that resource is displayed in the arc label
-        - this amount is practically the source buildings export amount for that resource
-            - or available amount if autoExport=false
-    - needed amount of input (to bring imports of that input for that building to 0) is displayed in the arc label
-    - label format: "importsRemaining ← currentAmount ← exportsRemaining"
-    - currentAmount should be bold
+#6 Arcs indicate direction by animation
+- output arcs are drawn with a solid line just like input arcs
+- all arcs have small dots on them
+    - distributed along the arc
+    - can be approximately 10 dots per smallest arc length (buildings next to each other)
+    - longer arcs have proportionally more dots
+    - dots are same color as arc, only a bit darker
+- dots are animated
+    - dots move along the arc in the direction of the target building away from the source building
+    - dots dissapear when they reach the end of the arc
+        - when one dissapears, another appears on the source side of the arc
