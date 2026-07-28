@@ -527,6 +527,21 @@ body > main {
   cursor: pointer;
   z-index: 50;
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.connect-button-link {
+  display: flex;
+  justify-content: center;
+  padding: 4px;
+}
+
+.connect-button-link svg {
+  stroke: white;
+  width: 18.2px;
+  height: 18.2px;
 }
 
 #error-message {

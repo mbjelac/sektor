@@ -19,8 +19,8 @@
         - increase button becomes clickable
         - increase button icon turns back into up-triangle
 
-#4 It is easier to select a building to connect to
-- when in building selection mode, building labels which display the resource icon, available & maximum amounts also show a white icon linkIcon
+#4 [done] It is easier to select a building to connect to
+- [done] when in building selection mode, building labels which display the resource icon, available & maximum amounts also show a white icon linkIcon
     - above the current data
     - centered horizontally
     - entire label is clickable to conect to that building

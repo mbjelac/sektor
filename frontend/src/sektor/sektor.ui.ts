@@ -14,7 +14,7 @@ import { getSektorData, saveSektorData } from "./sektor.api";
 import { initPropertyToggler, getSelectedProperty } from "./propertyToggler.ui";
 import { propertyDefinitions } from "../properties";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
-import { trashIcon, checkCircleIcon, minusCircleIcon } from "../icons";
+import { trashIcon, checkCircleIcon, minusCircleIcon, linkIcon } from "../icons";
 
 const GRID_SIZE = 10;
 const PANEL_FLOOR_PROPERTY = "soil";
@@ -168,8 +168,18 @@ function enterSelectMode(targetLocation: BuildingLocation, resourceType: string)
   for (const connection of possibleConnections) {
     const button = document.createElement("button");
     button.className = "connect-button";
+
+    const linkRow = document.createElement("div");
+    linkRow.className = "connect-button-link";
+    linkRow.innerHTML = linkIcon;
+    button.appendChild(linkRow);
+
+    const dataRow = document.createElement("div");
+    dataRow.className = "connect-button-data";
     const icon = getResourceIcon(resourceType) ?? "";
-    button.textContent = `${icon} ${connection.remainingOutput}/${connection.totalOutput}`;
+    dataRow.textContent = `${icon} ${connection.remainingOutput}/${connection.totalOutput}`;
+    button.appendChild(dataRow);
+
     button.addEventListener("click", () => {
       handleConnectButtonClick(connection.location);
     });
