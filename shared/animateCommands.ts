@@ -8,9 +8,10 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
   if (!animateTranslate) return baseTranslate;
 
   const phaseSteps = animateTranslate.dt / ANIMATION_STEP_MILLISECONDS;
+  const phaseSwitchDelaySteps = animateTranslate.phaseSwitchDelay / ANIMATION_STEP_MILLISECONDS;
   const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateTranslate.delay) / ANIMATION_STEP_MILLISECONDS);
-  const cycleStep = elapsedStep % (2 * phaseSteps);
-  const forwardStep = cycleStep <= phaseSteps ? cycleStep : 2 * phaseSteps - cycleStep;
+  const cycleStep = elapsedStep % (2 * phaseSteps + 2 * phaseSwitchDelaySteps);
+  const forwardStep = translationForwardStep(cycleStep, phaseSteps, phaseSwitchDelaySteps);
   const progress = forwardStep / phaseSteps;
 
   return [
@@ -18,6 +19,13 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
     baseTranslate[1] + animateTranslate.dy * progress,
     baseTranslate[2] + animateTranslate.dz * progress,
   ];
+}
+
+function translationForwardStep(cycleStep: number, phaseSteps: number, phaseSwitchDelaySteps: number): number {
+  if (cycleStep <= phaseSteps) return cycleStep;
+  if (cycleStep <= phaseSteps + phaseSwitchDelaySteps) return phaseSteps;
+  if (cycleStep <= 2 * phaseSteps + phaseSwitchDelaySteps) return 2 * phaseSteps + phaseSwitchDelaySteps - cycleStep;
+  return 0;
 }
 
 export function animatedColor(command: CreateBody, elapsedMilliseconds: number): string | null {
