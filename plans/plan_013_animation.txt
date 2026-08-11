@@ -24,6 +24,10 @@ because in a timespan of 200ms there will be 10 steps.
             - at(0,0,30,100) first modifies height (z) from its specified value to +30 during 100ms
             - then in the backwards phase returns to -30 back to its initial state during the next 100ms
     - after backwards phase, another forward phase starts, etc.
+- there can be a delay between phases
+    - function at can have an optional 5th parameter specifying phase switch delay in milliseconds
+        - if not present, delay is 0
+        - if present, animation pauses at the end of each phase for the specified delay
 
 #2 [done] Color toggle
 - [done] when color toggle animation specified, object change their color for the specified duration, then change back to original color for the other specified duration
