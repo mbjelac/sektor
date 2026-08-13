@@ -19,6 +19,8 @@
         - a new building is connected with multiple of it's outputs to multiple existing buildings' inputs
         - a new building is connected with one of it's inputs to the output of the closer of two existing buildings
         - a new building is connected with one of it's outputs to the input of the closer of two existing buildings
+    - visual test "displays selection mode with connect buttons" will fail because all connections are created automatically
+        - alter it by first deleting automatically created connections (using arc panel amount widget), then proceeding with test scenario as before
 
 #2 New buildings is automatically selected
 - when new building created, select it so it shows up in the building panel
