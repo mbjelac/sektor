@@ -1,0 +1,39 @@
+#1 New building is automatically connected to existing buildings
+- when a buildings is created with Sektor.createBuilding,
+    - result CreateBuildingResult has incomingConnections: BuildingConnection[] and outgoingConnections: BuildingConnection[]
+    - incomingConnections are connections from existing buildings' outputs to new building's inputs
+    - outgoingConnections are connections from new building's outputs to existing buildings' inputs
+    - these new connections are created in Sektor's state as they would be if player created them manually
+    - these connections observe all the rules of connecting buildings
+    - additional rule: if multiple candidates exist for a connection, choose geometrically closest one
+        - measure distance by building coordinates
+            - distance(x1,y1,x2,y2) = sqrt((x2-x1)^2 + (y2-y1)^2)
+                - use existing BuildingLocation type for this
+    - create Sektor tests for all cases when connecting a new building automatically
+        - a new building is not connected to anything if no buildings exist already
+        - a new building is not connected to anything if buildings exist but do not have same inputs and outputs
+        - a new building is not connected to anything if buildings exist and have compatible inputs & outputs but those are all already connected with maximum amounts
+        - a new building is connected with one of it's inputs to an existing building's output
+        - a new building is connected with one of it's outputs to an existing building's input
+        - a new building is connected with multiple of it's inputs to multiple existing buildings' outputs
+        - a new building is connected with multiple of it's outputs to multiple existing buildings' inputs
+        - a new building is connected with one of it's inputs to the output of the closer of two existing buildings
+        - a new building is connected with one of it's outputs to the input of the closer of two existing buildings
+
+#2 New buildings is automatically selected
+- when new building created, select it so it shows up in the building panel
+    - visual tests should have this covered already
+        - update snapshots
+
+#3 New building's connections should be displayed gradually
+- for effect, when a new building is created & selected, instead of instantly showing all connections, show them gradually
+    - for each connection
+        - display the arc fully transparent, then fade in the color until it reaches the arc's color, during 1000ms
+        - after fade complete, display the connection's arc panel (amount, icon, etc.)
+    - start the fade in, offset by 500ms per connection
+        - first connection has no offset
+        - second connection starts fade after 500ms
+        - third connection starts fade after 1000ms
+        - fourth connection starts fade after 1500ms
+        - etc.
+    - if a selected building was selected manually by the player, do not fade, show all connections instantly
