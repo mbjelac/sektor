@@ -19,8 +19,31 @@
         - a new building is connected with multiple of it's outputs to multiple existing buildings' inputs
         - a new building is connected with one of it's inputs to the output of the closer of two existing buildings
         - a new building is connected with one of it's outputs to the input of the closer of two existing buildings
-    - visual test "displays selection mode with connect buttons" will fail because all connections are created automatically
-        - alter it by first deleting automatically created connections (using arc panel amount widget), then proceeding with test scenario as before
+        - amount set to maximum of available output
+            - new building input is 3
+            - existing building output is 2
+            - new connection amount is 2
+        - amount set to maximum of available input
+            - new building input is 3
+            - existing building output is 5
+            - new connection amount is 3
+        - amount set to maximum of available output if part of output is already connected
+            - new building input is 3
+            - existing building output is 5
+            - another existing building already has connected input to this output in the amount of 3
+            - new connection amount is 2
+    - all visual tests which connect buildings manually will fail because all connections are created automatically
+        - alter them by first deleting automatically created connections (using arc panel amount widget), then proceeding with test scenario as before
+        - affected tests:
+            - displays selection mode with connect buttons
+            - cancels selection mode when X is clicked
+            - displays connection arc on map after connecting buildings
+            - displays input and output arcs on map for a building with both
+            - increases connection amount when up button is clicked
+            - decreases connection amount when down button is clicked
+            - removes connection from map when amount is lowered to zero
+            - highlights buildings importing hovered resource
+            - highlights only buildings whose import can be increased
 
 #2 New buildings is automatically selected
 - when new building created, select it so it shows up in the building panel
