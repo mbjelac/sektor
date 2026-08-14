@@ -75,8 +75,13 @@ describe("getSektorState", () => {
 
   it("aggregates imports and exports by resource name across buildings", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Well", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Well", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     const result = sektor.getSektorState();
 
@@ -98,8 +103,13 @@ describe("getSektorState", () => {
 
   it("decreases imports and exports when a connection is added", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Well", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Well", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     sektor.addConnection({ x: 1, y: 0 }, { x: 0, y: 0 }, "Water");
 
@@ -296,8 +306,13 @@ describe("output modifiers", () => {
       modifierDefinitions,
       { importRestrictions: [], exportRequirements: [] },
     );
-    sektor.createBuilding({ type: "SolarFarm", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Mine", location: { x: 0, y: 1 } });
+    sektor.loadState({
+      buildings: [
+        { type: "SolarFarm", location: { x: 0, y: 0 } },
+        { type: "Mine", location: { x: 0, y: 1 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 1 }, { x: 0, y: 0 }, "Energy");
 
     expect(sektor.getSektorState()).toEqual({

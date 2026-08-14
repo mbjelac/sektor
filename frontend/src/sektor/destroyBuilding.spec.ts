@@ -38,8 +38,13 @@ describe("destroyBuilding", () => {
 
   it("removes building and its connections and updates imports/exports", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
     const result = sektor.destroyBuilding({ x: 0, y: 0 });
@@ -61,9 +66,14 @@ describe("destroyBuilding", () => {
 
   it("removes connections where destroyed building is target", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Mill", location: { x: 2, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Mill", location: { x: 2, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
     sektor.addConnection({ x: 2, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
@@ -76,8 +86,13 @@ describe("destroyBuilding", () => {
 
   it("removes connections where destroyed building is source", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
     sektor.destroyBuilding({ x: 1, y: 0 });

@@ -30,8 +30,13 @@ const testDefinitions: BuildingDefinition[] = [
 describe("changeConnectionAmount", () => {
   it("increases connection amount", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
     const result = sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat", 2);
@@ -41,8 +46,13 @@ describe("changeConnectionAmount", () => {
 
   it("decreases connection amount", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
     sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat", 2);
 
@@ -53,8 +63,13 @@ describe("changeConnectionAmount", () => {
 
   it("reflects new amount in building state input connections", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
     sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat", 2);
 
@@ -67,8 +82,13 @@ describe("changeConnectionAmount", () => {
 
   it("updates imports and exports when amount changes", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
     sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat", 2);
 
@@ -91,8 +111,13 @@ describe("changeConnectionAmount", () => {
 
   it("fails with cannotDecreaseBelowZero when delta would make amount negative", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
     const result = sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat", -2);
@@ -102,8 +127,13 @@ describe("changeConnectionAmount", () => {
 
   it("fails with inputOverflow when delta would exceed target input amount", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
     const result = sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat", 4);
@@ -137,8 +167,13 @@ describe("changeConnectionAmount", () => {
       },
     ];
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], definitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "BigMill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "SmallFarm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "BigMill", location: { x: 0, y: 0 } },
+        { type: "SmallFarm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
     // SmallFarm has Wheat output 3, connection at 1. Delta 3 would make it 4 > 3.

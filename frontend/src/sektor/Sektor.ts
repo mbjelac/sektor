@@ -55,6 +55,8 @@ export interface DestroyBuildingResult {
 export interface CreateBuildingResult {
   error: undefined | string;
   addedBuildings: BuildingCreation[];
+  incomingConnections: BuildingConnection[];
+  outgoingConnections: BuildingConnection[];
 }
 
 export class Sektor {
@@ -329,11 +331,107 @@ export class Sektor {
 
   createBuilding(building: BuildingCreation): CreateBuildingResult {
     if (this.findBuildingAt(building.location)) {
-      return { error: "locationOccupied", addedBuildings: [] };
+      return { error: "locationOccupied", addedBuildings: [], incomingConnections: [], outgoingConnections: [] };
     }
 
     this.buildings.push(building);
-    return { error: undefined, addedBuildings: [building] };
+
+    return {
+      error: undefined,
+      addedBuildings: [building],
+      incomingConnections: this.createIncomingConnections(building),
+      outgoingConnections: this.createOutgoingConnections(building),
+    };
+  }
+
+  private createIncomingConnections(newBuilding: BuildingCreation): BuildingConnection[] {
+    return this.getConnectableInputs(newBuilding.type)
+      .flatMap(input => this.createIncomingConnectionsForInput(newBuilding.location, input.name));
+  }
+
+  // Fills the input from the closest source first, then the next closest, until the input is
+  // filled or no source with a free output amount remains.
+  private createIncomingConnectionsForInput(target: BuildingLocation, resourceType: string): BuildingConnection[] {
+    const connections: BuildingConnection[] = [];
+    while (this.getRemainingImport(target, resourceType) > 0) {
+      const connection = this.createClosestIncomingConnection(target, resourceType);
+      if (!connection) break;
+      connections.push(connection);
+    }
+    return connections;
+  }
+
+  private createClosestIncomingConnection(target: BuildingLocation, resourceType: string): BuildingConnection | null {
+    const sourceLocations = this.getPossibleConnectionsForInput(target, resourceType)
+      .map(possibleConnection => possibleConnection.location);
+    const source = this.findClosestLocation(target, sourceLocations);
+    if (!source) return null;
+
+    const amount = this.connectWithMaximumAmount(target, source, resourceType);
+    if (amount === 0) return null;
+    return { to: source, resourceType, amount };
+  }
+
+  private createOutgoingConnections(newBuilding: BuildingCreation): BuildingConnection[] {
+    return this.getOutputs(newBuilding.type, newBuilding.location)
+      .flatMap(output => this.createOutgoingConnectionsForOutput(newBuilding.location, output.name));
+  }
+
+  // Spends the output on the closest target first, then the next closest, until the output is
+  // used up or no target with a free input amount remains.
+  private createOutgoingConnectionsForOutput(source: BuildingLocation, resourceType: string): BuildingConnection[] {
+    const connections: BuildingConnection[] = [];
+    while (this.getRemainingExport(source, resourceType) > 0) {
+      const connection = this.createClosestOutgoingConnection(source, resourceType);
+      if (!connection) break;
+      connections.push(connection);
+    }
+    return connections;
+  }
+
+  private createClosestOutgoingConnection(source: BuildingLocation, resourceType: string): BuildingConnection | null {
+    const targetLocations = this.buildings
+      .filter(building => !(building.location.x === source.x && building.location.y === source.y))
+      .filter(building => this.getConnectableInputs(building.type).some(input => input.name === resourceType))
+      .filter(building => !this.isAlreadyConnected(building.location, source, resourceType))
+      .filter(building => this.getRemainingImport(building.location, resourceType) > 0)
+      .map(building => building.location);
+    const target = this.findClosestLocation(source, targetLocations);
+    if (!target) return null;
+
+    const amount = this.connectWithMaximumAmount(target, source, resourceType);
+    if (amount === 0) return null;
+    return { to: target, resourceType, amount };
+  }
+
+  // Connects as much as both ends allow: the smaller of the target's remaining input
+  // and the source's remaining output, which is what a player would end up with
+  // after connecting and then raising the amount to its maximum.
+  private connectWithMaximumAmount(target: BuildingLocation, source: BuildingLocation, resourceType: string): number {
+    const maximumAmount = Math.min(
+      this.getRemainingImport(target, resourceType),
+      this.getRemainingExport(source, resourceType),
+    );
+    if (!this.addConnection(target, source, resourceType).success) return 0;
+    if (maximumAmount > 1) this.changeConnectionAmount(target, source, resourceType, maximumAmount - 1);
+    return maximumAmount;
+  }
+
+  private findClosestLocation(origin: BuildingLocation, candidateLocations: BuildingLocation[]): BuildingLocation | null {
+    let closestLocation: BuildingLocation | null = null;
+    let closestDistance = Infinity;
+    for (const candidateLocation of candidateLocations) {
+      const candidateDistance = this.distanceBetweenLocations(origin, candidateLocation);
+      if (candidateDistance < closestDistance) {
+        closestDistance = candidateDistance;
+        closestLocation = candidateLocation;
+      }
+    }
+    return closestLocation;
+  }
+
+  private distanceBetweenLocations(from: BuildingLocation, to: BuildingLocation): number {
+    return Math.sqrt((to.x - from.x) ** 2 + (to.y - from.y) ** 2);
   }
 
   destroyBuilding(location: BuildingLocation): DestroyBuildingResult {

@@ -1,5 +1,5 @@
-#1 New building is automatically connected to existing buildings
-- when a buildings is created with Sektor.createBuilding,
+#1 [done] New building is automatically connected to existing buildings
+- [done] when a buildings is created with Sektor.createBuilding,
     - result CreateBuildingResult has incomingConnections: BuildingConnection[] and outgoingConnections: BuildingConnection[]
     - incomingConnections are connections from existing buildings' outputs to new building's inputs
     - outgoingConnections are connections from new building's outputs to existing buildings' inputs
@@ -9,6 +9,12 @@
         - measure distance by building coordinates
             - distance(x1,y1,x2,y2) = sqrt((x2-x1)^2 + (y2-y1)^2)
                 - use existing BuildingLocation type for this
+    - additional rule: keep connecting each input and each output until it is used up
+        - connect an input to the output of the closest building which still has an amount to connect
+            - set that amount to the maximum of the input & the output
+            - if the input is still not filled, find the next closest building with the same output with free amount
+            - repeat until the input is filled or no such buildings remain
+        - do the same for each output, connecting it to inputs of multiple existing buildings
     - create Sektor tests for all cases when connecting a new building automatically
         - a new building is not connected to anything if no buildings exist already
         - a new building is not connected to anything if buildings exist but do not have same inputs and outputs
@@ -17,6 +23,16 @@
         - a new building is connected with one of it's outputs to an existing building's input
         - a new building is connected with multiple of it's inputs to multiple existing buildings' outputs
         - a new building is connected with multiple of it's outputs to multiple existing buildings' inputs
+        - a new building is connected with one of it's inputs to the outputs of multiple existing buildings until that input is filled
+            - new building input is 5
+            - closest existing building output is 2
+            - next closest existing building output is 5
+            - new connection amounts are 2 and 3
+        - a new building is connected with one of it's outputs to the inputs of multiple existing buildings until that output is used up
+            - new building output is 5
+            - closest existing building input is 3
+            - next closest existing building input is 3
+            - new connection amounts are 3 and 2
         - a new building is connected with one of it's inputs to the output of the closer of two existing buildings
         - a new building is connected with one of it's outputs to the input of the closer of two existing buildings
         - amount set to maximum of available output

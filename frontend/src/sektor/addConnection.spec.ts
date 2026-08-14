@@ -41,8 +41,13 @@ const testDefinitions: BuildingDefinition[] = [
 describe("addConnection", () => {
   it("succeeds when target has matching input and source has matching output", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     const result = sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
@@ -51,8 +56,13 @@ describe("addConnection", () => {
 
   it("fails when target has no matching input", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Well", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Well", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     const result = sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Water");
 
@@ -61,8 +71,13 @@ describe("addConnection", () => {
 
   it("fails when source has no matching output", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Farm", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Mill", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Farm", location: { x: 0, y: 0 } },
+        { type: "Mill", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     const result = sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Water");
 
@@ -71,10 +86,15 @@ describe("addConnection", () => {
 
   it("fails when target import is exhausted", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Farm", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Well", location: { x: 1, y: 0 } });
-    sektor.createBuilding({ type: "Well", location: { x: 2, y: 0 } });
-    sektor.createBuilding({ type: "Well", location: { x: 3, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Farm", location: { x: 0, y: 0 } },
+        { type: "Well", location: { x: 1, y: 0 } },
+        { type: "Well", location: { x: 2, y: 0 } },
+        { type: "Well", location: { x: 3, y: 0 } },
+      ],
+      connections: [],
+    });
 
     // Farm has Water input with value 2, so after 2 connections import is exhausted
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Water");
@@ -86,13 +106,18 @@ describe("addConnection", () => {
 
   it("fails when source export is exhausted", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Farm", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 2, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 3, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 4, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 5, y: 0 } });
-    sektor.createBuilding({ type: "Well", location: { x: 6, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Farm", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Farm", location: { x: 2, y: 0 } },
+        { type: "Farm", location: { x: 3, y: 0 } },
+        { type: "Farm", location: { x: 4, y: 0 } },
+        { type: "Farm", location: { x: 5, y: 0 } },
+        { type: "Well", location: { x: 6, y: 0 } },
+      ],
+      connections: [],
+    });
 
     // Well has Water output with value 4, so after 4 connections export is exhausted
     sektor.addConnection({ x: 0, y: 0 }, { x: 6, y: 0 }, "Water");
@@ -106,8 +131,13 @@ describe("addConnection", () => {
 
   it("fails when source is already connected to target with same resource type", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
     const result = sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");

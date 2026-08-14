@@ -1,4 +1,4 @@
-import { test, expect, setup, expectScreenshot } from "./test-utils";
+import { test, expect, setup, expectScreenshot, removeAutomaticConnections } from "./test-utils";
 
 setup();
 
@@ -246,6 +246,8 @@ test("displays selection mode with connect buttons", async ({ page }) => {
   await canvas.click({ position: { x: centerX, y: centerY + 30 } });
   await page.waitForTimeout(200);
 
+  await removeAutomaticConnections(page);
+
   // Click "+" on the Food input row
   await page.locator(".bf-input-clickable").first().click();
   await page.waitForTimeout(300);
@@ -274,6 +276,7 @@ test("cancels selection mode when X is clicked", async ({ page }) => {
   // Open panel and enter select mode
   await canvas.click({ position: { x: centerX, y: centerY + 30 } });
   await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
   await page.locator(".bf-input-clickable").first().click();
   await page.waitForTimeout(300);
 
@@ -313,6 +316,8 @@ test("displays connection arc on map after connecting buildings", async ({ page 
   // Click TestHouse to open panel
   await canvas.click({ position: { x: centerX, y: centerY + 30 } });
   await page.waitForTimeout(200);
+
+  await removeAutomaticConnections(page);
 
   // Connect Food from first TestFactory
   await page.locator(".bf-input-clickable").first().click();
@@ -357,6 +362,7 @@ test("displays input and output arcs on map for a building with both", async ({ 
   // Connect TestProcessor's Food input from TestFactory (input arc)
   await canvas.click({ position: { x: centerX, y: centerY + 40 } });
   await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
   await page.locator(".bf-input-clickable").first().click();
   await page.waitForTimeout(300);
   await page.locator(".connect-button").first().click();
@@ -365,6 +371,7 @@ test("displays input and output arcs on map for a building with both", async ({ 
   // Connect TestRefinery's Wood input from TestProcessor (output arc for the processor)
   await canvas.click({ position: { x: centerX + 100, y: centerY - 50 } });
   await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
   await page.locator(".bf-input-clickable").nth(3).click();
   await page.waitForTimeout(300);
   await page.locator(".connect-button").first().click();
@@ -398,6 +405,7 @@ test("increases connection amount when up button is clicked", async ({ page }) =
   // Open panel, create connection on the Wood input (4th input row)
   await canvas.click({ position: { x: centerX, y: centerY + 30 } });
   await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
   await page.locator(".bf-input-clickable").nth(3).click();
   await page.waitForTimeout(300);
   await page.locator(".connect-button").click();
@@ -431,6 +439,7 @@ test("decreases connection amount when down button is clicked", async ({ page })
   // Open panel, create connection on the Wood input (4th input row), increase to 2
   await canvas.click({ position: { x: centerX, y: centerY + 30 } });
   await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
   await page.locator(".bf-input-clickable").nth(3).click();
   await page.waitForTimeout(300);
   await page.locator(".connect-button").click();
@@ -466,6 +475,7 @@ test("removes connection from map when amount is lowered to zero", async ({ page
   // Open panel and create connection (amount 1)
   await canvas.click({ position: { x: centerX, y: centerY + 30 } });
   await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
   await page.locator(".bf-input-clickable").first().click();
   await page.waitForTimeout(300);
   await page.locator(".connect-button").click();
@@ -574,7 +584,7 @@ test("displays sektor state panel with Done status", async ({ page }) => {
 
 test("highlights buildings importing hovered resource", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
@@ -595,6 +605,11 @@ test("highlights buildings importing hovered resource", async ({ page }) => {
   await page.waitForTimeout(100);
   await canvas.click({ position: { x: centerX, y: centerY + 30 } });
   await page.waitForTimeout(200);
+
+  // Open TestHouse's panel to remove its automatic connections
+  await canvas.click({ position: { x: centerX, y: centerY + 30 } });
+  await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
 
   // Deselect building by clicking empty area
   await canvas.click({ position: { x: centerX + 120, y: centerY + 60 } });
@@ -633,9 +648,15 @@ test("highlights only buildings whose import can be increased", async ({ page })
   await canvas.click({ position: { x: centerX, y: centerY + 40 } });
   await page.waitForTimeout(200);
 
+  // Remove TestProcessor's automatic connection so its Food import stays unfilled
+  await canvas.click({ position: { x: centerX + 90, y: centerY - 40 } });
+  await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
+
   // Fill TestHouse's Food input (value 2) to its maximum
   await canvas.click({ position: { x: centerX, y: centerY + 40 } });
   await page.waitForTimeout(200);
+  await removeAutomaticConnections(page);
   await page.locator(".bf-input-clickable").first().click();
   await page.waitForTimeout(300);
   await page.locator(".connect-button").first().click();

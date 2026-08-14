@@ -67,8 +67,13 @@ describe("boosters", () => {
 
   it("increases output by connected booster amount times boost factor", () => {
     const sektor = newSektor();
-    sektor.createBuilding({ type: "Habitat", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Library", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Habitat", location: { x: 0, y: 0 } },
+        { type: "Library", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "HealthMental");
     sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "HealthMental", 2);
 
@@ -79,8 +84,13 @@ describe("boosters", () => {
 
   it("cannot increase a booster input beyond its maximum amount", () => {
     const sektor = newSektor();
-    sektor.createBuilding({ type: "Habitat", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Library", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Habitat", location: { x: 0, y: 0 } },
+        { type: "Library", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "HealthMental");
     sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "HealthMental", 2);
 

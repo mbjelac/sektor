@@ -30,9 +30,14 @@ const testDefinitions: BuildingDefinition[] = [
 describe("doesBuildingNeedMoreInput", () => {
   it("returns true when the input is not fully supplied by its sources", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 2, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Farm", location: { x: 2, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
     sektor.addConnection({ x: 0, y: 0 }, { x: 2, y: 0 }, "Wheat");
 
@@ -43,9 +48,14 @@ describe("doesBuildingNeedMoreInput", () => {
 
   it("returns false when the input is fully supplied by its sources", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 2, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Farm", location: { x: 2, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
     sektor.addConnection({ x: 0, y: 0 }, { x: 2, y: 0 }, "Wheat");
     sektor.changeConnectionAmount({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat", 1);

@@ -41,8 +41,13 @@ const testDefinitions: BuildingDefinition[] = [
 describe("getPossibleConnectionsForInput", () => {
   it("returns buildings that have an output matching the resource type", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     const result = sektor.getPossibleConnectionsForInput({ x: 0, y: 0 }, "Wheat");
 
@@ -60,8 +65,13 @@ describe("getPossibleConnectionsForInput", () => {
 
   it("returns empty array when no buildings have matching output", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Well", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Well", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     const result = sektor.getPossibleConnectionsForInput({ x: 0, y: 0 }, "Wheat");
 
@@ -70,12 +80,17 @@ describe("getPossibleConnectionsForInput", () => {
 
   it("excludes buildings with depleted output", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Farm", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 2, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 3, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 4, y: 0 } });
-    sektor.createBuilding({ type: "Well", location: { x: 5, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Farm", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Farm", location: { x: 2, y: 0 } },
+        { type: "Farm", location: { x: 3, y: 0 } },
+        { type: "Farm", location: { x: 4, y: 0 } },
+        { type: "Well", location: { x: 5, y: 0 } },
+      ],
+      connections: [],
+    });
 
     // Well has Water output 4, deplete it with 4 connections
     sektor.addConnection({ x: 0, y: 0 }, { x: 5, y: 0 }, "Water");
@@ -90,9 +105,14 @@ describe("getPossibleConnectionsForInput", () => {
 
   it("excludes buildings already connected to target with same resource type", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 2, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Farm", location: { x: 2, y: 0 } },
+      ],
+      connections: [],
+    });
 
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
@@ -105,9 +125,14 @@ describe("getPossibleConnectionsForInput", () => {
 
   it("returns multiple buildings when several have matching output", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 2, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Farm", location: { x: 2, y: 0 } },
+      ],
+      connections: [],
+    });
 
     const result = sektor.getPossibleConnectionsForInput({ x: 0, y: 0 }, "Wheat");
 

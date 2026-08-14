@@ -30,8 +30,13 @@ const testDefinitions: BuildingDefinition[] = [
 describe("removeInputConnection", () => {
   it("removes an input connection", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
     sektor.addConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
 
     sektor.removeInputConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat");
@@ -41,8 +46,13 @@ describe("removeInputConnection", () => {
 
   it("throws when removing a non-existing connection", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
-    sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
-    sektor.createBuilding({ type: "Farm", location: { x: 1, y: 0 } });
+    sektor.loadState({
+      buildings: [
+        { type: "Mill", location: { x: 0, y: 0 } },
+        { type: "Farm", location: { x: 1, y: 0 } },
+      ],
+      connections: [],
+    });
 
     expect(() => sektor.removeInputConnection({ x: 0, y: 0 }, { x: 1, y: 0 }, "Wheat")).toThrowError("connectionNotFound");
   });
