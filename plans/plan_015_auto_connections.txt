@@ -61,8 +61,8 @@
             - highlights buildings importing hovered resource
             - highlights only buildings whose import can be increased
 
-#2 New buildings is automatically selected
-- when new building created, select it so it shows up in the building panel
+#2 [done] New buildings is automatically selected
+- [done] when new building created, select it so it shows up in the building panel
     - visual tests should have this covered already
         - update snapshots
 
