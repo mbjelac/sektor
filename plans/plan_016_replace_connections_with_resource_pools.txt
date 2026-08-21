@@ -30,3 +30,19 @@ This greatly simplifies the Sektor architecture:
 
 #2 Simplify adding buildings
 - when building in building toolbar selected, after it is added it is still selected and can be added again
+    - when clicked outside of map, deselect building in toolbar
+
+#3 Improve import-export visibility
+- import-export panel should have one list of resources
+    - ordered by resource name alphabetically
+    - with several columns:
+        - resource name & icon
+        - import restriction
+        - import amount
+        - export amount
+        - export requirement
+    - if no import restriction for a resource, do not display restriction value
+    - if no export requirement for a resource, do not display requirement value
+    - display import restriction as "<value> <greater-or-equal-symbol>"
+    - display export requirement as "<greater-or-equal-symbol> <value>"
+    - columns should have no headers
