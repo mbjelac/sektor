@@ -10,15 +10,15 @@ This greatly simplifies the Sektor architecture:
 - an import & export for each resource is subtracted from each other so that one is zero and the other is positive, or they are both zero
     - example: two buildings have input water 5, a third building output water 7; resulting water import is 3 and export is 0
 
-#1 Remove connections
-- Sektor does not have connections, only buildings with their inputs & outputs
+#1 [done] Remove connections
+- [done] Sektor does not have connections, only buildings with their inputs & outputs
     - remove connection operations (adding, removing & changing amounts)
     - remove connections from state
     - imports & exports are not kept as state, but are calculated from the inputs & outputs of the buildings
     - adding or removing a building will result in a change in import & export values
     - remove Sektor tests dealing with connections
     - add Sektor tests dealing with calculation of imports & exports as buildings are added & removed
-- Sektor map does not display connections
+- [done] Sektor map does not display connections
     - do not display connection arcs
     - do not display connection labels
     - do not display connection panels with amount editing

@@ -4,17 +4,14 @@ import {parseCommands} from "../../../shared/parseCommands";
 import {applyCommands} from "../../../shared/applyCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, deselectBuilding, getBuildingCode} from "./buildingToolbar.ui";
-import { BuildingConnection, BuildingLocation, Location, PossibleConnection, Sektor } from "./Sektor";
-import { getResourceColor, getResourceIcon } from "../resources";
+import { BuildingLocation, Location, Sektor } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
-import { BoosterInputDisplay } from "./buildingFunctionDisplay.ui";
 import {updateSektorStatePanel, onImportHover, onLeave} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { initPropertyToggler, getSelectedProperty } from "./propertyToggler.ui";
 import { propertyDefinitions } from "../properties";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
-import { trashIcon, checkCircleIcon, minusCircleIcon, linkIcon } from "../icons";
 
 const GRID_SIZE = 10;
 const PANEL_FLOOR_PROPERTY = "soil";
@@ -126,7 +123,6 @@ function saveState() {
     importRestrictions,
     exportRequirements,
     buildings: state.buildings,
-    connections: state.connections,
   });
 }
 
@@ -134,7 +130,7 @@ function loadSavedState() {
   if (!sektorName) return;
   const sektorData = getSektorData(sektorName);
   if (!sektorData) return;
-  sektor.loadState({ buildings: sektorData.buildings, connections: sektorData.connections });
+  sektor.loadState({ buildings: sektorData.buildings });
   for (const building of sektorData.buildings) {
     const code = getBuildingCode(building.type);
     if (code) {
@@ -146,214 +142,11 @@ function loadSavedState() {
 
 let selectedBuildingLocation: BuildingLocation | null = null;
 let hoveredImportResource: string | null = null;
-let displayedConnections: { connections: BuildingConnection[]; buildingLocation: BuildingLocation; labels: HTMLElement[]; outputConnections: BuildingConnection[]; outputLabels: HTMLElement[] } | null = null;
-
-let selectMode: {
-  possibleConnections: PossibleConnection[];
-  targetLocation: BuildingLocation;
-  resourceType: string;
-  connectButtons: HTMLElement[];
-} | null = null;
-
-function enterSelectMode(targetLocation: BuildingLocation, resourceType: string) {
-  const possibleConnections = sektor.getPossibleConnectionsForInput(targetLocation, resourceType);
-  if (possibleConnections.length === 0) {
-    showError("noPossibleConnections");
-    return;
-  }
-
-  const container = document.getElementById("canvas-container")!;
-  const connectButtons: HTMLElement[] = [];
-
-  for (const connection of possibleConnections) {
-    const button = document.createElement("button");
-    button.className = "connect-button";
-
-    const linkRow = document.createElement("div");
-    linkRow.className = "connect-button-link";
-    linkRow.innerHTML = linkIcon;
-    button.appendChild(linkRow);
-
-    const dataRow = document.createElement("div");
-    dataRow.className = "connect-button-data";
-    const icon = getResourceIcon(resourceType) ?? "";
-    dataRow.textContent = `${icon} ${connection.remainingOutput}/${connection.totalOutput}`;
-    button.appendChild(dataRow);
-
-    button.addEventListener("click", () => {
-      handleConnectButtonClick(connection.location);
-    });
-    container.appendChild(button);
-    connectButtons.push(button);
-  }
-
-  selectMode = { possibleConnections, targetLocation, resourceType, connectButtons };
-
-  const banner = document.createElement("div");
-  banner.id = "select-banner";
-  banner.textContent = "Select building to connect to";
-
-  const closeButton = document.createElement("button");
-  closeButton.className = "select-banner-close";
-  closeButton.textContent = "Cancel";
-  closeButton.addEventListener("click", exitSelectMode);
-  banner.appendChild(closeButton);
-
-  container.appendChild(banner);
-  document.getElementById("toolbar")!.style.pointerEvents = "none";
-}
-
-function handleConnectButtonClick(sourceLocation: BuildingLocation) {
-  if (!selectMode) return;
-  const targetLocation = selectMode.targetLocation;
-  const resourceType = selectMode.resourceType;
-  exitSelectMode();
-
-  const connectionResult = sektor.addConnection(targetLocation, sourceLocation, resourceType);
-
-  if (!connectionResult.success) {
-    showError(connectionResult.error ?? "Connection failed");
-    return;
-  }
-
-  const targetPlaced = placedBuildings.find(b => b.location.x === targetLocation.x && b.location.y === targetLocation.y);
-  if (targetPlaced) openBuildingPanel(targetPlaced);
-  updateSektorStatePanel(sektor.getSektorState());
-  saveState();
-}
-
-function exitSelectMode() {
-  if (selectMode) {
-    for (const button of selectMode.connectButtons) {
-      button.remove();
-    }
-  }
-  selectMode = null;
-  const banner = document.getElementById("select-banner");
-  if (banner) banner.remove();
-  document.getElementById("toolbar")!.style.pointerEvents = "";
-}
-
-function worldToScreen(p: p5, worldX: number, worldY: number, worldZ: number, currentZoom: number): { screenX: number; screenY: number } {
-  const { rightX, rightY, rightZ, upX, upY, upZ } = getCameraBasis(p);
-
-  // Project world position onto camera right/up axes
-  const dotRight = rightX * worldX + rightY * worldY + rightZ * worldZ;
-  const dotUp = upX * worldX + upY * worldY + upZ * worldZ;
-
-  const hw = p.width * currentZoom / 2;
-  const hh = p.height * currentZoom / 2;
-
-  return {
-    screenX: p.width / 2 + (dotRight / hw) * (p.width / 2),
-    screenY: p.height / 2 + (dotUp / hh) * (p.height / 2),
-  };
-}
-
-function updateConnectButtonPositions(p: p5, currentZoom: number) {
-  if (!selectMode) return;
-  for (let i = 0; i < selectMode.possibleConnections.length; i++) {
-    const connection = selectMode.possibleConnections[i];
-    const button = selectMode.connectButtons[i];
-    const { wx, wz } = gridToWorld(connection.location.x, connection.location.y);
-    const { screenX, screenY } = worldToScreen(p, wx, -BLOCK_SIZE * 0.3, wz, currentZoom);
-    button.style.left = `${screenX}px`;
-    button.style.top = `${screenY}px`;
-  }
-}
-
 function parseHexColor(hex: string): [number, number, number] {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   return [r, g, b];
-}
-
-const MAX_GRID_DISTANCE = Math.sqrt((GRID_SIZE - 1) ** 2 + (GRID_SIZE - 1) ** 2);
-const MIN_ARC_HEIGHT = BLOCK_SIZE * 0.15 * 3;
-const MAX_ARC_HEIGHT = BLOCK_SIZE * 0.15 * 9;
-const OUTPUT_ARC_PEAK_BOOST = BLOCK_SIZE * 0.15 * 2;
-const DASH_LENGTH = BLOCK_SIZE * 0.09;
-
-function drawConnectionArc(p: p5, source: BuildingLocation, target: BuildingLocation, resourceType: string, dotted: boolean = false) {
-  const { wx: sourceX, wz: sourceZ } = gridToWorld(source.x, source.y);
-  const { wx: targetX, wz: targetZ } = gridToWorld(target.x, target.y);
-
-  const distance = Math.sqrt((source.x - target.x) ** 2 + (source.y - target.y) ** 2);
-  const normalizedDistance = distance / MAX_GRID_DISTANCE;
-  const arcHeight = MIN_ARC_HEIGHT + normalizedDistance * (MAX_ARC_HEIGHT - MIN_ARC_HEIGHT) + (dotted ? OUTPUT_ARC_PEAK_BOOST : 0);
-
-  const colorHex = getResourceColor(resourceType);
-  const [r, g, b] = parseHexColor(colorHex);
-
-  p.push();
-  p.noFill();
-  p.stroke(r, g, b);
-  p.strokeWeight(3);
-
-  const arcPoint = (t: number) => ({
-    x: sourceX + (targetX - sourceX) * t,
-    y: -arcHeight * 4 * t * (1 - t),
-    z: sourceZ + (targetZ - sourceZ) * t,
-  });
-
-  const segments = 20;
-  if (dotted) {
-    drawDashedArc(p, arcPoint, DASH_LENGTH);
-  } else {
-    p.beginShape();
-    for (let i = 0; i <= segments; i++) {
-      const point = arcPoint(i / segments);
-      p.vertex(point.x, point.y, point.z);
-    }
-    p.endShape();
-  }
-  p.pop();
-}
-
-type ArcPoint = { x: number; y: number; z: number };
-
-// Draws the arc as dashes of a constant world-space length, independent of the
-// total arc length, by walking the curve in arc-length space rather than in t.
-function drawDashedArc(p: p5, arcPoint: (t: number) => ArcPoint, dashLength: number) {
-  const fineSegments = 60;
-  let previousPoint = arcPoint(0);
-  let distanceAlongArc = 0;
-  for (let segmentIndex = 1; segmentIndex <= fineSegments; segmentIndex++) {
-    const currentPoint = arcPoint(segmentIndex / fineSegments);
-    const segmentLength = distanceBetweenPoints(previousPoint, currentPoint);
-    if (segmentLength === 0) {
-      previousPoint = currentPoint;
-      continue;
-    }
-    let positionInSegment = 0;
-    while (positionInSegment < segmentLength) {
-      const positionInDashPattern = (distanceAlongArc + positionInSegment) % (2 * dashLength);
-      const isInDash = positionInDashPattern < dashLength;
-      const distanceToNextBoundary = (isInDash ? dashLength : 2 * dashLength) - positionInDashPattern;
-      const segmentEnd = Math.min(segmentLength, positionInSegment + distanceToNextBoundary);
-      if (isInDash) {
-        const dashStart = interpolatePoints(previousPoint, currentPoint, positionInSegment / segmentLength);
-        const dashEnd = interpolatePoints(previousPoint, currentPoint, segmentEnd / segmentLength);
-        p.line(dashStart.x, dashStart.y, dashStart.z, dashEnd.x, dashEnd.y, dashEnd.z);
-      }
-      positionInSegment = segmentEnd;
-    }
-    distanceAlongArc += segmentLength;
-    previousPoint = currentPoint;
-  }
-}
-
-function distanceBetweenPoints(first: ArcPoint, second: ArcPoint): number {
-  return Math.sqrt((first.x - second.x) ** 2 + (first.y - second.y) ** 2 + (first.z - second.z) ** 2);
-}
-
-function interpolatePoints(from: ArcPoint, to: ArcPoint, fraction: number): ArcPoint {
-  return {
-    x: from.x + (to.x - from.x) * fraction,
-    y: from.y + (to.y - from.y) * fraction,
-    z: from.z + (to.z - from.z) * fraction,
-  };
 }
 
 function openBuildingPanel(placed: { type: string; location: BuildingLocation; code: string }) {
@@ -362,118 +155,18 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
   const code = getBuildingCode(placed.type);
   if (!code) return;
   const floorColor = propertyColor(PANEL_FLOOR_PROPERTY, locations[placed.location.x][placed.location.y].properties[PANEL_FLOOR_PROPERTY] ?? 0);
-  if (displayedConnections) {
-    for (const label of displayedConnections.labels) label.remove();
-    for (const label of displayedConnections.outputLabels) label.remove();
-  }
-  const container = document.getElementById("canvas-container")!;
-  const labels: HTMLElement[] = [];
-  for (const connection of buildingState.inputConnections) {
-    const label = document.createElement("div");
-    label.className = "connection-label";
-
-    const icon = getResourceIcon(connection.resourceType) ?? "";
-    const amountText = document.createElement("span");
-    amountText.className = "connection-amount-text";
-    amountText.textContent = `${icon} ${connection.amount}`;
-    label.appendChild(amountText);
-
-    const buttonsContainer = document.createElement("div");
-    buttonsContainer.className = "connection-amount-buttons";
-
-    const upButton = document.createElement("button");
-    upButton.className = "connection-amount-button";
-    if (!sektor.doesBuildingNeedMoreInput(placed.location, connection.resourceType)) {
-      upButton.innerHTML = checkCircleIcon;
-    } else if (!sektor.doesBuildingHaveAvailableOutput(connection.to, connection.resourceType)) {
-      upButton.innerHTML = minusCircleIcon;
-    } else {
-      upButton.textContent = "▲";
-      upButton.addEventListener("click", () => {
-        const result = sektor.changeConnectionAmount(placed.location, connection.to, connection.resourceType, 1);
-        if (result.success) {
-          openBuildingPanel(placed);
-          updateSektorStatePanel(sektor.getSektorState());
-          saveState();
-        } else {
-          showError(result.error ?? "Cannot increase");
-        }
-      });
-    }
-    buttonsContainer.appendChild(upButton);
-
-    const downButton = document.createElement("button");
-    downButton.className = "connection-amount-button";
-    if (connection.amount === 1) {
-      downButton.innerHTML = trashIcon;
-    } else {
-      downButton.textContent = "▼";
-    }
-    downButton.addEventListener("click", () => {
-      if (connection.amount === 1) {
-        sektor.removeInputConnection(placed.location, connection.to, connection.resourceType);
-        openBuildingPanel(placed);
-        updateSektorStatePanel(sektor.getSektorState());
-        saveState();
-        return;
-      }
-      const result = sektor.changeConnectionAmount(placed.location, connection.to, connection.resourceType, -1);
-      if (result.success) {
-        openBuildingPanel(placed);
-        updateSektorStatePanel(sektor.getSektorState());
-        saveState();
-      } else {
-        showError(result.error ?? "Cannot decrease");
-      }
-    });
-    buttonsContainer.appendChild(downButton);
-
-    label.appendChild(buttonsContainer);
-
-    container.appendChild(label);
-    labels.push(label);
-  }
-  const outputLabels: HTMLElement[] = [];
-  for (const outputConnection of buildingState.outputConnections) {
-    const label = document.createElement("div");
-    label.className = "connection-label";
-
-    const icon = getResourceIcon(outputConnection.resourceType) ?? "";
-    const amountText = document.createElement("span");
-    amountText.className = "connection-amount-text";
-    amountText.textContent = `${icon} ${outputConnection.amount}`;
-    label.appendChild(amountText);
-
-    container.appendChild(label);
-    outputLabels.push(label);
-  }
   selectedBuildingLocation = placed.location;
-  displayedConnections = { connections: buildingState.inputConnections, buildingLocation: placed.location, labels, outputConnections: buildingState.outputConnections, outputLabels };
   const definition = buildingDefinitions.find(definition => definition.name === placed.type);
-  const boosters: BoosterInputDisplay[] = (definition?.boosters ?? []).map(booster => ({
-    name: booster.input.name,
-    maxAmount: booster.input.value,
-    currentAmount: buildingState.inputConnections
-      .filter(connection => connection.resourceType === booster.input.name)
-      .reduce((sum, connection) => sum + connection.amount, 0),
-  }));
   showBuildingPanel({
     name: placed.type,
     code: code,
     buildingFunction: buildingState.buildingFunction,
     modifiedOutputs: buildingState.modifiedOutputs,
-    exports: buildingState.exports,
-    imports: buildingState.imports,
-    boosters: boosters,
-    autoExport: definition?.properties.autoExport,
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
     modifierProperties: definition?.outputModifiers.map(modifier => modifier.property),
     floorColor: floorColor,
     showFloor: definition?.properties.showFloor,
     location: placed.location,
-    onAddInputConnection: (resourceType: string) => {
-      enterSelectMode(placed.location, resourceType)
-    },
     onDestroy: () => {
       const result = sektor.destroyBuilding(placed.location);
       if (!result.success) {
@@ -484,11 +177,6 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
       if (index !== -1) placedBuildings.splice(index, 1);
       hideBuildingPanel();
       selectedBuildingLocation = null;
-      if (displayedConnections) {
-        for (const label of displayedConnections.labels) label.remove();
-        for (const label of displayedConnections.outputLabels) label.remove();
-      }
-      displayedConnections = null;
       updateSektorStatePanel(sektor.getSektorState());
       saveState();
     }
@@ -503,7 +191,6 @@ function openEmptyLocationPanel(location: BuildingLocation) {
     code: "",
     buildingFunction: { inputs: [], outputs: [] },
     modifiedOutputs: [],
-    imports: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
     modifierProperties: [],
     floorColor: floorColor,
@@ -748,18 +435,11 @@ const sektorUi = (p: p5) => {
     mouseDownOnCanvas = false;
     if (didDrag) return;
 
-    if (selectMode) return;
-
     const grid = findClickedTile(p, zoom);
 
     if (!grid) {
       hideBuildingPanel();
-      if (displayedConnections) {
-        for (const label of displayedConnections.labels) label.remove();
-        for (const label of displayedConnections.outputLabels) label.remove();
-      }
       selectedBuildingLocation = null;
-      displayedConnections = null;
       return;
     }
 
@@ -771,11 +451,6 @@ const sektorUi = (p: p5) => {
       if (placed) {
         openBuildingPanel(placed);
       } else {
-        if (displayedConnections) {
-          for (const label of displayedConnections.labels) label.remove();
-          for (const label of displayedConnections.outputLabels) label.remove();
-        }
-        displayedConnections = null;
         openEmptyLocationPanel({ x: grid.x, y: grid.y });
       }
       return;
@@ -834,7 +509,7 @@ const sektorUi = (p: p5) => {
       for (const building of placedBuildings) {
         const def = buildingDefinitions.find(d => d.name === building.type);
         if (!def?.buildingFunction.inputs.some(input => input.name === hoveredImportResource)) continue;
-        if (!sektor.doesBuildingNeedMoreInput(building.location, hoveredImportResource)) continue;
+        if (!sektor.doesBuildingNeedInput(building.location, hoveredImportResource)) continue;
         drawLocationHighlight(p, building.location, [255, 165, 0]);
       }
     }
@@ -847,52 +522,6 @@ const sektorUi = (p: p5) => {
       const commands = parseCommands(building.code);
       applyCommands(p, commands, p.millis());
       p.pop();
-    }
-
-    if (displayedConnections) {
-      for (let i = 0; i < displayedConnections.connections.length; i++) {
-        const connection = displayedConnections.connections[i];
-        const source = connection.to;
-        const target = displayedConnections.buildingLocation;
-        drawConnectionArc(p, source, target, connection.resourceType);
-
-        const { wx: sourceX, wz: sourceZ } = gridToWorld(source.x, source.y);
-        const { wx: targetX, wz: targetZ } = gridToWorld(target.x, target.y);
-        const distance = Math.sqrt((source.x - target.x) ** 2 + (source.y - target.y) ** 2);
-        const normalizedDistance = distance / MAX_GRID_DISTANCE;
-        const arcHeight = MIN_ARC_HEIGHT + normalizedDistance * (MAX_ARC_HEIGHT - MIN_ARC_HEIGHT);
-        const midX = (sourceX + targetX) / 2;
-        const midY = -arcHeight;
-        const midZ = (sourceZ + targetZ) / 2;
-        const { screenX, screenY } = worldToScreen(p, midX, midY, midZ, zoom);
-        const label = displayedConnections.labels[i];
-        label.style.left = `${screenX}px`;
-        label.style.top = `${screenY}px`;
-      }
-
-      for (let i = 0; i < displayedConnections.outputConnections.length; i++) {
-        const outputConnection = displayedConnections.outputConnections[i];
-        const source = displayedConnections.buildingLocation;
-        const target = outputConnection.to;
-        drawConnectionArc(p, source, target, outputConnection.resourceType, true);
-
-        const { wx: sourceX, wz: sourceZ } = gridToWorld(source.x, source.y);
-        const { wx: targetX, wz: targetZ } = gridToWorld(target.x, target.y);
-        const distance = Math.sqrt((source.x - target.x) ** 2 + (source.y - target.y) ** 2);
-        const normalizedDistance = distance / MAX_GRID_DISTANCE;
-        const arcHeight = MIN_ARC_HEIGHT + normalizedDistance * (MAX_ARC_HEIGHT - MIN_ARC_HEIGHT) + OUTPUT_ARC_PEAK_BOOST;
-        const midX = (sourceX + targetX) / 2;
-        const midY = -arcHeight;
-        const midZ = (sourceZ + targetZ) / 2;
-        const { screenX, screenY } = worldToScreen(p, midX, midY, midZ, zoom);
-        const label = displayedConnections.outputLabels[i];
-        label.style.left = `${screenX}px`;
-        label.style.top = `${screenY}px`;
-      }
-    }
-
-    if (selectMode) {
-      updateConnectButtonPositions(p, zoom);
     }
 
     document.getElementById("canvas-container")!.dataset.rendered = "true";

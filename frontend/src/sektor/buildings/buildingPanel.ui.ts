@@ -4,7 +4,7 @@ import { applyCommands } from "../../../../shared/applyCommands";
 import { drawFloor } from "../../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../../shared/constants";
 import { trashIcon } from "../../icons";
-import { createFunctionDisplay, BoosterInputDisplay } from "../buildingFunctionDisplay.ui";
+import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
 import { BuildingFunction, ResourceThroughput } from "./parseBuildingDefinitions";
 import { BuildingLocation } from "../Sektor";
 import { propertyDefinitions } from "../../properties";
@@ -57,21 +57,16 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunction, modifiedOutputs, exports, imports, boosters, autoExport, locationProperties, modifierProperties, floorColor, showFloor, location, onAddInputConnection, onDestroy }: {
+export function showBuildingPanel({ name, code, buildingFunction, modifiedOutputs, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy }: {
   name: string,
   code: string,
   buildingFunction: BuildingFunction,
   modifiedOutputs: ResourceThroughput[],
-  exports?: ResourceThroughput[],
-  imports: ResourceThroughput[],
-  boosters?: BoosterInputDisplay[],
-  autoExport?: boolean,
   locationProperties?: { [_: string]: number },
   modifierProperties?: string[],
   floorColor: [number, number, number],
   showFloor?: boolean,
   location: BuildingLocation,
-  onAddInputConnection?: (resourceType: string) => void,
   onDestroy?: () => void
 }) {
   hideBuildingPanel();
@@ -113,7 +108,7 @@ export function showBuildingPanel({ name, code, buildingFunction, modifiedOutput
   panelEl.appendChild(header);
 
   if (buildingFunction.inputs.length > 0 || buildingFunction.outputs.length > 0) {
-    panelEl.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction, modifiedOutputs: modifiedOutputs, imports: imports, exports: exports, boosters: boosters, autoExport: autoExport, onAddInputConnection: onAddInputConnection }));
+    panelEl.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction, modifiedOutputs: modifiedOutputs }));
   }
 
   if (locationProperties) {

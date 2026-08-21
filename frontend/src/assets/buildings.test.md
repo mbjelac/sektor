@@ -47,10 +47,6 @@ Water 1
 =
 Work 3
 
-## Boosters
-
-HealthMental 3 = Work 2
-
 # TestProcessor
 
 ## Render

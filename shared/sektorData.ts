@@ -10,13 +10,6 @@ export interface BuildingCreation {
   location: BuildingLocation;
 }
 
-export interface Connection {
-  target: BuildingLocation;
-  source: BuildingLocation;
-  resourceType: string;
-  amount: number;
-}
-
 export interface RestrictionsRequirements {
   importRestrictions: ResourceThroughput[];
   exportRequirements: ResourceThroughput[];
@@ -31,5 +24,4 @@ export interface SektorData {
   importRestrictions: ResourceThroughput[];
   exportRequirements: ResourceThroughput[];
   buildings: BuildingCreation[];
-  connections: Connection[];
 }

@@ -11,7 +11,6 @@ function createSektor(): SektorData {
     importRestrictions: restrictionsRequirements.importRestrictions,
     exportRequirements: restrictionsRequirements.exportRequirements,
     buildings: [],
-    connections: [],
   };
 }
 

@@ -135,19 +135,6 @@ body > main {
   border-radius: 2px;
 }
 
-.bf-boosters {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid #444;
-}
-
-.bf-boosters-header {
-  color: #999;
-  font-family: sans-serif;
-  font-size: 11px;
-  margin-bottom: 4px;
-}
-
 #building-panel {
   position: absolute;
   top: 16px;
@@ -218,7 +205,7 @@ body > main {
 
 #building-panel .bf-function {
   display: grid;
-  grid-template-columns: 14px auto auto auto;
+  grid-template-columns: auto auto;
   column-gap: 6px;
   row-gap: 2px;
   align-items: center;
@@ -249,16 +236,12 @@ body > main {
 
 .bf-outputs-table {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto;
   gap: 2px 6px;
   color: #ccc;
   font-family: sans-serif;
   font-size: 12px;
   align-items: center;
-}
-
-.bf-outputs-table-simple {
-  grid-template-columns: auto auto;
 }
 
 .bf-outputs-row {
@@ -279,17 +262,6 @@ body > main {
 
 .bf-outputs-amount {
   text-align: center;
-}
-
-.bf-outputs-export-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.bf-outputs-export {
-  text-align: center;
-  color: #999;
 }
 
 .bp-properties {
@@ -356,17 +328,13 @@ body > main {
 
 .bf-inputs-table {
   display: grid;
-  grid-template-columns: 14px auto auto auto;
+  grid-template-columns: auto auto;
   gap: 2px 6px;
   flex: 1;
   color: #ccc;
   font-family: sans-serif;
   font-size: 12px;
   align-items: center;
-}
-
-.bf-inputs-table-simple {
-  grid-template-columns: auto auto;
 }
 
 .bf-inputs-row {
@@ -385,40 +353,8 @@ body > main {
   white-space: nowrap;
 }
 
-.bf-inputs-connect {
-  width: 14px;
-  visibility: hidden;
-  color: #888;
-  display: flex;
-  align-items: center;
-}
-
-.bf-inputs-row:not(.bf-inputs-header):hover .bf-inputs-connect {
-  visibility: visible;
-}
-
 .bf-inputs-amount {
   text-align: center;
-}
-
-.bf-inputs-import {
-  text-align: center;
-  color: #999;
-}
-
-.bf-inputs-import-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #888;
-}
-
-.bf-input-clickable {
-  cursor: pointer;
-}
-
-.bf-input-clickable:hover {
-  background: #444;
 }
 
 .bf-arrow {
@@ -435,113 +371,6 @@ body > main {
 .bf-destroy .icon {
   width: 16px;
   height: 16px;
-}
-
-#select-banner {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgb(30, 30, 30);
-  border: 1px solid gold;
-  border-radius: 8px;
-  padding: 8px 16px;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: yellow;
-  font-family: sans-serif;
-  font-size: 14px;
-}
-
-.select-banner-close {
-  background: none;
-  border: none;
-  color: #888;
-  font-family: sans-serif;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 0 4px;
-}
-
-.connection-label {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.5);
-  font-family: sans-serif;
-  font-size: 14px;
-  padding: 4px 6px;
-  border-radius: 4px;
-  z-index: 40;
-  white-space: nowrap;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  gap: 4px;
-  color: white;
-}
-
-.connection-amount-buttons {
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-}
-
-.connection-amount-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 10px;
-  cursor: pointer;
-  padding: 0 3px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.connection-amount-button svg {
-  width: 12px;
-  height: 12px;
-  stroke: white;
-}
-
-.connection-amount-text {
-  font-size: 14px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-}
-
-.connect-button {
-  position: absolute;
-  transform: translate(-50%, -100%);
-  background: rgb(30, 30, 30);
-  border: 1px solid #888;
-  border-radius: 4px;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 2px 6px;
-  cursor: pointer;
-  z-index: 50;
-  white-space: nowrap;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.connect-button-link {
-  display: flex;
-  justify-content: center;
-  padding: 4px;
-}
-
-.connect-button-link svg {
-  stroke: white;
-  width: 18.2px;
-  height: 18.2px;
 }
 
 #error-message {
