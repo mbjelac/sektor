@@ -1,0 +1,29 @@
+A system in which every building has to be connected to another building is:
+- complicated
+- hard to reason about (a lot of visual data)
+- does not reflect reality of cities
+
+In reality, multiple buildings get their needed resources from a *grid* transporting those resources around.
+For now, we can ignore grids and just have a system where all resources are globally available to all buildings in a specific Sektor.
+This greatly simplifies the Sektor architecture:
+- each building's needed inputs & outputs are added to imports & exports
+- an import & export for each resource is subtracted from each other so that one is zero and the other is positive, or they are both zero
+    - example: two buildings have input water 5, a third building output water 7; resulting water import is 3 and export is 0
+
+#1 Remove connections
+- Sektor does not have connections, only buildings with their inputs & outputs
+    - remove connection operations (adding, removing & changing amounts)
+    - remove connections from state
+    - imports & exports are not kept as state, but are calculated from the inputs & outputs of the buildings
+    - adding or removing a building will result in a change in import & export values
+    - remove Sektor tests dealing with connections
+    - add Sektor tests dealing with calculation of imports & exports as buildings are added & removed
+- Sektor map does not display connections
+    - do not display connection arcs
+    - do not display connection labels
+    - do not display connection panels with amount editing
+    - remove building panel connection adding feature (clicking on input)
+    - remove building selection & connection system
+        - "Select building" floating panel on top of map
+        - "connect" building floating panels above buildings
+    - remove all visual tests testing connection features
