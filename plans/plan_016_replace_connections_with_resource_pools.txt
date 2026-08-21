@@ -27,3 +27,6 @@ This greatly simplifies the Sektor architecture:
         - "Select building" floating panel on top of map
         - "connect" building floating panels above buildings
     - remove all visual tests testing connection features
+
+#2 Simplify adding buildings
+- when building in building toolbar selected, after it is added it is still selected and can be added again
