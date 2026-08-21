@@ -27,7 +27,7 @@ test("renders building on floor after placement", async ({ page }) => {
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
   // Click on center of the canvas (should hit a floor tile near the middle of the grid)
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
@@ -38,7 +38,7 @@ test("displays building panel with few inputs", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestMine"]').click();
   await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
@@ -51,7 +51,7 @@ test("displays building panel with many inputs", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestRefinery"]').click();
   await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
@@ -177,7 +177,7 @@ test("building panel persists after rotating the view", async ({ page }) => {
   // Place and click a building
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
@@ -219,7 +219,7 @@ test("displays function panel with modifier property", async ({ page }) => {
 
 test("displays selection mode with connect buttons", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
@@ -257,7 +257,7 @@ test("displays selection mode with connect buttons", async ({ page }) => {
 
 test("cancels selection mode when X is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
@@ -290,7 +290,7 @@ test("cancels selection mode when X is clicked", async ({ page }) => {
 
 test("displays connection arc on map after connecting buildings", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
@@ -386,7 +386,7 @@ test("displays input and output arcs on map for a building with both", async ({ 
 
 test("increases connection amount when up button is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
@@ -420,7 +420,7 @@ test("increases connection amount when up button is clicked", async ({ page }) =
 
 test("decreases connection amount when down button is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
@@ -456,7 +456,7 @@ test("decreases connection amount when down button is clicked", async ({ page })
 
 test("removes connection from map when amount is lowered to zero", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
@@ -490,7 +490,7 @@ test("removes connection from map when amount is lowered to zero", async ({ page
 
 test("destroys building when trash icon is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
@@ -680,7 +680,7 @@ test("shows error when placing building on occupied location", async ({ page }) 
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container canvas");
+  const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const clickPos = { x: box!.width / 2, y: box!.height / 2 };
   // Place first building

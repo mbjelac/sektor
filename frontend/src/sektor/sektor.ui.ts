@@ -794,6 +794,8 @@ const sektorUi = (p: p5) => {
       deselectBuilding();
       updateSektorStatePanel(sektor.getSektorState());
       saveState();
+      const newBuilding = placedBuildings.find(building => building.location.x === grid.x && building.location.y === grid.y);
+      if (newBuilding) openBuildingPanel(newBuilding);
     }
 
     if (result.error !== undefined) {
