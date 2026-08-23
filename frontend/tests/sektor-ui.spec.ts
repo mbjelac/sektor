@@ -34,14 +34,44 @@ test("renders building on floor after placement", async ({ page }) => {
   await expectScreenshot(page, "building-placed");
 });
 
+test("keeps the building selected after placement so it can be placed again", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  const centerX = box!.width / 2;
+  const centerY = box!.height / 2;
+
+  // Place two buildings with a single toolbar selection
+  await canvas.click({ position: { x: centerX - 60, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+  await canvas.click({ position: { x: centerX + 60, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-placed-twice", "body");
+});
+
+test("deselects the building in the toolbar when clicked outside of the map", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+
+  // Click a canvas spot outside the grid of floors
+  await canvas.click({ position: { x: box!.width - 20, y: box!.height - 20 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-deselected-outside-map", "body");
+});
+
 test("displays building panel with few inputs", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestMine"]').click();
   await page.waitForTimeout(100);
   const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
   await expectScreenshot(page, "building-panel-small", "#building-panel");
@@ -53,8 +83,6 @@ test("displays building panel with many inputs", async ({ page }) => {
   await page.waitForTimeout(100);
   const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
   await expectScreenshot(page, "building-panel-large", "#building-panel");
@@ -147,13 +175,11 @@ test("displays building panel for empty location", async ({ page }) => {
 
 test("building panel persists after rotating the view", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  // Place and click a building
+  // Place a building — its panel opens on placement
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
   const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
   // Drag to rotate the view
@@ -197,13 +223,9 @@ test("destroys building when trash icon is clicked", async ({ page }) => {
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
 
-  // Place a building
+  // Place a building — its panel opens on placement
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
-  await canvas.click({ position: { x: centerX, y: centerY } });
-  await page.waitForTimeout(200);
-
-  // Open panel
   await canvas.click({ position: { x: centerX, y: centerY } });
   await page.waitForTimeout(200);
 
@@ -308,7 +330,9 @@ test("highlights buildings importing hovered resource", async ({ page }) => {
   await canvas.click({ position: { x: centerX, y: centerY + 30 } });
   await page.waitForTimeout(200);
 
-  // Deselect building by clicking empty area
+  // Deselect the building tool, then clear the location panel by clicking an empty area
+  await page.locator('.building-item[data-building-name="TestHouse"]').click();
+  await page.waitForTimeout(100);
   await canvas.click({ position: { x: centerX + 120, y: centerY + 60 } });
   await page.waitForTimeout(200);
 
@@ -330,10 +354,7 @@ test("shows error when placing building on occupied location", async ({ page }) 
   // Place first building
   await canvas.click({ position: clickPos });
   await page.waitForTimeout(200);
-  // Re-select the building tool (it gets deselected after successful placement)
-  await page.locator('.building-item[data-building-name="TestFactory"]').click();
-  await page.waitForTimeout(100);
-  // Try to place again on same spot
+  // Try to place again on same spot — the tool stays selected after placement
   await canvas.click({ position: clickPos });
   await page.waitForTimeout(200);
   await expectScreenshot(page, "building-error", "body");

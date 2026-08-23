@@ -32,8 +32,8 @@ This greatly simplifies the Sektor architecture:
 - [done] when building in building toolbar selected, after it is added it is still selected and can be added again
     - when clicked outside of map, deselect building in toolbar
 
-#3 Improve import-export visibility
-- import-export panel should have one list of resources
+#3 [done] Improve import-export visibility
+- [done] import-export panel should have one list of resources
     - ordered by resource name alphabetically
     - with several columns:
         - resource name & icon

@@ -14,14 +14,14 @@ export function getSelectedBuilding(): string | null {
   return selectedBuilding;
 }
 
-export function deselectBuilding(): void {
-  selectedBuilding = null;
-  document.querySelectorAll(".building-item").forEach((el) => el.classList.remove("selected"));
-  hideToolbarFunctionPanel();
-}
-
 export function getBuildingCode(name: string): string | null {
   return buildingCodeMap.get(name) ?? null;
+}
+
+export function deselectBuilding(): void {
+  selectedBuilding = null;
+  document.querySelectorAll(".building-item").forEach((buildingItem) => buildingItem.classList.remove("selected"));
+  hideToolbarFunctionPanel();
 }
 
 let toolbarFnPanel: HTMLElement | null = null;

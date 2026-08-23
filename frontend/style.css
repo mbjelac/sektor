@@ -392,7 +392,7 @@ body > main {
   position: absolute;
   bottom: 16px;
   right: 16px;
-  width: 460px;
+  width: 300px;
   background: #2a2a2a;
   border: 1px solid #444;
   padding: 12px;
@@ -415,15 +415,6 @@ body > main {
   }
 }
 
-.ss-columns {
-  display: flex;
-  gap: 24px;
-}
-
-.ss-columns .ss-col {
-  flex: 1;
-}
-
 .ss-status {
   width: 100%;
   color: #ccc;
@@ -431,49 +422,45 @@ body > main {
   font-size: 12px;
 }
 
-.ss-col {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.ss-list {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 2px 8px;
+}
+
+.ss-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  color: #ccc;
+  font-family: sans-serif;
+  font-size: 12px;
+  align-items: center;
+}
+
+.ss-row:hover {
+  background: #444;
 }
 
 .ss-header {
   color: #999;
-  font-family: sans-serif;
   font-size: 11px;
-  margin-bottom: 4px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  margin-bottom: 2px;
 }
 
-.ss-header-resource {
-  flex: 1;
+.ss-header:hover {
+  background: none;
 }
 
-.ss-header-value {
-  width: 32px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.ss-row.ss-header .icon {
+  width: 14px;
+  height: 14px;
+  stroke: #999;
 }
 
-.ss-row {
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.ss-import-row:hover {
-  background: #444;
-}
-
-.ss-cell-resource {
-  flex: 1;
+.ss-cell-limit {
+  text-align: left;
+  color: #999;
 }
 
 .ss-cell-value {
@@ -491,6 +478,13 @@ body > main {
 .ss-met {
   background-color: var(--color-good);
   color: #fff;
+}
+
+.ss-cell-value .icon {
+  width: 14px;
+  height: 14px;
+  stroke: #fff;
+  vertical-align: middle;
 }
 
 #sektor-list {

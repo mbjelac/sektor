@@ -3,6 +3,9 @@ import { getResourceIcon } from "../resources";
 import { ResourceThroughput } from "../../../shared/sektorData";
 import { arrowDownTrayIcon, arrowUpTrayIcon, exclamationTriangleIcon, checkCircleIcon } from "../icons";
 
+const LESS_OR_EQUAL = "≤";
+const GREATER_OR_EQUAL = "≥";
+
 let panelEl: HTMLElement | null = null;
 let importHoverCallback: ((resourceType: string | null) => void) | null = null;
 let leaveCallback: (() => void) | null = null;
@@ -22,12 +25,7 @@ export function updateSektorStatePanel(sektorState: SektorState) {
   panelEl!.innerHTML = "";
 
   panelEl!.appendChild(createStatusRow(sektorState.status));
-
-  const columns = document.createElement("div");
-  columns.className = "ss-columns";
-  columns.appendChild(createImportColumn(sektorState.imports, sektorState.importRestrictions));
-  columns.appendChild(createExportColumn(sektorState.exports, sektorState.exportRequirements));
-  panelEl!.appendChild(columns);
+  panelEl!.appendChild(createResourceList(sektorState));
 
   if (leaveCallback) {
     const leaveButton = document.createElement("button");
@@ -85,144 +83,129 @@ function ensurePanel() {
   document.getElementById("canvas-container")!.appendChild(panelEl);
 }
 
-function createImportColumn(imports: ResourceThroughput[], restrictions: ResourceThroughput[]): HTMLElement {
-  const col = document.createElement("div");
-  col.className = "ss-col";
+function createResourceList(sektorState: SektorState): HTMLElement {
+  const list = document.createElement("div");
+  list.className = "ss-list";
 
-  const header = document.createElement("div");
-  header.className = "ss-header";
+  list.appendChild(createHeaderRow());
+
+  for (const resourceName of listedResourceNames(sektorState)) {
+    list.appendChild(createResourceRow(resourceName, sektorState));
+  }
+
+  return list;
+}
+
+function createHeaderRow(): HTMLElement {
+  const headerRow = document.createElement("div");
+  headerRow.className = "ss-row ss-header";
 
   const resourceHeader = document.createElement("span");
-  resourceHeader.className = "ss-header-resource";
-  resourceHeader.textContent = "Imports";
-  header.appendChild(resourceHeader);
+  resourceHeader.className = "ss-cell-resource";
+  resourceHeader.textContent = "Resource";
+  headerRow.appendChild(resourceHeader);
 
   const importHeader = document.createElement("span");
-  importHeader.className = "ss-header-value";
+  importHeader.className = "ss-cell-value";
   importHeader.innerHTML = arrowDownTrayIcon;
-  importHeader.title = "Amount imported";
-  header.appendChild(importHeader);
-
-  if (restrictions.length > 0) {
-    const restrictionHeader = document.createElement("span");
-    restrictionHeader.className = "ss-header-value";
-    restrictionHeader.innerHTML = exclamationTriangleIcon;
-    restrictionHeader.title = "Maximum";
-    header.appendChild(restrictionHeader);
-  }
-
-  col.appendChild(header);
-
-  const resourceNames = mergedResourceNames(imports, restrictions);
-
-  for (const name of resourceNames) {
-    const importValue = imports.find(item => item.name === name)?.value ?? 0;
-    const restriction = restrictions.find(item => item.name === name);
-
-    const row = document.createElement("div");
-    row.className = "ss-row ss-import-row";
-    row.addEventListener("mouseenter", () => importHoverCallback?.(name));
-    row.addEventListener("mouseleave", () => importHoverCallback?.(null));
-
-    const nameCell = document.createElement("span");
-    nameCell.className = "ss-cell-resource";
-    const icon = getResourceIcon(name);
-    nameCell.textContent = `${name} ${icon ?? ""}`;
-    row.appendChild(nameCell);
-
-    const valueCell = document.createElement("span");
-    valueCell.className = "ss-cell-value";
-    valueCell.textContent = `${importValue}`;
-    if (restriction !== undefined && importValue > restriction.value) {
-      valueCell.classList.add("ss-exceeded");
-    }
-    row.appendChild(valueCell);
-
-    if (restrictions.length > 0) {
-      const restrictionCell = document.createElement("span");
-      restrictionCell.className = "ss-cell-value";
-      restrictionCell.textContent = restriction !== undefined ? `${restriction.value}` : "";
-      row.appendChild(restrictionCell);
-    }
-
-    col.appendChild(row);
-  }
-
-  return col;
-}
-
-function createExportColumn(exports: ResourceThroughput[], requirements: ResourceThroughput[]): HTMLElement {
-  const col = document.createElement("div");
-  col.className = "ss-col";
-
-  const header = document.createElement("div");
-  header.className = "ss-header";
-
-  const resourceHeader = document.createElement("span");
-  resourceHeader.className = "ss-header-resource";
-  resourceHeader.textContent = "Exports";
-  header.appendChild(resourceHeader);
+  importHeader.title = "Imported";
+  headerRow.appendChild(importHeader);
 
   const exportHeader = document.createElement("span");
-  exportHeader.className = "ss-header-value";
+  exportHeader.className = "ss-cell-value";
   exportHeader.innerHTML = arrowUpTrayIcon;
-  exportHeader.title = "Amount exported";
-  header.appendChild(exportHeader);
+  exportHeader.title = "Exported";
+  headerRow.appendChild(exportHeader);
 
-  if (requirements.length > 0) {
-    const requirementHeader = document.createElement("span");
-    requirementHeader.className = "ss-header-value";
-    requirementHeader.innerHTML = checkCircleIcon;
-    requirementHeader.title = "Minimum";
-    header.appendChild(requirementHeader);
-  }
+  const limitHeader = document.createElement("span");
+  limitHeader.className = "ss-cell-limit";
+  limitHeader.innerHTML = exclamationTriangleIcon;
+  limitHeader.title = "Restrictions and requirements";
+  headerRow.appendChild(limitHeader);
 
-  col.appendChild(header);
-
-  const resourceNames = mergedResourceNames(exports, requirements);
-
-  for (const name of resourceNames) {
-    const exportValue = exports.find(item => item.name === name)?.value ?? 0;
-    const requirement = requirements.find(item => item.name === name);
-
-    const row = document.createElement("div");
-    row.className = "ss-row";
-
-    const nameCell = document.createElement("span");
-    nameCell.className = "ss-cell-resource";
-    const icon = getResourceIcon(name);
-    nameCell.textContent = `${name} ${icon ?? ""}`;
-    row.appendChild(nameCell);
-
-    const valueCell = document.createElement("span");
-    valueCell.className = "ss-cell-value";
-    valueCell.textContent = `${exportValue}`;
-    if (requirement !== undefined && exportValue >= requirement.value) {
-      valueCell.classList.add("ss-met");
-    }
-    row.appendChild(valueCell);
-
-    if (requirements.length > 0) {
-      const requirementCell = document.createElement("span");
-      requirementCell.className = "ss-cell-value";
-      requirementCell.textContent = requirement !== undefined ? `${requirement.value}` : "";
-      row.appendChild(requirementCell);
-    }
-
-    col.appendChild(row);
-  }
-
-  return col;
+  return headerRow;
 }
 
-function mergedResourceNames(values: ResourceThroughput[], thresholds: ResourceThroughput[]): string[] {
-  const names = new Set<string>();
-  for (const item of values) {
-    if (item.value !== 0) names.add(item.name);
-  }
-  for (const item of thresholds) {
-    names.add(item.name);
-  }
-  return Array.from(names).sort((first, second) => first.localeCompare(second));
+function createResourceRow(resourceName: string, sektorState: SektorState): HTMLElement {
+  const importValue = findThroughputValue(sektorState.imports, resourceName);
+  const exportValue = findThroughputValue(sektorState.exports, resourceName);
+  const restriction = sektorState.importRestrictions.find(restriction => restriction.name === resourceName);
+  const requirement = sektorState.exportRequirements.find(requirement => requirement.name === resourceName);
+
+  const row = document.createElement("div");
+  row.className = "ss-row";
+  row.addEventListener("mouseenter", () => importHoverCallback?.(resourceName));
+  row.addEventListener("mouseleave", () => importHoverCallback?.(null));
+
+  const nameCell = document.createElement("span");
+  nameCell.className = "ss-cell-resource";
+  const icon = getResourceIcon(resourceName);
+  nameCell.textContent = `${resourceName} ${icon ?? ""}`;
+  row.appendChild(nameCell);
+
+  row.appendChild(createImportCell(importValue, restriction));
+  row.appendChild(createExportCell(exportValue, requirement));
+
+  const limitCell = document.createElement("span");
+  limitCell.className = "ss-cell-limit";
+  limitCell.textContent = limitText(restriction, requirement);
+  row.appendChild(limitCell);
+
+  return row;
 }
 
+function createImportCell(importValue: number, restriction: ResourceThroughput | undefined): HTMLElement {
+  const importCell = document.createElement("span");
+  importCell.className = "ss-cell-value";
+
+  if (restriction === undefined) {
+    importCell.textContent = importValue !== 0 ? `${importValue}` : "";
+    return importCell;
+  }
+
+  if (importValue === 0) {
+    importCell.innerHTML = checkCircleIcon;
+  } else {
+    importCell.textContent = `${importValue}`;
+  }
+  importCell.classList.add(importValue <= restriction.value ? "ss-met" : "ss-exceeded");
+
+  return importCell;
+}
+
+function createExportCell(exportValue: number, requirement: ResourceThroughput | undefined): HTMLElement {
+  const exportCell = document.createElement("span");
+  exportCell.className = "ss-cell-value";
+
+  if (requirement === undefined) {
+    exportCell.textContent = exportValue !== 0 ? `${exportValue}` : "";
+    return exportCell;
+  }
+
+  exportCell.textContent = `${exportValue}`;
+  exportCell.classList.add(exportValue >= requirement.value ? "ss-met" : "ss-exceeded");
+
+  return exportCell;
+}
+
+function limitText(restriction: ResourceThroughput | undefined, requirement: ResourceThroughput | undefined): string {
+  const limits: string[] = [];
+  if (restriction !== undefined) limits.push(`${LESS_OR_EQUAL} ${restriction.value}`);
+  if (requirement !== undefined) limits.push(`${GREATER_OR_EQUAL} ${requirement.value}`);
+  return limits.join(" ");
+}
+
+function listedResourceNames(sektorState: SektorState): string[] {
+  const resourceNames = new Set<string>();
+  for (const throughput of [...sektorState.imports, ...sektorState.exports]) {
+    if (throughput.value !== 0) resourceNames.add(throughput.name);
+  }
+  for (const threshold of [...sektorState.importRestrictions, ...sektorState.exportRequirements]) {
+    resourceNames.add(threshold.name);
+  }
+  return Array.from(resourceNames).sort((first, second) => first.localeCompare(second));
+}
+
+function findThroughputValue(throughputs: ResourceThroughput[], resourceName: string): number {
+  return throughputs.find(throughput => throughput.name === resourceName)?.value ?? 0;
+}
