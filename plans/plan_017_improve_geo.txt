@@ -10,7 +10,6 @@
                - lowest value is black
                - highest value is that color
                - values between should be color between black and that property color
-        - in the center of the floor, display location's property value in white text
 
 #2 Fix default floor display
 - always display floors with soil colors as before
@@ -22,4 +21,5 @@
 - only one color for a property is used now
     - display only that swatch in "geo summary" panel buttons
 - panel title should be "Geography"
+- if an item selected, turn on overlay for that property
 - if "soil" selected, turn off overlay
