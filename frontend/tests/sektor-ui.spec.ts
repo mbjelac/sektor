@@ -52,6 +52,47 @@ test("keeps the building selected after placement so it can be placed again", as
   await expectScreenshot(page, "building-placed-twice", "body");
 });
 
+test("displays the location property overlay while a building affected by it is selected", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  // TestMine's output is affected by ore
+  await page.locator('.building-item[data-building-name="TestMine"]').click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "property-overlay");
+});
+
+test("hides the location property overlay when the building is deselected", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestMine"]').click();
+  await page.waitForTimeout(200);
+
+  await page.locator('.building-item[data-building-name="TestMine"]').click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "property-overlay-hidden");
+});
+
+test("displays no location property overlay for a building affected by soil", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  // TestFactory's output is affected by soil, which the floors themselves already show
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "property-overlay-soil");
+});
+
+test("displays no location property overlay for a building without a location property", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  // TestHouse's output is not affected by any location property
+  await page.locator('.building-item[data-building-name="TestHouse"]').click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "property-overlay-none");
+});
+
 test("deselects the building in the toolbar when clicked outside of the map", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();

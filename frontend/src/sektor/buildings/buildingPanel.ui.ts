@@ -7,8 +7,7 @@ import { trashIcon } from "../../icons";
 import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
 import { BuildingFunction, ResourceThroughput } from "./parseBuildingDefinitions";
 import { BuildingLocation } from "../Sektor";
-import { propertyDefinitions } from "../../properties";
-import { MODIFIER_MIN, MODIFIER_MAX } from "../../../../shared/modifierLimits";
+import { propertyValueColor } from "../../properties";
 
 let panelEl: HTMLElement | null = null;
 let previewP5: p5 | null = null;
@@ -139,16 +138,8 @@ export function showBuildingPanel({ name, code, buildingFunction, modifiedOutput
 
       const swatch = document.createElement("span");
       swatch.className = "bp-property-swatch";
-      const propertyDefinition = propertyDefinitions.find(definition => definition.name === propertyName);
-      if (propertyDefinition) {
-        const t = (propertyValue - MODIFIER_MIN) / (MODIFIER_MAX - MODIFIER_MIN);
-        const minColor = parseHexColorForSwatch(propertyDefinition.minColor);
-        const maxColor = parseHexColorForSwatch(propertyDefinition.maxColor);
-        const r = Math.round(minColor[0] + (maxColor[0] - minColor[0]) * t);
-        const g = Math.round(minColor[1] + (maxColor[1] - minColor[1]) * t);
-        const b = Math.round(minColor[2] + (maxColor[2] - minColor[2]) * t);
-        swatch.style.backgroundColor = `rgb(${r},${g},${b})`;
-      }
+      const [red, green, blue] = propertyValueColor(propertyName, propertyValue);
+      swatch.style.backgroundColor = `rgb(${red},${green},${blue})`;
       row.appendChild(swatch);
 
       propertiesSection.appendChild(row);
@@ -162,13 +153,6 @@ export function showBuildingPanel({ name, code, buildingFunction, modifiedOutput
   currentDraw = { code, floorColor, showFloor: showFloor !== false };
   ensurePreviewP5(previewContainer);
   previewP5!.redraw();
-}
-
-function parseHexColorForSwatch(hex: string): [number, number, number] {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return [r, g, b];
 }
 
 export function hideBuildingPanel() {

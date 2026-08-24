@@ -1,5 +1,5 @@
-#1 Location properties are clearly visible as an overlay
-- when a building is selected in the building toolbar
+#1 [done] Location properties are clearly visible as an overlay
+- [done] when a building is selected in the building toolbar
     - if a building output has location property
         - turn on that location property overlay on the map
     - when a building is deselected, turn off overlay
@@ -11,8 +11,8 @@
                - highest value is that color
                - values between should be color between black and that property color
 
-#2 Fix default floor display
-- always display floors with soil colors as before
+#2 [done] Fix default floor display
+- [done] always display floors with soil colors as before
     - highest soil property has color #86E389
     - lowest soil property has color #E3CA86
     - property value between highest & lowest has color between those two colors

@@ -55,7 +55,7 @@ function showToolbarFunctionPanel(buildingFunction: BuildingFunction, outputModi
       if (propertyDefinition) {
         const swatch = document.createElement("span");
         swatch.className = "tf-modifier-swatch";
-        swatch.style.backgroundColor = propertyDefinition.maxColor;
+        swatch.style.backgroundColor = propertyDefinition.color;
         item.appendChild(swatch);
       }
 

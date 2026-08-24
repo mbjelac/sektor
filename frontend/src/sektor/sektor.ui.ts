@@ -9,12 +9,12 @@ import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover, onLeave} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
-import { initPropertyToggler, getSelectedProperty } from "./propertyToggler.ui";
-import { propertyDefinitions } from "../properties";
-import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
+import { initPropertyToggler } from "./propertyToggler.ui";
+import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
+import { MODIFIER_MIN } from "../../../shared/modifierLimits";
 
 const GRID_SIZE = 10;
-const PANEL_FLOOR_PROPERTY = "soil";
+const FLOOR_PROPERTY = "soil";
 const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
 const sektorName = new URLSearchParams(window.location.search).get("name");
 
@@ -142,19 +142,12 @@ function loadSavedState() {
 
 let selectedBuildingLocation: BuildingLocation | null = null;
 let hoveredImportResource: string | null = null;
-function parseHexColor(hex: string): [number, number, number] {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return [r, g, b];
-}
-
 function openBuildingPanel(placed: { type: string; location: BuildingLocation; code: string }) {
   const buildingState = sektor.getBuildingState(placed.location);
   if (!buildingState) return;
   const code = getBuildingCode(placed.type);
   if (!code) return;
-  const floorColor = propertyColor(PANEL_FLOOR_PROPERTY, locations[placed.location.x][placed.location.y].properties[PANEL_FLOOR_PROPERTY] ?? 0);
+  const floorColor = soilFloorColor(locations[placed.location.x][placed.location.y].properties[FLOOR_PROPERTY] ?? 0);
   selectedBuildingLocation = placed.location;
   const definition = buildingDefinitions.find(definition => definition.name === placed.type);
   showBuildingPanel({
@@ -184,7 +177,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
 }
 
 function openEmptyLocationPanel(location: BuildingLocation) {
-  const floorColor = propertyColor(PANEL_FLOOR_PROPERTY, locations[location.x]?.[location.y]?.properties[PANEL_FLOOR_PROPERTY] ?? 0);
+  const floorColor = soilFloorColor(locations[location.x]?.[location.y]?.properties[FLOOR_PROPERTY] ?? 0);
   selectedBuildingLocation = location;
   showBuildingPanel({
     name: "Empty",
@@ -198,9 +191,33 @@ function openEmptyLocationPanel(location: BuildingLocation) {
   });
 }
 
+// While a building is selected in the toolbar, the location property its output depends on
+// is shown on every floor, whose edges are colored by that location's property value.
+// The floors themselves already show the soil property, so soil needs no overlay.
+function getOverlayProperty(): string | null {
+  const selectedBuildingName = getSelectedBuilding();
+  if (!selectedBuildingName) return null;
+  const buildingDefinition = buildingDefinitions.find(definition => definition.name === selectedBuildingName);
+  const overlayProperty = buildingDefinition?.outputModifiers[0]?.property ?? null;
+  return overlayProperty === FLOOR_PROPERTY ? null : overlayProperty;
+}
+
+function drawPropertyOverlay(p: p5, propertyName: string) {
+  for (let x = 0; x < GRID_SIZE; x++) {
+    for (let y = 0; y < GRID_SIZE; y++) {
+      const propertyValue = locations[x]?.[y]?.properties[propertyName] ?? 0;
+      drawLocationHighlight(p, { x, y }, propertyValueColor(propertyName, propertyValue));
+    }
+  }
+}
+
+// The highlight sits clear above the floor rather than on it, so that the two do not fight
+// over the same depth, which shows up as the floor's wireframe stippling through it.
 function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number, number, number]) {
   const { wx, wz } = gridToWorld(location.x, location.y);
   const borderWidth = BLOCK_SIZE * 0.04;
+  const thickness = BLOCK_SIZE * 0.01;
+  const heightAboveFloor = BLOCK_SIZE * 0.01;
   const sides = [
     { x: wx, z: wz - HALF + borderWidth / 2, w: BLOCK_SIZE, d: borderWidth },
     { x: wx, z: wz + HALF - borderWidth / 2, w: BLOCK_SIZE, d: borderWidth },
@@ -212,8 +229,8 @@ function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number
     p.noStroke();
     p.noLights();
     p.fill(color[0], color[1], color[2]);
-    p.translate(side.x, -FLOOR_HEIGHT / 2 - 0.1, side.z);
-    p.box(side.w, 0.1, side.d);
+    p.translate(side.x, -FLOOR_HEIGHT / 2 - heightAboveFloor - thickness / 2, side.z);
+    p.box(side.w, thickness, side.d);
     p.pop();
   }
 }
@@ -226,19 +243,6 @@ function showError(message: string) {
   errorTimeout = setTimeout(() => {
     errorEl.style.display = "none";
   }, 5000);
-}
-
-function propertyColor(propertyName: string, value: number): [number, number, number] {
-  const property = propertyDefinitions.find(property => property.name === propertyName);
-  if (!property) return [128, 128, 128];
-  const minColor = parseHexColor(property.minColor);
-  const maxColor = parseHexColor(property.maxColor);
-  const t = (value - MODIFIER_MIN) / (MODIFIER_MAX - MODIFIER_MIN);
-  return [
-    Math.round(minColor[0] + (maxColor[0] - minColor[0]) * t),
-    Math.round(minColor[1] + (maxColor[1] - minColor[1]) * t),
-    Math.round(minColor[2] + (maxColor[2] - minColor[2]) * t),
-  ];
 }
 
 const ZOOM = 1.2;
@@ -496,11 +500,15 @@ const sektorUi = (p: p5) => {
         p.push();
         const { wx, wz } = gridToWorld(x, z);
         p.translate(wx, 0, wz);
-        const selectedProperty = getSelectedProperty();
-        drawFloor(p, BLOCK_SIZE, propertyColor(selectedProperty, locations[x][z].properties[selectedProperty] ?? 0));
+        drawFloor(p, BLOCK_SIZE, soilFloorColor(locations[x][z].properties[FLOOR_PROPERTY] ?? 0));
         p.pop();
       }
     }
+    const overlayProperty = getOverlayProperty();
+    if (overlayProperty) {
+      drawPropertyOverlay(p, overlayProperty);
+    }
+
     if (selectedBuildingLocation) {
       drawLocationHighlight(p, selectedBuildingLocation, [255, 255, 0]);
     }

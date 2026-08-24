@@ -39,14 +39,10 @@ function createToggleButton(property: PropertyDefinition): HTMLElement {
 
   const swatches = document.createElement("span");
   swatches.className = "property-swatches";
-  const minSwatch = document.createElement("span");
-  minSwatch.className = "property-swatch";
-  minSwatch.style.backgroundColor = property.minColor;
-  const maxSwatch = document.createElement("span");
-  maxSwatch.className = "property-swatch";
-  maxSwatch.style.backgroundColor = property.maxColor;
-  swatches.appendChild(minSwatch);
-  swatches.appendChild(maxSwatch);
+  const colorSwatch = document.createElement("span");
+  colorSwatch.className = "property-swatch";
+  colorSwatch.style.backgroundColor = property.color;
+  swatches.appendChild(colorSwatch);
   button.appendChild(swatches);
   button.addEventListener("click", () => {
     selectedProperty = property.name;
