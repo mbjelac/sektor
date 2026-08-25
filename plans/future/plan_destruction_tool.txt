@@ -1,0 +1,9 @@
+Allow player to destroy buildings faster.
+
+#1 Building toolbar has a destruction tool
+- works same as constructing buildings
+    - when selected, stays selected until clicked outside of map or again on the tool
+    - when empty location clicked, show error "locationEmpty"
+        - same as "locationOccupied"
+    - when building clicked on map, destroy building
+        - same function as deleting building through it's building panel
