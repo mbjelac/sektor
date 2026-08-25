@@ -37,13 +37,10 @@ function createToggleButton(property: PropertyDefinition): HTMLElement {
   nameSpan.textContent = property.name;
   button.appendChild(nameSpan);
 
-  const swatches = document.createElement("span");
-  swatches.className = "property-swatches";
   const colorSwatch = document.createElement("span");
   colorSwatch.className = "property-swatch";
   colorSwatch.style.backgroundColor = property.color;
-  swatches.appendChild(colorSwatch);
-  button.appendChild(swatches);
+  button.appendChild(colorSwatch);
   button.addEventListener("click", () => {
     selectedProperty = property.name;
     updateSelection();

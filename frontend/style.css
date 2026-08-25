@@ -36,7 +36,7 @@ body > main {
   z-index: 100;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 16px;
 }
 
@@ -568,11 +568,6 @@ body > main {
   background: #444;
   color: #fff;
   border-color: #888;
-}
-
-.property-swatches {
-  display: flex;
-  gap: 3px;
 }
 
 .property-swatch {

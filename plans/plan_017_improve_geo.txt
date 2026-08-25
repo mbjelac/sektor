@@ -18,8 +18,8 @@
     - property value between highest & lowest has color between those two colors
 
 #3 Adjust geo summary panel
-- only one color for a property is used now
+- [done] only one color for a property is used now
     - display only that swatch in "geo summary" panel buttons
 - panel title should be "Geography"
 - if an item selected, turn on overlay for that property
-- if "soil" selected, turn off overlay
+    - if "soil" selected, turn off overlay
