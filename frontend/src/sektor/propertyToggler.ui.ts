@@ -7,6 +7,11 @@ export function getSelectedProperty(): string {
   return selectedProperty;
 }
 
+export function selectProperty(propertyName: string) {
+  selectedProperty = propertyName;
+  updateSelection();
+}
+
 export function onPropertyChange(callback: (propertyName: string) => void) {
   onChangeCallback = callback;
 }

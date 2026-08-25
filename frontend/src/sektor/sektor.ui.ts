@@ -3,13 +3,13 @@ import {drawFloor} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
 import {applyCommands} from "../../../shared/applyCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
-import {initToolbar, getSelectedBuilding, deselectBuilding, getBuildingCode} from "./buildingToolbar.ui";
+import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode} from "./buildingToolbar.ui";
 import { BuildingLocation, Location, Sektor } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover, onLeave} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
-import { initPropertyToggler } from "./propertyToggler.ui";
+import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
 
@@ -191,15 +191,20 @@ function openEmptyLocationPanel(location: BuildingLocation) {
   });
 }
 
-// While a building is selected in the toolbar, the location property its output depends on
-// is shown on every floor, whose edges are colored by that location's property value.
-// The floors themselves already show the soil property, so soil needs no overlay.
+// The property selected in the geography panel is shown on every floor, whose edges are
+// colored by that location's property value. The floors themselves already show the soil
+// property, so soil needs no overlay.
 function getOverlayProperty(): string | null {
-  const selectedBuildingName = getSelectedBuilding();
-  if (!selectedBuildingName) return null;
-  const buildingDefinition = buildingDefinitions.find(definition => definition.name === selectedBuildingName);
-  const overlayProperty = buildingDefinition?.outputModifiers[0]?.property ?? null;
-  return overlayProperty === FLOOR_PROPERTY ? null : overlayProperty;
+  const selectedProperty = getSelectedProperty();
+  return selectedProperty === FLOOR_PROPERTY ? null : selectedProperty;
+}
+
+// Selecting a building in the toolbar selects the location property its output depends on,
+// so that the overlay shows where the building produces the most; deselecting it, or
+// selecting a building whose output depends on nothing, goes back to plain soil floors.
+function selectBuildingProperty(buildingName: string | null) {
+  const buildingDefinition = buildingDefinitions.find(definition => definition.name === buildingName);
+  selectProperty(buildingDefinition?.outputModifiers[0]?.property ?? FLOOR_PROPERTY);
 }
 
 function drawPropertyOverlay(p: p5, propertyName: string) {
@@ -539,6 +544,7 @@ const sektorUi = (p: p5) => {
 new p5(sektorUi);
 initToolbar();
 initPropertyToggler();
+onBuildingSelected(selectBuildingProperty);
 onImportHover(resourceType => { hoveredImportResource = resourceType; });
 onLeave(() => { window.location.href = "/"; });
 if (!isTestMode) {

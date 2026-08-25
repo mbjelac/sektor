@@ -93,6 +93,26 @@ test("displays no location property overlay for a building without a location pr
   await expectScreenshot(page, "property-overlay-none");
 });
 
+test("displays the location property overlay for the property selected in the geography panel", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.locator('.property-toggle[data-property="insolation"]').click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "property-overlay-selected-in-panel");
+});
+
+test("displays no location property overlay when soil is selected in the geography panel", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.property-toggle[data-property="insolation"]').click();
+  await page.waitForTimeout(200);
+
+  await page.locator('.property-toggle[data-property="soil"]').click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "property-overlay-soil-selected-in-panel");
+});
+
 test("deselects the building in the toolbar when clicked outside of the map", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();

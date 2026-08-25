@@ -10,8 +10,14 @@ import { propertyDefinitions } from "../properties";
 
 let selectedBuilding: string | null = null;
 let buildingCodeMap: Map<string, string> = new Map();
+let selectionCallback: ((buildingName: string | null) => void) | null = null;
+
 export function getSelectedBuilding(): string | null {
   return selectedBuilding;
+}
+
+export function onBuildingSelected(callback: (buildingName: string | null) => void) {
+  selectionCallback = callback;
 }
 
 export function getBuildingCode(name: string): string | null {
@@ -22,6 +28,7 @@ export function deselectBuilding(): void {
   selectedBuilding = null;
   document.querySelectorAll(".building-item").forEach((buildingItem) => buildingItem.classList.remove("selected"));
   hideToolbarFunctionPanel();
+  selectionCallback?.(null);
 }
 
 let toolbarFnPanel: HTMLElement | null = null;
@@ -116,6 +123,7 @@ export function initToolbar() {
           showToolbarFunctionPanel(building.buildingFunction, building.outputModifiers, item);
         }
       }
+      selectionCallback?.(selectedBuilding);
     });
 
     toolbar.appendChild(item);
