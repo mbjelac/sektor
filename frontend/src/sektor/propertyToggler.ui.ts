@@ -17,7 +17,7 @@ export function initPropertyToggler() {
 
   const title = document.createElement("div");
   title.className = "panel-title";
-  title.textContent = "Geo survey";
+  title.textContent = "Geography";
   panel.appendChild(title);
 
   for (const property of propertyDefinitions) {

@@ -533,10 +533,10 @@ body > main {
 }
 
 .panel-title {
-  color: #ccc;
+  color: #fff;
   font-family: sans-serif;
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 10px;
+  font-weight: normal;
   margin-bottom: 8px;
 }
 
