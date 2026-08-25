@@ -1,0 +1,40 @@
+New sektors are automatically created.
+A sektor is created according to the player's score.
+Players with higher score are allowed to administer more complex sektor assignments.
+Complexity: number & value of requirements & restrictions
+
+Example:
+A starting player (score 0) has available sektors with requirements for producing basic things like water, raw food & electricity.
+Player has only basic buildings available.
+Restrictions are only in place to keep the player from just constructing a single type of building & passing the requirements.
+
+In general, restrictions can be computed from requirements by having a "depth" parameter.
+Example: (buildings: A, B, C; resources: X, Y, Z, Q)
+- requirement: X needs to be some number greater than 0
+- A produces X
+- A needs Y
+- restriction: 0 Y imports
+- B produces Y
+- B needs Z
+- restriction: 0 Z imports
+- C produces Z
+- C needs Q
+- no restrictions on Q
+This is a restriction set of depth 2.
+
+Depth 2 restriction sektors are only for players with a "Novice" score range.
+
+Other factors to separate sektors by complexity:
+- allowed buildings
+- number of requirements
+- location property matrices (i.e. geography)
+    - example:
+        - sektor requirement is water & all groundwater levels are very low (though not totally empty)
+        - player must construct a lot of water wells to meet requirements, but this leads to the need for a lot of other imports (e.g. electricity)
+
+Rule: Do not create sektors that are impossible to solve!
+    - examples
+        - requirement is water & no water-producing buildings are available
+        - requirement is water & all groundwater levels are totally empty (all production is 0)
+        - requirement is water & electricty imports are restricted to 0 & there are no powerplant buildings available
+
