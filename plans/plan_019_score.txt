@@ -1,0 +1,35 @@
+Each sektor is scored according to it's status, imports & exports.
+
+#1 Player can see detailed scoring
+- Sektor.getSektorState returns imports & exports with score for each resource
+    - scoring is done per following rules:
+        - each imported resource has score -2 per unit
+            - importing 17 of a resource has a score of -34
+        - each exported resource has score +2 per unit
+            - exporting 17 of a resource has a score of 34
+        - if a resource is required (has export requirement), required amount is scored +3, amount above requirement is scored regularly
+            - exporting 12 of a resource with requirement 5 has a score of 29
+                - required 5 * 3 = 15
+                - above required 7 * 2 = 14
+        - if a resource has negative scoring, flip score values
+            - imports are scored +2
+            - exports are scored -2
+            - a resource has negative scoring if the resource table in resources.md has "negative" word in that resource's line
+        - write Sektor tests for all scoring rules
+            - use resources.test.md for "negative" scoring
+    - status panel displays score for each resource
+        - display score in table column next to restrictions & requirements column
+        - text color #ffd1e0
+        - column header: heroicon star
+        - header tooltip: "Score"
+    - status panel displays total score
+        - all scores summed up are displayed
+        - beneath table, aligned with score column
+        - text color #ffd1e0
+        - text bold
+
+#2 Sektor list displays current score
+- display sektor score in column next to exports
+    - text color #ffd1e0
+    - column header: heroicon star
+    - header tooltip: "Score"
