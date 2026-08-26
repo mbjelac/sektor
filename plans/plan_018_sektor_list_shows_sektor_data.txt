@@ -1,6 +1,8 @@
 #1 List of sektors in list page shows actual sektor status
 - sektor status not shown from storage
     - compute status from sektor state
+    - status text centered
+    - text colors same as status text in map view status panel
 
 #2 List of sektors shows numerical sektor data
 - show numeric data in columns after sektor status
