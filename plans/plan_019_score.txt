@@ -34,6 +34,6 @@ Each sektor is scored according to it's status, imports & exports.
 
 #2 Sektor list displays current score
 - display sektor score in column next to exports
-    - text color #ffd1e0
+    - text color based on score value
     - column header: heroicon star
     - header tooltip: "Score"
