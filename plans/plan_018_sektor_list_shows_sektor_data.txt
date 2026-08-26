@@ -4,8 +4,8 @@
     - status text left-aligned
     - text colors same as status text in map view status panel
 
-#2 List of sektors shows numerical sektor data
-- show numeric data in columns after sektor status
+#2 [done] List of sektors shows numerical sektor data
+- [done] show numeric data in columns after sektor status
     - data
         - number of buildings
         - sum of all imports

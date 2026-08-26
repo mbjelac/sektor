@@ -488,17 +488,30 @@ body > main {
 }
 
 #sektor-list {
-  max-width: 400px;
+  max-width: 520px;
   margin: 40px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto auto;
+  align-content: start;
+  gap: 8px 12px;
+}
+
+.sektor-list-header,
+.sektor-list-item {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+}
+
+.sektor-list-header {
+  color: #999;
+  font-family: sans-serif;
+  font-size: 12px;
+  padding: 0 13px;
 }
 
 .sektor-list-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   background: #2a2a2a;
   border: 1px solid #444;
   padding: 12px;
@@ -506,7 +519,6 @@ body > main {
 }
 
 .sektor-list-name {
-  flex: 1;
   color: #ccc;
   font-family: sans-serif;
   font-size: 14px;
@@ -515,6 +527,14 @@ body > main {
 .sektor-list-status {
   width: 140px;
   text-align: left;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+.sektor-list-number {
+  min-width: 28px;
+  text-align: right;
+  color: #ccc;
   font-family: sans-serif;
   font-size: 12px;
 }

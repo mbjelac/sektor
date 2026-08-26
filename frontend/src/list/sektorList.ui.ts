@@ -1,30 +1,73 @@
 import { getSektorList, SektorListItem } from "./sektorList.api";
-import { arrowRightIcon } from "../icons";
+import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon } from "../icons";
 import { Sektor, SektorStatus } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 
+interface SektorSummary {
+  status: SektorStatus;
+  buildingCount: number;
+  importTotal: number;
+  exportTotal: number;
+}
+
 function renderList() {
   const container = document.getElementById("sektor-list")!;
   const sektors = getSektorList();
+
+  container.appendChild(createHeader());
 
   for (const sektor of sektors) {
     container.appendChild(createListItem(sektor));
   }
 }
 
+function createHeader(): HTMLElement {
+  const header = document.createElement("div");
+  header.className = "sektor-list-header";
+
+  const name = document.createElement("span");
+  name.className = "sektor-list-name";
+  name.textContent = "Sektor";
+  header.appendChild(name);
+
+  const status = document.createElement("span");
+  status.className = "sektor-list-status";
+  status.textContent = "Status";
+  header.appendChild(status);
+
+  header.appendChild(createHeaderIcon(buildingOfficeIcon));
+  header.appendChild(createHeaderIcon(arrowDownTrayIcon));
+  header.appendChild(createHeaderIcon(arrowUpTrayIcon));
+
+  header.appendChild(document.createElement("span"));
+
+  return header;
+}
+
+function createHeaderIcon(icon: string): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = "sektor-list-number";
+  cell.innerHTML = icon;
+  return cell;
+}
+
 function createListItem(sektorListItem: SektorListItem): HTMLElement {
   const item = document.createElement("div");
   item.className = "sektor-list-item";
+
+  const summary = getSektorSummary(sektorListItem.name);
 
   const name = document.createElement("span");
   name.className = "sektor-list-name";
   name.textContent = sektorListItem.name;
   item.appendChild(name);
 
-  const status = createStatus(computeStatus(sektorListItem.name));
-  item.appendChild(status);
+  item.appendChild(createStatus(summary.status));
+  item.appendChild(createNumber(summary.buildingCount));
+  item.appendChild(createNumber(summary.importTotal));
+  item.appendChild(createNumber(summary.exportTotal));
 
   const button = document.createElement("button");
   button.className = "sektor-list-go";
@@ -57,9 +100,16 @@ function createStatus(status: SektorStatus): HTMLElement {
   return element;
 }
 
-function computeStatus(sektorName: string): SektorStatus {
+function createNumber(value: number): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = "sektor-list-number";
+  cell.textContent = String(value);
+  return cell;
+}
+
+function getSektorSummary(sektorName: string): SektorSummary {
   const sektorData = getSektorData(sektorName);
-  if (!sektorData) return "InProgress";
+  if (!sektorData) return { status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0 };
 
   const sektor = new Sektor(
     locationPropertiesToLocations(sektorData.locationProperties),
@@ -71,7 +121,18 @@ function computeStatus(sektorName: string): SektorStatus {
   );
   sektor.loadState({ buildings: sektorData.buildings });
 
-  return sektor.getSektorState().status;
+  const sektorState = sektor.getSektorState();
+
+  return {
+    status: sektorState.status,
+    buildingCount: sektor.getState().buildings.length,
+    importTotal: sumThroughputs(sektorState.imports),
+    exportTotal: sumThroughputs(sektorState.exports),
+  };
+}
+
+function sumThroughputs(throughputs: { value: number }[]): number {
+  return throughputs.reduce((total, throughput) => total + throughput.value, 0);
 }
 
 renderList();
