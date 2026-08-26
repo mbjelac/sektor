@@ -1,7 +1,7 @@
 Each sektor is scored according to it's status, imports & exports.
 
-#1 Player can see detailed scoring
-- Sektor.getSektorState returns imports & exports with score for each resource
+#1 [done] Player can see detailed scoring
+- [done] Sektor.getSektorState returns imports & exports with score for each resource
     - scoring is done per following rules:
         - each imported resource has score -2 per unit
             - importing 17 of a resource has a score of -34

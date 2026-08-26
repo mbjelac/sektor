@@ -26,7 +26,7 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { insolation: -4 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] });
+  return new Sektor([[{ properties: { insolation: -4 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
 }
 
 describe("doesBuildingHaveOutput", () => {

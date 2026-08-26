@@ -424,7 +424,7 @@ body > main {
 
 .ss-list {
   display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto;
   gap: 2px 8px;
 }
 
@@ -461,6 +461,23 @@ body > main {
 .ss-cell-limit {
   text-align: left;
   color: #999;
+}
+
+.ss-cell-score {
+  min-width: 32px;
+  text-align: right;
+}
+
+.ss-total {
+  margin-top: 2px;
+}
+
+.ss-total:hover {
+  background: none;
+}
+
+.ss-total-score {
+  font-weight: bold;
 }
 
 .ss-cell-value {

@@ -1,7 +1,8 @@
-import { type SektorState } from "./Sektor";
+import { type ScoredThroughput, type SektorState } from "./Sektor";
 import { getResourceIcon } from "../resources";
+import { scoreColor } from "../score";
 import { ResourceThroughput } from "../../../shared/sektorData";
-import { arrowDownTrayIcon, arrowUpTrayIcon, exclamationTriangleIcon, checkCircleIcon } from "../icons";
+import { arrowDownTrayIcon, arrowUpTrayIcon, exclamationTriangleIcon, checkCircleIcon, starIcon } from "../icons";
 
 const LESS_OR_EQUAL = "≤";
 const GREATER_OR_EQUAL = "≥";
@@ -93,6 +94,8 @@ function createResourceList(sektorState: SektorState): HTMLElement {
     list.appendChild(createResourceRow(resourceName, sektorState));
   }
 
+  list.appendChild(createTotalScoreRow(sektorState));
+
   return list;
 }
 
@@ -123,6 +126,12 @@ function createHeaderRow(): HTMLElement {
   limitHeader.title = "Restrictions and requirements";
   headerRow.appendChild(limitHeader);
 
+  const scoreHeader = document.createElement("span");
+  scoreHeader.className = "ss-cell-score";
+  scoreHeader.innerHTML = starIcon;
+  scoreHeader.title = "Score";
+  headerRow.appendChild(scoreHeader);
+
   return headerRow;
 }
 
@@ -151,7 +160,46 @@ function createResourceRow(resourceName: string, sektorState: SektorState): HTML
   limitCell.textContent = limitText(restriction, requirement);
   row.appendChild(limitCell);
 
+  const score = resourceScore(resourceName, sektorState);
+  const scoreCell = document.createElement("span");
+  scoreCell.className = "ss-cell-score";
+  scoreCell.textContent = `${score}`;
+  scoreCell.style.color = scoreColor(score);
+  row.appendChild(scoreCell);
+
   return row;
+}
+
+function resourceScore(resourceName: string, sektorState: SektorState): number {
+  return findThroughputScore(sektorState.imports, resourceName) + findThroughputScore(sektorState.exports, resourceName);
+}
+
+function findThroughputScore(throughputs: ScoredThroughput[], resourceName: string): number {
+  return throughputs.find(throughput => throughput.name === resourceName)?.score ?? 0;
+}
+
+function createTotalScoreRow(sektorState: SektorState): HTMLElement {
+  const row = document.createElement("div");
+  row.className = "ss-row ss-total";
+
+  row.appendChild(document.createElement("span"));
+  row.appendChild(document.createElement("span"));
+  row.appendChild(document.createElement("span"));
+  row.appendChild(document.createElement("span"));
+
+  const score = totalScore(sektorState);
+  const totalScoreCell = document.createElement("span");
+  totalScoreCell.className = "ss-cell-score ss-total-score";
+  totalScoreCell.textContent = `${score}`;
+  totalScoreCell.style.color = scoreColor(score);
+  row.appendChild(totalScoreCell);
+
+  return row;
+}
+
+function totalScore(sektorState: SektorState): number {
+  return [...sektorState.imports, ...sektorState.exports]
+    .reduce((total, throughput) => total + throughput.score, 0);
 }
 
 function createImportCell(importValue: number, restriction: ResourceThroughput | undefined): HTMLElement {

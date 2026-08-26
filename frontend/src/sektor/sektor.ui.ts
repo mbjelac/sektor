@@ -12,6 +12,7 @@ import { getSektorData, saveSektorData } from "./sektor.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
+import { getNegativeScoringResources } from "../resources";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
 
 const GRID_SIZE = 10;
@@ -86,7 +87,7 @@ function getRestrictionsRequirements() {
   return { importRestrictions: [], exportRequirements: [] };
 }
 
-const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements());
+const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources());
 const locations = sektor.getLocations();
 const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
 let errorTimeout: ReturnType<typeof setTimeout> | null = null;

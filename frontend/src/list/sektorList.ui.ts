@@ -4,6 +4,7 @@ import { Sektor, SektorStatus } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
+import { getNegativeScoringResources } from "../resources";
 
 interface SektorSummary {
   status: SektorStatus;
@@ -117,7 +118,8 @@ function getSektorSummary(sektorName: string): SektorSummary {
     {
       importRestrictions: sektorData.importRestrictions,
       exportRequirements: sektorData.exportRequirements,
-    }
+    },
+    getNegativeScoringResources()
   );
   sektor.loadState({ buildings: sektorData.buildings });
 

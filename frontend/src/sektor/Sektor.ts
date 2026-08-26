@@ -6,9 +6,13 @@ export type { BuildingLocation, BuildingCreation, RestrictionsRequirements, Loca
 
 export type SektorStatus = "InProgress" | "Done" | "RestrictionsExceeded";
 
+export interface ScoredThroughput extends ResourceThroughput {
+  score: number;
+}
+
 export interface SektorState {
-  imports: ResourceThroughput[];
-  exports: ResourceThroughput[];
+  imports: ScoredThroughput[];
+  exports: ScoredThroughput[];
   status: SektorStatus;
   importRestrictions: ResourceThroughput[];
   exportRequirements: ResourceThroughput[];
@@ -29,16 +33,26 @@ export interface CreateBuildingResult {
   addedBuildings: BuildingCreation[];
 }
 
+const SCORE_PER_UNIT = 2;
+const SCORE_PER_REQUIRED_UNIT = 3;
+
 export class Sektor {
   private buildings: BuildingCreation[] = [];
   private readonly locations: Location[][];
   private readonly buildingDefinitions: BuildingDefinition[];
   private readonly restrictionsRequirements: RestrictionsRequirements;
+  private readonly negativeScoringResources: string[];
 
-  constructor(locations: Location[][], buildingDefinitions: BuildingDefinition[], restrictionsRequirements: RestrictionsRequirements) {
+  constructor(
+    locations: Location[][],
+    buildingDefinitions: BuildingDefinition[],
+    restrictionsRequirements: RestrictionsRequirements,
+    negativeScoringResources: string[],
+  ) {
     this.locations = locations;
     this.buildingDefinitions = buildingDefinitions;
     this.restrictionsRequirements = restrictionsRequirements;
+    this.negativeScoringResources = negativeScoringResources;
   }
 
   getLocations(): Location[][] {
@@ -77,14 +91,14 @@ export class Sektor {
       this.buildings.map(building => this.getOutputs(building.type, building.location)).flat()
     );
 
-    const imports = totalInputs.map(input => ({
-      name: input.name,
-      value: Math.max(0, input.value - this.findThroughputValue(totalOutputs, input.name)),
-    }));
-    const exports = totalOutputs.map(output => ({
-      name: output.name,
-      value: Math.max(0, output.value - this.findThroughputValue(totalInputs, output.name)),
-    }));
+    const imports = totalInputs.map(input => {
+      const value = Math.max(0, input.value - this.findThroughputValue(totalOutputs, input.name));
+      return { name: input.name, value, score: this.scoreImport(input.name, value) };
+    });
+    const exports = totalOutputs.map(output => {
+      const value = Math.max(0, output.value - this.findThroughputValue(totalInputs, output.name));
+      return { name: output.name, value, score: this.scoreExport(output.name, value) };
+    });
 
     const { importRestrictions, exportRequirements } = this.restrictionsRequirements;
 
@@ -109,6 +123,28 @@ export class Sektor {
       amountsByResource.set(throughput.name, (amountsByResource.get(throughput.name) ?? 0) + throughput.value);
     }
     return Array.from(amountsByResource.entries()).map(([name, value]) => ({ name, value }));
+  }
+
+  private scoreImport(resourceType: string, value: number): number {
+    return this.applyNegativeScoring(resourceType, -value * SCORE_PER_UNIT);
+  }
+
+  // Exported units which fulfill an export requirement are worth more than the units above it.
+  private scoreExport(resourceType: string, value: number): number {
+    const requirement = this.restrictionsRequirements.exportRequirements.find(
+      requirement => requirement.name === resourceType
+    );
+    const requiredValue = requirement ? Math.min(value, requirement.value) : 0;
+    const valueAboveRequired = value - requiredValue;
+    return this.applyNegativeScoring(
+      resourceType,
+      requiredValue * SCORE_PER_REQUIRED_UNIT + valueAboveRequired * SCORE_PER_UNIT
+    );
+  }
+
+  private applyNegativeScoring(resourceType: string, score: number): number {
+    const signedScore = this.negativeScoringResources.includes(resourceType) ? -score : score;
+    return signedScore === 0 ? 0 : signedScore;
   }
 
   doesBuildingNeedInput(location: BuildingLocation, resourceType: string): boolean {

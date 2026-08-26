@@ -314,14 +314,14 @@ test("displays sektor state panel with restrictions and requirements", async ({ 
   await page.evaluate(() => {
     (window as any).updateSektorStatePanel({
       imports: [
-        { name: "Water", value: 4 },
-        { name: "Energy", value: 5 },
-        { name: "Food", value: 2 },
+        { name: "Water", value: 4, score: -8 },
+        { name: "Energy", value: 5, score: -10 },
+        { name: "Food", value: 2, score: -4 },
       ],
       exports: [
-        { name: "Food", value: 5 },
-        { name: "Ore", value: 3 },
-        { name: "Work", value: 3 },
+        { name: "Food", value: 5, score: 14 },
+        { name: "Ore", value: 3, score: 6 },
+        { name: "Work", value: 3, score: -9 },
       ],
       status: "RestrictionsExceeded",
       importRestrictions: [
@@ -346,12 +346,12 @@ test("displays sektor state panel with Done status", async ({ page }) => {
   await page.evaluate(() => {
     (window as any).updateSektorStatePanel({
       imports: [
-        { name: "Water", value: 2 },
-        { name: "Energy", value: 3 },
+        { name: "Water", value: 2, score: -4 },
+        { name: "Energy", value: 3, score: -6 },
       ],
       exports: [
-        { name: "Food", value: 6 },
-        { name: "Work", value: 5 },
+        { name: "Food", value: 6, score: 16 },
+        { name: "Work", value: 5, score: -15 },
       ],
       status: "Done",
       importRestrictions: [
