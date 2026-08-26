@@ -19,14 +19,18 @@ Each sektor is scored according to it's status, imports & exports.
             - use resources.test.md for "negative" scoring
     - status panel displays score for each resource
         - display score in table column next to restrictions & requirements column
-        - text color #ffd1e0
         - column header: heroicon star
         - header tooltip: "Score"
     - status panel displays total score
         - all scores summed up are displayed
         - beneath table, aligned with score column
-        - text color #ffd1e0
         - text bold
+    - display score in colors based on value:
+        - 0 and below: red #ff0000
+        - 50 and above: green #00ff00
+        - 25: yellow #ffff00
+        - between 0 & 25: interpolate between red & yellow
+        - between 25 & 50: interpolate between yellow & green
 
 #2 Sektor list displays current score
 - display sektor score in column next to exports
