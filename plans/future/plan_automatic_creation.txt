@@ -1,14 +1,14 @@
 New sektors are automatically created.
 A sektor is created according to the player's score.
 Players with higher score are allowed to administer more complex sektor assignments.
-Complexity: number & value of requirements & restrictions
+Complexity: number & value of export requirements & import restrictions
 
 Example:
 A starting player (score 0) has available sektors with requirements for producing basic things like water, raw food & electricity.
 Player has only basic buildings available.
-Restrictions are only in place to keep the player from just constructing a single type of building & passing the requirements.
+Import restrictions are only in place to keep the player from just constructing a single type of building & passing the requirements.
 
-In general, restrictions can be computed from requirements by having a "depth" parameter.
+In general, import restrictions can be computed from requirements by having a "depth" parameter.
 Example: (buildings: A, B, C; resources: X, Y, Z, Q)
 - requirement: X needs to be some number greater than 0
 - A produces X
@@ -21,8 +21,6 @@ Example: (buildings: A, B, C; resources: X, Y, Z, Q)
 - C needs Q
 - no restrictions on Q
 This is a restriction set of depth 2.
-
-Depth 2 restriction sektors are only for players with a "Novice" score range.
 
 Other factors to separate sektors by complexity:
 - allowed buildings
@@ -37,4 +35,18 @@ Rule: Do not create sektors that are impossible to solve!
         - requirement is water & no water-producing buildings are available
         - requirement is water & all groundwater levels are totally empty (all production is 0)
         - requirement is water & electricty imports are restricted to 0 & there are no powerplant buildings available
+
+Rule: Each player has a limit of unfinished (status not Done) sektors. Limit increases (a bit) with score.
+Initial limit is 3.
+Very high score players have limit of 10.
+
+#1 A sektor can be created for a specific player's score
+- Sektor list page has "Create" button
+    - when clicked, create a sektor for the player based on the context & rules above
+    - if player has reached or exceeded their unfinished sektor limit
+        - do not create sektor
+        - display error message "tooManyUnfinishedSektors"
+            - red text
+            - top of screen
+            - automatically dissapears after some time (same like in map screen)
 
