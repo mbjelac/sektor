@@ -513,7 +513,8 @@ body > main {
 }
 
 .sektor-list-status {
-  color: #999;
+  width: 140px;
+  text-align: left;
   font-family: sans-serif;
   font-size: 12px;
 }

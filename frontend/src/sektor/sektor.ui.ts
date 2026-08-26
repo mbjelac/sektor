@@ -9,6 +9,7 @@ import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover, onLeave} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
+import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
@@ -41,19 +42,6 @@ function createTestLocations(gridSize: number): Location[][] {
         insolation: ((x * 29 + z * 11) % 13) + MODIFIER_MIN,
         wind: ((x * 37 + z * 19) % 13) + MODIFIER_MIN,
       },
-    }))
-  );
-}
-
-function locationPropertiesToLocations(locationProperties: { [key: string]: number[][] }): Location[][] {
-  const propertyNames = Object.keys(locationProperties);
-  const rows = locationProperties[propertyNames[0]].length;
-  const cols = locationProperties[propertyNames[0]][0].length;
-  return Array.from({ length: rows }, (_, x) =>
-    Array.from({ length: cols }, (_, z) => ({
-      properties: Object.fromEntries(
-        propertyNames.map(name => [name, locationProperties[name][x][z]])
-      ),
     }))
   );
 }

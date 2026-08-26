@@ -1,5 +1,5 @@
-#1 List of sektors in list page shows actual sektor status
-- sektor status not shown from storage
+#1 [done] List of sektors in list page shows actual sektor status
+- [done] sektor status not shown from storage
     - compute status from sektor state
     - status text left-aligned
     - text colors same as status text in map view status panel
