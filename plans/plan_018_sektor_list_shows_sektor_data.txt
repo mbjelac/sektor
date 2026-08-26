@@ -1,0 +1,16 @@
+#1 List of sektors in list page shows actual sektor status
+- sektor status not shown from storage
+    - compute status from sektor state
+
+#2 List of sektors shows numerical sektor data
+- show numeric data in columns after sektor status
+    - data
+        - number of buildings
+        - sum of all imports
+        - sum of all exports
+    - column headers
+        - sektor name: "Sektor"
+        - status: "Status"
+        - number of buildings: heroicon building-office
+        - sum of all imports: icon arrowDownTrayIcon
+        - sum of all exports: icon arrowUpTrayIcon
