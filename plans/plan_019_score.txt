@@ -32,8 +32,8 @@ Each sektor is scored according to it's status, imports & exports.
         - between -50 & 0: interpolate between red & yellow
         - between 0 & 50: interpolate between yellow & green
 
-#2 Sektor list displays current score
-- display sektor score in column next to exports
+#2 [done] Sektor list displays current score
+- [done] display sektor score in column next to exports
     - text color based on score value
     - column header: heroicon star
     - header tooltip: "Score"

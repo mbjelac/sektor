@@ -1,16 +1,18 @@
 import { getSektorList, SektorListItem } from "./sektorList.api";
-import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon } from "../icons";
-import { Sektor, SektorStatus } from "../sektor/Sektor";
+import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, starIcon } from "../icons";
+import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { getNegativeScoringResources } from "../resources";
+import { scoreColor } from "../score";
 
 interface SektorSummary {
   status: SektorStatus;
   buildingCount: number;
   importTotal: number;
   exportTotal: number;
+  score: number;
 }
 
 function renderList() {
@@ -41,16 +43,18 @@ function createHeader(): HTMLElement {
   header.appendChild(createHeaderIcon(buildingOfficeIcon));
   header.appendChild(createHeaderIcon(arrowDownTrayIcon));
   header.appendChild(createHeaderIcon(arrowUpTrayIcon));
+  header.appendChild(createHeaderIcon(starIcon, "Score"));
 
   header.appendChild(document.createElement("span"));
 
   return header;
 }
 
-function createHeaderIcon(icon: string): HTMLElement {
+function createHeaderIcon(icon: string, tooltip?: string): HTMLElement {
   const cell = document.createElement("span");
   cell.className = "sektor-list-number";
   cell.innerHTML = icon;
+  if (tooltip) cell.title = tooltip;
   return cell;
 }
 
@@ -69,6 +73,7 @@ function createListItem(sektorListItem: SektorListItem): HTMLElement {
   item.appendChild(createNumber(summary.buildingCount));
   item.appendChild(createNumber(summary.importTotal));
   item.appendChild(createNumber(summary.exportTotal));
+  item.appendChild(createScore(summary.score));
 
   const button = document.createElement("button");
   button.className = "sektor-list-go";
@@ -108,9 +113,15 @@ function createNumber(value: number): HTMLElement {
   return cell;
 }
 
+function createScore(score: number): HTMLElement {
+  const cell = createNumber(score);
+  cell.style.color = scoreColor(score);
+  return cell;
+}
+
 function getSektorSummary(sektorName: string): SektorSummary {
   const sektorData = getSektorData(sektorName);
-  if (!sektorData) return { status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0 };
+  if (!sektorData) return { status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
 
   const sektor = new Sektor(
     locationPropertiesToLocations(sektorData.locationProperties),
@@ -130,11 +141,16 @@ function getSektorSummary(sektorName: string): SektorSummary {
     buildingCount: sektor.getState().buildings.length,
     importTotal: sumThroughputs(sektorState.imports),
     exportTotal: sumThroughputs(sektorState.exports),
+    score: sumScores([...sektorState.imports, ...sektorState.exports]),
   };
 }
 
 function sumThroughputs(throughputs: { value: number }[]): number {
   return throughputs.reduce((total, throughput) => total + throughput.value, 0);
+}
+
+function sumScores(throughputs: ScoredThroughput[]): number {
+  return throughputs.reduce((total, throughput) => total + throughput.score, 0);
 }
 
 renderList();
