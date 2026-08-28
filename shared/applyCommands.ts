@@ -18,28 +18,38 @@ const priSides: Record<string, number> = {
 };
 
 export function applyCommands(p: p5, commands: CreateBody[], elapsedMilliseconds = 0) {
-  const drawnBodies = commands.map(command => ({
-    command,
-    color: animatedColor(command, elapsedMilliseconds) ?? undefined,
-  }));
+  drawBodies(p, opaqueBodies(commands, elapsedMilliseconds), elapsedMilliseconds);
 
-  // Opaque bodies first, so they populate the depth buffer before any blending.
-  for (const {command, color} of drawnBodies) {
-    if (!isTransparent(color)) {
-      drawBody(p, command, color, elapsedMilliseconds);
-    }
-  }
+  const transparentCommands = transparentBodies(commands, elapsedMilliseconds);
+  if (transparentCommands.length === 0) return;
+  withoutDepthWrites(p, () => drawBodies(p, transparentCommands, elapsedMilliseconds));
+}
 
-  // Transparent bodies do not write depth, so they never hide bodies behind them.
-  const transparentBodies = drawnBodies.filter(({color}) => isTransparent(color));
-  if (transparentBodies.length > 0) {
-    const gl = p.drawingContext as WebGLRenderingContext;
-    gl.depthMask(false);
-    for (const {command, color} of transparentBodies) {
-      drawBody(p, command, color, elapsedMilliseconds);
-    }
-    gl.depthMask(true);
+export function drawBodies(p: p5, commands: CreateBody[], elapsedMilliseconds: number) {
+  for (const command of commands) {
+    drawBody(p, command, bodyColor(command, elapsedMilliseconds), elapsedMilliseconds);
   }
+}
+
+// Opaque bodies are drawn first, so they populate the depth buffer before any blending.
+export function opaqueBodies(commands: CreateBody[], elapsedMilliseconds: number): CreateBody[] {
+  return commands.filter(command => !isTransparent(bodyColor(command, elapsedMilliseconds)));
+}
+
+export function transparentBodies(commands: CreateBody[], elapsedMilliseconds: number): CreateBody[] {
+  return commands.filter(command => isTransparent(bodyColor(command, elapsedMilliseconds)));
+}
+
+// Transparent bodies do not write depth, so they never hide bodies behind them.
+export function withoutDepthWrites(p: p5, drawTransparent: () => void) {
+  const gl = p.drawingContext as WebGLRenderingContext;
+  gl.depthMask(false);
+  drawTransparent();
+  gl.depthMask(true);
+}
+
+function bodyColor(command: CreateBody, elapsedMilliseconds: number): string | undefined {
+  return animatedColor(command, elapsedMilliseconds) ?? undefined;
 }
 
 function isTransparent(color: string | undefined): boolean {

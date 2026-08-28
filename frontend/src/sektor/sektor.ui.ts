@@ -1,7 +1,7 @@
 import p5 from "p5";
 import {drawFloor} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
-import {applyCommands} from "../../../shared/applyCommands";
+import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode} from "./buildingToolbar.ui";
 import { BuildingLocation, Location, Sektor } from "./Sektor";
@@ -124,6 +124,7 @@ function loadSavedState() {
     const code = getBuildingCode(building.type);
     if (code) {
       placedBuildings.push({ type: building.type, location: building.location, code });
+      floorGeometryNeedsRebaking = true;
     }
   }
   updateSektorStatePanel(sektor.getSektorState());
@@ -157,6 +158,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
       }
       const index = placedBuildings.findIndex(b => b.location.x === placed.location.x && b.location.y === placed.location.y);
       if (index !== -1) placedBuildings.splice(index, 1);
+      floorGeometryNeedsRebaking = true;
       hideBuildingPanel();
       selectedBuildingLocation = null;
       updateSektorStatePanel(sektor.getSektorState());
@@ -227,6 +229,50 @@ function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number
     p.box(side.w, thickness, side.d);
     p.pop();
   }
+}
+
+// Drawing the hundred floors one by one costs p5 a geometry rebuild and a GPU upload per
+// floor per frame, which dwarfs everything else on the canvas. The grid only changes when a
+// building that hides its floor is built or destroyed, so it is baked into a single geometry
+// and rebaked only then.
+let floorGeometry: p5.Geometry | null = null;
+let floorGeometryNeedsRebaking = true;
+
+function rebakeFloorGeometry(p: p5) {
+  if (floorGeometry) {
+    p.freeGeometry(floorGeometry);
+  }
+  floorGeometry = p.buildGeometry(() => {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      for (let z = 0; z < GRID_SIZE; z++) {
+        if (!isFloorVisible(x, z)) continue;
+        p.push();
+        const { wx, wz } = gridToWorld(x, z);
+        p.translate(wx, 0, wz);
+        drawFloor(p, BLOCK_SIZE, soilFloorColor(locations[x][z].properties[FLOOR_PROPERTY] ?? 0));
+        p.pop();
+      }
+    }
+  });
+  floorGeometryNeedsRebaking = false;
+}
+
+function isFloorVisible(x: number, z: number): boolean {
+  const placedBuilding = placedBuildings.find(building => building.location.x === x && building.location.y === z);
+  if (!placedBuilding) return true;
+  const buildingDefinition = buildingDefinitions.find(definition => definition.name === placedBuilding.type);
+  return buildingDefinition?.properties.showFloor !== false;
+}
+
+// Every building of a type draws the same bodies, so one bake serves all of its locations.
+const bakedBuildings = new Map<string, BakedBodies>();
+
+function bakedBuildingBodies(p: p5, type: string, renderingCode: string): BakedBodies {
+  const alreadyBaked = bakedBuildings.get(type);
+  if (alreadyBaked) return alreadyBaked;
+  const bakedBodies = bakeCommands(p, parseCommands(renderingCode));
+  bakedBuildings.set(type, bakedBodies);
+  return bakedBodies;
 }
 
 function showError(message: string) {
@@ -461,6 +507,7 @@ const sektorUi = (p: p5) => {
       const code = getBuildingCode(building.type);
       if (code) {
         placedBuildings.push({ type: building.type, location: building.location, code });
+        floorGeometryNeedsRebaking = true;
       }
     }
 
@@ -482,22 +529,15 @@ const sektorUi = (p: p5) => {
     p.ambientLight(60);
     p.pointLight(255, 255, 255, 2 * BLOCK_SIZE, -3 * BLOCK_SIZE, -2 * BLOCK_SIZE);
 
+    // Stroke has to be set before baking, so that the floor edges end up in the geometry.
     p.stroke(150, 150, 150, 80);
-
-    for (let x = 0; x < GRID_SIZE; x++) {
-      for (let z = 0; z < GRID_SIZE; z++) {
-        const placed = placedBuildings.find(b => b.location.x === x && b.location.y === z);
-        if (placed) {
-          const def = buildingDefinitions.find(d => d.name === placed.type);
-          if (def?.properties.showFloor === false) continue;
-        }
-        p.push();
-        const { wx, wz } = gridToWorld(x, z);
-        p.translate(wx, 0, wz);
-        drawFloor(p, BLOCK_SIZE, soilFloorColor(locations[x][z].properties[FLOOR_PROPERTY] ?? 0));
-        p.pop();
-      }
+    if (floorGeometryNeedsRebaking) {
+      rebakeFloorGeometry(p);
     }
+    if (floorGeometry) {
+      p.model(floorGeometry);
+    }
+
     const overlayProperty = getOverlayProperty();
     if (overlayProperty) {
       drawPropertyOverlay(p, overlayProperty);
@@ -521,8 +561,7 @@ const sektorUi = (p: p5) => {
       p.push();
       const { wx, wz } = gridToWorld(building.location.x, building.location.y);
       p.translate(wx, 0, wz);
-      const commands = parseCommands(building.code);
-      applyCommands(p, commands, p.millis());
+      drawBakedBodies(p, bakedBuildingBodies(p, building.type, building.code), p.millis());
       p.pop();
     }
 
