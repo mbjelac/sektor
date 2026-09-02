@@ -2,6 +2,7 @@
 import { getResourceIcon } from "../resources";
 import { BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { arrowRightIcon } from "../icons";
+import { formatNumber } from "../formatNumber";
 
 export function createFunctionDisplay({ buildingFunction, modifiedOutputs }: {
   buildingFunction: BuildingFunction,
@@ -52,7 +53,7 @@ function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
 
     const amountCell = document.createElement("div");
     amountCell.className = "bf-inputs-cell bf-inputs-amount";
-    amountCell.textContent = `${input.value}`;
+    amountCell.textContent = formatNumber(input.value);
     row.appendChild(amountCell);
 
     table.appendChild(row);
@@ -94,11 +95,11 @@ function createOutputColumn(outputs: ResourceThroughput[], modifiedOutputs?: Res
     const modifiedOutput = modifiedOutputs?.find(modifiedOutput => modifiedOutput.name === output.name);
     if (modifiedOutput && modifiedOutput.value !== output.value) {
       const modifiedValue = document.createElement("span");
-      modifiedValue.textContent = `${modifiedOutput.value}`;
+      modifiedValue.textContent = formatNumber(modifiedOutput.value);
       modifiedValue.className = modifiedOutput.value > output.value ? "bf-output-boosted" : "bf-output-reduced";
-      amountCell.append(modifiedValue, ` (${output.value})`);
+      amountCell.append(modifiedValue, ` (${formatNumber(output.value)})`);
     } else {
-      amountCell.textContent = `${output.value}`;
+      amountCell.textContent = formatNumber(output.value);
     }
     row.appendChild(amountCell);
 

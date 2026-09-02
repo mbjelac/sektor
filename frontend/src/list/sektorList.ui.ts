@@ -6,6 +6,7 @@ import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { getNegativeScoringResources } from "../resources";
 import { scoreColor } from "../score";
+import { formatNumber } from "../formatNumber";
 
 interface SektorSummary {
   status: SektorStatus;
@@ -109,7 +110,7 @@ function createStatus(status: SektorStatus): HTMLElement {
 function createNumber(value: number): HTMLElement {
   const cell = document.createElement("span");
   cell.className = "sektor-list-number";
-  cell.textContent = String(value);
+  cell.textContent = formatNumber(value);
   return cell;
 }
 

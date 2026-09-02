@@ -8,6 +8,7 @@ import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
 import { BuildingFunction, ResourceThroughput } from "./parseBuildingDefinitions";
 import { BuildingLocation } from "../Sektor";
 import { propertyValueColor } from "../../properties";
+import { formatNumber } from "../../formatNumber";
 
 const CAPACITY_DOT_COUNT = 10;
 
@@ -142,7 +143,7 @@ export function showBuildingPanel({ name, code, buildingFunction, modifiedOutput
 
       const valueCell = document.createElement("span");
       valueCell.className = "bp-property-value";
-      valueCell.textContent = propertyValue > 0 ? `+${propertyValue}` : `${propertyValue}`;
+      valueCell.textContent = propertyValue > 0 ? `+${formatNumber(propertyValue)}` : formatNumber(propertyValue);
       row.appendChild(valueCell);
 
       const swatch = document.createElement("span");

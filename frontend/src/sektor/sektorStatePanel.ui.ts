@@ -3,6 +3,7 @@ import { getResourceIcon } from "../resources";
 import { scoreColor } from "../score";
 import { ResourceThroughput } from "../../../shared/sektorData";
 import { arrowDownTrayIcon, arrowUpTrayIcon, exclamationTriangleIcon, checkCircleIcon, starIcon } from "../icons";
+import { formatNumber } from "../formatNumber";
 
 const LESS_OR_EQUAL = "≤";
 const GREATER_OR_EQUAL = "≥";
@@ -163,7 +164,7 @@ function createResourceRow(resourceName: string, sektorState: SektorState): HTML
   const score = resourceScore(resourceName, sektorState);
   const scoreCell = document.createElement("span");
   scoreCell.className = "ss-cell-score";
-  scoreCell.textContent = `${score}`;
+  scoreCell.textContent = formatNumber(score);
   scoreCell.style.color = scoreColor(score);
   row.appendChild(scoreCell);
 
@@ -190,7 +191,7 @@ function createTotalScoreRow(sektorState: SektorState): HTMLElement {
   const score = totalScore(sektorState);
   const totalScoreCell = document.createElement("span");
   totalScoreCell.className = "ss-cell-score ss-total-score";
-  totalScoreCell.textContent = `${score}`;
+  totalScoreCell.textContent = formatNumber(score);
   totalScoreCell.style.color = scoreColor(score);
   row.appendChild(totalScoreCell);
 
@@ -207,14 +208,14 @@ function createImportCell(importValue: number, restriction: ResourceThroughput |
   importCell.className = "ss-cell-value";
 
   if (restriction === undefined) {
-    importCell.textContent = importValue !== 0 ? `${importValue}` : "";
+    importCell.textContent = importValue !== 0 ? formatNumber(importValue) : "";
     return importCell;
   }
 
   if (importValue === 0) {
     importCell.innerHTML = checkCircleIcon;
   } else {
-    importCell.textContent = `${importValue}`;
+    importCell.textContent = formatNumber(importValue);
   }
   importCell.classList.add(importValue <= restriction.value ? "ss-met" : "ss-exceeded");
 
@@ -226,11 +227,11 @@ function createExportCell(exportValue: number, requirement: ResourceThroughput |
   exportCell.className = "ss-cell-value";
 
   if (requirement === undefined) {
-    exportCell.textContent = exportValue !== 0 ? `${exportValue}` : "";
+    exportCell.textContent = exportValue !== 0 ? formatNumber(exportValue) : "";
     return exportCell;
   }
 
-  exportCell.textContent = `${exportValue}`;
+  exportCell.textContent = formatNumber(exportValue);
   exportCell.classList.add(exportValue >= requirement.value ? "ss-met" : "ss-exceeded");
 
   return exportCell;
@@ -238,8 +239,8 @@ function createExportCell(exportValue: number, requirement: ResourceThroughput |
 
 function limitText(restriction: ResourceThroughput | undefined, requirement: ResourceThroughput | undefined): string {
   const limits: string[] = [];
-  if (restriction !== undefined) limits.push(`${LESS_OR_EQUAL} ${restriction.value}`);
-  if (requirement !== undefined) limits.push(`${GREATER_OR_EQUAL} ${requirement.value}`);
+  if (restriction !== undefined) limits.push(`${LESS_OR_EQUAL} ${formatNumber(restriction.value)}`);
+  if (requirement !== undefined) limits.push(`${GREATER_OR_EQUAL} ${formatNumber(requirement.value)}`);
   return limits.join(" ");
 }
 

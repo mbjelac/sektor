@@ -41,8 +41,8 @@ If capacity is reduced to 0, the building is practically turned off: No inputs (
         - increasing capacity
         - decreasing capacity
 
-#2 UI is still nice with decimal numbers
-- display all numbers rounded to 2 decimal places
+#2 [done] UI is still nice with decimal numbers
+- [done] display all numbers rounded to 2 decimal places
     - apply all screens
         - sektor
         - list
