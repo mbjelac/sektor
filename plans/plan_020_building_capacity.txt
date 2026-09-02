@@ -40,3 +40,12 @@ If capacity is reduced to 0, the building is practically turned off: No inputs (
     - create visual tests
         - increasing capacity
         - decreasing capacity
+
+#2 UI is still nice with decimal numbers
+- display all numbers rounded to 2 decimal places
+    - apply all screens
+        - sektor
+        - list
+    - do not display trailing zeros
+        - if number is 34.000, display 34
+        - if number is 34.200, display 34.2
