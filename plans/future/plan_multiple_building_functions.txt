@@ -1,0 +1,19 @@
+Scenario 1: Building has 1 output from more inputs
+Example: Chemical plant outputs chemicals from minerals *and* from biomass.
+Cases depending on from where is the resource obtained:
+1. input/import both
+2. input both: output chemicals in the total amount of minerals & biomass ("transformer")
+3. ignore one if other present: if minerals present locally & biomass is not, do not import biomass
+    - fall back to import if none present
+    - what if one present but not enough?
+    - what if both present but not enough?
+4. user turns on "local resources" for option 2., otherwise option 1.
+
+#1 A building has multiple functions
+- multiple functions add to total building output
+    - a building definition can have two or more Function sections
+    - all outputs of all Function sections are added together if they're same type
+        - example:
+            - a building has Function x 4 = z 2
+            - a building has Function y 3 = z 3
+            - total output is z 5
