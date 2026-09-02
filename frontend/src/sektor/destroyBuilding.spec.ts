@@ -42,8 +42,8 @@ describe("destroyBuilding", () => {
     const sektor = createSektor();
     sektor.loadState({
       buildings: [
-        { type: "Mill", location: { x: 0, y: 0 } },
-        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Mill", location: { x: 0, y: 0 }, capacity: 1 },
+        { type: "Farm", location: { x: 1, y: 0 }, capacity: 1 },
       ],
     });
 
@@ -56,7 +56,7 @@ describe("destroyBuilding", () => {
     }).toEqual({
       result: { success: true },
       destroyedBuildingState: null,
-      remainingBuildings: [{ type: "Farm", location: { x: 1, y: 0 } }],
+      remainingBuildings: [{ type: "Farm", location: { x: 1, y: 0 }, capacity: 1 }],
     });
   });
 
@@ -64,8 +64,8 @@ describe("destroyBuilding", () => {
     const sektor = createSektor();
     sektor.loadState({
       buildings: [
-        { type: "Mill", location: { x: 0, y: 0 } },
-        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Mill", location: { x: 0, y: 0 }, capacity: 1 },
+        { type: "Farm", location: { x: 1, y: 0 }, capacity: 1 },
       ],
     });
 

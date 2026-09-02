@@ -4,19 +4,19 @@ It can be changed fro 0 to 1 in steps of 0.1.
 Initial capacity of a new building is 0.1.
 If capacity is reduced to 0, the building is practically turned off: No inputs (imports) and no outputs (exports).
 
-#1 Building capacity
-- each building has a capacity
+#1 [done] Building capacity
+- [done] each building has a capacity
     - when building created, it's capacity is 0.1
     - the building's actual input amounts & output amounts are calculated so that they are taken from the building's function & multiplied by the building's capacity
-- player can change building capacity
+- [done] player can change building capacity
     - Sektor has methods increaseBuildingCapacity(location: BuildingLocation): number & decreaseBuildingCapacity(location: BuildingLocation): number
         - throws Error if location empty
         - returns new capacity
-- create Sektor tests which test above specification
+- [done] create Sektor tests which test above specification
     - use getSektorState() to assert correct import & export amounts
     - cover all interesting capacities: 0, 1, 0.1, 0.9, 0.5
     - cover interesting combinations of building capacities (one building capacity 1, another connected to first at capacity 0.1, etc.)
-- player can change building capacity on UI
+- [done] player can change building capacity on UI
     - building panel of the currently selected building has capacity panel under the building function
         - label "Capacity"
             - center horizontally

@@ -145,6 +145,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     code: code,
     buildingFunction: buildingState.buildingFunction,
     modifiedOutputs: buildingState.modifiedOutputs,
+    capacity: buildingState.capacity,
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
     modifierProperties: definition?.outputModifiers.map(modifier => modifier.property),
     floorColor: floorColor,
@@ -163,8 +164,23 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
       selectedBuildingLocation = null;
       updateSektorStatePanel(sektor.getSektorState());
       saveState();
+    },
+    onIncreaseCapacity: () => {
+      sektor.increaseBuildingCapacity(placed.location);
+      changeBuildingCapacity(placed);
+    },
+    onDecreaseCapacity: () => {
+      sektor.decreaseBuildingCapacity(placed.location);
+      changeBuildingCapacity(placed);
     }
   });
+}
+
+// The panel shows the capacity it was opened with, so it is reopened to show the new one.
+function changeBuildingCapacity(placed: { type: string; location: BuildingLocation; code: string }) {
+  updateSektorStatePanel(sektor.getSektorState());
+  saveState();
+  openBuildingPanel(placed);
 }
 
 function openEmptyLocationPanel(location: BuildingLocation) {

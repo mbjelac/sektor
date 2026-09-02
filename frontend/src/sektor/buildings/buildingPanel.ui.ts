@@ -9,6 +9,8 @@ import { BuildingFunction, ResourceThroughput } from "./parseBuildingDefinitions
 import { BuildingLocation } from "../Sektor";
 import { propertyValueColor } from "../../properties";
 
+const CAPACITY_DOT_COUNT = 10;
+
 let panelEl: HTMLElement | null = null;
 let previewP5: p5 | null = null;
 let previewContainer: HTMLElement | null = null;
@@ -56,17 +58,20 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunction, modifiedOutputs, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy }: {
+export function showBuildingPanel({ name, code, buildingFunction, modifiedOutputs, capacity, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy, onIncreaseCapacity, onDecreaseCapacity }: {
   name: string,
   code: string,
   buildingFunction: BuildingFunction,
   modifiedOutputs: ResourceThroughput[],
+  capacity?: number,
   locationProperties?: { [_: string]: number },
   modifierProperties?: string[],
   floorColor: [number, number, number],
   showFloor?: boolean,
   location: BuildingLocation,
-  onDestroy?: () => void
+  onDestroy?: () => void,
+  onIncreaseCapacity?: () => void,
+  onDecreaseCapacity?: () => void
 }) {
   hideBuildingPanel();
 
@@ -108,6 +113,10 @@ export function showBuildingPanel({ name, code, buildingFunction, modifiedOutput
 
   if (buildingFunction.inputs.length > 0 || buildingFunction.outputs.length > 0) {
     panelEl.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction, modifiedOutputs: modifiedOutputs }));
+  }
+
+  if (capacity !== undefined) {
+    panelEl.appendChild(createCapacityPanel(capacity, onIncreaseCapacity, onDecreaseCapacity));
   }
 
   if (locationProperties) {
@@ -161,4 +170,42 @@ export function hideBuildingPanel() {
     panelEl = null;
   }
   currentDraw = null;
+}
+
+// A building's capacity is shown as ten dots, one lit for each tenth the building runs at.
+function createCapacityPanel(capacity: number, onIncreaseCapacity?: () => void, onDecreaseCapacity?: () => void): HTMLElement {
+  const capacityPanel = document.createElement("div");
+  capacityPanel.className = "bc-capacity";
+
+  const label = document.createElement("div");
+  label.className = "bc-label";
+  label.textContent = "Capacity";
+  capacityPanel.appendChild(label);
+
+  const row = document.createElement("div");
+  row.className = "bc-row";
+
+  const decreaseButton = document.createElement("button");
+  decreaseButton.className = "bc-button bc-decrease";
+  if (onDecreaseCapacity) decreaseButton.addEventListener("click", onDecreaseCapacity);
+  row.appendChild(decreaseButton);
+
+  const dots = document.createElement("div");
+  dots.className = "bc-dots";
+  const litDotCount = Math.round(capacity * CAPACITY_DOT_COUNT);
+  for (let dotIndex = 0; dotIndex < CAPACITY_DOT_COUNT; dotIndex++) {
+    const dot = document.createElement("span");
+    dot.className = dotIndex < litDotCount ? "bc-dot bc-dot-lit" : "bc-dot";
+    dots.appendChild(dot);
+  }
+  row.appendChild(dots);
+
+  const increaseButton = document.createElement("button");
+  increaseButton.className = "bc-button bc-increase";
+  if (onIncreaseCapacity) increaseButton.addEventListener("click", onIncreaseCapacity);
+  row.appendChild(increaseButton);
+
+  capacityPanel.appendChild(row);
+
+  return capacityPanel;
 }

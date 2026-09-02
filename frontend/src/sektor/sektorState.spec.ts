@@ -55,7 +55,7 @@ describe("getSektorState", () => {
 
   it("returns imports and exports for a single building", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
-    sektor.createBuilding({ type: "Well", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Well", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     const result = sektor.getSektorState();
 
@@ -77,8 +77,8 @@ describe("getSektorState", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
     sektor.loadState({
       buildings: [
-        { type: "Well", location: { x: 0, y: 0 } },
-        { type: "Farm", location: { x: 1, y: 0 } },
+        { type: "Well", location: { x: 0, y: 0 }, capacity: 1 },
+        { type: "Farm", location: { x: 1, y: 0 }, capacity: 1 },
       ],
     });
 
@@ -139,9 +139,9 @@ describe("resource pool", () => {
     const sektor = new Sektor([[{ properties: {} }]], poolDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
     sektor.loadState({
       buildings: [
-        { type: "Consumer", location: { x: 0, y: 0 } },
-        { type: "Consumer", location: { x: 1, y: 0 } },
-        { type: "Producer", location: { x: 2, y: 0 } },
+        { type: "Consumer", location: { x: 0, y: 0 }, capacity: 1 },
+        { type: "Consumer", location: { x: 1, y: 0 }, capacity: 1 },
+        { type: "Producer", location: { x: 2, y: 0 }, capacity: 1 },
       ],
     });
 
@@ -158,8 +158,8 @@ describe("resource pool", () => {
     const sektor = new Sektor([[{ properties: {} }]], poolDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
     sektor.loadState({
       buildings: [
-        { type: "Consumer", location: { x: 0, y: 0 } },
-        { type: "Producer", location: { x: 1, y: 0 } },
+        { type: "Consumer", location: { x: 0, y: 0 }, capacity: 1 },
+        { type: "Producer", location: { x: 1, y: 0 }, capacity: 1 },
       ],
     });
 
@@ -176,9 +176,9 @@ describe("resource pool", () => {
     const sektor = new Sektor([[{ properties: {} }]], poolDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
     sektor.loadState({
       buildings: [
-        { type: "Consumer", location: { x: 0, y: 0 } },
-        { type: "Consumer", location: { x: 1, y: 0 } },
-        { type: "BigProducer", location: { x: 2, y: 0 } },
+        { type: "Consumer", location: { x: 0, y: 0 }, capacity: 1 },
+        { type: "Consumer", location: { x: 1, y: 0 }, capacity: 1 },
+        { type: "BigProducer", location: { x: 2, y: 0 }, capacity: 1 },
       ],
     });
 
@@ -195,9 +195,9 @@ describe("resource pool", () => {
     const sektor = new Sektor([[{ properties: {} }]], poolDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
     sektor.loadState({
       buildings: [
-        { type: "Consumer", location: { x: 0, y: 0 } },
-        { type: "Consumer", location: { x: 1, y: 0 } },
-        { type: "BigProducer", location: { x: 2, y: 0 } },
+        { type: "Consumer", location: { x: 0, y: 0 }, capacity: 1 },
+        { type: "Consumer", location: { x: 1, y: 0 }, capacity: 1 },
+        { type: "BigProducer", location: { x: 2, y: 0 }, capacity: 1 },
       ],
     });
 
@@ -239,7 +239,7 @@ describe("status", () => {
 
   it("is Done when some imports, no restrictions, no requirements", () => {
     const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], statusDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
-    sektor.createBuilding({ type: "Generator", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().status).toEqual("Done");
   });
@@ -249,7 +249,7 @@ describe("status", () => {
       importRestrictions: [{ name: "Coal", value: 3 }],
       exportRequirements: [],
     }, []);
-    sektor.createBuilding({ type: "Generator", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().status).toEqual("RestrictionsExceeded");
   });
@@ -259,7 +259,7 @@ describe("status", () => {
       importRestrictions: [{ name: "Coal", value: 8 }],
       exportRequirements: [],
     }, []);
-    sektor.createBuilding({ type: "Generator", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().status).toEqual("Done");
   });
@@ -269,7 +269,7 @@ describe("status", () => {
       importRestrictions: [{ name: "Coal", value: 5 }],
       exportRequirements: [],
     }, []);
-    sektor.createBuilding({ type: "Generator", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().status).toEqual("Done");
   });
@@ -279,7 +279,7 @@ describe("status", () => {
       importRestrictions: [],
       exportRequirements: [{ name: "Power", value: 15 }],
     }, []);
-    sektor.createBuilding({ type: "Generator", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().status).toEqual("InProgress");
   });
@@ -289,7 +289,7 @@ describe("status", () => {
       importRestrictions: [],
       exportRequirements: [{ name: "Power", value: 10 }],
     }, []);
-    sektor.createBuilding({ type: "Generator", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().status).toEqual("Done");
   });
@@ -299,7 +299,7 @@ describe("status", () => {
       importRestrictions: [{ name: "Coal", value: 3 }],
       exportRequirements: [{ name: "Power", value: 10 }],
     }, []);
-    sektor.createBuilding({ type: "Generator", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().status).toEqual("RestrictionsExceeded");
   });
@@ -346,7 +346,7 @@ describe("output modifiers", () => {
       { importRestrictions: [], exportRequirements: [] },
       [],
     );
-    sektor.createBuilding({ type: "SolarFarm", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "SolarFarm", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().exports).toEqual([
       { name: "Energy", value: 13, score: 26 },
@@ -360,7 +360,7 @@ describe("output modifiers", () => {
       { importRestrictions: [], exportRequirements: [] },
       [],
     );
-    sektor.createBuilding({ type: "SolarFarm", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "SolarFarm", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().exports).toEqual([
       { name: "Energy", value: 4, score: 8 },
@@ -374,7 +374,7 @@ describe("output modifiers", () => {
       { importRestrictions: [], exportRequirements: [] },
       [],
     );
-    sektor.createBuilding({ type: "Mine", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "Mine", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().exports).toEqual([
       { name: "Ore", value: 5, score: 10 },
@@ -390,8 +390,8 @@ describe("output modifiers", () => {
     );
     sektor.loadState({
       buildings: [
-        { type: "SolarFarm", location: { x: 0, y: 0 } },
-        { type: "Mine", location: { x: 0, y: 1 } },
+        { type: "SolarFarm", location: { x: 0, y: 0 }, capacity: 1 },
+        { type: "Mine", location: { x: 0, y: 1 }, capacity: 1 },
       ],
     });
 
@@ -480,49 +480,49 @@ const negativeScoringResources = negativeScoringResourceNames(parseResources(tes
 describe("scoring", () => {
   it("scores each imported unit -2", () => {
     const sektor = new Sektor([[{ properties: {} }]], scoringDefinitions, { importRestrictions: [], exportRequirements: [] }, negativeScoringResources);
-    sektor.createBuilding({ type: "EnergyConsumer", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "EnergyConsumer", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().imports).toEqual([{ name: "Energy", value: 17, score: -34 }]);
   });
 
   it("scores each exported unit +2", () => {
     const sektor = new Sektor([[{ properties: {} }]], scoringDefinitions, { importRestrictions: [], exportRequirements: [] }, negativeScoringResources);
-    sektor.createBuilding({ type: "BigFoodProducer", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "BigFoodProducer", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().exports).toEqual([{ name: "Food", value: 17, score: 34 }]);
   });
 
   it("scores each required exported unit +3 and each unit above the requirement +2", () => {
     const sektor = new Sektor([[{ properties: {} }]], scoringDefinitions, { importRestrictions: [], exportRequirements: [{ name: "Food", value: 5 }] }, negativeScoringResources);
-    sektor.createBuilding({ type: "FoodProducer", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "FoodProducer", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().exports).toEqual([{ name: "Food", value: 12, score: 29 }]);
   });
 
   it("scores each exported unit +3 when the export requirement is not met", () => {
     const sektor = new Sektor([[{ properties: {} }]], scoringDefinitions, { importRestrictions: [], exportRequirements: [{ name: "Food", value: 5 }] }, negativeScoringResources);
-    sektor.createBuilding({ type: "SmallFoodProducer", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "SmallFoodProducer", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().exports).toEqual([{ name: "Food", value: 3, score: 9 }]);
   });
 
   it("scores each imported unit of a negatively scored resource +2", () => {
     const sektor = new Sektor([[{ properties: {} }]], scoringDefinitions, { importRestrictions: [], exportRequirements: [] }, negativeScoringResources);
-    sektor.createBuilding({ type: "WorkConsumer", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "WorkConsumer", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().imports).toEqual([{ name: "Work", value: 6, score: 12 }]);
   });
 
   it("scores each exported unit of a negatively scored resource -2", () => {
     const sektor = new Sektor([[{ properties: {} }]], scoringDefinitions, { importRestrictions: [], exportRequirements: [] }, negativeScoringResources);
-    sektor.createBuilding({ type: "WorkProducer", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "WorkProducer", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().exports).toEqual([{ name: "Work", value: 6, score: -12 }]);
   });
 
   it("scores each required exported unit of a negatively scored resource -3", () => {
     const sektor = new Sektor([[{ properties: {} }]], scoringDefinitions, { importRestrictions: [], exportRequirements: [{ name: "Work", value: 6 }] }, negativeScoringResources);
-    sektor.createBuilding({ type: "WorkProducer", location: { x: 0, y: 0 } });
+    sektor.loadState({ buildings: [{ type: "WorkProducer", location: { x: 0, y: 0 }, capacity: 1 }] });
 
     expect(sektor.getSektorState().exports).toEqual([{ name: "Work", value: 6, score: -18 }]);
   });

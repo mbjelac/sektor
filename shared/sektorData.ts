@@ -10,6 +10,10 @@ export interface BuildingCreation {
   location: BuildingLocation;
 }
 
+export interface Building extends BuildingCreation {
+  capacity: number;
+}
+
 export interface RestrictionsRequirements {
   importRestrictions: ResourceThroughput[];
   exportRequirements: ResourceThroughput[];
@@ -23,5 +27,5 @@ export interface SektorData {
   locationProperties: { [key: string]: number[][] };
   importRestrictions: ResourceThroughput[];
   exportRequirements: ResourceThroughput[];
-  buildings: BuildingCreation[];
+  buildings: Building[];
 }

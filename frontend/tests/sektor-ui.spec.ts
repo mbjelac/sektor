@@ -277,6 +277,44 @@ test("displays function panel with modifier property", async ({ page }) => {
   });
 });
 
+test("increases building capacity when the increase button is clicked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  // A placed building starts at capacity 0.1, so three increases bring it up to 0.4
+  await page.locator(".bc-increase").click();
+  await page.locator(".bc-increase").click();
+  await page.locator(".bc-increase").click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-capacity-increased", "#building-panel");
+});
+
+test("decreases building capacity when the decrease button is clicked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  // Capacity goes up from 0.1 to 0.8, then back down to 0.6
+  for (let increase = 0; increase < 7; increase++) {
+    await page.locator(".bc-increase").click();
+  }
+  await page.locator(".bc-decrease").click();
+  await page.locator(".bc-decrease").click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-capacity-decreased", "#building-panel");
+});
+
 test("destroys building when trash icon is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");
