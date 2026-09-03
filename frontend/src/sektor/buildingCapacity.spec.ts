@@ -206,6 +206,18 @@ describe("increaseBuildingCapacity", () => {
     });
   });
 
+  it("raises the capacity all the way to 1 in one call", () => {
+    const sektor = sektorWithBuildings([{ type: "Pump", location: { x: 0, y: 0 }, capacity: 0.2 }]);
+
+    const capacity = sektor.increaseBuildingCapacity({ x: 0, y: 0 }, true);
+
+    expect({ capacity, ...throughputs(sektor) }).toEqual({
+      capacity: 1,
+      imports: [{ name: "Energy", value: 10 }],
+      exports: [{ name: "Water", value: 20 }],
+    });
+  });
+
   it("throws when there is no building at the location", () => {
     const sektor = createSektor();
 
@@ -243,6 +255,18 @@ describe("decreaseBuildingCapacity", () => {
 
     sektor.decreaseBuildingCapacity({ x: 0, y: 0 });
     const capacity = sektor.decreaseBuildingCapacity({ x: 0, y: 0 });
+
+    expect({ capacity, ...throughputs(sektor) }).toEqual({
+      capacity: 0,
+      imports: [{ name: "Energy", value: 0 }],
+      exports: [{ name: "Water", value: 0 }],
+    });
+  });
+
+  it("lowers the capacity all the way to 0 in one call", () => {
+    const sektor = sektorWithBuildings([{ type: "Pump", location: { x: 0, y: 0 }, capacity: 0.8 }]);
+
+    const capacity = sektor.decreaseBuildingCapacity({ x: 0, y: 0 }, true);
 
     expect({ capacity, ...throughputs(sektor) }).toEqual({
       capacity: 0,

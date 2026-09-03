@@ -50,15 +50,15 @@ If capacity is reduced to 0, the building is practically turned off: No inputs (
         - if number is 34.000, display 34
         - if number is 34.200, display 34.2
 
-#3 Player can set min & max capacity quickly
-- Sektor's methods increaseBuildingCapacity & decreaseBuildingCapacity have a boolean parameter "completely", default false
+#3 [done] Player can set min & max capacity quickly
+- [done] Sektor's methods increaseBuildingCapacity & decreaseBuildingCapacity have a boolean parameter "completely", default false
     - if true
         - decrease to 0
         - increase to 1
     - create Sektor tests to test
         - decreasing several steps all the way to 0 in one call
         - increasing several steps all the way to 1 in one call
-- player can use this in UI
+- [done] player can use this in UI
     - in building panel
         - in front of decrease button, put "decrease to 0" button with double left triangle
         - after increase button, put "increase to 1" button with double right triangle

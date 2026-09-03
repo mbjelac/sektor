@@ -172,6 +172,14 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     onDecreaseCapacity: () => {
       sektor.decreaseBuildingCapacity(placed.location);
       changeBuildingCapacity(placed);
+    },
+    onIncreaseCapacityCompletely: () => {
+      sektor.increaseBuildingCapacity(placed.location, true);
+      changeBuildingCapacity(placed);
+    },
+    onDecreaseCapacityCompletely: () => {
+      sektor.decreaseBuildingCapacity(placed.location, true);
+      changeBuildingCapacity(placed);
     }
   });
 }

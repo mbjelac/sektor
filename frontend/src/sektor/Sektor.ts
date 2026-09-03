@@ -221,19 +221,19 @@ export class Sektor {
     return { success: true };
   }
 
-  increaseBuildingCapacity(location: BuildingLocation): number {
-    return this.changeBuildingCapacity(location, CAPACITY_STEP);
+  increaseBuildingCapacity(location: BuildingLocation, completely = false): number {
+    return this.changeBuildingCapacity(location, capacity => completely ? MAXIMUM_CAPACITY : capacity + CAPACITY_STEP);
   }
 
-  decreaseBuildingCapacity(location: BuildingLocation): number {
-    return this.changeBuildingCapacity(location, -CAPACITY_STEP);
+  decreaseBuildingCapacity(location: BuildingLocation, completely = false): number {
+    return this.changeBuildingCapacity(location, capacity => completely ? MINIMUM_CAPACITY : capacity - CAPACITY_STEP);
   }
 
-  private changeBuildingCapacity(location: BuildingLocation, capacityChange: number): number {
+  private changeBuildingCapacity(location: BuildingLocation, changeCapacity: (capacity: number) => number): number {
     const building = this.findBuildingAt(location);
     if (!building) throw new Error("buildingNotFound");
     building.capacity = roundToOneDecimal(
-      Math.min(MAXIMUM_CAPACITY, Math.max(MINIMUM_CAPACITY, building.capacity + capacityChange))
+      Math.min(MAXIMUM_CAPACITY, Math.max(MINIMUM_CAPACITY, changeCapacity(building.capacity)))
     );
     return building.capacity;
   }

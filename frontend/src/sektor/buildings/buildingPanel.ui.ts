@@ -59,7 +59,7 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunction, modifiedOutputs, capacity, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy, onIncreaseCapacity, onDecreaseCapacity }: {
+export function showBuildingPanel({ name, code, buildingFunction, modifiedOutputs, capacity, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
   name: string,
   code: string,
   buildingFunction: BuildingFunction,
@@ -72,7 +72,9 @@ export function showBuildingPanel({ name, code, buildingFunction, modifiedOutput
   location: BuildingLocation,
   onDestroy?: () => void,
   onIncreaseCapacity?: () => void,
-  onDecreaseCapacity?: () => void
+  onDecreaseCapacity?: () => void,
+  onIncreaseCapacityCompletely?: () => void,
+  onDecreaseCapacityCompletely?: () => void
 }) {
   hideBuildingPanel();
 
@@ -117,7 +119,13 @@ export function showBuildingPanel({ name, code, buildingFunction, modifiedOutput
   }
 
   if (capacity !== undefined) {
-    panelEl.appendChild(createCapacityPanel(capacity, onIncreaseCapacity, onDecreaseCapacity));
+    panelEl.appendChild(createCapacityPanel({
+      capacity,
+      onIncreaseCapacity,
+      onDecreaseCapacity,
+      onIncreaseCapacityCompletely,
+      onDecreaseCapacityCompletely,
+    }));
   }
 
   if (locationProperties) {
@@ -174,7 +182,15 @@ export function hideBuildingPanel() {
 }
 
 // A building's capacity is shown as ten dots, one lit for each tenth the building runs at.
-function createCapacityPanel(capacity: number, onIncreaseCapacity?: () => void, onDecreaseCapacity?: () => void): HTMLElement {
+// The buttons around the dots change the capacity by a tenth, the double ones all the way
+// down to nothing or up to the full capacity.
+function createCapacityPanel({ capacity, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
+  capacity: number,
+  onIncreaseCapacity?: () => void,
+  onDecreaseCapacity?: () => void,
+  onIncreaseCapacityCompletely?: () => void,
+  onDecreaseCapacityCompletely?: () => void
+}): HTMLElement {
   const capacityPanel = document.createElement("div");
   capacityPanel.className = "bc-capacity";
 
@@ -186,10 +202,8 @@ function createCapacityPanel(capacity: number, onIncreaseCapacity?: () => void, 
   const row = document.createElement("div");
   row.className = "bc-row";
 
-  const decreaseButton = document.createElement("button");
-  decreaseButton.className = "bc-button bc-decrease";
-  if (onDecreaseCapacity) decreaseButton.addEventListener("click", onDecreaseCapacity);
-  row.appendChild(decreaseButton);
+  row.appendChild(createCapacityButton("bc-decrease-completely", "bc-triangle-left", 2, onDecreaseCapacityCompletely));
+  row.appendChild(createCapacityButton("bc-decrease", "bc-triangle-left", 1, onDecreaseCapacity));
 
   const dots = document.createElement("div");
   dots.className = "bc-dots";
@@ -201,12 +215,22 @@ function createCapacityPanel(capacity: number, onIncreaseCapacity?: () => void, 
   }
   row.appendChild(dots);
 
-  const increaseButton = document.createElement("button");
-  increaseButton.className = "bc-button bc-increase";
-  if (onIncreaseCapacity) increaseButton.addEventListener("click", onIncreaseCapacity);
-  row.appendChild(increaseButton);
+  row.appendChild(createCapacityButton("bc-increase", "bc-triangle-right", 1, onIncreaseCapacity));
+  row.appendChild(createCapacityButton("bc-increase-completely", "bc-triangle-right", 2, onIncreaseCapacityCompletely));
 
   capacityPanel.appendChild(row);
 
   return capacityPanel;
+}
+
+function createCapacityButton(buttonClassName: string, triangleClassName: string, triangleCount: number, onClick?: () => void): HTMLElement {
+  const button = document.createElement("button");
+  button.className = `bc-button ${buttonClassName}`;
+  for (let triangleIndex = 0; triangleIndex < triangleCount; triangleIndex++) {
+    const triangle = document.createElement("span");
+    triangle.className = triangleClassName;
+    button.appendChild(triangle);
+  }
+  if (onClick) button.addEventListener("click", onClick);
+  return button;
 }

@@ -304,21 +304,28 @@ body > main {
 }
 
 .bc-button {
-  width: 0;
-  height: 0;
+  display: flex;
+  align-items: center;
+  gap: 1px;
   padding: 0;
   background: none;
   border: none;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
   cursor: pointer;
 }
 
-.bc-decrease {
+.bc-triangle-left,
+.bc-triangle-right {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+.bc-triangle-left {
   border-right: 8px solid #fff;
 }
 
-.bc-increase {
+.bc-triangle-right {
   border-left: 8px solid #fff;
 }
 

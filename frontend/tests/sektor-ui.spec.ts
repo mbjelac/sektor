@@ -315,6 +315,37 @@ test("decreases building capacity when the decrease button is clicked", async ({
   await expectScreenshot(page, "building-capacity-decreased", "#building-panel");
 });
 
+test("raises building capacity to the maximum when the double increase button is clicked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await page.locator(".bc-increase-completely").click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-capacity-maximum", "#building-panel");
+});
+
+test("lowers building capacity to zero when the double decrease button is clicked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await page.locator(".bc-increase-completely").click();
+  await page.locator(".bc-decrease-completely").click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-capacity-minimum", "#building-panel");
+});
+
 test("destroys building when trash icon is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");
