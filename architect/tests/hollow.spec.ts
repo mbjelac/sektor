@@ -42,3 +42,20 @@ test("pyramid with no hollow", async ({ page }) => {
   await page.locator("#editor textarea").fill("pyr4 h(0) t(0,0,100) r(0,180,0)");
   await expectScreenshot(page, "pyr4-hollow-none");
 });
+
+// A cone is hollow from its base, like a pyramid, so it too is lifted above the floor and
+// turned upside down to show the hollow.
+test("cone with hollow", async ({ page }) => {
+  await page.locator("#editor textarea").fill("con h(50) t(0,0,100) r(0,180,0)");
+  await expectScreenshot(page, "con-hollow");
+});
+
+test("cone with full hollow", async ({ page }) => {
+  await page.locator("#editor textarea").fill("con h(100) t(0,0,100) r(0,180,0)");
+  await expectScreenshot(page, "con-hollow-full");
+});
+
+test("cone with no hollow", async ({ page }) => {
+  await page.locator("#editor textarea").fill("con h(0) t(0,0,100) r(0,180,0)");
+  await expectScreenshot(page, "con-hollow-none");
+});

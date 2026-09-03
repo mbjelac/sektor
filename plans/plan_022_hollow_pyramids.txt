@@ -8,9 +8,9 @@ This describes extensions to the rendering code, applied in Architect & Frontend
     - h(100) means the pyramid is "paper thin", the "inside" pyramid is almost as same size, a tiny bit smaller
 - [done] create visual tests for this
 
-#2 Cones can be hollow
-- apply equivalent of #1 to cones when h function specified
-- create visual tests for this
+#2 [done] Cones can be hollow
+- [done] apply equivalent of #1 to cones when h function specified
+- [done] create visual tests for this
 
 #3 A pyramid can be frustum
 - when the "frustum" function is specified for a pyramid
