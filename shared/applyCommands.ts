@@ -83,7 +83,7 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
   }
   const pyrN = pyrSides[command.type];
   if (pyrN) {
-    drawPyramid(p, pyrN, color);
+    drawPyramid(p, pyrN, color, command.hollow ?? undefined);
   }
   const priN = priSides[command.type];
   if (priN) {

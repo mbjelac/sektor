@@ -1,12 +1,12 @@
 This describes extensions to the rendering code, applied in Architect & Frontend modules.
 
-#1 Pyramids can be hollow
-- when the h function is specified for a pyramid
+#1 [done] Pyramids can be hollow
+- [done] when the h function is specified for a pyramid
     - pyramid is rendered as hollow from it's base
     - it is as if there is a "negative" pyramid inside, smaller, sharing the same base
     - h(0) means the pyramid is not hollow
     - h(100) means the pyramid is "paper thin", the "inside" pyramid is almost as same size, a tiny bit smaller
-- create visual tests for this
+- [done] create visual tests for this
 
 #2 Cones can be hollow
 - apply equivalent of #1 to cones when h function specified
