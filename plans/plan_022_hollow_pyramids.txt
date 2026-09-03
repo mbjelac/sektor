@@ -1,0 +1,29 @@
+This describes extensions to the rendering code, applied in Architect & Frontend modules.
+
+#1 Pyramids can be hollow
+- when the h function is specified for a pyramid
+    - pyramid is rendered as hollow from it's base
+    - it is as if there is a "negative" pyramid inside, smaller, sharing the same base
+    - h(0) means the pyramid is not hollow
+    - h(100) means the pyramid is "paper thin", the "inside" pyramid is almost as same size, a tiny bit smaller
+- create visual tests for this
+
+#2 Cones can be hollow
+- apply equivalent of #1 to cones when h function specified
+- create visual tests for this
+
+#3 A pyramid can be frustum
+- when the "frustum" function is specified for a pyramid
+    - f(<value>)
+    - the pyramid is "cut"
+        - by a plane horizontal to it's base
+        - at a point on it's height specified by the f function value
+            - 0: cut at the tip (no frustum visible)
+            - 100: cut at base (almost height 0, a circle should remain)
+    - both h & f functions can be specified on the same object, they have to work
+- create visual tests for this
+
+#4 A cone can be frustum
+- apply equivalent of #3 to cones when f function specified
+    - both h & f functions can be specified on the same object, they have to work
+- create visual tests for this
