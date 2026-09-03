@@ -18,10 +18,14 @@ export interface SektorState {
   exportRequirements: ResourceThroughput[];
 }
 
-export interface BuildingState {
+export interface BuildingFunctionState {
   buildingFunction: BuildingFunction;
   modifiedOutputs: ResourceThroughput[];
   capacity: number;
+}
+
+export interface BuildingState {
+  buildingFunctions: BuildingFunctionState[];
 }
 
 export interface DestroyBuildingResult {
@@ -71,21 +75,28 @@ export class Sektor {
     };
   }
 
-  // Sektors saved before buildings had a capacity hold no capacity, so those buildings start
-  // off at the same capacity as a newly created one.
+  // Sektors saved before buildings had a capacity hold no capacity, and those saved before
+  // each building function had its own capacity hold a single one for the whole building, so
+  // their building functions start off at the capacity a newly created building gets.
   loadState(state: { buildings: Building[] }) {
-    this.buildings = state.buildings.map(building => ({ ...building, capacity: building.capacity ?? INITIAL_CAPACITY }));
+    this.buildings = state.buildings.map(building => ({
+      type: building.type,
+      location: building.location,
+      capacities: this.buildingCapacities(building),
+    }));
   }
 
   getBuildingState(location: BuildingLocation): BuildingState | null {
     const building = this.findBuildingAt(location);
     if (!building) return null;
-    const buildingDefinition = this.buildingDefinitions.find(definition => definition.name === building.type);
+    const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return null;
     return {
-      buildingFunction: buildingDefinition.buildingFunction,
-      modifiedOutputs: this.getModifiedOutputs(building.type, location),
-      capacity: building.capacity,
+      buildingFunctions: buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) => ({
+        buildingFunction: buildingFunction,
+        modifiedOutputs: this.getModifiedOutputs(buildingFunction, buildingDefinition, location),
+        capacity: building.capacities[functionIndex],
+      })),
     };
   }
 
@@ -172,24 +183,33 @@ export class Sektor {
     return throughputs.find(throughput => throughput.name === resourceType)?.value ?? 0;
   }
 
-  // A building's function describes its throughputs at full capacity, so the amounts it
-  // actually consumes and produces are those scaled down by its capacity.
+  // A building function describes its throughputs at full capacity, so the amounts it actually
+  // consumes and produces are those scaled down by that function's own capacity. The scaled
+  // amounts of all the building's functions are then added up per resource.
   private getInputs(building: Building): ResourceThroughput[] {
-    const buildingDefinition = this.buildingDefinitions.find(definition => definition.name === building.type);
-    return (buildingDefinition?.buildingFunction?.inputs ?? [])
-      .map(input => applyCapacity(input, building.capacity));
+    const buildingDefinition = this.findBuildingDefinition(building.type);
+    if (!buildingDefinition) return [];
+    return this.aggregateThroughputs(
+      buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) =>
+        buildingFunction.inputs.map(input => applyCapacity(input, building.capacities[functionIndex]))
+      ).flat()
+    );
   }
 
   private getOutputs(building: Building): ResourceThroughput[] {
-    return this.getModifiedOutputs(building.type, building.location)
-      .map(output => applyCapacity(output, building.capacity));
+    const buildingDefinition = this.findBuildingDefinition(building.type);
+    if (!buildingDefinition) return [];
+    return this.aggregateThroughputs(
+      buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) =>
+        this.getModifiedOutputs(buildingFunction, buildingDefinition, building.location)
+          .map(output => applyCapacity(output, building.capacities[functionIndex]))
+      ).flat()
+    );
   }
 
-  private getModifiedOutputs(type: string, location: BuildingLocation): ResourceThroughput[] {
-    const buildingDefinition = this.buildingDefinitions.find(definition => definition.name === type);
-    if (!buildingDefinition) return [];
+  private getModifiedOutputs(buildingFunction: BuildingFunction, buildingDefinition: BuildingDefinition, location: BuildingLocation): ResourceThroughput[] {
     const locationProperties = this.locations[location.x]?.[location.y]?.properties ?? {};
-    return (buildingDefinition.buildingFunction?.outputs ?? []).map(output => {
+    return buildingFunction.outputs.map(output => {
       const outputModifier = buildingDefinition.outputModifiers.find(modifier => modifier.resource === output.name);
       const propertyValue = outputModifier ? (locationProperties[outputModifier.property] ?? 0) : 0;
       return {
@@ -204,10 +224,20 @@ export class Sektor {
       return { error: "locationOccupied", addedBuildings: [] };
     }
 
-    const createdBuilding = { ...building, capacity: INITIAL_CAPACITY };
+    const createdBuilding = { ...building, capacities: this.buildingCapacities(building) };
     this.buildings.push(createdBuilding);
 
     return { error: undefined, addedBuildings: [createdBuilding] };
+  }
+
+  // Every function of a building runs at its own capacity, so a building holds one capacity
+  // per function of its definition.
+  private buildingCapacities(building: { type: string, capacities?: number[], capacity?: number }): number[] {
+    const buildingFunctionCount = this.findBuildingDefinition(building.type)?.buildingFunctions.length ?? 0;
+    return Array.from(
+      { length: buildingFunctionCount },
+      (_, functionIndex) => building.capacities?.[functionIndex] ?? building.capacity ?? INITIAL_CAPACITY
+    );
   }
 
   destroyBuilding(location: BuildingLocation): DestroyBuildingResult {
@@ -221,21 +251,28 @@ export class Sektor {
     return { success: true };
   }
 
-  increaseBuildingCapacity(location: BuildingLocation, completely = false): number {
-    return this.changeBuildingCapacity(location, capacity => completely ? MAXIMUM_CAPACITY : capacity + CAPACITY_STEP);
+  increaseBuildingCapacity(location: BuildingLocation, functionIndex: number, completely = false): number {
+    return this.changeBuildingCapacity(location, functionIndex, capacity => completely ? MAXIMUM_CAPACITY : capacity + CAPACITY_STEP);
   }
 
-  decreaseBuildingCapacity(location: BuildingLocation, completely = false): number {
-    return this.changeBuildingCapacity(location, capacity => completely ? MINIMUM_CAPACITY : capacity - CAPACITY_STEP);
+  decreaseBuildingCapacity(location: BuildingLocation, functionIndex: number, completely = false): number {
+    return this.changeBuildingCapacity(location, functionIndex, capacity => completely ? MINIMUM_CAPACITY : capacity - CAPACITY_STEP);
   }
 
-  private changeBuildingCapacity(location: BuildingLocation, changeCapacity: (capacity: number) => number): number {
+  private changeBuildingCapacity(location: BuildingLocation, functionIndex: number, changeCapacity: (capacity: number) => number): number {
     const building = this.findBuildingAt(location);
     if (!building) throw new Error("buildingNotFound");
-    building.capacity = roundToOneDecimal(
-      Math.min(MAXIMUM_CAPACITY, Math.max(MINIMUM_CAPACITY, changeCapacity(building.capacity)))
+    const capacity = building.capacities[functionIndex];
+    if (capacity === undefined) throw new Error("buildingFunctionNotFound");
+    const changedCapacity = roundToOneDecimal(
+      Math.min(MAXIMUM_CAPACITY, Math.max(MINIMUM_CAPACITY, changeCapacity(capacity)))
     );
-    return building.capacity;
+    building.capacities[functionIndex] = changedCapacity;
+    return changedCapacity;
+  }
+
+  private findBuildingDefinition(type: string): BuildingDefinition | undefined {
+    return this.buildingDefinitions.find(definition => definition.name === type);
   }
 
   private findBuildingAt(location: BuildingLocation): Building | undefined {

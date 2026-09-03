@@ -5,8 +5,7 @@ import { drawFloor } from "../../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../../shared/constants";
 import { trashIcon } from "../../icons";
 import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
-import { BuildingFunction, ResourceThroughput } from "./parseBuildingDefinitions";
-import { BuildingLocation } from "../Sektor";
+import { BuildingFunctionState, BuildingLocation } from "../Sektor";
 import { propertyValueColor } from "../../properties";
 import { formatNumber } from "../../formatNumber";
 
@@ -59,22 +58,20 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunction, modifiedOutputs, capacity, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
+export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
   name: string,
   code: string,
-  buildingFunction: BuildingFunction,
-  modifiedOutputs: ResourceThroughput[],
-  capacity?: number,
+  buildingFunctions: BuildingFunctionState[],
   locationProperties?: { [_: string]: number },
   modifierProperties?: string[],
   floorColor: [number, number, number],
   showFloor?: boolean,
   location: BuildingLocation,
   onDestroy?: () => void,
-  onIncreaseCapacity?: () => void,
-  onDecreaseCapacity?: () => void,
-  onIncreaseCapacityCompletely?: () => void,
-  onDecreaseCapacityCompletely?: () => void
+  onIncreaseCapacity?: (functionIndex: number) => void,
+  onDecreaseCapacity?: (functionIndex: number) => void,
+  onIncreaseCapacityCompletely?: (functionIndex: number) => void,
+  onDecreaseCapacityCompletely?: (functionIndex: number) => void
 }) {
   hideBuildingPanel();
 
@@ -114,17 +111,19 @@ export function showBuildingPanel({ name, code, buildingFunction, modifiedOutput
 
   panelEl.appendChild(header);
 
-  if (buildingFunction.inputs.length > 0 || buildingFunction.outputs.length > 0) {
-    panelEl.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction, modifiedOutputs: modifiedOutputs }));
-  }
-
-  if (capacity !== undefined) {
+  // Each of the building's functions runs at its own capacity, so each is shown with its own
+  // capacity panel underneath it.
+  for (const [functionIndex, buildingFunctionState] of buildingFunctions.entries()) {
+    panelEl.appendChild(createFunctionDisplay({
+      buildingFunction: buildingFunctionState.buildingFunction,
+      modifiedOutputs: buildingFunctionState.modifiedOutputs,
+    }));
     panelEl.appendChild(createCapacityPanel({
-      capacity,
-      onIncreaseCapacity,
-      onDecreaseCapacity,
-      onIncreaseCapacityCompletely,
-      onDecreaseCapacityCompletely,
+      capacity: buildingFunctionState.capacity,
+      onIncreaseCapacity: () => onIncreaseCapacity?.(functionIndex),
+      onDecreaseCapacity: () => onDecreaseCapacity?.(functionIndex),
+      onIncreaseCapacityCompletely: () => onIncreaseCapacityCompletely?.(functionIndex),
+      onDecreaseCapacityCompletely: () => onDecreaseCapacityCompletely?.(functionIndex),
     }));
   }
 

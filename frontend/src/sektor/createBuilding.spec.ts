@@ -6,7 +6,7 @@ function buildingDefinition(name: string, inputs: { name: string, value: number 
   return {
     name,
     renderingCode: "box s(1,1,1)",
-    buildingFunction: { inputs, outputs },
+    buildingFunctions: [{ inputs, outputs }],
     outputModifiers: [],
     properties: {},
   };
@@ -34,9 +34,9 @@ describe("createBuilding", () => {
     }).toEqual({
       result: {
         error: undefined,
-        addedBuildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacity: 0.1 }],
+        addedBuildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacities: [0.1] }],
       },
-      buildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacity: 0.1 }],
+      buildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacities: [0.1] }],
     });
   });
 
@@ -54,7 +54,7 @@ describe("createBuilding", () => {
         error: "locationOccupied",
         addedBuildings: [],
       },
-      buildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacity: 0.1 }],
+      buildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacities: [0.1] }],
     });
   });
 });

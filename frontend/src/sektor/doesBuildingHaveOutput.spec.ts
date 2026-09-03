@@ -6,20 +6,20 @@ const testDefinitions: BuildingDefinition[] = [
   {
     name: "Mill",
     renderingCode: "box s(1,1,1)",
-    buildingFunction: {
+    buildingFunctions: [{
       inputs: [{ name: "Wheat", value: 4 }],
       outputs: [{ name: "Flour", value: 3 }],
-    },
+    }],
     outputModifiers: [],
     properties: {},
   },
   {
     name: "SolarFarm",
     renderingCode: "box s(1,1,1)",
-    buildingFunction: {
+    buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Energy", value: 4 }],
-    },
+    }],
     outputModifiers: [{ resource: "Energy", property: "insolation" }],
     properties: {},
   },

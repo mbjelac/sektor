@@ -33,13 +33,15 @@ export function deselectBuilding(): void {
 
 let toolbarFnPanel: HTMLElement | null = null;
 
-function showToolbarFunctionPanel(buildingFunction: BuildingFunction, outputModifiers: OutputModifier[], anchorEl: HTMLElement) {
+function showToolbarFunctionPanel(buildingFunctions: BuildingFunction[], outputModifiers: OutputModifier[], anchorEl: HTMLElement) {
   hideToolbarFunctionPanel();
 
   toolbarFnPanel = document.createElement("div");
   toolbarFnPanel.id = "toolbar-function-panel";
 
-  toolbarFnPanel.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction }));
+  for (const buildingFunction of buildingFunctions) {
+    toolbarFnPanel.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction }));
+  }
 
   if (outputModifiers.length > 0) {
     const modifierList = document.createElement("div");
@@ -119,8 +121,8 @@ export function initToolbar() {
         toolbar.querySelectorAll(".building-item").forEach((el) => el.classList.remove("selected"));
         selectedBuilding = building.name;
         item.classList.add("selected");
-        if (building.buildingFunction) {
-          showToolbarFunctionPanel(building.buildingFunction, building.outputModifiers, item);
+        if (building.buildingFunctions.length > 0) {
+          showToolbarFunctionPanel(building.buildingFunctions, building.outputModifiers, item);
         }
       }
       selectionCallback?.(selectedBuilding);

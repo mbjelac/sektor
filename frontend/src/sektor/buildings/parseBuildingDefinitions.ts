@@ -17,29 +17,31 @@ export interface OutputModifier {
 export interface BuildingDefinition {
   name: string;
   renderingCode: string;
-  buildingFunction: BuildingFunction;
+  buildingFunctions: BuildingFunction[];
   outputModifiers: OutputModifier[];
   properties: BuildingProperties;
 }
 
+// A building can do several things at once, so every Function section of its definition
+// becomes a separate building function.
 export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] {
   const buildings: BuildingDefinition[] = [];
 
   let currentName: string | null = null;
   let inCodeBlock = false;
   let codeLines: string[] = [];
-  let functionLines: string[] = [];
+  let functionLineGroups: string[][] = [];
   let propertyLines: string[] = [];
   let section: "none" | "render" | "function" | "properties" = "none";
 
   function pushBuilding() {
     if (currentName && codeLines.length > 0) {
-      const parsed = parseBuildingFunction(functionLines);
+      const parsedFunctions = functionLineGroups.map(functionLines => parseBuildingFunction(functionLines));
       buildings.push({
         name: currentName,
         renderingCode: codeLines.join("\n"),
-        buildingFunction: parsed.buildingFunction,
-        outputModifiers: parsed.outputModifiers,
+        buildingFunctions: parsedFunctions.map(parsedFunction => parsedFunction.buildingFunction),
+        outputModifiers: parsedFunctions.map(parsedFunction => parsedFunction.outputModifiers).flat(),
         properties: parseProperties(propertyLines),
       });
     }
@@ -51,7 +53,7 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
       pushBuilding();
       currentName = headingMatch[1].trim();
       codeLines = [];
-      functionLines = [];
+      functionLineGroups = [];
       propertyLines = [];
       inCodeBlock = false;
       section = "none";
@@ -65,6 +67,7 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
 
     if (line.match(/^##\s+Function/)) {
       section = "function";
+      functionLineGroups.push([]);
       continue;
     }
 
@@ -83,7 +86,7 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
     } else if (section === "properties") {
       propertyLines.push(line);
     } else if (section === "function") {
-      functionLines.push(line);
+      functionLineGroups[functionLineGroups.length - 1].push(line);
     }
   }
 

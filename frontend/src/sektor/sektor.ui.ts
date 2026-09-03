@@ -143,9 +143,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
   showBuildingPanel({
     name: placed.type,
     code: code,
-    buildingFunction: buildingState.buildingFunction,
-    modifiedOutputs: buildingState.modifiedOutputs,
-    capacity: buildingState.capacity,
+    buildingFunctions: buildingState.buildingFunctions,
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
     modifierProperties: definition?.outputModifiers.map(modifier => modifier.property),
     floorColor: floorColor,
@@ -165,20 +163,20 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
       updateSektorStatePanel(sektor.getSektorState());
       saveState();
     },
-    onIncreaseCapacity: () => {
-      sektor.increaseBuildingCapacity(placed.location);
+    onIncreaseCapacity: (functionIndex: number) => {
+      sektor.increaseBuildingCapacity(placed.location, functionIndex);
       changeBuildingCapacity(placed);
     },
-    onDecreaseCapacity: () => {
-      sektor.decreaseBuildingCapacity(placed.location);
+    onDecreaseCapacity: (functionIndex: number) => {
+      sektor.decreaseBuildingCapacity(placed.location, functionIndex);
       changeBuildingCapacity(placed);
     },
-    onIncreaseCapacityCompletely: () => {
-      sektor.increaseBuildingCapacity(placed.location, true);
+    onIncreaseCapacityCompletely: (functionIndex: number) => {
+      sektor.increaseBuildingCapacity(placed.location, functionIndex, true);
       changeBuildingCapacity(placed);
     },
-    onDecreaseCapacityCompletely: () => {
-      sektor.decreaseBuildingCapacity(placed.location, true);
+    onDecreaseCapacityCompletely: (functionIndex: number) => {
+      sektor.decreaseBuildingCapacity(placed.location, functionIndex, true);
       changeBuildingCapacity(placed);
     }
   });
@@ -197,8 +195,7 @@ function openEmptyLocationPanel(location: BuildingLocation) {
   showBuildingPanel({
     name: "Empty",
     code: "",
-    buildingFunction: { inputs: [], outputs: [] },
-    modifiedOutputs: [],
+    buildingFunctions: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
     modifierProperties: [],
     floorColor: floorColor,
@@ -574,7 +571,10 @@ const sektorUi = (p: p5) => {
     if (hoveredImportResource) {
       for (const building of placedBuildings) {
         const def = buildingDefinitions.find(d => d.name === building.type);
-        if (!def?.buildingFunction.inputs.some(input => input.name === hoveredImportResource)) continue;
+        const needsResource = def?.buildingFunctions.some(
+          buildingFunction => buildingFunction.inputs.some(input => input.name === hoveredImportResource)
+        );
+        if (!needsResource) continue;
         if (!sektor.doesBuildingNeedInput(building.location, hoveredImportResource)) continue;
         drawLocationHighlight(p, building.location, [255, 165, 0]);
       }

@@ -532,3 +532,38 @@ EnergyElectric 4
 Work 24
 =
 WorkTechnical 24
+
+# Refinery
+
+## Render
+
+```
+pyr8 s(100,100,31) c(#8a3000)
+```
+
+## Function
+
+WorkTechnical 3
+EnergyElectric 10
+WaterTechnical 5
+OreMetal 5
+=
+Metals 5
+
+## Function
+
+WorkTechnical 6
+EnergyElectric 5
+WaterTechnical 15
+OreUranium 5
+=
+Uranium 3
+
+## Function
+
+WorkTechnical 2
+EnergyElectric 3
+WaterTechnical 2
+OreMineral 5
+=
+Minerals 10

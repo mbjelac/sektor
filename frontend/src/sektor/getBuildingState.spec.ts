@@ -6,7 +6,7 @@ const testDefinitions: BuildingDefinition[] = [
   {
     name: "Mill",
     renderingCode: "box s(1,1,1)",
-    buildingFunction: {
+    buildingFunctions: [{
       inputs: [
         { name: "Wheat", value: 4 },
         { name: "Energy", value: 2 },
@@ -14,17 +14,17 @@ const testDefinitions: BuildingDefinition[] = [
       outputs: [
         { name: "Flour", value: 3 },
       ],
-    },
+    }],
     outputModifiers: [],
     properties: {},
   },
   {
     name: "Farm",
     renderingCode: "box s(1,1,1)",
-    buildingFunction: {
+    buildingFunctions: [{
       inputs: [{ name: "Water", value: 2 }],
       outputs: [{ name: "Wheat", value: 5 }],
-    },
+    }],
     outputModifiers: [{ resource: "Wheat", property: "soil" }],
     properties: {},
   },
@@ -46,19 +46,21 @@ describe("getBuildingState", () => {
     sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
 
     expect(sektor.getBuildingState({ x: 0, y: 0 })).toEqual({
-      buildingFunction: {
-        inputs: [
-          { name: "Wheat", value: 4 },
-          { name: "Energy", value: 2 },
-        ],
-        outputs: [
+      buildingFunctions: [{
+        buildingFunction: {
+          inputs: [
+            { name: "Wheat", value: 4 },
+            { name: "Energy", value: 2 },
+          ],
+          outputs: [
+            { name: "Flour", value: 3 },
+          ],
+        },
+        modifiedOutputs: [
           { name: "Flour", value: 3 },
         ],
-      },
-      modifiedOutputs: [
-        { name: "Flour", value: 3 },
-      ],
-      capacity: 0.1,
+        capacity: 0.1,
+      }],
     });
   });
 
@@ -66,7 +68,7 @@ describe("getBuildingState", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "Farm", location: { x: 0, y: 0 } });
 
-    expect(sektor.getBuildingState({ x: 0, y: 0 })!.modifiedOutputs).toEqual([
+    expect(sektor.getBuildingState({ x: 0, y: 0 })!.buildingFunctions[0].modifiedOutputs).toEqual([
       { name: "Wheat", value: 7 },
     ]);
   });

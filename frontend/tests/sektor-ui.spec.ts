@@ -156,11 +156,14 @@ test("displays building panel with boosted output modifier", async ({ page }) =>
     (window as any).showBuildingPanel({
       name: "SolarFarm",
       code: "box s(30,30,30) t(0,0,0) c(#4488cc)",
-      buildingFunction: {
-        inputs: [{ name: "Work", value: 2 }],
-        outputs: [{ name: "Energy", value: 10 }],
-      },
-      modifiedOutputs: [{ name: "Energy", value: 15 }],
+      buildingFunctions: [{
+        buildingFunction: {
+          inputs: [{ name: "Work", value: 2 }],
+          outputs: [{ name: "Energy", value: 10 }],
+        },
+        modifiedOutputs: [{ name: "Energy", value: 15 }],
+        capacity: 0.4,
+      }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
       modifierProperties: ["insolation"],
       floorColor: [200, 200, 100],
@@ -178,11 +181,14 @@ test("displays building panel with reduced output modifier", async ({ page }) =>
     (window as any).showBuildingPanel({
       name: "SolarFarm",
       code: "box s(30,30,30) t(0,0,0) c(#4488cc)",
-      buildingFunction: {
-        inputs: [{ name: "Work", value: 2 }],
-        outputs: [{ name: "Energy", value: 10 }],
-      },
-      modifiedOutputs: [{ name: "Energy", value: 3.5 }],
+      buildingFunctions: [{
+        buildingFunction: {
+          inputs: [{ name: "Work", value: 2 }],
+          outputs: [{ name: "Energy", value: 10 }],
+        },
+        modifiedOutputs: [{ name: "Energy", value: 3.5 }],
+        capacity: 0.4,
+      }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: -4, wind: 1 },
       modifierProperties: ["insolation"],
       floorColor: [200, 200, 100],
@@ -200,11 +206,14 @@ test("displays building panel without output modifier", async ({ page }) => {
     (window as any).showBuildingPanel({
       name: "Warehouse",
       code: "box s(30,30,30) t(0,0,0) c(#888888)",
-      buildingFunction: {
-        inputs: [{ name: "Wood", value: 3 }],
-        outputs: [{ name: "Goods", value: 4 }],
-      },
-      modifiedOutputs: [{ name: "Goods", value: 4 }],
+      buildingFunctions: [{
+        buildingFunction: {
+          inputs: [{ name: "Wood", value: 3 }],
+          outputs: [{ name: "Goods", value: 4 }],
+        },
+        modifiedOutputs: [{ name: "Goods", value: 4 }],
+        capacity: 0.4,
+      }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
       modifierProperties: [],
       floorColor: [200, 200, 100],
@@ -215,6 +224,41 @@ test("displays building panel without output modifier", async ({ page }) => {
   await expectScreenshot(page, "building-panel-no-modifier", "#building-panel");
 });
 
+test("displays building panel with a capacity for each of several building functions", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.evaluate(() => {
+    (window as any).showBuildingPanel({
+      name: "Workshop",
+      code: "box s(30,30,30) t(0,0,0) c(#888888)",
+      buildingFunctions: [
+        {
+          buildingFunction: {
+            inputs: [{ name: "Ore", value: 4 }],
+            outputs: [{ name: "Tools", value: 2 }],
+          },
+          modifiedOutputs: [{ name: "Tools", value: 2 }],
+          capacity: 0.3,
+        },
+        {
+          buildingFunction: {
+            inputs: [{ name: "Wood", value: 3 }],
+            outputs: [{ name: "Tools", value: 3 }],
+          },
+          modifiedOutputs: [{ name: "Tools", value: 3 }],
+          capacity: 0.8,
+        },
+      ],
+      locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
+      modifierProperties: [],
+      floorColor: [200, 200, 100],
+      location: { x: 0, y: 0 },
+    });
+  });
+
+  await expectScreenshot(page, "building-panel-several-functions", "#building-panel");
+});
+
 test("displays building panel for empty location", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
@@ -222,8 +266,7 @@ test("displays building panel for empty location", async ({ page }) => {
     (window as any).showBuildingPanel({
       name: "Empty",
       code: "",
-      buildingFunction: { inputs: [], outputs: [] },
-      modifiedOutputs: [],
+      buildingFunctions: [],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
       modifierProperties: [],
       floorColor: [200, 200, 100],

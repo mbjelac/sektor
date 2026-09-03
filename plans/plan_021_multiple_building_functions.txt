@@ -1,5 +1,5 @@
-#1 A building has multiple functions
-- multiple functions add to total building output
+#1 [done] A building has multiple functions
+- [done] multiple functions add to total building output
     - a building definition can have two or more Function sections
     - all outputs of all Function sections are added together if they're same type
         - example:
