@@ -9,3 +9,9 @@
     - all building functions have SEPARATE capacities
     - sum of all functions' outputs is done AFTER applying the building's capacity to all function outputs
     - create Sektor tests for all above cases
+
+#2 UX not impacted by multiple functions
+- building functions on building toolbar visible
+    - always display function panel of selected building on top next to building toolbar with small margin
+- building panel shown on the right when constructed building selected should expand only until status panel reached (with small margin between)
+    - when this happens, scroll content within building panel
