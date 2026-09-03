@@ -1,0 +1,11 @@
+#1 A building has multiple functions
+- multiple functions add to total building output
+    - a building definition can have two or more Function sections
+    - all outputs of all Function sections are added together if they're same type
+        - example:
+            - a building has Function x 4 = z 2
+            - a building has Function y 3 = z 3
+            - total output is z 5
+    - all building functions have SEPARATE capacities
+    - sum of all functions' outputs is done AFTER applying the building's capacity to all function outputs
+    - create Sektor tests for all above cases
