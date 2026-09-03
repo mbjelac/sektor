@@ -23,7 +23,7 @@ This describes extensions to the rendering code, applied in Architect & Frontend
     - both h & f functions can be specified on the same object, they have to work
 - [done] create visual tests for this
 
-#4 A cone can be frustum
-- apply equivalent of #3 to cones when f function specified
+#4 [done] A cone can be frustum
+- [done] apply equivalent of #3 to cones when f function specified
     - both h & f functions can be specified on the same object, they have to work
-- create visual tests for this
+- [done] create visual tests for this
