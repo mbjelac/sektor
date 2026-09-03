@@ -164,7 +164,8 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
     panelEl.appendChild(propertiesSection);
   }
 
-  document.getElementById("canvas-container")!.appendChild(panelEl);
+  // The panel is the first of the right panels, above the sektor state panel.
+  document.getElementById("right-panels")!.prepend(panelEl);
 
   // Set draw data and render
   currentDraw = { code, floorColor, showFloor: showFloor !== false };

@@ -8,6 +8,8 @@ import {BLOCK_SIZE} from "../../../shared/constants";
 import { BuildingFunction, OutputModifier } from "./buildings/parseBuildingDefinitions";
 import { propertyDefinitions } from "../properties";
 
+const TOOLBAR_FUNCTION_PANEL_MARGIN = 8;
+
 let selectedBuilding: string | null = null;
 let buildingCodeMap: Map<string, string> = new Map();
 let selectionCallback: ((buildingName: string | null) => void) | null = null;
@@ -33,7 +35,7 @@ export function deselectBuilding(): void {
 
 let toolbarFnPanel: HTMLElement | null = null;
 
-function showToolbarFunctionPanel(buildingFunctions: BuildingFunction[], outputModifiers: OutputModifier[], anchorEl: HTMLElement) {
+function showToolbarFunctionPanel(buildingFunctions: BuildingFunction[], outputModifiers: OutputModifier[]) {
   hideToolbarFunctionPanel();
 
   toolbarFnPanel = document.createElement("div");
@@ -75,12 +77,12 @@ function showToolbarFunctionPanel(buildingFunctions: BuildingFunction[], outputM
 
   document.body.appendChild(toolbarFnPanel);
 
-  // Position to the right of the toolbar, at the anchor's vertical position
-  const rect = anchorEl.getBoundingClientRect();
-  const toolbar = document.getElementById("toolbar")!;
-  const toolbarRect = toolbar.getBoundingClientRect();
-  toolbarFnPanel.style.left = `${toolbarRect.right + 4}px`;
-  toolbarFnPanel.style.top = `${rect.top}px`;
+  // The panel is always shown beside the top of the construction panel, so it stays in the
+  // same place whichever building is selected and however many functions that building has.
+  const constructionPanel = document.getElementById("construction-panel")!;
+  const constructionPanelRect = constructionPanel.getBoundingClientRect();
+  toolbarFnPanel.style.left = `${constructionPanelRect.right + TOOLBAR_FUNCTION_PANEL_MARGIN}px`;
+  toolbarFnPanel.style.top = `${constructionPanelRect.top}px`;
 }
 
 function hideToolbarFunctionPanel() {
@@ -122,7 +124,7 @@ export function initToolbar() {
         selectedBuilding = building.name;
         item.classList.add("selected");
         if (building.buildingFunctions.length > 0) {
-          showToolbarFunctionPanel(building.buildingFunctions, building.outputModifiers, item);
+          showToolbarFunctionPanel(building.buildingFunctions, building.outputModifiers);
         }
       }
       selectionCallback?.(selectedBuilding);

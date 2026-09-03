@@ -82,7 +82,7 @@ function ensurePanel() {
 
   panelEl = document.createElement("div");
   panelEl.id = "sektor-state-panel";
-  document.getElementById("canvas-container")!.appendChild(panelEl);
+  document.getElementById("right-panels")!.appendChild(panelEl);
 }
 
 function createResourceList(sektorState: SektorState): HTMLElement {

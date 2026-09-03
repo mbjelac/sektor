@@ -135,10 +135,31 @@ body > main {
   border-radius: 2px;
 }
 
-#building-panel {
+#right-panels {
   position: absolute;
   top: 16px;
+  bottom: 16px;
   right: 16px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  /* The gap between the panels is see-through, so the map can still be dragged there. */
+  pointer-events: none;
+}
+
+#right-panels > * {
+  pointer-events: auto;
+}
+
+/* The panel grows with its content only until it reaches the sektor state panel below it,
+   from where on its content scrolls, without a scrollbar taking up room in the panel. */
+#building-panel {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
   width: 288px;
   background: #2a2a2a;
   border: 1px solid #444;
@@ -438,6 +459,10 @@ body > main {
   height: 16px;
 }
 
+#building-panel::-webkit-scrollbar {
+  display: none;
+}
+
 #error-message {
   display: none;
   position: absolute;
@@ -454,9 +479,8 @@ body > main {
 
 #sektor-state-panel {
   --ss-flash-color: #2a2a2a;
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
+  flex: none;
+  margin-top: auto;
   width: 300px;
   background: #2a2a2a;
   border: 1px solid #444;
