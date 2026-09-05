@@ -1,6 +1,7 @@
 export type { ResourceThroughput } from "../../../../shared/sektorData";
 
 export interface BuildingFunction {
+  name?: string;
   inputs: ResourceThroughput[];
   outputs: ResourceThroughput[];
 }
@@ -113,6 +114,7 @@ function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFun
   const inputs: ResourceThroughput[] = [];
   const outputs: ResourceThroughput[] = [];
   const outputModifiers: OutputModifier[] = [];
+  let functionName: string | undefined = undefined;
   let seenEquals = false;
 
   for (const line of lines) {
@@ -120,6 +122,11 @@ function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFun
     if (!trimmed) continue;
     if (trimmed === "=") {
       seenEquals = true;
+      continue;
+    }
+    const nameMatch = trimmed.match(/^Name:\s*(.+)$/);
+    if (nameMatch) {
+      functionName = nameMatch[1].trim();
       continue;
     }
     const match = trimmed.match(/^(\S+)\s+(\d+)(?:\s+(\S+))?$/);
@@ -140,5 +147,9 @@ function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFun
     return { buildingFunction: { inputs: [], outputs: [] }, outputModifiers: [] };
   }
 
-  return { buildingFunction: { inputs, outputs }, outputModifiers };
+  const buildingFunction: BuildingFunction = functionName === undefined
+    ? { inputs, outputs }
+    : { name: functionName, inputs, outputs };
+
+  return { buildingFunction, outputModifiers };
 }

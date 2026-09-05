@@ -8,8 +8,19 @@ export function createFunctionDisplay({ buildingFunction, modifiedOutputs }: {
   buildingFunction: BuildingFunction,
   modifiedOutputs?: ResourceThroughput[],
 }): HTMLElement {
+  const functionBlock = document.createElement("div");
+  functionBlock.className = "bf-function-block";
+
+  if (buildingFunction.name) {
+    const functionName = document.createElement("div");
+    functionName.className = "bf-function-name";
+    functionName.textContent = buildingFunction.name;
+    functionBlock.appendChild(functionName);
+  }
+
   const functionDisplay = document.createElement("div");
   functionDisplay.className = "bf-function";
+  functionBlock.appendChild(functionDisplay);
 
   functionDisplay.appendChild(createInputsTable(buildingFunction.inputs));
 
@@ -20,7 +31,7 @@ export function createFunctionDisplay({ buildingFunction, modifiedOutputs }: {
 
   functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, modifiedOutputs));
 
-  return functionDisplay;
+  return functionBlock;
 }
 
 function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {

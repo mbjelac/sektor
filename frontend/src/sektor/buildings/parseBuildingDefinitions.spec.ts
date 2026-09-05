@@ -70,6 +70,62 @@ describe("parseBuildingDefinitions", () => {
     });
   });
 
+  it("parses building function name", () => {
+    const result = parseBuildingDefinitions([
+      "# Factory",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Function",
+      "Name: Steel making",
+      "Iron 3",
+      "=",
+      "Steel 5",
+    ]);
+
+    expect(result[0].buildingFunctions[0]).toEqual({
+      name: "Steel making",
+      inputs: [
+        { name: "Iron", value: 3 },
+      ],
+      outputs: [
+        { name: "Steel", value: 5 },
+      ],
+    });
+  });
+
+  it("parses each building function name separately", () => {
+    const result = parseBuildingDefinitions([
+      "# Factory",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Function",
+      "Name: Steel making",
+      "Iron 3",
+      "=",
+      "Steel 5",
+      "## Function",
+      "Coal 2",
+      "=",
+      "Heat 1",
+    ]);
+
+    expect(result[0].buildingFunctions).toEqual([
+      {
+        name: "Steel making",
+        inputs: [{ name: "Iron", value: 3 }],
+        outputs: [{ name: "Steel", value: 5 }],
+      },
+      {
+        inputs: [{ name: "Coal", value: 2 }],
+        outputs: [{ name: "Heat", value: 1 }],
+      },
+    ]);
+  });
+
   it("parses building function with inputs only", () => {
     const result = parseBuildingDefinitions([
       "# Consumer",

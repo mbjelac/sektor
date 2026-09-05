@@ -1,5 +1,5 @@
-#1 Building functions can have names
-- optionally, a Function section in buildings.md can have a property
+#1 [done] Building functions can have names
+- [done] optionally, a Function section in buildings.md can have a property
     - "Name: <name>"
     - if present
         - display that name above the function in the function panel  (building toolbar)

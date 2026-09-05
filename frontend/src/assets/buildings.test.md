@@ -42,6 +42,7 @@ pri4 s(15,15,15) t(0,0,10) r(90,45,90) c(#eedd88)
 
 ## Function
 
+Name: Living
 Food 2
 Water 1
 =

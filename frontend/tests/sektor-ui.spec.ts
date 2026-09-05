@@ -234,6 +234,7 @@ test("displays building panel with a capacity for each of several building funct
       buildingFunctions: [
         {
           buildingFunction: {
+            name: "Tool making",
             inputs: [{ name: "Ore", value: 4 }],
             outputs: [{ name: "Tools", value: 2 }],
           },

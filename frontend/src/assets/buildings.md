@@ -604,6 +604,8 @@ cyl s(3,3,6) t(-31,31,24) c(#75a0a9) r(0,90,45)
 
 ## Function
 
+Name: Metals
+
 WorkTechnical 3
 EnergyElectric 10
 WaterTechnical 5
@@ -613,6 +615,8 @@ Metals 5
 
 ## Function
 
+Name: Uranium
+
 WorkTechnical 6
 EnergyElectric 5
 WaterTechnical 15
@@ -621,6 +625,8 @@ OreUranium 5
 Uranium 3
 
 ## Function
+
+Name: Minerals
 
 WorkTechnical 2
 EnergyElectric 3
