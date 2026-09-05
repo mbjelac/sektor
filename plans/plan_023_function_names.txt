@@ -1,0 +1,8 @@
+#1 Building functions can have names
+- optionally, a Function section in buildings.md can have a property
+    - "Name: <name>"
+    - if present
+        - display that name above the function in the function panel  (building toolbar)
+        - display that name above the function in the building panel (currently selected building)
+    - horizontally centered
+    - white, small, regular
