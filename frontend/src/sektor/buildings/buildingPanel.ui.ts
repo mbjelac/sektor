@@ -133,7 +133,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
 
     const propertiesHeader = document.createElement("div");
     propertiesHeader.className = "bp-properties-header";
-    propertiesHeader.textContent = "Geo survey";
+    propertiesHeader.textContent = "Geography";
     propertiesSection.appendChild(propertiesHeader);
 
     for (const [propertyName, propertyValue] of Object.entries(locationProperties)) {
