@@ -1,0 +1,8 @@
+Map can be panned:
+- middle mouse drag
+- left mouse drag while holding SPACE
+
+Corner squares of the map can be dragged only to the half of the screen, not more.
+This way the pan has limits, but zooming still displays the wanted area.
+
+Option: Doubleclick on middle mouse or left doubleclick while holding SPACE senters the map (rotation angle & zoom level preserved).
