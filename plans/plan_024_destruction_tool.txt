@@ -8,3 +8,6 @@ Allow player to destroy buildings faster.
         - same as "locationOccupied"
     - when building clicked on map, destroy building
         - same function as deleting building through it's building panel
+
+#2 Destruction tool is indicated in a different way
+- when selected in building toolbar, use red color for "Destroy" instead of yellow
