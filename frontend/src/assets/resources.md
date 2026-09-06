@@ -2,6 +2,7 @@ EnergyElectric ⚡ #ffee44
 Work 🖐 #FFC800 negative
 WorkTechnical 🛠️ #b5aba1
 WorkEducational 📚 #3EB01C
+WorkMaintenance 🪜 #ffb638
 WaterPottable 💧 #55aaff
 WaterTechnical 🚱 #6c87ba
 FoodRaw 🥕 #ff9955

@@ -1,3 +1,25 @@
+# Destroy
+
+## Render
+
+```
+pri4 c(#f0a41c) s(40,30,16) t(0,0,13)
+pri4 c(#f0a41c) s(6,20,14) t(-6,0,37) h(80) r(0,0,90)
+pri4 c(#c70000d0) s(4,18,12) t(-6,0,37) r(0,0,90)
+pri4 c(#202020) s(10,6,6) t(2,0,29) r(0,0,0)
+tor c(#3a3d40) s(18,18,60) t(-14,36,19) r(0,90,0)
+tor c(#3a3d40) s(18,18,60) t(8,36,19) r(0,90,0)
+tor c(#3a3d40) s(18,18,60) t(-14,-8,19) r(0,90,0)
+tor c(#3a3d40) s(18,18,60) t(8,-8,19) r(0,90,0)
+cyl c(#e09a18) s(14,14,12) t(-14,28,19) r(0,90,0)
+cyl c(#e09a18) s(14,14,12) t(8,28,19) r(0,90,0)
+cyl c(#e09a18) s(14,14,12) t(-14,-16,19) r(0,90,0)
+cyl c(#e09a18) s(14,14,12) t(8,-16,19) r(0,90,0)
+pri4 c(#8d9195) s(2,64,14) t(24,0,21)
+pri4 c(#8d9195) s(2,64,10) t(26,0,13) r(0,0,-10)
+pri4 c(#8d9195) s(2,64,6) t(30,0,9) r(0,0,-40)
+```
+
 # WaterWells
 
 ## Render
@@ -542,12 +564,25 @@ xpyr4 s(20,20,10) t(0,0,11) c(#00ffbfa0) r(45,0,0) h(90)
 
 ## Function
 
+Name: Level 1
+
 WorkEducational 4
 WorkTechnical 1
 EnergyElectric 4
-Work 24
+Work 8
 =
-WorkTechnical 24
+WorkMaintenance 8
+
+## Function
+
+Name: Level 2
+
+WorkEducational 4
+WorkTechnical 1
+EnergyElectric 4
+WorkMaintenance 8
+=
+WorkTechnical 8
 
 # Refinery
 
