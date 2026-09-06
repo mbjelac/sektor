@@ -411,6 +411,45 @@ test("destroys building when trash icon is clicked", async ({ page }) => {
   await expectScreenshot(page, "building-destroyed", "body");
 });
 
+test("destroys buildings when clicked with the destruction tool", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  const centerX = box!.width / 2;
+  const centerY = box!.height / 2;
+
+  // Place two buildings
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  await canvas.click({ position: { x: centerX - 60, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+  await canvas.click({ position: { x: centerX + 60, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+
+  // Destroy both — the destruction tool stays selected after destroying
+  await page.locator('.building-item[data-building-name="Destroy"]').click();
+  await page.waitForTimeout(100);
+  await canvas.click({ position: { x: centerX - 60, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+  await canvas.click({ position: { x: centerX + 60, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "buildings-destroyed-with-tool", "body");
+});
+
+test("shows error when destroying an empty location", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+
+  await page.locator('.building-item[data-building-name="Destroy"]').click();
+  await page.waitForTimeout(100);
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "destroy-empty-location-error", "body");
+});
+
 test("displays sektor state panel with restrictions and requirements", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 

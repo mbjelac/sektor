@@ -35,7 +35,7 @@ describe("destroyBuilding", () => {
 
     const result = sektor.destroyBuilding({ x: 0, y: 0 });
 
-    expect(result).toEqual({ success: false, error: "buildingNotFound" });
+    expect(result).toEqual({ success: false, error: "locationEmpty" });
   });
 
   it("removes the building", () => {

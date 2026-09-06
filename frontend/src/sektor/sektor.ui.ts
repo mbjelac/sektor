@@ -17,6 +17,9 @@ import { MODIFIER_MIN } from "../../../shared/modifierLimits";
 
 const GRID_SIZE = 10;
 const FLOOR_PROPERTY = "soil";
+// The destruction tool sits among the buildings in the toolbar and is selected like one,
+// but clicking the map with it destroys the building there instead of constructing.
+const DESTROY_TOOL = "Destroy";
 const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
 const sektorName = new URLSearchParams(window.location.search).get("name");
 
@@ -149,20 +152,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     floorColor: floorColor,
     showFloor: definition?.properties.showFloor,
     location: placed.location,
-    onDestroy: () => {
-      const result = sektor.destroyBuilding(placed.location);
-      if (!result.success) {
-        showError(result.error ?? "Cannot destroy");
-        return;
-      }
-      const index = placedBuildings.findIndex(b => b.location.x === placed.location.x && b.location.y === placed.location.y);
-      if (index !== -1) placedBuildings.splice(index, 1);
-      floorGeometryNeedsRebaking = true;
-      hideBuildingPanel();
-      selectedBuildingLocation = null;
-      updateSektorStatePanel(sektor.getSektorState());
-      saveState();
-    },
+    onDestroy: () => destroyBuilding(placed.location),
     onIncreaseCapacity: (functionIndex: number) => {
       sektor.increaseBuildingCapacity(placed.location, functionIndex);
       changeBuildingCapacity(placed);
@@ -180,6 +170,21 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
       changeBuildingCapacity(placed);
     }
   });
+}
+
+function destroyBuilding(location: BuildingLocation) {
+  const result = sektor.destroyBuilding(location);
+  if (!result.success) {
+    showError(result.error ?? "Cannot destroy");
+    return;
+  }
+  const index = placedBuildings.findIndex(building => building.location.x === location.x && building.location.y === location.y);
+  if (index !== -1) placedBuildings.splice(index, 1);
+  floorGeometryNeedsRebaking = true;
+  hideBuildingPanel();
+  selectedBuildingLocation = null;
+  updateSektorStatePanel(sektor.getSektorState());
+  saveState();
 }
 
 // The panel shows the capacity it was opened with, so it is reopened to show the new one.
@@ -519,6 +524,11 @@ const sektorUi = (p: p5) => {
       } else {
         openEmptyLocationPanel({ x: grid.x, y: grid.y });
       }
+      return;
+    }
+
+    if (selected === DESTROY_TOOL) {
+      destroyBuilding({ x: grid.x, y: grid.y });
       return;
     }
 

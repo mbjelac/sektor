@@ -242,7 +242,7 @@ export class Sektor {
 
   destroyBuilding(location: BuildingLocation): DestroyBuildingResult {
     const building = this.findBuildingAt(location);
-    if (!building) return { success: false, error: "buildingNotFound" };
+    if (!building) return { success: false, error: "locationEmpty" };
 
     this.buildings = this.buildings.filter(
       existing => !(existing.location.x === location.x && existing.location.y === location.y)

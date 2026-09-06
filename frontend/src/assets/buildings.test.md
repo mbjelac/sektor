@@ -1,3 +1,12 @@
+# Destroy
+
+## Render
+
+```
+pri4 s(30,20,12) t(0,0,10) c(#f0a41c)
+pri4 s(6,20,14) t(-10,0,18) r(0,0,90) c(#c70000)
+```
+
 # TestFactory
 
 ## Render

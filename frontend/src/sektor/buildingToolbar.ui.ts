@@ -123,6 +123,7 @@ export function initToolbar() {
         toolbar.querySelectorAll(".building-item").forEach((el) => el.classList.remove("selected"));
         selectedBuilding = building.name;
         item.classList.add("selected");
+        hideToolbarFunctionPanel();
         if (building.buildingFunctions.length > 0) {
           showToolbarFunctionPanel(building.buildingFunctions, building.outputModifiers);
         }
