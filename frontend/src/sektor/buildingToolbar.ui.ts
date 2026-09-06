@@ -10,6 +10,10 @@ import { propertyDefinitions } from "../properties";
 
 const TOOLBAR_FUNCTION_PANEL_MARGIN = 8;
 
+// The destruction tool sits among the buildings in the toolbar and is selected like one,
+// but clicking the map with it destroys the building there instead of constructing.
+export const DESTRUCTION_TOOL = "Destroy";
+
 let selectedBuilding: string | null = null;
 let buildingCodeMap: Map<string, string> = new Map();
 let selectionCallback: ((buildingName: string | null) => void) | null = null;
@@ -103,6 +107,9 @@ export function initToolbar() {
   for (const building of buildings) {
     const item = document.createElement("div");
     item.className = "building-item";
+    if (building.name === DESTRUCTION_TOOL) {
+      item.classList.add("destruction-tool");
+    }
     item.dataset.buildingName = building.name;
 
     const canvasContainer = document.createElement("div");

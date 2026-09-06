@@ -78,6 +78,10 @@ body > main {
   border-color: yellow;
 }
 
+.building-item.destruction-tool.selected {
+  border-color: red;
+}
+
 .building-item canvas {
   display: block;
 }

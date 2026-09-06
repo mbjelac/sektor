@@ -3,7 +3,7 @@ import {drawFloor} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
-import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode} from "./buildingToolbar.ui";
+import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
 import { BuildingLocation, Location, Sektor } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
@@ -17,9 +17,6 @@ import { MODIFIER_MIN } from "../../../shared/modifierLimits";
 
 const GRID_SIZE = 10;
 const FLOOR_PROPERTY = "soil";
-// The destruction tool sits among the buildings in the toolbar and is selected like one,
-// but clicking the map with it destroys the building there instead of constructing.
-const DESTROY_TOOL = "Destroy";
 const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
 const sektorName = new URLSearchParams(window.location.search).get("name");
 
@@ -527,7 +524,7 @@ const sektorUi = (p: p5) => {
       return;
     }
 
-    if (selected === DESTROY_TOOL) {
+    if (selected === DESTRUCTION_TOOL) {
       destroyBuilding({ x: grid.x, y: grid.y });
       return;
     }
