@@ -397,6 +397,29 @@ test("lowers building capacity to zero when the double decrease button is clicke
   await expectScreenshot(page, "building-capacity-minimum", "#building-panel");
 });
 
+test("keeps the building panel scrolled where it was when a capacity is changed", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestRefinery"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  const panel = page.locator("#building-panel");
+  const scrollTopBeforeCapacityChange = await panel.evaluate(panelElement => {
+    panelElement.scrollTop = panelElement.scrollHeight;
+    return panelElement.scrollTop;
+  });
+
+  await page.locator(".bc-increase").click();
+  await page.waitForTimeout(200);
+  const scrollTopAfterCapacityChange = await panel.evaluate(panelElement => panelElement.scrollTop);
+
+  expect({ panelWasScrolled: scrollTopBeforeCapacityChange > 0, scrollTopAfterCapacityChange })
+    .toEqual({ panelWasScrolled: true, scrollTopAfterCapacityChange: scrollTopBeforeCapacityChange });
+});
+
 test("destroys building when trash icon is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");

@@ -12,6 +12,7 @@ import { formatNumber } from "../../formatNumber";
 const CAPACITY_DOT_COUNT = 10;
 
 let panelEl: HTMLElement | null = null;
+let panelLocation: BuildingLocation | null = null;
 let previewP5: p5 | null = null;
 let previewContainer: HTMLElement | null = null;
 let currentDraw: { code: string; floorColor: [number, number, number]; showFloor: boolean } | null = null;
@@ -73,6 +74,12 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
   onIncreaseCapacityCompletely?: (functionIndex: number) => void,
   onDecreaseCapacityCompletely?: (functionIndex: number) => void
 }) {
+  // Changing a capacity reopens the panel, which would put back a panel scrolled to its top,
+  // so the scroll position is carried over to the panel of the same location.
+  const scrollTop = panelEl && panelLocation?.x === location.x && panelLocation?.y === location.y
+    ? panelEl.scrollTop
+    : 0;
+
   hideBuildingPanel();
 
   panelEl = document.createElement("div");
@@ -171,6 +178,9 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
   currentDraw = { code, floorColor, showFloor: showFloor !== false };
   ensurePreviewP5(previewContainer);
   previewP5!.redraw();
+
+  panelLocation = location;
+  panelEl.scrollTop = scrollTop;
 }
 
 export function hideBuildingPanel() {
@@ -178,6 +188,7 @@ export function hideBuildingPanel() {
     panelEl.remove();
     panelEl = null;
   }
+  panelLocation = null;
   currentDraw = null;
 }
 
