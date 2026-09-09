@@ -36,9 +36,9 @@ Rule: Do not create sektors that are impossible to solve!
         - requirement is water & all groundwater levels are totally empty (all production is 0)
         - requirement is water & electricty imports are restricted to 0 & there are no powerplant buildings available
 
-Rule: Each player has a limit of unfinished (status not Done) sektors. Limit increases (a bit) with score.
-Initial limit is 3.
-Very high score players have limit of 10.
+Both sektor complexity and player score can be mapped to levels.
+Rule: A player with level X can claim only sektors with level X & X-1.
+This is to keep the players from hogging the easy sektors & increasing their score but also to keep them wanting to improve to reach higher level sektors.
 
 #1 A sektor can be created for a specific player's score
 - Sektor list page has "Create" button
