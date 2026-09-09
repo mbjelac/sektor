@@ -4,3 +4,27 @@ If a location has an altitude of 1, display the floor block 2 times higher than 
 Altitude 2 = 3 times bigger. Altitude 3 = 4 times bigger, etc.
 
 If a building is placed on a location with an altitude greater than 0, apply the altitude when drawing the building.
+
+
+
+Waterfalls:
+"Buildings" which are already there when the sektor is loaded.
+They cannot be destroyed.
+Has to be placed on a square with a river, which neighbors a river square with higher altitude.
+Maybe a possibility to build dams on them for hydroelectricity:
+    - can be built only on the river square with higher altitude
+    - "turns" into an accumulation lake and a dam on the edge
+Animated.
+
+Higher altitudes have different floor color:
+- 0: greenland (default)
+- 1: hilly greenland (although soil fertility is lower, so more yellow/brown)
+- 2: low mountains (green-gray hues)
+- 3: high mountains (blue-gray hues)
+- 4: snowy mountains (white-gray hues)
+
+Squares with higher altitudes than 1 (2 and above) may have uneven terrain: also "buildings" which are already there and cannot be destroyed.
+These are unusable for building anything.
+Some may be cleared?
+
+Higher altitudes have more chance of ore resources? - sanity check!
