@@ -3,7 +3,22 @@ For now no password required.
 
 On the list, all players see all sektors, but they can only edit their own sektor.
 
-#1 A player can claim a sektor
+#1 A player has to log in if not logged in yet
+- a player's username is stored in local storage
+- if no username is stored, any page is routed to login page
+- if a username is stored, all pages are allowed
+- login page contains an input field for entering the user name labelled "Username"
+- when user name entered, it is stored and user is routed to sektor list
+- when a user is logged in, all pages have the user name displayed in the top right corner
+    - before the username is a user icon (heroicons user)
+
+#2 A player can log out
+- after the username in the top/right corner there is a small button "Log out"
+- when clicked
+    - username in storage is deleted
+    - navigate to login page
+
+#3 A player can claim a sektor
 - sektor map can be opened in edit or view mode
     - edit mode: current implementation
     - view mode: same as edit mode, except do not show
@@ -17,11 +32,33 @@ On the list, all players see all sektors, but they can only edit their own sekto
                 - when Claim clicked
                     - current player is set as owner of the sektor
                     - open that Sektor in edit mode
+            - if owner is current player, show "You"
+                - white text
+                - green pill background
 - a player can own at most 5 not-done sektors
     - all player's sektors which are in progress or exceeding restrictions or any other status which is not "Done" count towards this limit
     - when a player has reached or surpassed this limit, the "Claim" button is disabled
-- a player must name their sektor, when they claim it
-    - name has a max length
-    - profanity checker?
 
-#2 A player can abandon a sektor
+#4 A claimed sektor must be named
+- when "Claim" button clicked, a name dialog pops up
+    - "Name" label
+    - text input field
+        - field filled with the current sektor name, or blank if sektor was not abandoned
+    - OK button
+- name has a max length of 30 characters
+    - text field is limited to 30 characters, player cannot enter more
+- duplicate names are not allowed
+    - on each change to text field, if name already exists
+        - red warning appears below field "nameAlreadyExists"
+        - OK button disabled
+
+#5 A player can abandon a sektor
+- a player can abandon their claimed sektor
+    - in sektor list there is a button "Abandon" as the final item on the sektor item
+    - button visible only on sektors belonging to the current player
+    - when clicked, there is a confirmation dialog "Are you sure you want to abandon <Sektor name>?"
+        - Yes & No buttons
+        - if confirmed, sektor's owner is removed
+        - the abandoned sektor is again not owned and can be claimed
+- an abandoned sektor's score does not count towards any player's total score
+- an abandoned sector has no owner
