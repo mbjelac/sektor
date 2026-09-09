@@ -1,0 +1,4 @@
+When viewing the sektor list, it may be shown as a map view, or even a panet (3d globe) view.
+Players will form a memory of which sektors or regions can be found on which continent.
+
+Continents and/or regions of them may have a higher (or lower) chance of a good location property like wind, insolation, ore, etc.
