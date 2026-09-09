@@ -6,3 +6,5 @@ Transport: Edges of a river square may have a bycicle bridge over it. Same types
 Special case, a river may fork.
 
 Different river sizes - some rivers are narrow, some are wide.
+
+Water is animated.
