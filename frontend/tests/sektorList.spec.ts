@@ -21,11 +21,81 @@ test("shows the owner of every sektor", async ({ page }) => {
 
 test("makes the player the owner of a sektor they claim and opens it", async ({ page }) => {
   await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator("#sektor-name-input").fill("Gamma");
+  await page.locator("#name-ok-button").click();
   await page.waitForURL(/\/sektor\.html\?name=Gamma$/);
 
   const owners = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorOwners")!));
   expect({ owners, path: new URL(page.url()).pathname })
     .toEqual({ owners: { Alpha: CURRENT_PLAYER, Beta: OTHER_PLAYER, Gamma: CURRENT_PLAYER }, path: "/sektor.html" });
+});
+
+test("asks for a name when a sektor is claimed", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+
+  await expect(page.locator("#name-dialog")).toHaveScreenshot("name-dialog.png", { maxDiffPixelRatio: 0 });
+});
+
+test("offers the name it was left with when a named sektor is claimed again", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("sektorNames", JSON.stringify({ Gamma: "Old Gamma" })));
+  await page.reload();
+
+  await page.locator(".sektor-list-item", { hasText: "Old Gamma" }).locator(".sektor-list-claim").click();
+
+  await expect(page.locator("#sektor-name-input")).toHaveValue("Old Gamma");
+});
+
+test("names the sektor the player claims", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+
+  await page.locator("#sektor-name-input").fill("Marko's Place");
+  await page.locator("#name-ok-button").click();
+  await page.waitForURL(/\/sektor\.html\?name=Gamma$/);
+
+  const givenNames = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorNames")!));
+  expect(givenNames).toEqual({ Gamma: "Marko's Place" });
+});
+
+test("takes no more than thirty characters of a name", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+
+  await page.locator("#sektor-name-input").pressSequentially("123456789012345678901234567890TOOMUCH");
+
+  await expect(page.locator("#sektor-name-input")).toHaveValue("123456789012345678901234567890");
+});
+
+test("warns that a name is taken by another sektor", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+
+  await page.locator("#sektor-name-input").fill("Alpha");
+
+  await expect(page.locator("#name-dialog")).toHaveScreenshot("name-dialog-name-taken.png", { maxDiffPixelRatio: 0 });
+});
+
+test("refuses a name taken by another sektor", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+
+  await page.locator("#sektor-name-input").fill("Alpha");
+
+  await expect(page.locator("#name-ok-button")).toBeDisabled();
+});
+
+test("takes a name again once it is no longer the taken one", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+
+  await page.locator("#sektor-name-input").fill("Alpha");
+  await page.locator("#sektor-name-input").fill("Alphabet");
+
+  await expect(page.locator("#name-ok-button")).toBeEnabled();
+});
+
+test("keeps the name a sektor already carries when it is claimed again", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("sektorNames", JSON.stringify({ Gamma: "Old Gamma" })));
+  await page.reload();
+
+  await page.locator(".sektor-list-item", { hasText: "Old Gamma" }).locator(".sektor-list-claim").click();
+
+  await expect(page.locator("#name-ok-button")).toBeEnabled();
 });
 
 test("stops the player from claiming more than five unfinished sektors", async ({ page }) => {

@@ -5,6 +5,8 @@ import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon,
 import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
 import { getSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
+import { getGivenSektorName, setGivenSektorName } from "../sektor/sektorName.api";
+import { showNameDialog } from "./nameDialog.ui";
 import { getUsername } from "../login/login.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
@@ -88,7 +90,7 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
 
   const name = document.createElement("span");
   name.className = "sektor-list-name";
-  name.textContent = sektorListItem.name;
+  name.textContent = getGivenSektorName(sektorListItem.name) ?? sektorListItem.name;
   item.appendChild(name);
 
   item.appendChild(createOwner(sektorListItem.name, claimingAllowed));
@@ -143,10 +145,27 @@ function createClaimButton(sektorName: string, claimingAllowed: boolean): HTMLEl
   return claimButton;
 }
 
-// Claiming a sektor makes the player its owner, which opens it for building.
+// A claimed sektor is named by the player claiming it, and is theirs to build on once named.
 function claimSektor(sektorName: string) {
-  setSektorOwner(sektorName, getUsername()!);
-  window.location.href = `/sektor.html?name=${encodeURIComponent(sektorName)}`;
+  showNameDialog({
+    // A sektor which has been named before was abandoned by its previous player, and is offered
+    // for renaming with the name it was left with.
+    name: getGivenSektorName(sektorName) ?? "",
+    takenNames: getTakenSektorNames(sektorName),
+    onNamed: givenName => {
+      setGivenSektorName(sektorName, givenName);
+      setSektorOwner(sektorName, getUsername()!);
+      window.location.href = `/sektor.html?name=${encodeURIComponent(sektorName)}`;
+    },
+  });
+}
+
+// The sektor being claimed is left out, so that a sektor can be claimed again under the name it
+// already carries.
+function getTakenSektorNames(claimedSektorName: string): string[] {
+  return getSektorList()
+    .filter(sektor => sektor.name !== claimedSektorName)
+    .map(sektor => getGivenSektorName(sektor.name) ?? sektor.name);
 }
 
 function createStatus(status: SektorStatus): HTMLElement {

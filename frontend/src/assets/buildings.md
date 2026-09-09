@@ -734,3 +734,100 @@ Minerals 10
 ## Properties
 
 showFloor=false
+
+
+# Town Square
+
+## Render
+
+```
+pri4 s(20,20,1) t(0,0,7) c(#b9b9b9)
+pri4 s(20,20,1) t(-14,0,7) c(#d4d4d4)
+pri4 s(20,20,1) t(-28,0,7) c(#dddddd)
+pri4 s(20,20,1) t(-42,0,7) c(#c0c0c0)
+pri4 s(20,20,1) t(14,0,7) c(#d9d9d9)
+pri4 s(20,20,1) t(28,0,7) c(#b9b9b9)
+pri4 s(20,20,1) t(42,0,7) c(#d7d7d7)
+
+pri4 s(20,20,1) t(0,14,7) c(#c0c0c0)
+pri4 s(20,20,1) t(-14,14,7) c(#cacaca)
+pri4 s(20,20,1) t(-28,14,7) c(#d7d7d7)
+pri4 s(20,20,1) t(-42,14,7) c(#b7b7b7)
+pri4 s(20,20,1) t(14,14,7) c(#cdcdcd)
+pri4 s(20,20,1) t(28,14,7) c(#d1d1d1)
+pri4 s(20,20,1) t(42,14,7) c(#e5e5e5)
+
+pri4 s(20,20,1) t(0,28,7) c(#d2d2d2)
+pri4 s(20,20,1) t(-14,28,7) c(#c4c4c4)
+pri4 s(20,20,1) t(-28,28,7) c(#c6c6c6)
+pri4 s(20,20,1) t(-42,28,7) c(#b5b5b5)
+pri4 s(20,20,1) t(14,28,7) c(#b8b8b8)
+pri4 s(20,20,1) t(28,28,7) c(#b4b4b4)
+pri4 s(20,20,1) t(42,28,7) c(#d0d0d0)
+
+pri4 s(20,20,1) t(0,42,7) c(#d8d8d8)
+pri4 s(20,20,1) t(-14,42,7) c(#cdcdcd)
+pri4 s(20,20,1) t(-28,42,7) c(#c8c8c8)
+pri4 s(20,20,1) t(-42,42,7) c(#cccccc)
+pri4 s(20,20,1) t(14,42,7) c(#dddddd)
+pri4 s(20,20,1) t(28,42,7) c(#bebebe)
+pri4 s(20,20,1) t(42,42,7) c(#cfcfcf)
+
+pri4 s(20,20,1) t(0,-14,7) c(#c6c6c6)
+pri4 s(20,20,1) t(-14,-14,7) c(#c8c8c8)
+pri4 s(20,20,1) t(-28,-14,7) c(#dfdfdf)
+pri4 s(20,20,1) t(-42,-14,7) c(#cfcfcf)
+pri4 s(20,20,1) t(14,-14,7) c(#c2c2c2)
+pri4 s(20,20,1) t(28,-14,7) c(#e0e0e0)
+pri4 s(20,20,1) t(42,-14,7) c(#d7d7d7)
+
+pri4 s(20,20,1) t(0,-28,7) c(#d5d5d5)
+pri4 s(20,20,1) t(-14,-28,7) c(#c6c6c6)
+pri4 s(20,20,1) t(-28,-28,7) c(#e4e4e4)
+pri4 s(20,20,1) t(-42,-28,7) c(#bdbdbd)
+pri4 s(20,20,1) t(14,-28,7) c(#d0d0d0)
+pri4 s(20,20,1) t(28,-28,7) c(#e0e0e0)
+pri4 s(20,20,1) t(42,-28,7) c(#e6e6e6)
+
+pri4 s(20,20,1) t(0,-42,7) c(#dbdbdb)
+pri4 s(20,20,1) t(-14,-42,7) c(#bcbcbc)
+pri4 s(20,20,1) t(-28,-42,7) c(#bcbcbc)
+pri4 s(20,20,1) t(-42,-42,7) c(#cbcbcb)
+pri4 s(20,20,1) t(14,-42,7) c(#bcbcbc)
+pri4 s(20,20,1) t(28,-42,7) c(#cecece)
+pri4 s(20,20,1) t(42,-42,7) c(#e1e1e1)
+
+cyl s(11,11,1) t(0,0,8) c(#eeeeee)
+cyl s(10,10,1) t(0,0,9) c(#eeeeee)
+cyl s(5,5,1) t(0,0,11) r(0,35,0) c(#5aaaa1)
+cyl s(5,5,1) t(0,-1,14) r(0,-35,0) c(#5aaaa1)
+cyl s(1,1,8) t(0,0,9) c(#5aaaa1)
+pri3 s(5,5,1) t(-2,0,18) r(70,-40,0) c(#5aaaa1)
+pri3 s(5,5,1) t(2,0,18) r(250,-40,0) c(#5aaaa1)
+
+sph c(#2c6d2d) s(7,7,15) t(43,43,6)
+sph c(#2c6d2d) s(5,5,13) t(43,34,6)
+sph c(#2c6d2d) s(5,5,13) t(23,43,6)
+sph c(#2c6d2d) s(5,5,11) t(-33,43,6)
+sph c(#2c6d2d) s(6,6,14) t(-43,43,6)
+sph c(#2c6d2d) s(6,6,16) t(-43,30,6)
+sph c(#2c6d2d) s(6,6,12) t(-43,0,6)
+sph c(#2c6d2d) s(6,6,17) t(-43,-30,5)
+sph c(#2c6d2d) s(5,5,16) t(-43,-43,5)
+sph c(#2c6d2d) s(4,4,16) t(-33,-43,5)
+sph c(#2c6d2d) s(4,4,13) t(-27,-43,5)
+sph c(#2c6d2d) s(6,6,14) t(43,-43,6)
+sph c(#2c6d2d) s(6,6,13) t(33,-43,6)
+sph c(#2c6d2d) s(6,6,10) t(43,-30,6)
+sph c(#2c6d2d) s(4,4,8) t(43,-10,6)
+sph c(#2c6d2d) s(4,4,10) t(43,-4,6)
+```
+
+## Function
+
+WorkMaintenance 2
+EnergyElectric 1
+WaterPottable 2
+=
+HealthSocial 4
+

@@ -44,18 +44,18 @@ On the list, all players see all sektors, but they can only edit their own sekto
     - [done] all player's sektors which are in progress or exceeding restrictions or any other status which is not "Done" count towards this limit
     - [done] when a player has reached or surpassed this limit, the "Claim" button is disabled
 
-#4 A claimed sektor must be named
-- when "Claim" button clicked, a name dialog pops up
-    - "Name" label
-    - text input field
-        - field filled with the current sektor name, or blank if sektor was not abandoned
-    - OK button
-- name has a max length of 30 characters
-    - text field is limited to 30 characters, player cannot enter more
-- duplicate names are not allowed
-    - on each change to text field, if name already exists
-        - red warning appears below field "nameAlreadyExists"
-        - OK button disabled
+#4 [done] A claimed sektor must be named
+- [done] when "Claim" button clicked, a name dialog pops up
+    - [done] "Name" label
+    - [done] text input field
+        - [done] field filled with the current sektor name, or blank if sektor was not abandoned
+    - [done] OK button
+- [done] name has a max length of 30 characters
+    - [done] text field is limited to 30 characters, player cannot enter more
+- [done] duplicate names are not allowed
+    - [done] on each change to text field, if name already exists
+        - [done] red warning appears below field "nameAlreadyExists"
+        - [done] OK button disabled
 
 #5 A player can abandon a sektor
 - a player can abandon their claimed sektor
