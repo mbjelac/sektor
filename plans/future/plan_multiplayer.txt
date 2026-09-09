@@ -1,0 +1,27 @@
+When starting the game, a player has to enter their username.
+For now no password required.
+
+On the list, all players see all sektors, but they can only edit their own sektor.
+
+#1 A player can claim a sektor
+- sektor map can be opened in edit or view mode
+    - edit mode: current implementation
+    - view mode: same as edit mode, except do not show
+        - building toolbar
+        - capacity buttons in building panel
+- a map is opened in edit mode only if the Sektor has been claimed by the current player
+    - each sektor can have an "owner"
+        - show owner column in sektor list
+            - show owner name in column
+            - if no onwer, show "Claim" button
+                - when Claim clicked
+                    - current player is set as owner of the sektor
+                    - open that Sektor in edit mode
+- a player can own at most 5 not-done sektors
+    - all player's sektors which are in progress or exceeding restrictions or any other status which is not "Done" count towards this limit
+    - when a player has reached or surpassed this limit, the "Claim" button is disabled
+- a player must name their sektor, when they claim it
+    - name has a max length
+    - profanity checker?
+
+#2 A player can abandon a sektor
