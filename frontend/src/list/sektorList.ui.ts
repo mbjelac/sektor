@@ -1,3 +1,5 @@
+import { requireLogin } from "../login/requireLogin";
+import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, SektorListItem } from "./sektorList.api";
 import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, starIcon } from "../icons";
 import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
@@ -154,4 +156,6 @@ function sumScores(throughputs: ScoredThroughput[]): number {
   return throughputs.reduce((total, throughput) => total + throughput.score, 0);
 }
 
+requireLogin();
+showUser();
 renderList();

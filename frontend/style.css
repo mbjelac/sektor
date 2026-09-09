@@ -141,7 +141,8 @@ body > main {
 
 #right-panels {
   position: absolute;
-  top: 16px;
+  /* The logged in player is shown above the panels, in the top right corner. */
+  top: 48px;
   bottom: 16px;
   right: 16px;
   z-index: 100;
@@ -749,4 +750,70 @@ body > main {
 .ss-leave:hover {
   color: #fff;
   border-color: #999;
+}
+
+#login {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.login-label {
+  color: #999;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+.login-input {
+  background: #333;
+  border: 1px solid #555;
+  color: #ccc;
+  font-family: sans-serif;
+  font-size: 14px;
+  padding: 6px 8px;
+  outline: none;
+}
+
+.login-input:focus {
+  border-color: #888;
+}
+
+.login-button {
+  background: #333;
+  border: 1px solid #555;
+  color: #ccc;
+  font-family: sans-serif;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  border-color: #888;
+  color: #fff;
+}
+
+#user-display {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ccc;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.user-icon {
+  display: flex;
+  align-items: center;
+  color: #999;
 }

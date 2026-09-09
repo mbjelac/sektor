@@ -14,6 +14,11 @@ import { initPropertyToggler, getSelectedProperty, selectProperty } from "./prop
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
 import { getNegativeScoringResources } from "../resources";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
+import { requireLogin } from "../login/requireLogin";
+import { showUser } from "../login/userDisplay.ui";
+
+requireLogin();
+showUser();
 
 const GRID_SIZE = 10;
 const FLOOR_PROPERTY = "soil";

@@ -4,6 +4,8 @@ export { test, expect };
 
 export function setup() {
   test.beforeEach(async ({ page }) => {
+    // Every page is only shown to a logged in player, so the tests start out logged in.
+    await page.addInitScript(() => localStorage.setItem("username", "Tester"));
     await page.goto("/sektor.html?test=true");
     await page.waitForSelector("canvas");
   });
