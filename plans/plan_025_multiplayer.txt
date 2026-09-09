@@ -4,13 +4,16 @@ For now no password required.
 On the list, all players see all sektors, but they can only edit their own sektor.
 
 #1 A player has to log in if not logged in yet
-- a player's username is stored in local storage
-- if no username is stored, any page is routed to login page
-- if a username is stored, all pages are allowed
-- login page contains an input field for entering the user name labelled "Username"
-- when user name entered, it is stored and user is routed to sektor list
-- when a user is logged in, all pages have the user name displayed in the top right corner
-    - before the username is a user icon (heroicons user)
+- [done] a player's username is stored in local storage
+- [done] if no username is stored, any page is routed to login page
+- [done] if a username is stored, all pages are allowed
+- login page contains
+    - an input field for entering the user name
+    - labelled "Username"
+    - a button "Log in"
+- [done] when user name entered, it is stored and user is routed to sektor list
+- [done] when a user is logged in, all pages have the user name displayed in the top right corner
+    - [done] before the username is a user icon (heroicons user)
 
 #2 A player can log out
 - after the username in the top/right corner there is a small button "Log out"
