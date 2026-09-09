@@ -912,31 +912,18 @@ body > main {
   border-color: #888;
 }
 
-.name-dialog-ok {
-  background: #1e6fd9;
-  border: none;
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.name-dialog-ok:hover:enabled {
-  background: #2f83f0;
-}
-
-.name-dialog-ok:disabled {
-  background: #3c4757;
-  color: #8a8a8a;
-  cursor: default;
-}
-
 .name-dialog-warning {
   color: #ff6b6b;
   font-family: sans-serif;
   font-size: 12px;
+}
+
+.dialog-title {
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
 .dialog-question {
@@ -962,8 +949,14 @@ body > main {
   cursor: pointer;
 }
 
-.dialog-button:hover {
+.dialog-button:hover:enabled {
   background: #2f83f0;
+}
+
+.dialog-button:disabled {
+  background: #3c4757;
+  color: #8a8a8a;
+  cursor: default;
 }
 
 .dialog-button-plain {

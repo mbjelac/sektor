@@ -56,6 +56,23 @@ test("names the sektor the player claims", async ({ page }) => {
   expect(givenNames).toEqual({ Gamma: "Marko's Place" });
 });
 
+test("leaves the sektor alone when claiming is cancelled", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+
+  await page.locator("#name-cancel-button").click();
+
+  await expect(page.locator("#name-dialog")).toHaveCount(0);
+});
+
+test("keeps the sektor unclaimed when claiming is cancelled", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+
+  await page.locator("#name-cancel-button").click();
+
+  const owners = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorOwners")!));
+  expect(owners).toEqual({ Alpha: CURRENT_PLAYER, Beta: OTHER_PLAYER });
+});
+
 test("takes no more than thirty characters of a name", async ({ page }) => {
   await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
 

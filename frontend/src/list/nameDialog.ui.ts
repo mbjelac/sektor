@@ -16,6 +16,11 @@ export function showNameDialog({ name, takenNames, onNamed }: {
   dialog.className = "dialog";
   overlay.appendChild(dialog);
 
+  const title = document.createElement("div");
+  title.className = "dialog-title";
+  title.textContent = "Claim Sektor";
+  dialog.appendChild(title);
+
   const label = document.createElement("label");
   label.className = "name-dialog-label";
   label.htmlFor = "sektor-name-input";
@@ -35,12 +40,24 @@ export function showNameDialog({ name, takenNames, onNamed }: {
   warning.textContent = "nameAlreadyExists";
   dialog.appendChild(warning);
 
+  const buttons = document.createElement("div");
+  buttons.className = "dialog-buttons";
+  dialog.appendChild(buttons);
+
   const okButton = document.createElement("button");
   okButton.id = "name-ok-button";
-  okButton.className = "name-dialog-ok";
-  okButton.textContent = "OK";
+  okButton.className = "dialog-button";
+  okButton.textContent = "Claim";
   okButton.addEventListener("click", () => onNamed(nameInput.value.trim()));
-  dialog.appendChild(okButton);
+  buttons.appendChild(okButton);
+
+  // A player who thinks better of claiming the sektor leaves it as it was.
+  const cancelButton = document.createElement("button");
+  cancelButton.id = "name-cancel-button";
+  cancelButton.className = "dialog-button dialog-button-plain";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", () => overlay.remove());
+  buttons.appendChild(cancelButton);
 
   nameInput.addEventListener("input", showWhetherNameIsTaken);
   showWhetherNameIsTaken();

@@ -67,7 +67,7 @@ On the list, all players see all sektors, but they can only edit their own sekto
         - [done] the abandoned sektor is again not owned and can be claimed
 - [done] an abandoned sector has no owner
 
-#6 A player can change their mind about claiming a sektor
+#6 [done] A player can change their mind about claiming a sektor
 - [done] sektor name dialog has a "Cancel" button
 - [done] OK button labelled "Claim"
 - [done] dialog has title "Claim Sektor"
