@@ -1,0 +1,6 @@
+A river is a series of squares connected to each other linearly starting at one edge square and ending in another edge square not on the same edge.
+A river square may not have a building (maybe a Riverloop, or some hydroelectric plant?).
+
+Transport: Edges of a river square may have a bycicle bridge over it. Same types apply as for bicycle paths.
+
+Special case, a river may fork.
