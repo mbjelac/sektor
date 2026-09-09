@@ -68,6 +68,11 @@ On the list, all players see all sektors, but they can only edit their own sekto
 - [done] an abandoned sector has no owner
 
 #6 A player can change their mind about claiming a sektor
-- sektor name dialog has a "Cancel" button
-- OK button labelled "Claim"
-- dialog has title "Claim Sektor"
+- [done] sektor name dialog has a "Cancel" button
+- [done] OK button labelled "Claim"
+- [done] dialog has title "Claim Sektor"
+
+#7 A player sees the name of the sektor in the map page
+- in map, current sektor's name is displayed in top-left corner in bold text
+- building toolbar (if shown) is below sektor name
+- geography toolbar is aligned to bottom of screen, even in view mode
