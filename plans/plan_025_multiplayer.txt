@@ -58,12 +58,16 @@ On the list, all players see all sektors, but they can only edit their own sekto
         - [done] OK button disabled
 
 #5 A player can abandon a sektor
-- a player can abandon their claimed sektor
-    - in sektor list there is a button "Abandon" as the final item on the sektor item
-    - button visible only on sektors belonging to the current player
-    - when clicked, there is a confirmation dialog "Are you sure you want to abandon <Sektor name>?"
-        - Yes & No buttons
-        - if confirmed, sektor's owner is removed
-        - the abandoned sektor is again not owned and can be claimed
-- an abandoned sektor's score does not count towards any player's total score
-- an abandoned sector has no owner
+- [done] a player can abandon their claimed sektor
+    - [done] in sektor list there is a button "Abandon" as the final item on the sektor item
+    - [done] button visible only on sektors belonging to the current player
+    - [done] when clicked, there is a confirmation dialog "Are you sure you want to abandon <Sektor name>?"
+        - [done] Yes & No buttons
+        - [done] if confirmed, sektor's owner is removed
+        - [done] the abandoned sektor is again not owned and can be claimed
+- [done] an abandoned sector has no owner
+
+#6 A player can change their mind about claiming a sektor
+- sektor name dialog has a "Cancel" button
+- OK button labelled "Claim"
+- dialog has title "Claim Sektor"
