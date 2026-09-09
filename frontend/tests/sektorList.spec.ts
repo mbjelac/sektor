@@ -98,6 +98,57 @@ test("keeps the name a sektor already carries when it is claimed again", async (
   await expect(page.locator("#name-ok-button")).toBeEnabled();
 });
 
+test("shows an abandon button only on the sektors of the player", async ({ page }) => {
+  await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-abandon.png", { maxDiffPixelRatio: 0 });
+});
+
+test("asks the player to confirm abandoning a sektor", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Alpha" }).locator(".sektor-list-abandon").click();
+
+  await expect(page.locator("#abandon-dialog")).toHaveScreenshot("abandon-dialog.png", { maxDiffPixelRatio: 0 });
+});
+
+test("keeps the sektor when abandoning it is not confirmed", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Alpha" }).locator(".sektor-list-abandon").click();
+  await page.locator("#abandon-no-button").click();
+
+  const owners = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorOwners")!));
+  expect(owners).toEqual({ Alpha: CURRENT_PLAYER, Beta: OTHER_PLAYER });
+});
+
+test("leaves an abandoned sektor without an owner", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Alpha" }).locator(".sektor-list-abandon").click();
+  await page.locator("#abandon-yes-button").click();
+  await page.locator(".sektor-list-item", { hasText: "Alpha" }).locator(".sektor-list-claim").waitFor();
+
+  const owners = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorOwners")!));
+  expect(owners).toEqual({ Beta: OTHER_PLAYER });
+});
+
+test("offers an abandoned sektor for claiming under the name it was left with", async ({ page }) => {
+  // The whole life of a name: the sektor is claimed and named, then given up, then claimed again.
+  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator("#sektor-name-input").fill("Sunset Flats");
+  await page.locator("#name-ok-button").click();
+  await page.waitForURL(/\/sektor\.html\?name=Gamma$/);
+
+  await page.goto("/");
+  await page.locator(".sektor-list-item", { hasText: "Sunset Flats" }).locator(".sektor-list-abandon").click();
+  await page.locator("#abandon-yes-button").click();
+
+  await page.locator(".sektor-list-item", { hasText: "Sunset Flats" }).locator(".sektor-list-claim").click();
+
+  await expect(page.locator("#sektor-name-input")).toHaveValue("Sunset Flats");
+});
+
+test("shows an abandoned sektor as owned by nobody", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Alpha" }).locator(".sektor-list-abandon").click();
+  await page.locator("#abandon-yes-button").click();
+  await page.locator(".sektor-list-item", { hasText: "Alpha" }).locator(".sektor-list-claim").waitFor();
+
+  await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-abandoned.png", { maxDiffPixelRatio: 0 });
+});
+
 test("stops the player from claiming more than five unfinished sektors", async ({ page }) => {
   await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"], []);
 

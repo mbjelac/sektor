@@ -57,7 +57,7 @@ On the list, all players see all sektors, but they can only edit their own sekto
         - [done] red warning appears below field "nameAlreadyExists"
         - [done] OK button disabled
 
-#5 A player can abandon a sektor
+#5 [done] A player can abandon a sektor
 - [done] a player can abandon their claimed sektor
     - [done] in sektor list there is a button "Abandon" as the final item on the sektor item
     - [done] button visible only on sektors belonging to the current player

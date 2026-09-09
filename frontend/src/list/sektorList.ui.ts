@@ -4,9 +4,10 @@ import { getSektorList, SektorListItem } from "./sektorList.api";
 import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, starIcon } from "../icons";
 import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
-import { getSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
+import { getSektorOwner, removeSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
 import { getGivenSektorName, setGivenSektorName } from "../sektor/sektorName.api";
 import { showNameDialog } from "./nameDialog.ui";
+import { showAbandonDialog } from "./abandonDialog.ui";
 import { getUsername } from "../login/login.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
@@ -72,6 +73,7 @@ function createHeader(): HTMLElement {
   header.appendChild(createHeaderIcon(starIcon, "Score"));
 
   header.appendChild(document.createElement("span"));
+  header.appendChild(document.createElement("span"));
 
   return header;
 }
@@ -108,7 +110,31 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
   });
   item.appendChild(button);
 
+  item.appendChild(createAbandon(sektorListItem.name));
+
   return item;
+}
+
+// Only the player who owns a sektor can give it up, so only they are shown the button for it.
+function createAbandon(sektorName: string): HTMLElement {
+  if (getSektorOwner(sektorName) !== getUsername()) return document.createElement("span");
+
+  const abandonButton = document.createElement("button");
+  abandonButton.className = "sektor-list-abandon";
+  abandonButton.textContent = "Abandon";
+  abandonButton.addEventListener("click", () => abandonSektor(sektorName));
+  return abandonButton;
+}
+
+function abandonSektor(sektorName: string) {
+  showAbandonDialog({
+    sektorName: getGivenSektorName(sektorName) ?? sektorName,
+    onConfirmed: () => {
+      removeSektorOwner(sektorName);
+      // The abandoned sektor is up for claiming again, which the list shows once drawn anew.
+      window.location.reload();
+    },
+  });
 }
 
 // A sektor without an owner is up for grabs, the player's own sektors are marked as theirs, and

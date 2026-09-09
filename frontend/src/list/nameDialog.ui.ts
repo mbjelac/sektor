@@ -9,9 +9,11 @@ export function showNameDialog({ name, takenNames, onNamed }: {
 }) {
   const overlay = document.createElement("div");
   overlay.id = "name-dialog-overlay";
+  overlay.className = "dialog-overlay";
 
   const dialog = document.createElement("div");
   dialog.id = "name-dialog";
+  dialog.className = "dialog";
   overlay.appendChild(dialog);
 
   const label = document.createElement("label");

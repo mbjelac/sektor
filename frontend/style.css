@@ -617,7 +617,7 @@ body > main {
   max-width: 640px;
   margin: 40px auto;
   display: grid;
-  grid-template-columns: 1fr auto auto auto auto auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto auto auto auto auto;
   align-content: start;
   gap: 8px 12px;
 }
@@ -871,7 +871,7 @@ body > main {
   color: #fff;
 }
 
-#name-dialog-overlay {
+.dialog-overlay {
   position: fixed;
   inset: 0;
   z-index: 300;
@@ -881,7 +881,7 @@ body > main {
   justify-content: center;
 }
 
-#name-dialog {
+.dialog {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -937,4 +937,57 @@ body > main {
   color: #ff6b6b;
   font-family: sans-serif;
   font-size: 12px;
+}
+
+.dialog-question {
+  color: #ccc;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.dialog-button {
+  background: #1e6fd9;
+  border: none;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.dialog-button:hover {
+  background: #2f83f0;
+}
+
+.dialog-button-plain {
+  background: #333;
+  border: 1px solid #555;
+  color: #ccc;
+}
+
+.dialog-button-plain:hover {
+  background: #3d3d3d;
+}
+
+.sektor-list-abandon {
+  background: #333;
+  border: 1px solid #555;
+  color: #999;
+  font-family: sans-serif;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.sektor-list-abandon:hover {
+  border-color: #888;
+  color: #fff;
 }
