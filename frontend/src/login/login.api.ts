@@ -7,3 +7,7 @@ export function getUsername(): string | null {
 export function saveUsername(username: string): void {
   localStorage.setItem(USERNAME_STORAGE_KEY, username);
 }
+
+export function deleteUsername(): void {
+  localStorage.removeItem(USERNAME_STORAGE_KEY);
+}

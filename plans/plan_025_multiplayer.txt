@@ -15,11 +15,11 @@ On the list, all players see all sektors, but they can only edit their own sekto
 - [done] when a user is logged in, all pages have the user name displayed in the top right corner
     - [done] before the username is a user icon (heroicons user)
 
-#2 A player can log out
-- after the username in the top/right corner there is a small button "Log out"
-- when clicked
-    - username in storage is deleted
-    - navigate to login page
+#2 [done] A player can log out
+- [done] after the username in the top/right corner there is a small button "Log out"
+- [done] when clicked
+    - [done] username in storage is deleted
+    - [done] navigate to login page
 
 #3 A player can claim a sektor
 - sektor map can be opened in edit or view mode

@@ -817,3 +817,19 @@ body > main {
   align-items: center;
   color: #999;
 }
+
+.log-out-button {
+  background: #333;
+  border: 1px solid #555;
+  color: #999;
+  font-family: sans-serif;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.log-out-button:hover {
+  border-color: #888;
+  color: #fff;
+}

@@ -73,3 +73,19 @@ test("displays the logged in player in the top right corner of a sektor map", as
 
   await expect(page.locator("#user-display")).toHaveScreenshot("user-display.png", { maxDiffPixelRatio: 0 });
 });
+
+test("forgets the player and routes to the login page when logging out", async ({ page }) => {
+  // Logged in through the login page, so that logging out is not undone by the stored username
+  // being put back before each navigation.
+  await page.goto("/login.html");
+  await page.locator("#username-input").fill("Marko");
+  await page.locator("#log-in-button").click();
+  await page.waitForURL(/\/$/);
+
+  await page.locator("#log-out-button").click();
+  await page.waitForURL(/\/login\.html$/);
+
+  const storedUsername = await page.evaluate(() => localStorage.getItem("username"));
+  expect({ path: new URL(page.url()).pathname, storedUsername })
+    .toEqual({ path: "/login.html", storedUsername: null });
+});
