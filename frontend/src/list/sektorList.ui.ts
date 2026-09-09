@@ -4,11 +4,17 @@ import { getSektorList, SektorListItem } from "./sektorList.api";
 import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, starIcon } from "../icons";
 import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
+import { getSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
+import { getUsername } from "../login/login.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { getNegativeScoringResources } from "../resources";
 import { scoreColor } from "../score";
 import { formatNumber } from "../formatNumber";
+
+// A player may only work on so many sektors at a time, so that they finish the ones they have
+// claimed before claiming more.
+const MAXIMUM_UNFINISHED_SEKTORS = 5;
 
 interface SektorSummary {
   status: SektorStatus;
@@ -21,12 +27,22 @@ interface SektorSummary {
 function renderList() {
   const container = document.getElementById("sektor-list")!;
   const sektors = getSektorList();
+  const summaries = sektors.map(sektor => getSektorSummary(sektor.name));
+  const claimingAllowed = countUnfinishedSektors(sektors, summaries) < MAXIMUM_UNFINISHED_SEKTORS;
 
   container.appendChild(createHeader());
 
-  for (const sektor of sektors) {
-    container.appendChild(createListItem(sektor));
+  for (const [sektorIndex, sektor] of sektors.entries()) {
+    container.appendChild(createListItem(sektor, summaries[sektorIndex], claimingAllowed));
   }
+}
+
+// Every sektor of the player which is not done yet — in progress, exceeding its restrictions, or
+// in any other unfinished state — counts towards the limit.
+function countUnfinishedSektors(sektors: SektorListItem[], summaries: SektorSummary[]): number {
+  return sektors.filter((sektor, sektorIndex) =>
+    getSektorOwner(sektor.name) === getUsername() && summaries[sektorIndex].status !== "Done"
+  ).length;
 }
 
 function createHeader(): HTMLElement {
@@ -37,6 +53,11 @@ function createHeader(): HTMLElement {
   name.className = "sektor-list-name";
   name.textContent = "Sektor";
   header.appendChild(name);
+
+  const owner = document.createElement("span");
+  owner.className = "sektor-list-owner";
+  owner.textContent = "Owner";
+  header.appendChild(owner);
 
   const status = document.createElement("span");
   status.className = "sektor-list-status";
@@ -61,17 +82,16 @@ function createHeaderIcon(icon: string, tooltip?: string): HTMLElement {
   return cell;
 }
 
-function createListItem(sektorListItem: SektorListItem): HTMLElement {
+function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, claimingAllowed: boolean): HTMLElement {
   const item = document.createElement("div");
   item.className = "sektor-list-item";
-
-  const summary = getSektorSummary(sektorListItem.name);
 
   const name = document.createElement("span");
   name.className = "sektor-list-name";
   name.textContent = sektorListItem.name;
   item.appendChild(name);
 
+  item.appendChild(createOwner(sektorListItem.name, claimingAllowed));
   item.appendChild(createStatus(summary.status));
   item.appendChild(createNumber(summary.buildingCount));
   item.appendChild(createNumber(summary.importTotal));
@@ -87,6 +107,46 @@ function createListItem(sektorListItem: SektorListItem): HTMLElement {
   item.appendChild(button);
 
   return item;
+}
+
+// A sektor without an owner is up for grabs, the player's own sektors are marked as theirs, and
+// the rest carry the name of the player who claimed them.
+function createOwner(sektorName: string, claimingAllowed: boolean): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = "sektor-list-owner";
+
+  const owner = getSektorOwner(sektorName);
+
+  if (!owner) {
+    cell.appendChild(createClaimButton(sektorName, claimingAllowed));
+    return cell;
+  }
+
+  if (owner === getUsername()) {
+    const you = document.createElement("span");
+    you.className = "sektor-list-you";
+    you.textContent = "You";
+    cell.appendChild(you);
+    return cell;
+  }
+
+  cell.textContent = owner;
+  return cell;
+}
+
+function createClaimButton(sektorName: string, claimingAllowed: boolean): HTMLElement {
+  const claimButton = document.createElement("button");
+  claimButton.className = "sektor-list-claim";
+  claimButton.textContent = "Claim";
+  claimButton.disabled = !claimingAllowed;
+  claimButton.addEventListener("click", () => claimSektor(sektorName));
+  return claimButton;
+}
+
+// Claiming a sektor makes the player its owner, which opens it for building.
+function claimSektor(sektorName: string) {
+  setSektorOwner(sektorName, getUsername()!);
+  window.location.href = `/sektor.html?name=${encodeURIComponent(sektorName)}`;
 }
 
 function createStatus(status: SektorStatus): HTMLElement {

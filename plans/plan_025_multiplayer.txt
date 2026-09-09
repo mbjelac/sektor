@@ -21,28 +21,28 @@ On the list, all players see all sektors, but they can only edit their own sekto
     - [done] username in storage is deleted
     - [done] navigate to login page
 
-#3 A player can claim a sektor
-- sektor map can be opened in edit or view mode
-    - edit mode: current implementation
-    - view mode: same as edit mode, except do not show
-        - building toolbar
-        - capacity buttons in building panel
-- a map is opened in edit mode only if the Sektor has been claimed by the current player
-    - each sektor can have an "owner"
-        - show owner column in sektor list
-            - show owner name in column
-            - if no onwer, show "Claim" button
-                - blue button
-                - white text
-                - when Claim clicked
-                    - current player is set as owner of the sektor
-                    - open that Sektor in edit mode
-            - if owner is current player, show "You"
-                - white text
-                - green pill background
-- a player can own at most 5 not-done sektors
-    - all player's sektors which are in progress or exceeding restrictions or any other status which is not "Done" count towards this limit
-    - when a player has reached or surpassed this limit, the "Claim" button is disabled
+#3 [done] A player can claim a sektor
+- [done] sektor map can be opened in edit or view mode
+    - [done] edit mode: current implementation
+    - [done] view mode: same as edit mode, except do not show
+        - [done] building toolbar
+        - [done] capacity buttons in building panel
+- [done] a map is opened in edit mode only if the Sektor has been claimed by the current player
+    - [done] each sektor can have an "owner"
+        - [done] show owner column in sektor list
+            - [done] show owner name in column
+            - [done] if no onwer, show "Claim" button
+                - [done] blue button
+                - [done] white text
+                - [done] when Claim clicked
+                    - [done] current player is set as owner of the sektor
+                    - [done] open that Sektor in edit mode
+            - [done] if owner is current player, show "You"
+                - [done] white text
+                - [done] green pill background
+- [done] a player can own at most 5 not-done sektors
+    - [done] all player's sektors which are in progress or exceeding restrictions or any other status which is not "Done" count towards this limit
+    - [done] when a player has reached or surpassed this limit, the "Claim" button is disabled
 
 #4 A claimed sektor must be named
 - when "Claim" button clicked, a name dialog pops up

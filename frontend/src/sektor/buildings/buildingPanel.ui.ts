@@ -59,7 +59,7 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
+export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, modifierProperties, floorColor, showFloor, location, showCapacityButtons, onDestroy, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
   name: string,
   code: string,
   buildingFunctions: BuildingFunctionState[],
@@ -68,6 +68,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
   floorColor: [number, number, number],
   showFloor?: boolean,
   location: BuildingLocation,
+  showCapacityButtons?: boolean,
   onDestroy?: () => void,
   onIncreaseCapacity?: (functionIndex: number) => void,
   onDecreaseCapacity?: (functionIndex: number) => void,
@@ -127,6 +128,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
     }));
     panelEl.appendChild(createCapacityPanel({
       capacity: buildingFunctionState.capacity,
+      showCapacityButtons: showCapacityButtons !== false,
       onIncreaseCapacity: () => onIncreaseCapacity?.(functionIndex),
       onDecreaseCapacity: () => onDecreaseCapacity?.(functionIndex),
       onIncreaseCapacityCompletely: () => onIncreaseCapacityCompletely?.(functionIndex),
@@ -195,8 +197,9 @@ export function hideBuildingPanel() {
 // A building's capacity is shown as ten dots, one lit for each tenth the building runs at.
 // The buttons around the dots change the capacity by a tenth, the double ones all the way
 // down to nothing or up to the full capacity.
-function createCapacityPanel({ capacity, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
+function createCapacityPanel({ capacity, showCapacityButtons, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
   capacity: number,
+  showCapacityButtons: boolean,
   onIncreaseCapacity?: () => void,
   onDecreaseCapacity?: () => void,
   onIncreaseCapacityCompletely?: () => void,
@@ -213,8 +216,12 @@ function createCapacityPanel({ capacity, onIncreaseCapacity, onDecreaseCapacity,
   const row = document.createElement("div");
   row.className = "bc-row";
 
-  row.appendChild(createCapacityButton("bc-decrease-completely", "bc-triangle-left", 2, onDecreaseCapacityCompletely));
-  row.appendChild(createCapacityButton("bc-decrease", "bc-triangle-left", 1, onDecreaseCapacity));
+  // A sektor is only shown with the buttons to the player who owns it — everybody else sees
+  // the capacity it runs at, without being able to change it.
+  if (showCapacityButtons) {
+    row.appendChild(createCapacityButton("bc-decrease-completely", "bc-triangle-left", 2, onDecreaseCapacityCompletely));
+    row.appendChild(createCapacityButton("bc-decrease", "bc-triangle-left", 1, onDecreaseCapacity));
+  }
 
   const dots = document.createElement("div");
   dots.className = "bc-dots";
@@ -226,8 +233,10 @@ function createCapacityPanel({ capacity, onIncreaseCapacity, onDecreaseCapacity,
   }
   row.appendChild(dots);
 
-  row.appendChild(createCapacityButton("bc-increase", "bc-triangle-right", 1, onIncreaseCapacity));
-  row.appendChild(createCapacityButton("bc-increase-completely", "bc-triangle-right", 2, onIncreaseCapacityCompletely));
+  if (showCapacityButtons) {
+    row.appendChild(createCapacityButton("bc-increase", "bc-triangle-right", 1, onIncreaseCapacity));
+    row.appendChild(createCapacityButton("bc-increase-completely", "bc-triangle-right", 2, onIncreaseCapacityCompletely));
+  }
 
   capacityPanel.appendChild(row);
 

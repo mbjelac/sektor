@@ -9,11 +9,13 @@ import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover, onLeave} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
+import { getSektorOwner } from "./sektorOwner.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
 import { getNegativeScoringResources } from "../resources";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
+import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 
@@ -24,6 +26,15 @@ const GRID_SIZE = 10;
 const FLOOR_PROPERTY = "soil";
 const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
 const sektorName = new URLSearchParams(window.location.search).get("name");
+// A sektor is only opened for building by the player who claimed it. Everybody else looks at
+// it without the tools for changing it, as does its owner when asking for view mode.
+const isViewMode = new URLSearchParams(window.location.search).get("mode") === "view" || !isSektorOwnedByCurrentPlayer();
+
+function isSektorOwnedByCurrentPlayer(): boolean {
+  // The sektor of a test run is made up along with its locations, and belongs to whoever opened it.
+  if (isTestMode) return true;
+  return !!sektorName && getSektorOwner(sektorName) === getUsername();
+}
 
 if (!isTestMode && (!sektorName || !getSektorData(sektorName))) {
   showSektorNotFound();
@@ -147,6 +158,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
   const definition = buildingDefinitions.find(definition => definition.name === placed.type);
   showBuildingPanel({
     name: placed.type,
+    showCapacityButtons: !isViewMode,
     code: code,
     buildingFunctions: buildingState.buildingFunctions,
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
@@ -606,7 +618,11 @@ const sektorUi = (p: p5) => {
 };
 
 new p5(sektorUi);
-initToolbar();
+if (isViewMode) {
+  document.getElementById("construction-panel")!.remove();
+} else {
+  initToolbar();
+}
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);
 onImportHover(resourceType => { hoveredImportResource = resourceType; });

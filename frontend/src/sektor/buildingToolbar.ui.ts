@@ -1,10 +1,10 @@
 import p5 from "p5";
-import {buildingDefinitions} from "./buildings/buildings";
-import {createFunctionDisplay} from "./buildingFunctionDisplay.ui";
-import {parseCommands} from "../../../shared/parseCommands";
-import {applyCommands} from "../../../shared/applyCommands";
-import {drawFloor} from "../../../shared/drawFloor";
-import {BLOCK_SIZE} from "../../../shared/constants";
+import { buildingDefinitions } from "./buildings/buildings";
+import { createFunctionDisplay } from "./buildingFunctionDisplay.ui";
+import { parseCommands } from "../../../shared/parseCommands";
+import { applyCommands } from "../../../shared/applyCommands";
+import { drawFloor } from "../../../shared/drawFloor";
+import { BLOCK_SIZE } from "../../../shared/constants";
 import { BuildingFunction, OutputModifier } from "./buildings/parseBuildingDefinitions";
 import { propertyDefinitions } from "../properties";
 
@@ -15,7 +15,9 @@ const TOOLBAR_FUNCTION_PANEL_MARGIN = 8;
 export const DESTRUCTION_TOOL = "Destroy";
 
 let selectedBuilding: string | null = null;
-let buildingCodeMap: Map<string, string> = new Map();
+// The code of a building is needed to draw it on the map, also when the map is shown without the
+// toolbar, so it is looked up straight from the definitions.
+const buildingCodeMap = new Map(buildingDefinitions.map(building => [building.name, building.renderingCode]));
 let selectionCallback: ((buildingName: string | null) => void) | null = null;
 
 export function getSelectedBuilding(): string | null {
@@ -98,13 +100,8 @@ function hideToolbarFunctionPanel() {
 
 export function initToolbar() {
   const toolbar = document.getElementById("toolbar")!;
-  const buildings = buildingDefinitions;
 
-  for (const building of buildings) {
-    buildingCodeMap.set(building.name, building.renderingCode);
-  }
-
-  for (const building of buildings) {
+  for (const building of buildingDefinitions) {
     const item = document.createElement("div");
     item.className = "building-item";
     if (building.name === DESTRUCTION_TOOL) {
