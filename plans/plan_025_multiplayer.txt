@@ -32,6 +32,8 @@ On the list, all players see all sektors, but they can only edit their own sekto
         - show owner column in sektor list
             - show owner name in column
             - if no onwer, show "Claim" button
+                - blue button
+                - white text
                 - when Claim clicked
                     - current player is set as owner of the sektor
                     - open that Sektor in edit mode
