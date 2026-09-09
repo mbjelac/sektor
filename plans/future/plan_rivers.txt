@@ -4,3 +4,5 @@ A river square may not have a building (maybe a Riverloop, or some hydroelectric
 Transport: Edges of a river square may have a bycicle bridge over it. Same types apply as for bicycle paths.
 
 Special case, a river may fork.
+
+Different river sizes - some rivers are narrow, some are wide.
