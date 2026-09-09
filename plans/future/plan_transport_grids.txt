@@ -1,0 +1,50 @@
+Transport is done in 3 types:
+
+1. Ground
+2. Underground
+3. Inter-sektor
+
+1. Ground: Bycicle paths only
+- lanes are on map edges
+- a map edge can have:
+    - nothing (wilderness)
+    - single-lane path (both directions)
+    - slow+fast lane path (2 lanes in each direction)
+    - separated slow & fast lanes (2 wide lanes in each direction, separated by physical barrier)
+- each path type has a carrying capacity which influences the congestion calculation
+- player can choose which map edge has which type of path
+- paths have to be connected (end on the same point) to be considered to connect spaces
+
+2. Underground: Trains (i.e. subway)
+- special view of the map showing underground layers beneath the city
+    - player can choose which layer is visible
+    - each layer of the underground can have just a single train line
+- tunnels
+    - each map square can have a train tunnel
+    - all tunnels in one layer must form a loop or be closed at each end by a closing loop:
+        +---#---+
+        |   #   |
+        |  # #  |
+        |  ###  |
+        |       |
+        +-------+  - this is a line coming in from the north and closed by a closing loop at the south
+        - each tunnel has one track in each direction, so if the entire line is not a loop, it can be closed by a closing loop
+- stations
+    - stations can be located at the center of any square where there's a tunnel or a closing loop
+    - station connects all lines
+    - a station has a transport coverage of squares above it, measured by some distance function (either square or some other)
+- special buildings
+    - there are special buildings underneath which the player cannot build a tunnel or a station
+        - extractors (mine, ore, etc.)
+        - water wells
+        - any building that might have a deep drilling system
+            - farm (Agriplot) uses a thin layer of soil beneath it so it is not a problem
+
+3. Inter-sektor
+- if a sektor has many imports or exports, a penalty grows simulating the trouble of transporting stuff in & out
+- player can build a transport hub
+- each transport hub automatically acts as a station for all lines passing through that square
+- it also decreases the penalty of large imports/exports
+- each new transport hub decreases that penalty further
+- visually, transport hubs have either elevated train lines going into them or deep tunnels (deeper than all local lines) which then climb above the surface outside of the sektor
+    - if needed to be depicted visually, elevated train lines are more effective and are different from underground lines
