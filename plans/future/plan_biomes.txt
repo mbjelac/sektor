@@ -1,0 +1,7 @@
+Various visual styles for empty squares:
+- greenland (started with this)
+- forest, jungle
+- snow, ice, tundra
+- desert
+
+Biome types have larger or smaller chance of having a certain value of location property like insolation, groundwater, wind, etc.
