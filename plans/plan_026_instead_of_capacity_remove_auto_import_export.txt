@@ -1,0 +1,7 @@
+#1 Clean up
+- remove all capacity features
+    - capacity property
+    - Sektor capacity calculations (and tests for those)
+    - capacity UI display & modification
+
+#2 Remove auto import/export
