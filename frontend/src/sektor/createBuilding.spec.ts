@@ -34,9 +34,9 @@ describe("createBuilding", () => {
     }).toEqual({
       result: {
         error: undefined,
-        addedBuildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacities: [0.1] }],
+        addedBuildings: [{ type: "Mill", location: { x: 8, y: 6 } }],
       },
-      buildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacities: [0.1] }],
+      buildings: [{ type: "Mill", location: { x: 8, y: 6 } }],
     });
   });
 
@@ -54,13 +54,11 @@ describe("createBuilding", () => {
         error: "locationOccupied",
         addedBuildings: [],
       },
-      buildings: [{ type: "Mill", location: { x: 8, y: 6 }, capacities: [0.1] }],
+      buildings: [{ type: "Mill", location: { x: 8, y: 6 } }],
     });
   });
 });
 
-// A created building starts at capacity 0.1, so it consumes and produces a tenth of the
-// amounts in its building function.
 describe("createBuilding imports and exports", () => {
   it("adds the created building's inputs to imports and outputs to exports", () => {
     const sektor = createSektor();
@@ -71,8 +69,8 @@ describe("createBuilding imports and exports", () => {
       imports: sektor.getSektorState().imports,
       exports: sektor.getSektorState().exports,
     }).toEqual({
-      imports: [{ name: "Wheat", value: 0.4, score: -0.8 }],
-      exports: [{ name: "Flour", value: 0.3, score: 0.6 }],
+      imports: [{ name: "Wheat", value: 4, score: -8 }],
+      exports: [{ name: "Flour", value: 3, score: 6 }],
     });
   });
 
@@ -88,11 +86,11 @@ describe("createBuilding imports and exports", () => {
     }).toEqual({
       imports: [
         { name: "Wheat", value: 0, score: 0 },
-        { name: "Water", value: 0.1, score: -0.2 },
+        { name: "Water", value: 1, score: -2 },
       ],
       exports: [
-        { name: "Flour", value: 0.3, score: 0.6 },
-        { name: "Wheat", value: 0.2, score: 0.4 },
+        { name: "Flour", value: 3, score: 6 },
+        { name: "Wheat", value: 2, score: 4 },
       ],
     });
   });
@@ -109,7 +107,7 @@ describe("createBuilding imports and exports", () => {
     }).toEqual({
       imports: [{ name: "Water", value: 0, score: 0 }],
       exports: [
-        { name: "Wheat", value: 0.6, score: 1.2 },
+        { name: "Wheat", value: 6, score: 12 },
         { name: "Water", value: 0, score: 0 },
       ],
     });

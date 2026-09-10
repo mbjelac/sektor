@@ -9,8 +9,6 @@ import { BuildingFunctionState, BuildingLocation } from "../Sektor";
 import { propertyValueColor } from "../../properties";
 import { formatNumber } from "../../formatNumber";
 
-const CAPACITY_DOT_COUNT = 10;
-
 let panelEl: HTMLElement | null = null;
 let panelLocation: BuildingLocation | null = null;
 let previewP5: p5 | null = null;
@@ -59,7 +57,7 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, modifierProperties, floorColor, showFloor, location, showCapacityButtons, onDestroy, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
+export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy }: {
   name: string,
   code: string,
   buildingFunctions: BuildingFunctionState[],
@@ -68,15 +66,10 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
   floorColor: [number, number, number],
   showFloor?: boolean,
   location: BuildingLocation,
-  showCapacityButtons?: boolean,
-  onDestroy?: () => void,
-  onIncreaseCapacity?: (functionIndex: number) => void,
-  onDecreaseCapacity?: (functionIndex: number) => void,
-  onIncreaseCapacityCompletely?: (functionIndex: number) => void,
-  onDecreaseCapacityCompletely?: (functionIndex: number) => void
+  onDestroy?: () => void
 }) {
-  // Changing a capacity reopens the panel, which would put back a panel scrolled to its top,
-  // so the scroll position is carried over to the panel of the same location.
+  // Reopening the panel of a location would put back a panel scrolled to its top, so the
+  // scroll position is carried over to the panel of the same location.
   const scrollTop = panelEl && panelLocation?.x === location.x && panelLocation?.y === location.y
     ? panelEl.scrollTop
     : 0;
@@ -119,20 +112,10 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
 
   panelEl.appendChild(header);
 
-  // Each of the building's functions runs at its own capacity, so each is shown with its own
-  // capacity panel underneath it.
-  for (const [functionIndex, buildingFunctionState] of buildingFunctions.entries()) {
+  for (const buildingFunctionState of buildingFunctions) {
     panelEl.appendChild(createFunctionDisplay({
       buildingFunction: buildingFunctionState.buildingFunction,
       modifiedOutputs: buildingFunctionState.modifiedOutputs,
-    }));
-    panelEl.appendChild(createCapacityPanel({
-      capacity: buildingFunctionState.capacity,
-      showCapacityButtons: showCapacityButtons !== false,
-      onIncreaseCapacity: () => onIncreaseCapacity?.(functionIndex),
-      onDecreaseCapacity: () => onDecreaseCapacity?.(functionIndex),
-      onIncreaseCapacityCompletely: () => onIncreaseCapacityCompletely?.(functionIndex),
-      onDecreaseCapacityCompletely: () => onDecreaseCapacityCompletely?.(functionIndex),
     }));
   }
 
@@ -192,65 +175,4 @@ export function hideBuildingPanel() {
   }
   panelLocation = null;
   currentDraw = null;
-}
-
-// A building's capacity is shown as ten dots, one lit for each tenth the building runs at.
-// The buttons around the dots change the capacity by a tenth, the double ones all the way
-// down to nothing or up to the full capacity.
-function createCapacityPanel({ capacity, showCapacityButtons, onIncreaseCapacity, onDecreaseCapacity, onIncreaseCapacityCompletely, onDecreaseCapacityCompletely }: {
-  capacity: number,
-  showCapacityButtons: boolean,
-  onIncreaseCapacity?: () => void,
-  onDecreaseCapacity?: () => void,
-  onIncreaseCapacityCompletely?: () => void,
-  onDecreaseCapacityCompletely?: () => void
-}): HTMLElement {
-  const capacityPanel = document.createElement("div");
-  capacityPanel.className = "bc-capacity";
-
-  const label = document.createElement("div");
-  label.className = "bc-label";
-  label.textContent = "Capacity";
-  capacityPanel.appendChild(label);
-
-  const row = document.createElement("div");
-  row.className = "bc-row";
-
-  // A sektor is only shown with the buttons to the player who owns it — everybody else sees
-  // the capacity it runs at, without being able to change it.
-  if (showCapacityButtons) {
-    row.appendChild(createCapacityButton("bc-decrease-completely", "bc-triangle-left", 2, onDecreaseCapacityCompletely));
-    row.appendChild(createCapacityButton("bc-decrease", "bc-triangle-left", 1, onDecreaseCapacity));
-  }
-
-  const dots = document.createElement("div");
-  dots.className = "bc-dots";
-  const litDotCount = Math.round(capacity * CAPACITY_DOT_COUNT);
-  for (let dotIndex = 0; dotIndex < CAPACITY_DOT_COUNT; dotIndex++) {
-    const dot = document.createElement("span");
-    dot.className = dotIndex < litDotCount ? "bc-dot bc-dot-lit" : "bc-dot";
-    dots.appendChild(dot);
-  }
-  row.appendChild(dots);
-
-  if (showCapacityButtons) {
-    row.appendChild(createCapacityButton("bc-increase", "bc-triangle-right", 1, onIncreaseCapacity));
-    row.appendChild(createCapacityButton("bc-increase-completely", "bc-triangle-right", 2, onIncreaseCapacityCompletely));
-  }
-
-  capacityPanel.appendChild(row);
-
-  return capacityPanel;
-}
-
-function createCapacityButton(buttonClassName: string, triangleClassName: string, triangleCount: number, onClick?: () => void): HTMLElement {
-  const button = document.createElement("button");
-  button.className = `bc-button ${buttonClassName}`;
-  for (let triangleIndex = 0; triangleIndex < triangleCount; triangleIndex++) {
-    const triangle = document.createElement("span");
-    triangle.className = triangleClassName;
-    button.appendChild(triangle);
-  }
-  if (onClick) button.addEventListener("click", onClick);
-  return button;
 }

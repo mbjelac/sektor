@@ -275,7 +275,6 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
   const definition = buildingDefinitions.find(definition => definition.name === placed.type);
   showBuildingPanel({
     name: placed.type,
-    showCapacityButtons: !isViewMode,
     code: code,
     buildingFunctions: buildingState.buildingFunctions,
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
@@ -284,22 +283,6 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     showFloor: definition?.properties.showFloor,
     location: placed.location,
     onDestroy: () => destroyBuilding(placed.location),
-    onIncreaseCapacity: (functionIndex: number) => {
-      sektor.increaseBuildingCapacity(placed.location, functionIndex);
-      changeBuildingCapacity(placed);
-    },
-    onDecreaseCapacity: (functionIndex: number) => {
-      sektor.decreaseBuildingCapacity(placed.location, functionIndex);
-      changeBuildingCapacity(placed);
-    },
-    onIncreaseCapacityCompletely: (functionIndex: number) => {
-      sektor.increaseBuildingCapacity(placed.location, functionIndex, true);
-      changeBuildingCapacity(placed);
-    },
-    onDecreaseCapacityCompletely: (functionIndex: number) => {
-      sektor.decreaseBuildingCapacity(placed.location, functionIndex, true);
-      changeBuildingCapacity(placed);
-    }
   });
 }
 
@@ -316,13 +299,6 @@ function destroyBuilding(location: BuildingLocation) {
   selectedBuildingLocation = null;
   updateSektorState();
   saveState();
-}
-
-// The panel shows the capacity it was opened with, so it is reopened to show the new one.
-function changeBuildingCapacity(placed: { type: string; location: BuildingLocation; code: string }) {
-  updateSektorState();
-  saveState();
-  openBuildingPanel(placed);
 }
 
 function openEmptyLocationPanel(location: BuildingLocation) {

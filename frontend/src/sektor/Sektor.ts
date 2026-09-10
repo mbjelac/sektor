@@ -21,7 +21,6 @@ export interface SektorState {
 export interface BuildingFunctionState {
   buildingFunction: BuildingFunction;
   modifiedOutputs: ResourceThroughput[];
-  capacity: number;
 }
 
 export interface BuildingState {
@@ -40,11 +39,6 @@ export interface CreateBuildingResult {
 
 const SCORE_PER_UNIT = 2;
 const SCORE_PER_REQUIRED_UNIT = 3;
-
-const MINIMUM_CAPACITY = 0;
-const MAXIMUM_CAPACITY = 1;
-const CAPACITY_STEP = 0.1;
-const INITIAL_CAPACITY = 0.1;
 
 export class Sektor {
   private buildings: Building[] = [];
@@ -75,14 +69,10 @@ export class Sektor {
     };
   }
 
-  // Sektors saved before buildings had a capacity hold no capacity, and those saved before
-  // each building function had its own capacity hold a single one for the whole building, so
-  // their building functions start off at the capacity a newly created building gets.
   loadState(state: { buildings: Building[] }) {
     this.buildings = state.buildings.map(building => ({
       type: building.type,
       location: building.location,
-      capacities: this.buildingCapacities(building),
     }));
   }
 
@@ -92,10 +82,9 @@ export class Sektor {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return null;
     return {
-      buildingFunctions: buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) => ({
+      buildingFunctions: buildingDefinition.buildingFunctions.map(buildingFunction => ({
         buildingFunction: buildingFunction,
         modifiedOutputs: this.getModifiedOutputs(buildingFunction, buildingDefinition, location),
-        capacity: building.capacities[functionIndex],
       })),
     };
   }
@@ -183,16 +172,13 @@ export class Sektor {
     return throughputs.find(throughput => throughput.name === resourceType)?.value ?? 0;
   }
 
-  // A building function describes its throughputs at full capacity, so the amounts it actually
-  // consumes and produces are those scaled down by that function's own capacity. The scaled
-  // amounts of all the building's functions are then added up per resource.
+  // The amounts consumed and produced by all of the building's functions are added up per
+  // resource.
   private getInputs(building: Building): ResourceThroughput[] {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) =>
-        buildingFunction.inputs.map(input => applyCapacity(input, building.capacities[functionIndex]))
-      ).flat()
+      buildingDefinition.buildingFunctions.map(buildingFunction => buildingFunction.inputs).flat()
     );
   }
 
@@ -200,9 +186,8 @@ export class Sektor {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) =>
+      buildingDefinition.buildingFunctions.map(buildingFunction =>
         this.getModifiedOutputs(buildingFunction, buildingDefinition, building.location)
-          .map(output => applyCapacity(output, building.capacities[functionIndex]))
       ).flat()
     );
   }
@@ -224,20 +209,10 @@ export class Sektor {
       return { error: "locationOccupied", addedBuildings: [] };
     }
 
-    const createdBuilding = { ...building, capacities: this.buildingCapacities(building) };
+    const createdBuilding = { ...building };
     this.buildings.push(createdBuilding);
 
     return { error: undefined, addedBuildings: [createdBuilding] };
-  }
-
-  // Every function of a building runs at its own capacity, so a building holds one capacity
-  // per function of its definition.
-  private buildingCapacities(building: { type: string, capacities?: number[], capacity?: number }): number[] {
-    const buildingFunctionCount = this.findBuildingDefinition(building.type)?.buildingFunctions.length ?? 0;
-    return Array.from(
-      { length: buildingFunctionCount },
-      (_, functionIndex) => building.capacities?.[functionIndex] ?? building.capacity ?? INITIAL_CAPACITY
-    );
   }
 
   destroyBuilding(location: BuildingLocation): DestroyBuildingResult {
@@ -251,26 +226,6 @@ export class Sektor {
     return { success: true };
   }
 
-  increaseBuildingCapacity(location: BuildingLocation, functionIndex: number, completely = false): number {
-    return this.changeBuildingCapacity(location, functionIndex, capacity => completely ? MAXIMUM_CAPACITY : capacity + CAPACITY_STEP);
-  }
-
-  decreaseBuildingCapacity(location: BuildingLocation, functionIndex: number, completely = false): number {
-    return this.changeBuildingCapacity(location, functionIndex, capacity => completely ? MINIMUM_CAPACITY : capacity - CAPACITY_STEP);
-  }
-
-  private changeBuildingCapacity(location: BuildingLocation, functionIndex: number, changeCapacity: (capacity: number) => number): number {
-    const building = this.findBuildingAt(location);
-    if (!building) throw new Error("buildingNotFound");
-    const capacity = building.capacities[functionIndex];
-    if (capacity === undefined) throw new Error("buildingFunctionNotFound");
-    const changedCapacity = roundToOneDecimal(
-      Math.min(MAXIMUM_CAPACITY, Math.max(MINIMUM_CAPACITY, changeCapacity(capacity)))
-    );
-    building.capacities[functionIndex] = changedCapacity;
-    return changedCapacity;
-  }
-
   private findBuildingDefinition(type: string): BuildingDefinition | undefined {
     return this.buildingDefinitions.find(definition => definition.name === type);
   }
@@ -280,12 +235,8 @@ export class Sektor {
   }
 }
 
-function applyCapacity(throughput: ResourceThroughput, capacity: number): ResourceThroughput {
-  return { name: throughput.name, value: roundToOneDecimal(throughput.value * capacity) };
-}
-
-// Capacities have a single decimal place, so every amount derived from one has a single decimal
-// place too — rounding to it keeps the floating point noise out of the amounts and scores.
+// Amounts are written with a single decimal place, so rounding to it keeps the floating point
+// noise out of the amounts and scores added up from them.
 function roundToOneDecimal(value: number): number {
   return Math.round(value * 10) / 10;
 }

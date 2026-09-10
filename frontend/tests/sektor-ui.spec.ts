@@ -169,7 +169,6 @@ test("displays building panel with boosted output modifier", async ({ page }) =>
           outputs: [{ name: "Energy", value: 10 }],
         },
         modifiedOutputs: [{ name: "Energy", value: 15 }],
-        capacity: 0.4,
       }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
       modifierProperties: ["insolation"],
@@ -194,7 +193,6 @@ test("displays building panel with reduced output modifier", async ({ page }) =>
           outputs: [{ name: "Energy", value: 10 }],
         },
         modifiedOutputs: [{ name: "Energy", value: 3.5 }],
-        capacity: 0.4,
       }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: -4, wind: 1 },
       modifierProperties: ["insolation"],
@@ -219,7 +217,6 @@ test("displays building panel without output modifier", async ({ page }) => {
           outputs: [{ name: "Goods", value: 4 }],
         },
         modifiedOutputs: [{ name: "Goods", value: 4 }],
-        capacity: 0.4,
       }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
       modifierProperties: [],
@@ -231,7 +228,7 @@ test("displays building panel without output modifier", async ({ page }) => {
   await expectScreenshot(page, "building-panel-no-modifier", "#building-panel");
 });
 
-test("displays building panel with a capacity for each of several building functions", async ({ page }) => {
+test("displays building panel with several building functions", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await page.evaluate(() => {
@@ -246,7 +243,6 @@ test("displays building panel with a capacity for each of several building funct
             outputs: [{ name: "Tools", value: 2 }],
           },
           modifiedOutputs: [{ name: "Tools", value: 2 }],
-          capacity: 0.3,
         },
         {
           buildingFunction: {
@@ -254,7 +250,6 @@ test("displays building panel with a capacity for each of several building funct
             outputs: [{ name: "Tools", value: 3 }],
           },
           modifiedOutputs: [{ name: "Tools", value: 3 }],
-          capacity: 0.8,
         },
       ],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
@@ -326,98 +321,6 @@ test("displays function panel with modifier property", async ({ page }) => {
     maxDiffPixelRatio: 0,
     timeout: 10000,
   });
-});
-
-test("increases building capacity when the increase button is clicked", async ({ page }) => {
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await page.locator('.building-item[data-building-name="TestFactory"]').click();
-  await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container > canvas");
-  const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
-
-  // A placed building starts at capacity 0.1, so three increases bring it up to 0.4
-  await page.locator(".bc-increase").click();
-  await page.locator(".bc-increase").click();
-  await page.locator(".bc-increase").click();
-  await page.waitForTimeout(200);
-
-  await expectScreenshot(page, "building-capacity-increased", "#building-panel");
-});
-
-test("decreases building capacity when the decrease button is clicked", async ({ page }) => {
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await page.locator('.building-item[data-building-name="TestFactory"]').click();
-  await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container > canvas");
-  const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
-
-  // Capacity goes up from 0.1 to 0.8, then back down to 0.6
-  for (let increase = 0; increase < 7; increase++) {
-    await page.locator(".bc-increase").click();
-  }
-  await page.locator(".bc-decrease").click();
-  await page.locator(".bc-decrease").click();
-  await page.waitForTimeout(200);
-
-  await expectScreenshot(page, "building-capacity-decreased", "#building-panel");
-});
-
-test("raises building capacity to the maximum when the double increase button is clicked", async ({ page }) => {
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await page.locator('.building-item[data-building-name="TestFactory"]').click();
-  await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container > canvas");
-  const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
-
-  await page.locator(".bc-increase-completely").click();
-  await page.waitForTimeout(200);
-
-  await expectScreenshot(page, "building-capacity-maximum", "#building-panel");
-});
-
-test("lowers building capacity to zero when the double decrease button is clicked", async ({ page }) => {
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await page.locator('.building-item[data-building-name="TestFactory"]').click();
-  await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container > canvas");
-  const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
-
-  await page.locator(".bc-increase-completely").click();
-  await page.locator(".bc-decrease-completely").click();
-  await page.waitForTimeout(200);
-
-  await expectScreenshot(page, "building-capacity-minimum", "#building-panel");
-});
-
-test("keeps the building panel scrolled where it was when a capacity is changed", async ({ page }) => {
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await page.locator('.building-item[data-building-name="TestRefinery"]').click();
-  await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container > canvas");
-  const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
-
-  const panel = page.locator("#building-panel");
-  const scrollTopBeforeCapacityChange = await panel.evaluate(panelElement => {
-    panelElement.scrollTop = panelElement.scrollHeight;
-    return panelElement.scrollTop;
-  });
-
-  await page.locator(".bc-increase").click();
-  await page.waitForTimeout(200);
-  const scrollTopAfterCapacityChange = await panel.evaluate(panelElement => panelElement.scrollTop);
-
-  expect({ panelWasScrolled: scrollTopBeforeCapacityChange > 0, scrollTopAfterCapacityChange })
-    .toEqual({ panelWasScrolled: true, scrollTopAfterCapacityChange: scrollTopBeforeCapacityChange });
 });
 
 test("destroys building when trash icon is clicked", async ({ page }) => {

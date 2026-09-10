@@ -362,73 +362,6 @@ body > main {
   text-align: center;
 }
 
-.bc-capacity {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  align-self: stretch;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #444;
-}
-
-.bc-label {
-  color: #999;
-  font-family: sans-serif;
-  font-size: 11px;
-  font-weight: normal;
-  text-align: center;
-}
-
-.bc-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.bc-dots {
-  display: flex;
-  gap: 3px;
-}
-
-.bc-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #555;
-}
-
-.bc-dot-lit {
-  background: #fff;
-}
-
-.bc-button {
-  display: flex;
-  align-items: center;
-  gap: 1px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.bc-triangle-left,
-.bc-triangle-right {
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-}
-
-.bc-triangle-left {
-  border-right: 8px solid #fff;
-}
-
-.bc-triangle-right {
-  border-left: 8px solid #fff;
-}
-
 .bp-properties {
   display: flex;
   flex-direction: column;
@@ -437,12 +370,6 @@ body > main {
   padding: 8px 16px 0;
   border-top: 1px solid #444;
   align-self: stretch;
-}
-
-.bc-capacity + .bp-properties {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
 }
 
 .bp-property-row {

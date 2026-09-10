@@ -10,12 +10,7 @@ export interface BuildingCreation {
   location: BuildingLocation;
 }
 
-export interface Building extends BuildingCreation {
-  capacities: number[];
-  // Sektors saved before a building's functions had a capacity each hold a single capacity
-  // for the whole building.
-  capacity?: number;
-}
+export type Building = BuildingCreation;
 
 export interface RestrictionsRequirements {
   importRestrictions: ResourceThroughput[];

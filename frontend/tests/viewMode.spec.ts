@@ -16,33 +16,6 @@ test("shows a sektor in view mode without the building toolbar", async ({ page }
   await expectScreenshot(page, "view-mode", "body");
 });
 
-test("shows a building panel in view mode without the capacity buttons", async ({ page }) => {
-  await page.goto("/sektor.html?test=true&mode=view");
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-
-  await page.evaluate(() => {
-    (window as any).showBuildingPanel({
-      name: "Warehouse",
-      code: "box s(30,30,30) t(0,0,0) c(#888888)",
-      buildingFunctions: [{
-        buildingFunction: {
-          inputs: [{ name: "Wood", value: 3 }],
-          outputs: [{ name: "Goods", value: 4 }],
-        },
-        modifiedOutputs: [{ name: "Goods", value: 4 }],
-        capacity: 0.4,
-      }],
-      locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
-      modifierProperties: [],
-      floorColor: [200, 200, 100],
-      location: { x: 0, y: 0 },
-      showCapacityButtons: false,
-    });
-  });
-
-  await expectScreenshot(page, "view-mode-building-panel", "#building-panel");
-});
-
 test("names the sektor it is showing", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
   await page.evaluate(() => localStorage.setItem("sektorNames", JSON.stringify({ Beta: "Sunset Flats" })));
@@ -168,8 +141,8 @@ async function claimFromMap(page: import("@playwright/test").Page, sektorName: s
 
 test("draws the buildings of a sektor shown in view mode", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER, [
-    { type: "Habitats", location: { x: 4, y: 4 }, capacities: [1] },
-    { type: "Agriplot", location: { x: 5, y: 5 }, capacities: [1] },
+    { type: "Habitats", location: { x: 4, y: 4 } },
+    { type: "Agriplot", location: { x: 5, y: 5 } },
   ]);
 
   await page.goto("/sektor.html?name=Beta");
