@@ -6,18 +6,25 @@
 
 #2 Remove auto import/export
 - all building functions work differently than before:
-    - each building has an *automatically calculated capacity*
-    - an actual building output is it's specified output times current capacity
-    - capacity is calculated for each resource type separately:
+    - an actual building function output amounts are it's specified outputs times building function operation coefficient (BFOC)
+    - an input resource coefficient IRC is calculated for each input resource type separately:
         - for resource type X
-        - get all buildings with input X and specified amount iX
+        - get all building functions with input X and specified amount iX
         - sum up all iX
         - sum up all already calculated output X amounts oX
         - if sum of oX is equal or larger than sum of iX
             - availability coefficient AC is 1
         - else
             - divide sum of oX by sum of iX to get availability coefficient AC
-        - set actual input amounts of all buildings for X to iX * AC for that building
+        - set actual input amounts of all building functions for X to iX * AC for that building function
+    - building function IRCs (one for each input resource) are calculated for each building function input resource:
+        - IRC = actual input amount / specified input amount
+    - building function BFOC = minimum IRC
+- a player can see BFOC
+    - building panel displays BFOC under each building function
+        - "Efficiency: <BFOC * 100> %"
+        - text white regular
+        - value white bold
 
 #3 Player requests imports
 - a player can set import amounts for any resource type
