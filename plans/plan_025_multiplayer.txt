@@ -76,6 +76,7 @@ On the list, all players see all sektors, but they can only edit their own sekto
 - [done] in map, current sektor's name is displayed in top-left corner in bold text
 - [done] building toolbar (if shown) is below sektor name
 - [done] geography toolbar is aligned to bottom of screen, even in view mode
+- if sektor's name is blank, display "Unnamed"
 
 #8 A player can claim a sektor while viewing the map
 - if the viewed sektor belongs to someone else, display player's name in the map
