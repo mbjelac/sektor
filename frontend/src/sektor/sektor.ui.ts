@@ -4,10 +4,11 @@ import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
-import { BuildingLocation, Location, Sektor } from "./Sektor";
+import { BuildingLocation, Location, Sektor, SektorStatus } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
-import {updateSektorStatePanel, onImportHover, onLeave} from "./sektorStatePanel.ui";
+import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
+import { showDoneDialog } from "./doneDialog.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { getSektorOwner, setSektorOwner } from "./sektorOwner.api";
 import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "./sektorName.api";
@@ -15,6 +16,7 @@ import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
 import { getNegativeScoringResources } from "../resources";
+import { arrowLeftIcon } from "../icons";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -50,10 +52,22 @@ function showSektorName() {
   const header = document.createElement("div");
   header.id = "sektor-header";
 
+  const title = document.createElement("div");
+  title.id = "sektor-title";
+  header.appendChild(title);
+
+  // The way back to the list sits in front of the name of the sektor being left.
+  const leaveButton = document.createElement("button");
+  leaveButton.id = "leave-button";
+  leaveButton.title = "Back to list";
+  leaveButton.innerHTML = arrowLeftIcon;
+  leaveButton.addEventListener("click", () => { window.location.href = "/"; });
+  title.appendChild(leaveButton);
+
   const nameElement = document.createElement("div");
   nameElement.id = "sektor-name";
   nameElement.textContent = getDisplayedSektorName();
-  header.appendChild(nameElement);
+  title.appendChild(nameElement);
 
   document.getElementById("left-panels")!.prepend(header);
 }
@@ -216,6 +230,26 @@ function saveState() {
   });
 }
 
+let previousSektorStatus: SektorStatus | null = null;
+
+// The player is congratulated the moment the sektor's assignment is met, but not again while it
+// stays met, nor on a sektor which was already done when opened.
+function updateSektorState() {
+  const sektorState = sektor.getSektorState();
+  updateSektorStatePanel(sektorState);
+
+  const becameDone = previousSektorStatus !== null && previousSektorStatus !== "Done" && sektorState.status === "Done";
+  previousSektorStatus = sektorState.status;
+
+  if (becameDone) {
+    showDoneDialog({
+      username: getUsername()!,
+      sektorName: getDisplayedSektorName(),
+      onLeave: () => { window.location.href = "/"; },
+    });
+  }
+}
+
 function loadSavedState() {
   if (!sektorName) return;
   const sektorData = getSektorData(sektorName);
@@ -228,7 +262,7 @@ function loadSavedState() {
       floorGeometryNeedsRebaking = true;
     }
   }
-  updateSektorStatePanel(sektor.getSektorState());
+  updateSektorState();
 }
 
 let selectedBuildingLocation: BuildingLocation | null = null;
@@ -282,13 +316,13 @@ function destroyBuilding(location: BuildingLocation) {
   floorGeometryNeedsRebaking = true;
   hideBuildingPanel();
   selectedBuildingLocation = null;
-  updateSektorStatePanel(sektor.getSektorState());
+  updateSektorState();
   saveState();
 }
 
 // The panel shows the capacity it was opened with, so it is reopened to show the new one.
 function changeBuildingCapacity(placed: { type: string; location: BuildingLocation; code: string }) {
-  updateSektorStatePanel(sektor.getSektorState());
+  updateSektorState();
   saveState();
   openBuildingPanel(placed);
 }
@@ -642,7 +676,7 @@ const sektorUi = (p: p5) => {
     }
 
     if (result.error === undefined) {
-      updateSektorStatePanel(sektor.getSektorState());
+      updateSektorState();
       saveState();
       const newBuilding = placedBuildings.find(building => building.location.x === grid.x && building.location.y === grid.y);
       if (newBuilding) openBuildingPanel(newBuilding);
@@ -713,7 +747,6 @@ if (isViewMode) {
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);
 onImportHover(resourceType => { hoveredImportResource = resourceType; });
-onLeave(() => { window.location.href = "/"; });
 if (!isTestMode) {
   loadSavedState();
 }

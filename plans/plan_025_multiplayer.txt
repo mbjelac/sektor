@@ -93,7 +93,7 @@ On the list, all players see all sektors, but they can only edit their own sekto
             - [done] switch map to edit mode
             - [done] do not display "Claim" button
 
-#9 Leaving map is more intuitive
+#9 [done] Leaving map is more intuitive
 - [done] move Leave button from status panel to sektor name
     - [done] in front of sektor name
     - [done] no label

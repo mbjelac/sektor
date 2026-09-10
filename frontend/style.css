@@ -48,6 +48,26 @@ body > main {
   gap: 4px;
 }
 
+#sektor-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#leave-button {
+  background: none;
+  border: none;
+  color: #999;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+#leave-button:hover {
+  color: #fff;
+}
+
 #sektor-name {
   color: #fff;
   font-family: sans-serif;
@@ -810,23 +830,6 @@ body > main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-.ss-leave {
-  align-self: flex-end;
-  background: none;
-  border: 1px solid #666;
-  color: #999;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 4px 12px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.ss-leave:hover {
-  color: #fff;
-  border-color: #999;
 }
 
 #login {

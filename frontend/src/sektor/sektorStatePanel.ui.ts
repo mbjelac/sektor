@@ -10,15 +10,10 @@ const GREATER_OR_EQUAL = "≥";
 
 let panelEl: HTMLElement | null = null;
 let importHoverCallback: ((resourceType: string | null) => void) | null = null;
-let leaveCallback: (() => void) | null = null;
 let previousStatus: SektorState["status"] | null = null;
 
 export function onImportHover(callback: (resourceType: string | null) => void) {
   importHoverCallback = callback;
-}
-
-export function onLeave(callback: () => void) {
-  leaveCallback = callback;
 }
 
 export function updateSektorStatePanel(sektorState: SektorState) {
@@ -28,14 +23,6 @@ export function updateSektorStatePanel(sektorState: SektorState) {
 
   panelEl!.appendChild(createStatusRow(sektorState.status));
   panelEl!.appendChild(createResourceList(sektorState));
-
-  if (leaveCallback) {
-    const leaveButton = document.createElement("button");
-    leaveButton.className = "ss-leave";
-    leaveButton.textContent = "Leave";
-    leaveButton.addEventListener("click", () => leaveCallback!());
-    panelEl!.appendChild(leaveButton);
-  }
 
   if (previousStatus !== null && previousStatus !== sektorState.status) {
     flashPanel(sektorState.status);

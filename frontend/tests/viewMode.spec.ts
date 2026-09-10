@@ -61,6 +61,23 @@ test("names a sektor without a name of its own Unnamed", async ({ page }) => {
   await expect(page.locator("#sektor-name")).toHaveText("Unnamed");
 });
 
+test("goes back to the sektor list from the map", async ({ page }) => {
+  await storeSektor(page, "Beta", OTHER_PLAYER);
+  await page.goto("/sektor.html?name=Beta");
+
+  await page.locator("#leave-button").click();
+
+  await expect(page).toHaveURL(/\/$/);
+});
+
+test("tells what the button in front of the sektor name does", async ({ page }) => {
+  await storeSektor(page, "Beta", OTHER_PLAYER);
+
+  await page.goto("/sektor.html?name=Beta");
+
+  await expect(page.locator("#leave-button")).toHaveAttribute("title", "Back to list");
+});
+
 test("names the player a sektor is owned by", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
 
@@ -160,16 +177,51 @@ test("draws the buildings of a sektor shown in view mode", async ({ page }) => {
   await expectScreenshot(page, "view-mode-buildings");
 });
 
-async function storeSektor(page: import("@playwright/test").Page, sektorName: string, owner: string | null, buildings: object[] = []) {
-  await page.evaluate(([sektorName, owner, buildings]) => {
+test("congratulates the player when the sektor becomes done", async ({ page }) => {
+  await placeTheBuildingWhichFinishesTheSektor(page);
+
+  await expect(page.locator("#done-dialog")).toHaveScreenshot("done-dialog.png", { maxDiffPixelRatio: 0 });
+});
+
+test("stays on the sektor when the player continues working on it", async ({ page }) => {
+  await placeTheBuildingWhichFinishesTheSektor(page);
+
+  await page.locator("#done-continue-button").click();
+
+  await expect(page.locator("#done-dialog")).toHaveCount(0);
+});
+
+test("goes back to the list when the player leaves the finished sektor", async ({ page }) => {
+  await placeTheBuildingWhichFinishesTheSektor(page);
+
+  await page.locator("#done-leave-button").click();
+
+  await expect(page).toHaveURL(/\/$/);
+});
+
+// Habitats puts out Work, which is the whole assignment of this sektor, so placing one finishes it.
+async function placeTheBuildingWhichFinishesTheSektor(page: import("@playwright/test").Page) {
+  await storeSektor(page, "Alpha", CURRENT_PLAYER, [], [{ name: "Work", value: 0.5 }]);
+  await page.goto("/sektor.html?name=Alpha");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.locator('.building-item[data-building-name="Habitats"]').click();
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.locator("#done-dialog").waitFor();
+}
+
+async function storeSektor(page: import("@playwright/test").Page, sektorName: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = []) {
+  await page.evaluate(([sektorName, owner, buildings, exportRequirements]) => {
     const emptyGrid = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0));
     localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
       locationProperties: { soil: emptyGrid, groundwater: emptyGrid, ore: emptyGrid, insolation: emptyGrid, wind: emptyGrid },
       importRestrictions: [],
-      exportRequirements: [],
+      exportRequirements,
       buildings,
     }));
     localStorage.setItem("sektors", JSON.stringify([{ name: sektorName }]));
     localStorage.setItem("sektorOwners", JSON.stringify(owner ? { [sektorName as string]: owner } : {}));
-  }, [sektorName, owner, buildings] as [string, string | null, object[]]);
+  }, [sektorName, owner, buildings, exportRequirements] as [string, string | null, object[], object[]]);
 }
