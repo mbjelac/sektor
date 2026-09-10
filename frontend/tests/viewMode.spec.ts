@@ -43,6 +43,15 @@ test("shows a building panel in view mode without the capacity buttons", async (
   await expectScreenshot(page, "view-mode-building-panel", "#building-panel");
 });
 
+test("names the sektor it is showing", async ({ page }) => {
+  await storeSektor(page, "Beta", OTHER_PLAYER);
+  await page.evaluate(() => localStorage.setItem("sektorNames", JSON.stringify({ Beta: "Sunset Flats" })));
+
+  await page.goto("/sektor.html?name=Beta");
+
+  await expect(page.locator("#sektor-name")).toHaveText("Sunset Flats");
+});
+
 test("opens a sektor claimed by the current player for building", async ({ page }) => {
   await storeSektor(page, "Alpha", CURRENT_PLAYER);
 

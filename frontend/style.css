@@ -40,6 +40,14 @@ body > main {
   gap: 16px;
 }
 
+#sektor-name {
+  flex: 0 0 auto;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 #construction-panel {
   flex: 1 1 auto;
   min-height: 0;
@@ -726,6 +734,8 @@ body > main {
 
 #property-toggler {
   flex: 0 0 auto;
+  /* Sits at the bottom of the screen whether or not the construction panel is above it. */
+  margin-top: auto;
   background: #2a2a2a;
   border: 1px solid #444;
   padding: 12px;

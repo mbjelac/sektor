@@ -10,6 +10,7 @@ import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui
 import {updateSektorStatePanel, onImportHover, onLeave} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { getSektorOwner } from "./sektorOwner.api";
+import { getGivenSektorName } from "./sektorName.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
@@ -34,6 +35,20 @@ function isSektorOwnedByCurrentPlayer(): boolean {
   // The sektor of a test run is made up along with its locations, and belongs to whoever opened it.
   if (isTestMode) return true;
   return !!sektorName && getSektorOwner(sektorName) === getUsername();
+}
+
+// The player is shown which sektor they are looking at, above the panels on the left.
+function showSektorName() {
+  const nameElement = document.createElement("div");
+  nameElement.id = "sektor-name";
+  nameElement.textContent = getDisplayedSektorName();
+  document.getElementById("left-panels")!.prepend(nameElement);
+}
+
+function getDisplayedSektorName(): string {
+  // The sektor of a test run is made up along with its locations, and so is its name.
+  if (isTestMode) return "Test Sektor";
+  return getGivenSektorName(sektorName!) ?? sektorName!;
 }
 
 if (!isTestMode && (!sektorName || !getSektorData(sektorName))) {
@@ -618,6 +633,7 @@ const sektorUi = (p: p5) => {
 };
 
 new p5(sektorUi);
+showSektorName();
 if (isViewMode) {
   document.getElementById("construction-panel")!.remove();
 } else {
