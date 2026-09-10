@@ -72,22 +72,34 @@ On the list, all players see all sektors, but they can only edit their own sekto
 - [done] OK button labelled "Claim"
 - [done] dialog has title "Claim Sektor"
 
-#7 A player sees the name of the sektor in the map page
+#7 [done] A player sees the name of the sektor in the map page
 - [done] in map, current sektor's name is displayed in top-left corner in bold text
 - [done] building toolbar (if shown) is below sektor name
 - [done] geography toolbar is aligned to bottom of screen, even in view mode
-- if sektor's name is blank, display "Unnamed"
+- [done] if sektor's name is blank, display "Unnamed"
 
-#8 A player can claim a sektor while viewing the map
-- if the viewed sektor belongs to someone else, display player's name in the map
-    - if someone else is the owner
-        - below sektor name display label "Owned by:", light-gray, regular
-        - next to it display player's username, white, bold
-- if the viewed sektor belongs to the current player, display nothing below the sektor name
-- if the viewed sektor is not owned, display the blue "Claim" button below sektor name
-    - when clicked, display same "claim sektor" dialog as in the list
-    - same functionality as in the list
-        - if claimed
-            - no need to navigate to map
-            - switch map to edit mode
-            - do not display "Claim" button
+#8 [done] A player can claim a sektor while viewing the map
+- [done] if the viewed sektor belongs to someone else, display player's name in the map
+    - [done] if someone else is the owner
+        - [done] below sektor name display label "Owned by:", light-gray, regular
+        - [done] next to it display player's username, white, bold
+- [done] if the viewed sektor belongs to the current player, display nothing below the sektor name
+- [done] if the viewed sektor is not owned, display the blue "Claim" button below sektor name
+    - [done] when clicked, display same "claim sektor" dialog as in the list
+    - [done] same functionality as in the list
+        - [done] if claimed
+            - [done] no need to navigate to map
+            - [done] switch map to edit mode
+            - [done] do not display "Claim" button
+
+#9 Leaving map is more intuitive
+- move Leave button from status panel to sektor name
+    - in front of sektor name
+    - no label
+    - heroicon "arrow-left"
+    - tooltip "Back to list"
+- when status transitions into Done, show popup
+    - "Congratulations <username>!<line break>You have completed your assignment in <Sektor name>!<line break>Do you want to continue working on this sektor?"
+    - buttons: "Leave", "Continue"
+    - continue: hides dialog
+    - leave: navigates to sektor list
