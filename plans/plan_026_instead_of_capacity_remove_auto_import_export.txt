@@ -5,3 +5,22 @@
     - capacity UI display & modification
 
 #2 Remove auto import/export
+- all building functions work differently than before:
+    - each building has an *automatically calculated capacity*
+    - an actual building output is it's specified output times current capacity
+    - capacity is calculated for each resource type separately:
+        - for resource type X
+        - get all buildings with input X and specified amount iX
+        - sum up all iX
+        - sum up all already calculated output X amounts oX
+        - if sum of oX is equal or larger than sum of iX
+            - availability coefficient AC is 1
+        - else
+            - divide sum of oX by sum of iX to get availability coefficient AC
+        - set actual input amounts of all buildings for X to iX * AC for that building
+
+#3 Player requests imports
+- a player can set import amounts for any resource type
+    - Sektor has method setImportAmount(resourceType: string, amount: number)
+- set import amounts factor into the algorithm of availability coefficient calculation:
+    - when summing up all already calculated output X amounts oX, add also import amount for X
