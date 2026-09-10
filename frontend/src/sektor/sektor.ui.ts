@@ -9,8 +9,8 @@ import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover, onLeave} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
-import { getSektorOwner } from "./sektorOwner.api";
-import { getGivenSektorName } from "./sektorName.api";
+import { getSektorOwner, setSektorOwner } from "./sektorOwner.api";
+import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "./sektorName.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
@@ -18,6 +18,7 @@ import { getNegativeScoringResources } from "../resources";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
+import { showNameDialog } from "../nameDialog.ui";
 import { showUser } from "../login/userDisplay.ui";
 
 requireLogin();
@@ -29,26 +30,95 @@ const isTestMode = new URLSearchParams(window.location.search).get("test") === "
 const sektorName = new URLSearchParams(window.location.search).get("name");
 // A sektor is only opened for building by the player who claimed it. Everybody else looks at
 // it without the tools for changing it, as does its owner when asking for view mode.
-const isViewMode = new URLSearchParams(window.location.search).get("mode") === "view" || !isSektorOwnedByCurrentPlayer();
+let isViewMode = new URLSearchParams(window.location.search).get("mode") === "view" || !isSektorOwnedByCurrentPlayer();
 
 function isSektorOwnedByCurrentPlayer(): boolean {
+  const owner = getSektorOwnerName();
+  return owner !== null && owner === getUsername();
+}
+
+function getSektorOwnerName(): string | null {
   // The sektor of a test run is made up along with its locations, and belongs to whoever opened it.
-  if (isTestMode) return true;
-  return !!sektorName && getSektorOwner(sektorName) === getUsername();
+  if (isTestMode) return getUsername();
+  return sektorName ? getSektorOwner(sektorName) : null;
 }
 
 // The player is shown which sektor they are looking at, above the panels on the left.
 function showSektorName() {
+  document.getElementById("sektor-header")?.remove();
+
+  const header = document.createElement("div");
+  header.id = "sektor-header";
+
   const nameElement = document.createElement("div");
   nameElement.id = "sektor-name";
   nameElement.textContent = getDisplayedSektorName();
-  document.getElementById("left-panels")!.prepend(nameElement);
+  header.appendChild(nameElement);
+
+  document.getElementById("left-panels")!.prepend(header);
+}
+
+// The sektor is claimed without leaving the map, which then turns from being looked at into
+// being built on.
+function claimSektor() {
+  showNameDialog({
+    name: getGivenSektorName(sektorName!) ?? "",
+    takenNames: getTakenSektorNames(sektorName!),
+    onNamed: givenName => {
+      setGivenSektorName(sektorName!, givenName);
+      setSektorOwner(sektorName!, getUsername()!);
+      showSektorName();
+      showSektorOwner();
+      enterEditMode();
+    },
+  });
+}
+
+function enterEditMode() {
+  isViewMode = false;
+  document.getElementById("construction-panel")!.hidden = false;
+  initToolbar();
+}
+
+// A sektor claimed by another player carries their name, so that the player knows whose sektor
+// they are looking at. Their own sektor carries nothing.
+function showSektorOwner() {
+
+  const owner = getSektorOwnerName();
+  if (owner === getUsername()) return;
+
+  // A sektor nobody has claimed is offered to the player looking at it.
+  if (!owner) {
+    const claimButton = document.createElement("button");
+    claimButton.id = "map-claim-button";
+    claimButton.className = "claim-button";
+    claimButton.textContent = "Claim";
+    claimButton.addEventListener("click", claimSektor);
+    document.getElementById("sektor-header")!.appendChild(claimButton);
+    return;
+  }
+
+  const ownerElement = document.createElement("div");
+  ownerElement.id = "sektor-owner";
+
+  const label = document.createElement("span");
+  label.className = "sektor-owner-label";
+  label.textContent = "Owned by:";
+  ownerElement.appendChild(label);
+
+  const ownerName = document.createElement("span");
+  ownerName.className = "sektor-owner-name";
+  ownerName.textContent = owner;
+  ownerElement.appendChild(ownerName);
+
+  document.getElementById("sektor-header")!.appendChild(ownerElement);
 }
 
 function getDisplayedSektorName(): string {
   // The sektor of a test run is made up along with its locations, and so is its name.
   if (isTestMode) return "Test Sektor";
-  return getGivenSektorName(sektorName!) ?? sektorName!;
+  // A sektor left without a name of its own is still shown as something.
+  return (getGivenSektorName(sektorName!) ?? sektorName!).trim() || "Unnamed";
 }
 
 if (!isTestMode && (!sektorName || !getSektorData(sektorName))) {
@@ -634,8 +704,9 @@ const sektorUi = (p: p5) => {
 
 new p5(sektorUi);
 showSektorName();
+showSektorOwner();
 if (isViewMode) {
-  document.getElementById("construction-panel")!.remove();
+  document.getElementById("construction-panel")!.hidden = true;
 } else {
   initToolbar();
 }

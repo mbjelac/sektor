@@ -48,7 +48,10 @@ export function showNameDialog({ name, takenNames, onNamed }: {
   okButton.id = "name-ok-button";
   okButton.className = "dialog-button";
   okButton.textContent = "Claim";
-  okButton.addEventListener("click", () => onNamed(nameInput.value.trim()));
+  okButton.addEventListener("click", () => {
+    overlay.remove();
+    onNamed(nameInput.value.trim());
+  });
   buttons.appendChild(okButton);
 
   // A player who thinks better of claiming the sektor leaves it as it was.

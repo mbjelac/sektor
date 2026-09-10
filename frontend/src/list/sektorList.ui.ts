@@ -5,8 +5,8 @@ import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon,
 import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
 import { getSektorOwner, removeSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
-import { getGivenSektorName, setGivenSektorName } from "../sektor/sektorName.api";
-import { showNameDialog } from "./nameDialog.ui";
+import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "../sektor/sektorName.api";
+import { showNameDialog } from "../nameDialog.ui";
 import { showAbandonDialog } from "./abandonDialog.ui";
 import { getUsername } from "../login/login.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
@@ -164,7 +164,7 @@ function createOwner(sektorName: string, claimingAllowed: boolean): HTMLElement 
 
 function createClaimButton(sektorName: string, claimingAllowed: boolean): HTMLElement {
   const claimButton = document.createElement("button");
-  claimButton.className = "sektor-list-claim";
+  claimButton.className = "claim-button sektor-list-claim";
   claimButton.textContent = "Claim";
   claimButton.disabled = !claimingAllowed;
   claimButton.addEventListener("click", () => claimSektor(sektorName));
@@ -184,14 +184,6 @@ function claimSektor(sektorName: string) {
       window.location.href = `/sektor.html?name=${encodeURIComponent(sektorName)}`;
     },
   });
-}
-
-// The sektor being claimed is left out, so that a sektor can be claimed again under the name it
-// already carries.
-function getTakenSektorNames(claimedSektorName: string): string[] {
-  return getSektorList()
-    .filter(sektor => sektor.name !== claimedSektorName)
-    .map(sektor => getGivenSektorName(sektor.name) ?? sektor.name);
 }
 
 function createStatus(status: SektorStatus): HTMLElement {
