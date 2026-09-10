@@ -34,6 +34,7 @@ On the list, all players see all sektors, but they can only edit their own sekto
             - [done] if no onwer, show "Claim" button
                 - [done] blue button
                 - [done] white text
+                - icon: heroicons flag
                 - [done] when Claim clicked
                     - [done] current player is set as owner of the sektor
                     - [done] open that Sektor in edit mode
@@ -93,13 +94,13 @@ On the list, all players see all sektors, but they can only edit their own sekto
             - [done] do not display "Claim" button
 
 #9 Leaving map is more intuitive
-- move Leave button from status panel to sektor name
-    - in front of sektor name
-    - no label
-    - heroicon "arrow-left"
-    - tooltip "Back to list"
-- when status transitions into Done, show popup
-    - "Congratulations <username>!<line break>You have completed your assignment in <Sektor name>!<line break>Do you want to continue working on this sektor?"
-    - buttons: "Leave", "Continue"
-    - continue: hides dialog
-    - leave: navigates to sektor list
+- [done] move Leave button from status panel to sektor name
+    - [done] in front of sektor name
+    - [done] no label
+    - [done] heroicon "arrow-left"
+    - [done] tooltip "Back to list"
+- [done] when status transitions into Done, show popup
+    - [done] "Congratulations <username>!<line break>You have completed your assignment in <Sektor name>!<line break>Do you want to continue working on this sektor?"
+    - [done] buttons: "Leave", "Continue"
+    - [done] continue: hides dialog
+    - [done] leave: navigates to sektor list
