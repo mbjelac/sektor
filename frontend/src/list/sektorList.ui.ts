@@ -1,12 +1,13 @@
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, SektorListItem } from "./sektorList.api";
-import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, starIcon } from "../icons";
+import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, starIcon, userIcon } from "../icons";
 import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
 import { getSektorOwner, removeSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
 import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "../sektor/sektorName.api";
 import { showNameDialog } from "../nameDialog.ui";
+import { createClaimButton } from "../claimButton.ui";
 import { showAbandonDialog } from "./abandonDialog.ui";
 import { getUsername } from "../login/login.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
@@ -59,7 +60,8 @@ function createHeader(): HTMLElement {
 
   const owner = document.createElement("span");
   owner.className = "sektor-list-owner";
-  owner.textContent = "Owner";
+  owner.innerHTML = userIcon;
+  owner.title = "Owner";
   header.appendChild(owner);
 
   const status = document.createElement("span");
@@ -146,7 +148,7 @@ function createOwner(sektorName: string, claimingAllowed: boolean): HTMLElement 
   const owner = getSektorOwner(sektorName);
 
   if (!owner) {
-    cell.appendChild(createClaimButton(sektorName, claimingAllowed));
+    cell.appendChild(createListClaimButton(sektorName, claimingAllowed));
     return cell;
   }
 
@@ -162,12 +164,10 @@ function createOwner(sektorName: string, claimingAllowed: boolean): HTMLElement 
   return cell;
 }
 
-function createClaimButton(sektorName: string, claimingAllowed: boolean): HTMLElement {
-  const claimButton = document.createElement("button");
-  claimButton.className = "claim-button sektor-list-claim";
-  claimButton.textContent = "Claim";
+function createListClaimButton(sektorName: string, claimingAllowed: boolean): HTMLElement {
+  const claimButton = createClaimButton(() => claimSektor(sektorName));
+  claimButton.classList.add("sektor-list-claim");
   claimButton.disabled = !claimingAllowed;
-  claimButton.addEventListener("click", () => claimSektor(sektorName));
   return claimButton;
 }
 

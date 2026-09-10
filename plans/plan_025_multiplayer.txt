@@ -34,7 +34,7 @@ On the list, all players see all sektors, but they can only edit their own sekto
             - [done] if no onwer, show "Claim" button
                 - [done] blue button
                 - [done] white text
-                - icon: heroicons flag
+                - [done] icon: heroicons flag
                 - [done] when Claim clicked
                     - [done] current player is set as owner of the sektor
                     - [done] open that Sektor in edit mode

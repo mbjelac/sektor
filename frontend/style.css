@@ -715,6 +715,13 @@ body > main {
   font-size: 12px;
 }
 
+/* The header of the column carries the same washed out look as the other column headers. */
+.sektor-list-header .sektor-list-owner {
+  display: flex;
+  align-items: center;
+  color: inherit;
+}
+
 .sektor-list-you {
   background: var(--color-good);
   color: #fff;
@@ -725,6 +732,9 @@ body > main {
 }
 
 .claim-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: #1e6fd9;
   border: none;
   color: #fff;
@@ -737,6 +747,11 @@ body > main {
 
 .claim-button:hover:enabled {
   background: #2f83f0;
+}
+
+.claim-icon {
+  display: flex;
+  align-items: center;
 }
 
 .claim-button:disabled {

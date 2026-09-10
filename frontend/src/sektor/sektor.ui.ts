@@ -17,6 +17,7 @@ import { initPropertyToggler, getSelectedProperty, selectProperty } from "./prop
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
 import { getNegativeScoringResources } from "../resources";
 import { arrowLeftIcon } from "../icons";
+import { createClaimButton } from "../claimButton.ui";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -103,11 +104,8 @@ function showSektorOwner() {
 
   // A sektor nobody has claimed is offered to the player looking at it.
   if (!owner) {
-    const claimButton = document.createElement("button");
+    const claimButton = createClaimButton(claimSektor);
     claimButton.id = "map-claim-button";
-    claimButton.className = "claim-button";
-    claimButton.textContent = "Claim";
-    claimButton.addEventListener("click", claimSektor);
     document.getElementById("sektor-header")!.appendChild(claimButton);
     return;
   }
