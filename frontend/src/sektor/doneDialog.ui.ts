@@ -15,9 +15,9 @@ export function showDoneDialog({ username, sektorName, onLeave }: {
   overlay.appendChild(dialog);
 
   const message = document.createElement("div");
-  message.className = "dialog-question";
-  message.appendChild(createMessageLine(`Congratulations ${username}!`));
-  message.appendChild(createMessageLine(`You have completed your assignment in ${sektorName}!`));
+  message.className = "dialog-question done-dialog-message";
+  message.appendChild(createBoldMessageLine(`Congratulations, ${username}!`));
+  message.appendChild(createMessageLine("You have completed your assignment in ", createBoldText(sektorName), "!"));
   message.appendChild(createMessageLine("Do you want to continue working on this sektor?"));
   dialog.appendChild(message);
 
@@ -42,8 +42,22 @@ export function showDoneDialog({ username, sektorName, onLeave }: {
   document.body.appendChild(overlay);
 }
 
-function createMessageLine(text: string): HTMLElement {
+function createBoldMessageLine(text: string): HTMLElement {
   const line = document.createElement("div");
+  line.className = "done-dialog-bold";
   line.textContent = text;
   return line;
+}
+
+function createMessageLine(...parts: (string | HTMLElement)[]): HTMLElement {
+  const line = document.createElement("div");
+  parts.forEach(part => line.append(part));
+  return line;
+}
+
+function createBoldText(text: string): HTMLElement {
+  const boldText = document.createElement("span");
+  boldText.className = "done-dialog-bold";
+  boldText.textContent = text;
+  return boldText;
 }
