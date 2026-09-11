@@ -68,7 +68,7 @@
     - building panel does not display active/inactive label
     - building panel does not display toggle switch
 
-#6 Local resource output goes to nearest buildings that resource
-- when selecting functions with input resource which is starved, select in order of descending distance from nearest output resource of that type
+#6 [done] Local resource output goes to nearest buildings that resource
+- [done] when selecting functions with input resource which is starved, select in order of descending distance from nearest output resource of that type
     - use pythagorean distance (x1 - x2)^2 + (y1 - y2)^2 (no need for square root as we will only be comparing distances)
-- adjust (or add if needed) Sektor tests which confirm this
+- [done] adjust (or add if needed) Sektor tests which confirm this

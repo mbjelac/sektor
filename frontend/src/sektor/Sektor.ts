@@ -26,6 +26,12 @@ export interface SektorState {
   starvedFunctions: BuildingFunctionLocation[];
 }
 
+interface StarvationCandidate {
+  buildingFunctionLocation: BuildingFunctionLocation;
+  consumedAmount: number;
+  distanceToNearestProducer: number;
+}
+
 export interface BuildingFunctionState {
   buildingFunction: BuildingFunction;
   modifiedOutputs: ResourceThroughput[];
@@ -210,12 +216,27 @@ export class Sektor {
       .find(shortage => shortage.value > 0);
   }
 
-  // Functions are starved in the order their buildings were built, enough of them to cover the
-  // shortage. A function consuming more than is missing is still starved whole, since a function
-  // either runs or it does not.
+  // A local resource never travels far, so the functions closest to where it is made are the ones
+  // which get it: the rest are starved, farthest first, enough of them to cover the shortage. A
+  // function consuming more than is missing is still starved whole, since a function either runs
+  // or it does not.
   private selectFunctionsToStarve(shortage: ResourceThroughput, starvedFunctions: BuildingFunctionLocation[]): BuildingFunctionLocation[] {
     const selectedFunctions: BuildingFunctionLocation[] = [];
     let selectedAmount = 0;
+    for (const starvationCandidate of this.findStarvationCandidates(shortage, starvedFunctions)) {
+      selectedFunctions.push(starvationCandidate.buildingFunctionLocation);
+      selectedAmount = roundToOneDecimal(selectedAmount + starvationCandidate.consumedAmount);
+      if (selectedAmount >= shortage.value) return selectedFunctions;
+    }
+    return selectedFunctions;
+  }
+
+  // Candidates equally far from the resource are starved in the order their buildings were built.
+  // A building making the resource itself is as near to it as a building can be, and one in a
+  // sektor which makes none of it is infinitely far from it.
+  private findStarvationCandidates(shortage: ResourceThroughput, starvedFunctions: BuildingFunctionLocation[]): StarvationCandidate[] {
+    const producerLocations = this.findProducerLocations(shortage.name, starvedFunctions);
+    const starvationCandidates: StarvationCandidate[] = [];
     for (const building of this.buildings) {
       const buildingDefinition = this.findBuildingDefinition(building.type);
       if (!buildingDefinition) continue;
@@ -225,12 +246,22 @@ export class Sektor {
         if (isFunctionStarved(starvedFunctions, building.location, functionIndex)) continue;
         const consumedAmount = this.findThroughputValue(buildingFunction.inputs, shortage.name);
         if (consumedAmount <= 0) continue;
-        selectedFunctions.push({ buildingLocation: building.location, functionIndex });
-        selectedAmount = roundToOneDecimal(selectedAmount + consumedAmount);
-        if (selectedAmount >= shortage.value) return selectedFunctions;
+        starvationCandidates.push({
+          buildingFunctionLocation: { buildingLocation: building.location, functionIndex },
+          consumedAmount,
+          distanceToNearestProducer: findDistanceToNearestLocation(building.location, producerLocations),
+        });
       }
     }
-    return selectedFunctions;
+    return starvationCandidates.sort(
+      (firstCandidate, secondCandidate) => secondCandidate.distanceToNearestProducer - firstCandidate.distanceToNearestProducer
+    );
+  }
+
+  private findProducerLocations(resourceType: string, starvedFunctions: BuildingFunctionLocation[]): BuildingLocation[] {
+    return this.buildings
+      .filter(building => this.findThroughputValue(this.getOutputs(building, starvedFunctions), resourceType) > 0)
+      .map(building => building.location);
   }
 
   private aggregateThroughputs(throughputs: ResourceThroughput[]): ResourceThroughput[] {
@@ -362,6 +393,14 @@ export class Sektor {
   private findBuildingAt(location: BuildingLocation): Building | undefined {
     return this.buildings.find(building => building.location.x === location.x && building.location.y === location.y);
   }
+}
+
+// Distances are only ever compared with each other, so the square root of the pythagorean
+// distance is left out.
+function findDistanceToNearestLocation(location: BuildingLocation, otherLocations: BuildingLocation[]): number {
+  return otherLocations
+    .map(otherLocation => (location.x - otherLocation.x) ** 2 + (location.y - otherLocation.y) ** 2)
+    .reduce((nearestDistance, distance) => Math.min(nearestDistance, distance), Number.POSITIVE_INFINITY);
 }
 
 function isFunctionStarved(starvedFunctions: BuildingFunctionLocation[], location: BuildingLocation, functionIndex: number): boolean {
