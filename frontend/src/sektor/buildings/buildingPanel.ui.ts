@@ -114,12 +114,14 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
   panelEl.appendChild(header);
 
   // Only a building doing several things can be told which of them to do, so a building with a
-  // single function gets no activity label and no toggle.
+  // single function gets no activity label and no toggle, and neither does a function the
+  // building always does.
   buildingFunctions.forEach((buildingFunctionState, functionIndex) => {
+    const switchable = buildingFunctions.length > 1 && !buildingFunctionState.buildingFunction.alwaysActive;
     const functionBlock = createFunctionDisplay({
       buildingFunction: buildingFunctionState.buildingFunction,
       modifiedOutputs: buildingFunctionState.modifiedOutputs,
-      activation: buildingFunctions.length > 1
+      activation: switchable
         ? {
           active: buildingFunctionState.active,
           onToggle: onToggleFunction && (() => onToggleFunction(functionIndex)),

@@ -436,6 +436,45 @@ describe("parseBuildingDefinitions", () => {
     ]);
   });
 
+  it("marks a function with the Active always property as always active", () => {
+    const result = parseBuildingDefinitions([
+      "# Reactor",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Function",
+      "Water 2",
+      "=",
+      "Energy 5",
+      "## Function",
+      "Active: always",
+      "Energy 1",
+      "=",
+      "Water 1",
+    ]);
+
+    expect(result[0].buildingFunctions.map(buildingFunction => buildingFunction.alwaysActive))
+      .toEqual([undefined, true]);
+  });
+
+  it("leaves a function with another Active value switchable", () => {
+    const result = parseBuildingDefinitions([
+      "# Reactor",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Function",
+      "Active: sometimes",
+      "Water 2",
+      "=",
+      "Energy 5",
+    ]);
+
+    expect(result[0].buildingFunctions[0].alwaysActive).toEqual(undefined);
+  });
+
   it("parses a building with two function sections", () => {
     const result = parseBuildingDefinitions([
       "# Workshop",

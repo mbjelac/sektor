@@ -123,7 +123,7 @@ export class Sektor {
   }
 
   // The single function of a building which has only one cannot be turned off, so the building
-  // always does something.
+  // always does something. Neither can a function the building always does.
   private setFunctionActivation(buildingLocation: BuildingLocation, functionIndex: number, active: boolean) {
     const building = this.findBuildingAt(buildingLocation);
     if (!building) return;
@@ -131,6 +131,7 @@ export class Sektor {
     if (!buildingDefinition) return;
     if (buildingDefinition.buildingFunctions.length < 2) return;
     if (functionIndex < 0 || functionIndex >= buildingDefinition.buildingFunctions.length) return;
+    if (buildingDefinition.buildingFunctions[functionIndex].alwaysActive) return;
     const functionActivations = this.getFunctionActivations(building, buildingDefinition);
     functionActivations[functionIndex] = active;
     building.activeFunctions = functionActivations;
@@ -309,12 +310,14 @@ export class Sektor {
   }
 
   // A building with a single function is always doing it, while a building with several of them
-  // starts out doing only the first one, until the player activates the others.
+  // starts out doing only the first one, until the player activates the others. A function the
+  // building always does runs whichever one it is and whatever the player has switched.
   private getFunctionActivations(building: Building, buildingDefinition: BuildingDefinition): boolean[] {
     const buildingFunctionCount = buildingDefinition.buildingFunctions.length;
     if (buildingFunctionCount < 2) return buildingDefinition.buildingFunctions.map(() => true);
-    return buildingDefinition.buildingFunctions.map(
-      (_, functionIndex) => building.activeFunctions?.[functionIndex] ?? functionIndex === 0
+    return buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) =>
+      buildingFunction.alwaysActive === true
+      || (building.activeFunctions?.[functionIndex] ?? functionIndex === 0)
     );
   }
 

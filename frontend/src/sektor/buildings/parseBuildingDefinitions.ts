@@ -2,6 +2,9 @@ export type { ResourceThroughput } from "../../../../shared/sektorData";
 
 export interface BuildingFunction {
   name?: string;
+  // A function the building always does: the player cannot turn it off, and it runs from the
+  // moment the building is built even when it is not the building's first function.
+  alwaysActive?: boolean;
   inputs: ResourceThroughput[];
   outputs: ResourceThroughput[];
   // The modifiers of this function's own outputs. Two functions of a building can produce the
@@ -9,6 +12,8 @@ export interface BuildingFunction {
   // the function whose output it modifies.
   outputModifiers?: OutputModifier[];
 }
+
+const ALWAYS_ACTIVE_VALUE = "always";
 
 export interface BuildingProperties {
   showFloor?: boolean;
@@ -119,6 +124,7 @@ function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFun
   const outputs: ResourceThroughput[] = [];
   const outputModifiers: OutputModifier[] = [];
   let functionName: string | undefined = undefined;
+  let alwaysActive = false;
   let seenEquals = false;
 
   for (const line of lines) {
@@ -131,6 +137,11 @@ function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFun
     const nameMatch = trimmed.match(/^Name:\s*(.+)$/);
     if (nameMatch) {
       functionName = nameMatch[1].trim();
+      continue;
+    }
+    const activeMatch = trimmed.match(/^Active:\s*(.+)$/);
+    if (activeMatch) {
+      alwaysActive = activeMatch[1].trim() === ALWAYS_ACTIVE_VALUE;
       continue;
     }
     const match = trimmed.match(/^(\S+)\s+(\d+)(?:\s+(\S+))?$/);
@@ -151,9 +162,9 @@ function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFun
     return { buildingFunction: { inputs: [], outputs: [], outputModifiers: [] }, outputModifiers: [] };
   }
 
-  const buildingFunction: BuildingFunction = functionName === undefined
-    ? { inputs, outputs, outputModifiers }
-    : { name: functionName, inputs, outputs, outputModifiers };
+  const buildingFunction: BuildingFunction = { inputs, outputs, outputModifiers };
+  if (functionName !== undefined) buildingFunction.name = functionName;
+  if (alwaysActive) buildingFunction.alwaysActive = true;
 
   return { buildingFunction, outputModifiers };
 }

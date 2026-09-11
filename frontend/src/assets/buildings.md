@@ -210,6 +210,7 @@ sph s(4,4,5) t(27,44,7) c(#94d17d)
 ## Function
 
 Name: Basic needs
+Active: always
 
 WaterPottable 2
 FoodRaw 5
@@ -220,17 +221,23 @@ Work 8
 
 ## Function
 
+Active: always
+
 HealthPhysical 3
 =
 Work 3
 
 ## Function
 
+Active: always
+
 HealthMental 3
 =
 Work 3
 
 ## Function
+
+Active: always
 
 HealthSocial 3
 =

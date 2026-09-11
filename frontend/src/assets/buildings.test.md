@@ -139,3 +139,26 @@ pri4 s(22,22,20) t(0,0,0) c(#66aacc)
 Food 1
 =
 Care 4
+
+# TestReactor
+
+## Render
+
+```
+pri4 s(24,24,22) t(0,0,0) c(#55bb88)
+```
+
+## Function
+
+Name: Power making
+Water 2
+=
+Energy 5
+
+## Function
+
+Name: Cooling
+Active: always
+Energy 1
+=
+Water 1

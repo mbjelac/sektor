@@ -355,6 +355,19 @@ test("clears the starvation warning when the local resource is produced", async 
   await expectScreenshot(page, "starvation-warning-cleared", "body");
 });
 
+test("displays no activity label or toggle for a function the building always does", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  // TestReactor's second function is marked "Active: always"
+  await page.locator('.building-item[data-building-name="TestReactor"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "always-active-function", "#building-panel");
+});
+
 test("displays building panel for empty location", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 

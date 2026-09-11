@@ -27,6 +27,25 @@ const testDefinitions: BuildingDefinition[] = [
     properties: {},
   },
   {
+    name: "Reactor",
+    renderingCode: "box s(1,1,1)",
+    buildingFunctions: [
+      {
+        name: "Power making",
+        inputs: [{ name: "Water", value: 2 }],
+        outputs: [{ name: "Energy", value: 5 }],
+      },
+      {
+        name: "Cooling",
+        alwaysActive: true,
+        inputs: [{ name: "Energy", value: 1 }],
+        outputs: [{ name: "Steam", value: 3 }],
+      },
+    ],
+    outputModifiers: [],
+    properties: {},
+  },
+  {
     name: "Mill",
     renderingCode: "box s(1,1,1)",
     buildingFunctions: [{
@@ -161,5 +180,55 @@ describe("saved function activation", () => {
     reloadedSektor.loadState(sektor.getState());
 
     expect(activations(reloadedSektor)).toEqual([false, true, false]);
+  });
+});
+
+describe("a function the building always does", () => {
+  it("is active from the start even though it is not the first function", () => {
+    expect(activations(sektorWith("Reactor"))).toEqual([true, true]);
+  });
+
+  it("counts towards the sektor from the start", () => {
+    expect(throughputs(sektorWith("Reactor"))).toEqual({
+      imports: [
+        { name: "Water", value: 2 },
+        { name: "Energy", value: 0 },
+      ],
+      exports: [
+        { name: "Energy", value: 4 },
+        { name: "Steam", value: 3 },
+      ],
+    });
+  });
+
+  it("stays active when it is deactivated", () => {
+    const sektor = sektorWith("Reactor");
+
+    sektor.deactivateFunction(buildingLocation, 1);
+
+    expect({
+      activations: activations(sektor),
+      throughputs: throughputs(sektor),
+    }).toEqual({
+      activations: [true, true],
+      throughputs: {
+        imports: [
+          { name: "Water", value: 2 },
+          { name: "Energy", value: 0 },
+        ],
+        exports: [
+          { name: "Energy", value: 4 },
+          { name: "Steam", value: 3 },
+        ],
+      },
+    });
+  });
+
+  it("stays active when the building's other function is deactivated", () => {
+    const sektor = sektorWith("Reactor");
+
+    sektor.deactivateFunction(buildingLocation, 0);
+
+    expect(activations(sektor)).toEqual([false, true]);
   });
 });
