@@ -60,3 +60,10 @@
     - in building panel next to each function name, put a warning icon
         - heroicon exclamation-triangle, solid, yellow
 - update warning icons on modification of SektorState
+
+#5 A function can be blocked from deactivation
+- if a Function section in building specification contains property "Active: always"
+    - that function is initially active even if it is not the first function in a building specification
+    - deactivation of that function does nothing
+    - building panel label always shows "Active"
+    - building panel does not display toggle switch
