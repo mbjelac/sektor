@@ -49,6 +49,7 @@ function throughputs(sektor: Sektor): { imports: { name: string, value: number }
 describe("outputs of several building functions", () => {
   it("adds up the outputs of the same resource", () => {
     const sektor = sektorWithBuildings([{ type: "Workshop", location: workshopLocation }]);
+    sektor.activateFunction(workshopLocation, 1);
 
     expect(throughputs(sektor)).toEqual({
       imports: [

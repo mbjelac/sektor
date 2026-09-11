@@ -4,18 +4,22 @@ import { BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingD
 import { arrowRightIcon } from "../icons";
 import { formatNumber } from "../formatNumber";
 
-export function createFunctionDisplay({ buildingFunction, modifiedOutputs }: {
+// Only a building with several functions can have them turned on and off, so a function shown
+// without an activation gets no activity label. A function which is only being looked at, not
+// played, gets the label without a toggle to change it by.
+export function createFunctionDisplay({ buildingFunction, modifiedOutputs, activation }: {
   buildingFunction: BuildingFunction,
   modifiedOutputs?: ResourceThroughput[],
+  activation?: { active: boolean, onToggle?: () => void },
 }): HTMLElement {
   const functionBlock = document.createElement("div");
   functionBlock.className = "bf-function-block";
+  if (activation && !activation.active) {
+    functionBlock.classList.add("bf-function-inactive");
+  }
 
-  if (buildingFunction.name) {
-    const functionName = document.createElement("div");
-    functionName.className = "bf-function-name";
-    functionName.textContent = buildingFunction.name;
-    functionBlock.appendChild(functionName);
+  if (buildingFunction.name || activation) {
+    functionBlock.appendChild(createFunctionHeader(buildingFunction.name, activation));
   }
 
   const functionDisplay = document.createElement("div");
@@ -32,6 +36,53 @@ export function createFunctionDisplay({ buildingFunction, modifiedOutputs }: {
   functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, modifiedOutputs));
 
   return functionBlock;
+}
+
+// The name of the function goes on the left of the header row and its activity on the right, so
+// a function is labelled and switched on the same line it starts with.
+function createFunctionHeader(name: string | undefined, activation?: { active: boolean, onToggle?: () => void }): HTMLElement {
+  const functionHeader = document.createElement("div");
+  functionHeader.className = "bf-function-header";
+
+  if (name) {
+    const functionName = document.createElement("div");
+    functionName.className = "bf-function-name";
+    functionName.textContent = name;
+    functionHeader.appendChild(functionName);
+  }
+
+  if (activation) {
+    functionHeader.appendChild(createActivityRow(activation));
+  }
+
+  return functionHeader;
+}
+
+function createActivityRow({ active, onToggle }: { active: boolean, onToggle?: () => void }): HTMLElement {
+  const activityRow = document.createElement("div");
+  activityRow.className = "bf-activity";
+
+  const activityLabel = document.createElement("span");
+  activityLabel.className = "bf-activity-label";
+  activityLabel.textContent = active ? "Active" : "Inactive";
+  activityRow.appendChild(activityLabel);
+
+  if (!onToggle) return activityRow;
+
+  const toggle = document.createElement("button");
+  toggle.className = active ? "bf-toggle bf-toggle-on" : "bf-toggle";
+  toggle.type = "button";
+  toggle.setAttribute("role", "switch");
+  toggle.setAttribute("aria-checked", String(active));
+  toggle.addEventListener("click", onToggle);
+
+  const toggleKnob = document.createElement("span");
+  toggleKnob.className = "bf-toggle-knob";
+  toggle.appendChild(toggleKnob);
+
+  activityRow.appendChild(toggle);
+
+  return activityRow;
 }
 
 function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {

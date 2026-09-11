@@ -57,7 +57,7 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy }: {
+export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy, onToggleFunction }: {
   name: string,
   code: string,
   buildingFunctions: BuildingFunctionState[],
@@ -66,7 +66,8 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
   floorColor: [number, number, number],
   showFloor?: boolean,
   location: BuildingLocation,
-  onDestroy?: () => void
+  onDestroy?: () => void,
+  onToggleFunction?: (functionIndex: number) => void
 }) {
   // Reopening the panel of a location would put back a panel scrolled to its top, so the
   // scroll position is carried over to the panel of the same location.
@@ -112,12 +113,22 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
 
   panelEl.appendChild(header);
 
-  for (const buildingFunctionState of buildingFunctions) {
-    panelEl.appendChild(createFunctionDisplay({
+  // Only a building doing several things can be told which of them to do, so a building with a
+  // single function gets no activity label and no toggle.
+  buildingFunctions.forEach((buildingFunctionState, functionIndex) => {
+    const functionBlock = createFunctionDisplay({
       buildingFunction: buildingFunctionState.buildingFunction,
       modifiedOutputs: buildingFunctionState.modifiedOutputs,
-    }));
-  }
+      activation: buildingFunctions.length > 1
+        ? {
+          active: buildingFunctionState.active,
+          onToggle: onToggleFunction && (() => onToggleFunction(functionIndex)),
+        }
+        : undefined,
+    });
+    functionBlock.dataset.functionIndex = String(functionIndex);
+    panelEl!.appendChild(functionBlock);
+  });
 
   if (locationProperties) {
     const propertiesSection = document.createElement("div");

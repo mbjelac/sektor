@@ -284,7 +284,28 @@ body > main {
   align-self: stretch;
 }
 
-.bf-function-name,
+/* Every function after the first is set off from the one above it by a line. */
+.bf-function-block + .bf-function-block {
+  border-top: 1px solid #444;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.bf-function-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.bf-function-name {
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  text-align: left;
+}
+
 .bp-properties-header {
   color: #fff;
   font-family: sans-serif;
@@ -401,6 +422,64 @@ body > main {
 
 .bp-property-modifier {
   border-color: #888;
+}
+
+/* The activity sits at the right end of the header row, whether or not the function is named. */
+.bf-activity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.bf-activity-label {
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.bf-toggle {
+  width: 28px;
+  height: 16px;
+  padding: 0;
+  border: 1px solid #666;
+  border-radius: 8px;
+  background-color: #444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.bf-toggle-knob {
+  width: 12px;
+  height: 12px;
+  margin-left: 1px;
+  border-radius: 50%;
+  background-color: #999;
+}
+
+.bf-toggle-on {
+  background-color: var(--color-good);
+  border-color: var(--color-good);
+  justify-content: flex-end;
+}
+
+.bf-toggle-on .bf-toggle-knob {
+  margin-left: 0;
+  margin-right: 1px;
+  background-color: #fff;
+}
+
+.bf-function-inactive .bf-inputs-amount,
+.bf-function-inactive .bf-outputs-amount {
+  color: #777;
+}
+
+.bf-function-inactive .bf-output-boosted,
+.bf-function-inactive .bf-output-reduced {
+  background-color: #555;
+  color: #999;
 }
 
 .bf-output-boosted {

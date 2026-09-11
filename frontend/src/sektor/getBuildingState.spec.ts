@@ -59,6 +59,7 @@ describe("getBuildingState", () => {
         modifiedOutputs: [
           { name: "Flour", value: 3 },
         ],
+        active: true,
       }],
     });
   });

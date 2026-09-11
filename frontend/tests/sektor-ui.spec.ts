@@ -1,3 +1,4 @@
+import { Page } from "@playwright/test";
 import { test, expect, setup, expectScreenshot } from "./test-utils";
 
 setup();
@@ -169,6 +170,7 @@ test("displays building panel with boosted output modifier", async ({ page }) =>
           outputs: [{ name: "Energy", value: 10 }],
         },
         modifiedOutputs: [{ name: "Energy", value: 15 }],
+        active: true,
       }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
       modifierProperties: ["insolation"],
@@ -193,6 +195,7 @@ test("displays building panel with reduced output modifier", async ({ page }) =>
           outputs: [{ name: "Energy", value: 10 }],
         },
         modifiedOutputs: [{ name: "Energy", value: 3.5 }],
+        active: true,
       }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: -4, wind: 1 },
       modifierProperties: ["insolation"],
@@ -217,6 +220,7 @@ test("displays building panel without output modifier", async ({ page }) => {
           outputs: [{ name: "Goods", value: 4 }],
         },
         modifiedOutputs: [{ name: "Goods", value: 4 }],
+        active: true,
       }],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
       modifierProperties: [],
@@ -243,6 +247,7 @@ test("displays building panel with several building functions", async ({ page })
             outputs: [{ name: "Tools", value: 2 }],
           },
           modifiedOutputs: [{ name: "Tools", value: 2 }],
+          active: true,
         },
         {
           buildingFunction: {
@@ -250,16 +255,58 @@ test("displays building panel with several building functions", async ({ page })
             outputs: [{ name: "Tools", value: 3 }],
           },
           modifiedOutputs: [{ name: "Tools", value: 3 }],
+          active: false,
         },
       ],
       locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
       modifierProperties: [],
       floorColor: [200, 200, 100],
       location: { x: 0, y: 0 },
+      onToggleFunction: () => {},
     });
   });
 
   await expectScreenshot(page, "building-panel-several-functions", "#building-panel");
+});
+
+async function placeWorkshop(page: Page) {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestWorkshop"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+}
+
+test("displays the first function of a placed building as active", async ({ page }) => {
+  await placeWorkshop(page);
+
+  await expectScreenshot(page, "building-function-initially-active", '#building-panel .bf-function-block[data-function-index="0"]');
+});
+
+test("displays the other functions of a placed building as inactive", async ({ page }) => {
+  await placeWorkshop(page);
+
+  await expectScreenshot(page, "building-function-initially-inactive", '#building-panel .bf-function-block[data-function-index="1"]');
+});
+
+test("activates a function when its toggle is clicked", async ({ page }) => {
+  await placeWorkshop(page);
+
+  await page.locator('#building-panel .bf-function-block[data-function-index="1"] .bf-toggle').click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-function-toggled-active", "body");
+});
+
+test("deactivates a function when its toggle is clicked", async ({ page }) => {
+  await placeWorkshop(page);
+
+  await page.locator('#building-panel .bf-function-block[data-function-index="0"] .bf-toggle').click();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-function-toggled-inactive", "body");
 });
 
 test("displays building panel for empty location", async ({ page }) => {

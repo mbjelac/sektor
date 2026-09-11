@@ -282,8 +282,26 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     floorColor: floorColor,
     showFloor: definition?.properties.showFloor,
     location: placed.location,
-    onDestroy: () => destroyBuilding(placed.location),
+    // A sektor being looked at rather than played is only ever read, so it is shown without the
+    // controls which would change it.
+    onDestroy: isViewMode ? undefined : () => destroyBuilding(placed.location),
+    onToggleFunction: isViewMode ? undefined : functionIndex => toggleBuildingFunction(placed, functionIndex),
   });
+}
+
+// Turning a function on or off changes what the building consumes and produces, so the panel is
+// redrawn and the sektor recalculated from the building's new set of functions.
+function toggleBuildingFunction(placed: { type: string; location: BuildingLocation; code: string }, functionIndex: number) {
+  const buildingState = sektor.getBuildingState(placed.location);
+  if (!buildingState) return;
+  if (buildingState.buildingFunctions[functionIndex].active) {
+    sektor.deactivateFunction(placed.location, functionIndex);
+  } else {
+    sektor.activateFunction(placed.location, functionIndex);
+  }
+  updateSektorState();
+  saveState();
+  openBuildingPanel(placed);
 }
 
 function destroyBuilding(location: BuildingLocation) {

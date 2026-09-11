@@ -10,7 +10,12 @@ export interface BuildingCreation {
   location: BuildingLocation;
 }
 
-export type Building = BuildingCreation;
+// A building does every function of its definition which is activated. The activations are
+// absent on a building whose functions were never toggled, which then does the functions it
+// started out with.
+export interface Building extends BuildingCreation {
+  activeFunctions?: boolean[];
+}
 
 export interface RestrictionsRequirements {
   importRestrictions: ResourceThroughput[];

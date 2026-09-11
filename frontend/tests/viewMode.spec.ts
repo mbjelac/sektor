@@ -150,6 +150,20 @@ test("draws the buildings of a sektor shown in view mode", async ({ page }) => {
   await expectScreenshot(page, "view-mode-buildings");
 });
 
+test("shows a building of a sektor in view mode without the controls which would change it", async ({ page }) => {
+  // Polytechnic has several functions, so its panel is the one which would carry the toggles.
+  await storeSektor(page, "Beta", OTHER_PLAYER, [{ type: "Polytechnic", location: { x: 5, y: 5 } }]);
+  await page.goto("/sektor.html?name=Beta");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "view-mode-building-panel", "#building-panel");
+});
+
 test("congratulates the player when the sektor becomes done", async ({ page }) => {
   await placeTheBuildingWhichFinishesTheSektor(page);
 

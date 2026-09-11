@@ -21,6 +21,7 @@ export interface SektorState {
 export interface BuildingFunctionState {
   buildingFunction: BuildingFunction;
   modifiedOutputs: ResourceThroughput[];
+  active: boolean;
 }
 
 export interface BuildingState {
@@ -65,15 +66,23 @@ export class Sektor {
 
   getState(): { buildings: Building[] } {
     return {
-      buildings: this.buildings.map(building => ({ ...building })),
+      buildings: this.buildings.map(building => building.activeFunctions
+        ? { ...building, activeFunctions: [...building.activeFunctions] }
+        : { ...building }),
     };
   }
 
   loadState(state: { buildings: Building[] }) {
-    this.buildings = state.buildings.map(building => ({
-      type: building.type,
-      location: building.location,
-    }));
+    this.buildings = state.buildings.map(building => building.activeFunctions
+      ? {
+        type: building.type,
+        location: building.location,
+        activeFunctions: [...building.activeFunctions],
+      }
+      : {
+        type: building.type,
+        location: building.location,
+      });
   }
 
   getBuildingState(location: BuildingLocation): BuildingState | null {
@@ -81,12 +90,36 @@ export class Sektor {
     if (!building) return null;
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return null;
+    const functionActivations = this.getFunctionActivations(building, buildingDefinition);
     return {
-      buildingFunctions: buildingDefinition.buildingFunctions.map(buildingFunction => ({
+      buildingFunctions: buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) => ({
         buildingFunction: buildingFunction,
         modifiedOutputs: this.getModifiedOutputs(buildingFunction, buildingDefinition, location),
+        active: functionActivations[functionIndex],
       })),
     };
+  }
+
+  activateFunction(buildingLocation: BuildingLocation, functionIndex: number) {
+    this.setFunctionActivation(buildingLocation, functionIndex, true);
+  }
+
+  deactivateFunction(buildingLocation: BuildingLocation, functionIndex: number) {
+    this.setFunctionActivation(buildingLocation, functionIndex, false);
+  }
+
+  // The single function of a building which has only one cannot be turned off, so the building
+  // always does something.
+  private setFunctionActivation(buildingLocation: BuildingLocation, functionIndex: number, active: boolean) {
+    const building = this.findBuildingAt(buildingLocation);
+    if (!building) return;
+    const buildingDefinition = this.findBuildingDefinition(building.type);
+    if (!buildingDefinition) return;
+    if (buildingDefinition.buildingFunctions.length < 2) return;
+    if (functionIndex < 0 || functionIndex >= buildingDefinition.buildingFunctions.length) return;
+    const functionActivations = this.getFunctionActivations(building, buildingDefinition);
+    functionActivations[functionIndex] = active;
+    building.activeFunctions = functionActivations;
   }
 
   // All resources produced in the sektor are available to all its buildings, so a resource is
@@ -178,7 +211,7 @@ export class Sektor {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      buildingDefinition.buildingFunctions.map(buildingFunction => buildingFunction.inputs).flat()
+      this.getActiveBuildingFunctions(building, buildingDefinition).map(buildingFunction => buildingFunction.inputs).flat()
     );
   }
 
@@ -186,9 +219,26 @@ export class Sektor {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      buildingDefinition.buildingFunctions.map(buildingFunction =>
+      this.getActiveBuildingFunctions(building, buildingDefinition).map(buildingFunction =>
         this.getModifiedOutputs(buildingFunction, buildingDefinition, building.location)
       ).flat()
+    );
+  }
+
+  // A deactivated function consumes and produces nothing, so it is left out of every amount the
+  // building contributes to the sektor.
+  private getActiveBuildingFunctions(building: Building, buildingDefinition: BuildingDefinition): BuildingFunction[] {
+    const functionActivations = this.getFunctionActivations(building, buildingDefinition);
+    return buildingDefinition.buildingFunctions.filter((_, functionIndex) => functionActivations[functionIndex]);
+  }
+
+  // A building with a single function is always doing it, while a building with several of them
+  // starts out doing only the first one, until the player activates the others.
+  private getFunctionActivations(building: Building, buildingDefinition: BuildingDefinition): boolean[] {
+    const buildingFunctionCount = buildingDefinition.buildingFunctions.length;
+    if (buildingFunctionCount < 2) return buildingDefinition.buildingFunctions.map(() => true);
+    return buildingDefinition.buildingFunctions.map(
+      (_, functionIndex) => building.activeFunctions?.[functionIndex] ?? functionIndex === 0
     );
   }
 
