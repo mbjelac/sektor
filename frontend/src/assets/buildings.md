@@ -357,7 +357,7 @@ WorkTechnical 2
 =
 FoodRaw 6 soil
 
-# Dig
+# Extractor
 
 ## Render
 
@@ -429,7 +429,9 @@ pri4 s(9,9,12) t(-23,14,-5) r(45,0,0) c(#474747)
 EnergyElectric 4
 WorkTechnical 2
 =
-Ore 5 ore
+OreMetal 0 ore
+OreMineral 0 minerals
+OreUranium 0 uranium
 
 ## Properties
 
