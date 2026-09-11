@@ -29,6 +29,7 @@ function createSektor(): Sektor {
     testDefinitions,
     { importRestrictions: [], exportRequirements: [] },
     [],
+    [],
   );
 }
 

@@ -1,6 +1,6 @@
 import resourcesMd from "./assets/resources.md?raw";
 import testResourcesMd from "./assets/resources.test.md?raw";
-import { negativeScoringResourceNames, parseResources } from "./parseResources";
+import { localResourceNames, negativeScoringResourceNames, parseResources } from "./parseResources";
 
 const isTestMode = import.meta.env.DEV && new URLSearchParams(window.location.search).get("test") === "true";
 const source = isTestMode ? testResourcesMd : resourcesMd;
@@ -17,4 +17,8 @@ export function getResourceColor(name: string): string {
 
 export function getNegativeScoringResources(): string[] {
   return negativeScoringResourceNames(resourceDefinitions);
+}
+
+export function getLocalResources(): string[] {
+  return localResourceNames(resourceDefinitions);
 }

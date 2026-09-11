@@ -46,6 +46,7 @@ function emptySektor(): Sektor {
     testDefinitions,
     { importRestrictions: [], exportRequirements: [] },
     [],
+    [],
   );
 }
 

@@ -1,16 +1,17 @@
 
 import { getResourceIcon } from "../resources";
 import { BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
-import { arrowRightIcon } from "../icons";
+import { arrowRightIcon, exclamationTriangleSolidIcon } from "../icons";
 import { formatNumber } from "../formatNumber";
 
 // Only a building with several functions can have them turned on and off, so a function shown
 // without an activation gets no activity label. A function which is only being looked at, not
 // played, gets the label without a toggle to change it by.
-export function createFunctionDisplay({ buildingFunction, modifiedOutputs, activation }: {
+export function createFunctionDisplay({ buildingFunction, modifiedOutputs, activation, starved }: {
   buildingFunction: BuildingFunction,
   modifiedOutputs?: ResourceThroughput[],
   activation?: { active: boolean, onToggle?: () => void },
+  starved?: boolean,
 }): HTMLElement {
   const functionBlock = document.createElement("div");
   functionBlock.className = "bf-function-block";
@@ -18,8 +19,8 @@ export function createFunctionDisplay({ buildingFunction, modifiedOutputs, activ
     functionBlock.classList.add("bf-function-inactive");
   }
 
-  if (buildingFunction.name || activation) {
-    functionBlock.appendChild(createFunctionHeader(buildingFunction.name, activation));
+  if (buildingFunction.name || activation || starved) {
+    functionBlock.appendChild(createFunctionHeader(buildingFunction.name, activation, starved));
   }
 
   const functionDisplay = document.createElement("div");
@@ -39,8 +40,9 @@ export function createFunctionDisplay({ buildingFunction, modifiedOutputs, activ
 }
 
 // The name of the function goes on the left of the header row and its activity on the right, so
-// a function is labelled and switched on the same line it starts with.
-function createFunctionHeader(name: string | undefined, activation?: { active: boolean, onToggle?: () => void }): HTMLElement {
+// a function is labelled and switched on the same line it starts with. A function going without
+// a local resource is warned about beside its name.
+function createFunctionHeader(name: string | undefined, activation?: { active: boolean, onToggle?: () => void }, starved?: boolean): HTMLElement {
   const functionHeader = document.createElement("div");
   functionHeader.className = "bf-function-header";
 
@@ -49,6 +51,14 @@ function createFunctionHeader(name: string | undefined, activation?: { active: b
     functionName.className = "bf-function-name";
     functionName.textContent = name;
     functionHeader.appendChild(functionName);
+  }
+
+  if (starved) {
+    const starvationWarning = document.createElement("span");
+    starvationWarning.className = "bf-function-warning";
+    starvationWarning.title = "Not enough of a local resource";
+    starvationWarning.innerHTML = exclamationTriangleSolidIcon;
+    functionHeader.appendChild(starvationWarning);
   }
 
   if (activation) {

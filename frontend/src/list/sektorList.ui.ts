@@ -12,7 +12,7 @@ import { showAbandonDialog } from "./abandonDialog.ui";
 import { getUsername } from "../login/login.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
-import { getNegativeScoringResources } from "../resources";
+import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { scoreColor } from "../score";
 import { formatNumber } from "../formatNumber";
 
@@ -230,7 +230,8 @@ function getSektorSummary(sektorName: string): SektorSummary {
       importRestrictions: sektorData.importRestrictions,
       exportRequirements: sektorData.exportRequirements,
     },
-    getNegativeScoringResources()
+    getNegativeScoringResources(),
+    getLocalResources(),
   );
   sektor.loadState({ buildings: sektorData.buildings });
 

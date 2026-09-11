@@ -125,6 +125,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
           onToggle: onToggleFunction && (() => onToggleFunction(functionIndex)),
         }
         : undefined,
+      starved: buildingFunctionState.starved,
     });
     functionBlock.dataset.functionIndex = String(functionIndex);
     panelEl!.appendChild(functionBlock);

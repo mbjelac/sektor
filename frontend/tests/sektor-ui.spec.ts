@@ -309,6 +309,52 @@ test("deactivates a function when its toggle is clicked", async ({ page }) => {
   await expectScreenshot(page, "building-function-toggled-inactive", "body");
 });
 
+test("marks a building starved of a local resource on the map", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  // TestClinic needs Care, a local resource which nothing in the sektor produces
+  await page.locator('.building-item[data-building-name="TestClinic"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "starved-building-marked");
+});
+
+test("warns in the building panel about a function starved of a local resource", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestClinic"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "starved-function-warning", "#building-panel");
+});
+
+test("clears the starvation warning when the local resource is produced", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  const centerX = box!.width / 2;
+  const centerY = box!.height / 2;
+
+  await page.locator('.building-item[data-building-name="TestClinic"]').click();
+  await page.waitForTimeout(100);
+  await canvas.click({ position: { x: centerX - 60, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+
+  // TestCarer produces the Care the clinic went without
+  await page.locator('.building-item[data-building-name="TestCarer"]').click();
+  await page.waitForTimeout(100);
+  await canvas.click({ position: { x: centerX + 60, y: centerY - 20 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "starvation-warning-cleared", "body");
+});
+
 test("displays building panel for empty location", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 

@@ -38,10 +38,10 @@
     - each function should have it's own "Affected by" list which lists all outputs of that function affected by a location property
     - update UI tests
 
-#4 Some resources are "local"
-- if a resource type is local, it means it cannot be imported or exported
-- a resource is local if resources.md (resources.test.md for test purposes) has "local" in it's space-delimited line of properties
-- calculate local resources in the same way as non-local resources
+#4 [done] Some resources are "local"
+- [done] if a resource type is local, it means it cannot be imported or exported
+- [done] a resource is local if resources.md (resources.test.md for test purposes) has "local" in it's space-delimited line of properties
+- [done] calculate local resources in the same way as non-local resources
     - after calculation, go through imports of local resources:
         - for each import:
             - select an activated building function of an existing building which has the same input resource
@@ -51,15 +51,15 @@
             - BuildingFunction = { buildingLocation: BuildingLocation, functionIndex: number }
             - put all selected functions in this array
     - in SektorState.exports remove all exports of local resource types
-- a player can see which buildings lack local resources
+- [done] a player can see which buildings lack local resources
     - in map, above each building which has at least one starved function, put a warning icon
         - shape of an upwards triangle
         - bright yellow
         - with black exclamation point inside
-- a player can see which functions of a building lack local resources
+- [done] a player can see which functions of a building lack local resources
     - in building panel next to each function name, put a warning icon
         - heroicon exclamation-triangle, solid, yellow
-- update warning icons on modification of SektorState
+- [done] update warning icons on modification of SektorState
 
 #5 A function can be blocked from deactivation
 - if a Function section in building specification contains property "Active: always"

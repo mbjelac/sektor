@@ -319,6 +319,17 @@ body > main {
   text-align: left;
 }
 
+.bf-function-warning {
+  display: flex;
+  align-items: center;
+  color: #ffdd00;
+}
+
+.bf-function-warning .icon {
+  width: 14px;
+  height: 14px;
+}
+
 .bp-properties-header {
   color: #fff;
   font-family: sans-serif;

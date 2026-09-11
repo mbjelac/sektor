@@ -15,7 +15,7 @@ import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "./s
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
-import { getNegativeScoringResources } from "../resources";
+import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { arrowLeftIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
 import { MODIFIER_MIN } from "../../../shared/modifierLimits";
@@ -200,7 +200,7 @@ function getRestrictionsRequirements() {
   return { importRestrictions: [], exportRequirements: [] };
 }
 
-const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources());
+const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources());
 const locations = sektor.getLocations();
 const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
 let errorTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -229,12 +229,21 @@ function saveState() {
 }
 
 let previousSektorStatus: SektorStatus | null = null;
+// A building whose function is starved is marked on the map, and what is starved only changes
+// with the sektor state, so the marked buildings are worked out there rather than every frame.
+let starvedBuildingLocations: BuildingLocation[] = [];
 
 // The player is congratulated the moment the sektor's assignment is met, but not again while it
 // stays met, nor on a sektor which was already done when opened.
 function updateSektorState() {
   const sektorState = sektor.getSektorState();
   updateSektorStatePanel(sektorState);
+  starvedBuildingLocations = sektorState.starvedFunctions
+    .map(starvedFunction => starvedFunction.buildingLocation)
+    .filter((location, index, locations) =>
+      locations.findIndex(other => other.x === location.x && other.y === location.y) === index
+    );
+  refreshOpenBuildingPanel();
 
   const becameDone = previousSektorStatus !== null && previousSektorStatus !== "Done" && sektorState.status === "Done";
   previousSektorStatus = sektorState.status;
@@ -246,6 +255,16 @@ function updateSektorState() {
       onLeave: () => { window.location.href = "/"; },
     });
   }
+}
+
+// What a building is starved of can change with anything built or switched elsewhere in the
+// sektor, so an open panel is redrawn from the new state rather than left showing the old one.
+function refreshOpenBuildingPanel() {
+  if (!selectedBuildingLocation) return;
+  const openedBuilding = placedBuildings.find(building =>
+    building.location.x === selectedBuildingLocation!.x && building.location.y === selectedBuildingLocation!.y
+  );
+  if (openedBuilding) openBuildingPanel(openedBuilding);
 }
 
 function loadSavedState() {
@@ -301,7 +320,6 @@ function toggleBuildingFunction(placed: { type: string; location: BuildingLocati
   }
   updateSektorState();
   saveState();
-  openBuildingPanel(placed);
 }
 
 function destroyBuilding(location: BuildingLocation) {
@@ -380,6 +398,42 @@ function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number
     p.box(side.w, thickness, side.d);
     p.pop();
   }
+}
+
+const STARVATION_WARNING_SIZE = BLOCK_SIZE * 0.6;
+const STARVATION_WARNING_HEIGHT = BLOCK_SIZE * 0.85;
+
+// The warning is a flat sign standing upright over the building, like a signpost: it turns
+// around its upright axis to face the camera, but never tips away from the floor.
+function drawStarvationWarning(p: p5, location: BuildingLocation, cameraAngleY: number) {
+  const { wx, wz } = gridToWorld(location.x, location.y);
+  const half = STARVATION_WARNING_SIZE / 2;
+
+  p.push();
+  p.noStroke();
+  p.noLights();
+  p.translate(wx, -STARVATION_WARNING_HEIGHT, wz);
+  p.rotateY(cameraAngleY);
+
+  p.fill(255, 221, 0);
+  p.beginShape();
+  p.vertex(0, -half, 0);
+  p.vertex(half, half * 0.8, 0);
+  p.vertex(-half, half * 0.8, 0);
+  p.endShape(p.CLOSE);
+
+  // The exclamation point sits just in front of the triangle, so the two do not fight over the
+  // same depth.
+  p.fill(0);
+  p.translate(0, 0, STARVATION_WARNING_SIZE * 0.02);
+  p.push();
+  p.translate(0, -STARVATION_WARNING_SIZE * 0.05, 0);
+  p.plane(STARVATION_WARNING_SIZE * 0.1, STARVATION_WARNING_SIZE * 0.3);
+  p.pop();
+  p.translate(0, STARVATION_WARNING_SIZE * 0.22, 0);
+  p.plane(STARVATION_WARNING_SIZE * 0.1, STARVATION_WARNING_SIZE * 0.1);
+
+  p.pop();
 }
 
 // Drawing the hundred floors one by one costs p5 a geometry rebuild and a GPU upload per
@@ -722,6 +776,10 @@ const sektorUi = (p: p5) => {
       p.translate(wx, 0, wz);
       drawBakedBodies(p, bakedBuildingBodies(p, building.type, building.code), p.millis());
       p.pop();
+    }
+
+    for (const location of starvedBuildingLocations) {
+      drawStarvationWarning(p, location, camAngleY);
     }
 
     document.getElementById("canvas-container")!.dataset.rendered = "true";

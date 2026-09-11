@@ -7,3 +7,4 @@ Metal ⚙️ #ccccff
 Fuel 🛢️ #ff8844
 Wood 🪵 #88ee55
 Stone 🧱 #ffcc88
+Care 🩺 #ff88cc local

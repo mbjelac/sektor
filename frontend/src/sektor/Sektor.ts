@@ -10,18 +10,27 @@ export interface ScoredThroughput extends ResourceThroughput {
   score: number;
 }
 
+// Names one function of one building. The plan calls this a BuildingFunction, but that name is
+// already taken by the function of a building definition, which carries no location.
+export interface BuildingFunctionLocation {
+  buildingLocation: BuildingLocation;
+  functionIndex: number;
+}
+
 export interface SektorState {
   imports: ScoredThroughput[];
   exports: ScoredThroughput[];
   status: SektorStatus;
   importRestrictions: ResourceThroughput[];
   exportRequirements: ResourceThroughput[];
+  starvedFunctions: BuildingFunctionLocation[];
 }
 
 export interface BuildingFunctionState {
   buildingFunction: BuildingFunction;
   modifiedOutputs: ResourceThroughput[];
   active: boolean;
+  starved: boolean;
 }
 
 export interface BuildingState {
@@ -47,17 +56,20 @@ export class Sektor {
   private readonly buildingDefinitions: BuildingDefinition[];
   private readonly restrictionsRequirements: RestrictionsRequirements;
   private readonly negativeScoringResources: string[];
+  private readonly localResources: string[];
 
   constructor(
     locations: Location[][],
     buildingDefinitions: BuildingDefinition[],
     restrictionsRequirements: RestrictionsRequirements,
     negativeScoringResources: string[],
+    localResources: string[],
   ) {
     this.locations = locations;
     this.buildingDefinitions = buildingDefinitions;
     this.restrictionsRequirements = restrictionsRequirements;
     this.negativeScoringResources = negativeScoringResources;
+    this.localResources = localResources;
   }
 
   getLocations(): Location[][] {
@@ -91,11 +103,13 @@ export class Sektor {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return null;
     const functionActivations = this.getFunctionActivations(building, buildingDefinition);
+    const starvedFunctions = this.findStarvedFunctions();
     return {
       buildingFunctions: buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) => ({
         buildingFunction: buildingFunction,
         modifiedOutputs: this.getModifiedOutputs(buildingFunction, buildingDefinition, location),
         active: functionActivations[functionIndex],
+        starved: isFunctionStarved(starvedFunctions, location, functionIndex),
       })),
     };
   }
@@ -126,21 +140,26 @@ export class Sektor {
   // imported only for the amount by which the buildings' inputs exceed the buildings' outputs,
   // and exported only for the amount by which the outputs exceed the inputs.
   getSektorState(): SektorState {
+    const starvedFunctions = this.findStarvedFunctions();
     const totalInputs = this.aggregateThroughputs(
-      this.buildings.map(building => this.getInputs(building)).flat()
+      this.buildings.map(building => this.getInputs(building, starvedFunctions)).flat()
     );
     const totalOutputs = this.aggregateThroughputs(
-      this.buildings.map(building => this.getOutputs(building)).flat()
+      this.buildings.map(building => this.getOutputs(building, starvedFunctions)).flat()
     );
 
     const imports = totalInputs.map(input => {
       const value = roundToOneDecimal(Math.max(0, input.value - this.findThroughputValue(totalOutputs, input.name)));
       return { name: input.name, value, score: this.scoreImport(input.name, value) };
     });
-    const exports = totalOutputs.map(output => {
-      const value = roundToOneDecimal(Math.max(0, output.value - this.findThroughputValue(totalInputs, output.name)));
-      return { name: output.name, value, score: this.scoreExport(output.name, value) };
-    });
+    // A local resource cannot leave the sektor, so whatever is produced above what is consumed
+    // is not an export of it, it is simply not made.
+    const exports = totalOutputs
+      .filter(output => !this.localResources.includes(output.name))
+      .map(output => {
+        const value = roundToOneDecimal(Math.max(0, output.value - this.findThroughputValue(totalInputs, output.name)));
+        return { name: output.name, value, score: this.scoreExport(output.name, value) };
+      });
 
     const { importRestrictions, exportRequirements } = this.restrictionsRequirements;
 
@@ -156,7 +175,61 @@ export class Sektor {
 
     const status = restrictionsExceeded ? "RestrictionsExceeded" : requirementsMet ? "Done" : "InProgress";
 
-    return { imports, exports, status, importRestrictions, exportRequirements };
+    return { imports, exports, status, importRestrictions, exportRequirements, starvedFunctions };
+  }
+
+  // A local resource cannot be imported, so buildings needing more of it than the sektor makes
+  // go without: functions consuming it are starved until the shortage is gone. Starving a
+  // function also takes away what it produced, which can starve others in turn, so the sektor is
+  // recalculated until no shortage is left.
+  private findStarvedFunctions(): BuildingFunctionLocation[] {
+    const starvedFunctions: BuildingFunctionLocation[] = [];
+    for (;;) {
+      const shortage = this.findLocalResourceShortage(starvedFunctions);
+      if (!shortage) return starvedFunctions;
+      const newlyStarvedFunctions = this.selectFunctionsToStarve(shortage, starvedFunctions);
+      if (newlyStarvedFunctions.length === 0) return starvedFunctions;
+      starvedFunctions.push(...newlyStarvedFunctions);
+    }
+  }
+
+  private findLocalResourceShortage(starvedFunctions: BuildingFunctionLocation[]): ResourceThroughput | undefined {
+    const totalInputs = this.aggregateThroughputs(
+      this.buildings.map(building => this.getInputs(building, starvedFunctions)).flat()
+    );
+    const totalOutputs = this.aggregateThroughputs(
+      this.buildings.map(building => this.getOutputs(building, starvedFunctions)).flat()
+    );
+    return totalInputs
+      .filter(input => this.localResources.includes(input.name))
+      .map(input => ({
+        name: input.name,
+        value: roundToOneDecimal(input.value - this.findThroughputValue(totalOutputs, input.name)),
+      }))
+      .find(shortage => shortage.value > 0);
+  }
+
+  // Functions are starved in the order their buildings were built, enough of them to cover the
+  // shortage. A function consuming more than is missing is still starved whole, since a function
+  // either runs or it does not.
+  private selectFunctionsToStarve(shortage: ResourceThroughput, starvedFunctions: BuildingFunctionLocation[]): BuildingFunctionLocation[] {
+    const selectedFunctions: BuildingFunctionLocation[] = [];
+    let selectedAmount = 0;
+    for (const building of this.buildings) {
+      const buildingDefinition = this.findBuildingDefinition(building.type);
+      if (!buildingDefinition) continue;
+      const functionActivations = this.getFunctionActivations(building, buildingDefinition);
+      for (const [functionIndex, buildingFunction] of buildingDefinition.buildingFunctions.entries()) {
+        if (!functionActivations[functionIndex]) continue;
+        if (isFunctionStarved(starvedFunctions, building.location, functionIndex)) continue;
+        const consumedAmount = this.findThroughputValue(buildingFunction.inputs, shortage.name);
+        if (consumedAmount <= 0) continue;
+        selectedFunctions.push({ buildingLocation: building.location, functionIndex });
+        selectedAmount = roundToOneDecimal(selectedAmount + consumedAmount);
+        if (selectedAmount >= shortage.value) return selectedFunctions;
+      }
+    }
+    return selectedFunctions;
   }
 
   private aggregateThroughputs(throughputs: ResourceThroughput[]): ResourceThroughput[] {
@@ -192,13 +265,13 @@ export class Sektor {
   doesBuildingNeedInput(location: BuildingLocation, resourceType: string): boolean {
     const building = this.findBuildingAt(location);
     if (!building) return false;
-    return this.findThroughputValue(this.getInputs(building), resourceType) > 0;
+    return this.findThroughputValue(this.getInputs(building, []), resourceType) > 0;
   }
 
   doesBuildingHaveOutput(location: BuildingLocation, resourceType: string): boolean {
     const building = this.findBuildingAt(location);
     if (!building) return false;
-    return this.findThroughputValue(this.getOutputs(building), resourceType) > 0;
+    return this.findThroughputValue(this.getOutputs(building, []), resourceType) > 0;
   }
 
   private findThroughputValue(throughputs: ResourceThroughput[], resourceType: string): number {
@@ -207,29 +280,32 @@ export class Sektor {
 
   // The amounts consumed and produced by all of the building's functions are added up per
   // resource.
-  private getInputs(building: Building): ResourceThroughput[] {
+  private getInputs(building: Building, starvedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      this.getActiveBuildingFunctions(building, buildingDefinition).map(buildingFunction => buildingFunction.inputs).flat()
+      this.getRunningBuildingFunctions(building, buildingDefinition, starvedFunctions)
+        .map(buildingFunction => buildingFunction.inputs).flat()
     );
   }
 
-  private getOutputs(building: Building): ResourceThroughput[] {
+  private getOutputs(building: Building, starvedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      this.getActiveBuildingFunctions(building, buildingDefinition).map(buildingFunction =>
+      this.getRunningBuildingFunctions(building, buildingDefinition, starvedFunctions).map(buildingFunction =>
         this.getModifiedOutputs(buildingFunction, buildingDefinition, building.location)
       ).flat()
     );
   }
 
-  // A deactivated function consumes and produces nothing, so it is left out of every amount the
-  // building contributes to the sektor.
-  private getActiveBuildingFunctions(building: Building, buildingDefinition: BuildingDefinition): BuildingFunction[] {
+  // A function which is turned off, or starved of a local resource, consumes and produces
+  // nothing, so it is left out of every amount the building contributes to the sektor.
+  private getRunningBuildingFunctions(building: Building, buildingDefinition: BuildingDefinition, starvedFunctions: BuildingFunctionLocation[]): BuildingFunction[] {
     const functionActivations = this.getFunctionActivations(building, buildingDefinition);
-    return buildingDefinition.buildingFunctions.filter((_, functionIndex) => functionActivations[functionIndex]);
+    return buildingDefinition.buildingFunctions.filter((_, functionIndex) =>
+      functionActivations[functionIndex] && !isFunctionStarved(starvedFunctions, building.location, functionIndex)
+    );
   }
 
   // A building with a single function is always doing it, while a building with several of them
@@ -283,6 +359,14 @@ export class Sektor {
   private findBuildingAt(location: BuildingLocation): Building | undefined {
     return this.buildings.find(building => building.location.x === location.x && building.location.y === location.y);
   }
+}
+
+function isFunctionStarved(starvedFunctions: BuildingFunctionLocation[], location: BuildingLocation, functionIndex: number): boolean {
+  return starvedFunctions.some(starvedFunction =>
+    starvedFunction.buildingLocation.x === location.x
+    && starvedFunction.buildingLocation.y === location.y
+    && starvedFunction.functionIndex === functionIndex
+  );
 }
 
 // Amounts are written with a single decimal place, so rounding to it keeps the floating point

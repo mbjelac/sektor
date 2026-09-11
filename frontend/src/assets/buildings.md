@@ -209,15 +209,32 @@ sph s(4,4,5) t(27,44,7) c(#94d17d)
 
 ## Function
 
+Name: Basic needs
+
 WaterPottable 2
 FoodRaw 5
 FoodProcessed 3
 EnergyElectric 4
-HealthPhysical 3
-HealthMental 3
-HealthSocial 3
 =
 Work 8
+
+## Function
+
+HealthPhysical 3
+=
+Work 3
+
+## Function
+
+HealthMental 3
+=
+Work 3
+
+## Function
+
+HealthSocial 3
+=
+Work 3
 
 # Library
 

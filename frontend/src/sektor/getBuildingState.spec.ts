@@ -31,7 +31,7 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { soil: 2 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, []);
+  return new Sektor([[{ properties: { soil: 2 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, [], []);
 }
 
 describe("getBuildingState", () => {
@@ -60,6 +60,7 @@ describe("getBuildingState", () => {
           { name: "Flour", value: 3 },
         ],
         active: true,
+        starved: false,
       }],
     });
   });

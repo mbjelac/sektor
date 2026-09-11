@@ -111,3 +111,31 @@ Name: Cart making
 Wood 3
 =
 Fuel 1 wind
+
+# TestClinic
+
+## Render
+
+```
+pri4 s(26,26,16) t(0,0,0) c(#dd6688)
+```
+
+## Function
+
+Care 2
+=
+Work 4
+
+# TestCarer
+
+## Render
+
+```
+pri4 s(22,22,20) t(0,0,0) c(#66aacc)
+```
+
+## Function
+
+Food 1
+=
+Care 4

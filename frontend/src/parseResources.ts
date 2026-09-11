@@ -3,9 +3,11 @@ export interface ResourceDefinition {
   icon: string;
   color: string;
   negativeScoring: boolean;
+  local: boolean;
 }
 
 const NEGATIVE_SCORING_MARKER = "negative";
+const LOCAL_MARKER = "local";
 const DEFAULT_RESOURCE_COLOR = "#ffffff";
 
 export function parseResources(lines: string[]): ResourceDefinition[] {
@@ -19,6 +21,7 @@ export function parseResources(lines: string[]): ResourceDefinition[] {
       icon: parts[1],
       color: parts.length >= 3 ? parts[2] : DEFAULT_RESOURCE_COLOR,
       negativeScoring: parts.includes(NEGATIVE_SCORING_MARKER),
+      local: parts.includes(LOCAL_MARKER),
     });
   }
 
@@ -28,5 +31,13 @@ export function parseResources(lines: string[]): ResourceDefinition[] {
 export function negativeScoringResourceNames(resourceDefinitions: ResourceDefinition[]): string[] {
   return resourceDefinitions
     .filter(resourceDefinition => resourceDefinition.negativeScoring)
+    .map(resourceDefinition => resourceDefinition.name);
+}
+
+// A local resource cannot be imported or exported, so a sektor has to produce every unit of it
+// that its buildings consume.
+export function localResourceNames(resourceDefinitions: ResourceDefinition[]): string[] {
+  return resourceDefinitions
+    .filter(resourceDefinition => resourceDefinition.local)
     .map(resourceDefinition => resourceDefinition.name);
 }

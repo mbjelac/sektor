@@ -13,9 +13,9 @@ EducationElementary 📖 #D4F4FF
 OreMetal 🔴 #cccccc
 OreMineral 🟣 #b52b2b
 OreUranium 🟡 #e3ed21
-HealthMental 🧠 #FFD4FA
-HealthPhysical 🫀 #F03818
-HealthSocial 🧑🏽‍🤝‍🧑🏽 #F0B618
+HealthMental 🧠 #FFD4FA local
+HealthPhysical 🫀 #F03818 local
+HealthSocial 🧑🏽‍🤝‍🧑🏽 #F0B618 local
 Fertilizer 🌱 #ad8257
 Chemicals 🧪 #eb52d9
 MachineParts ⚙️#d5e5e6
