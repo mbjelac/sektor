@@ -3,6 +3,7 @@ Work 🖐 #FFC800 negative
 WorkTechnical 🛠️ #b5aba1
 WorkEducational 📚 #3EB01C
 WorkMaintenance 🪜 #ffb638
+WorkEngineering 🧮 #82baff
 WaterPottable 💧 #55aaff
 WaterTechnical 🚱 #6c87ba
 FoodRaw 🥕 #ff9955

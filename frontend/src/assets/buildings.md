@@ -426,11 +426,33 @@ pri4 s(9,9,12) t(-23,14,-5) r(45,0,0) c(#474747)
 
 ## Function
 
-EnergyElectric 4
-WorkTechnical 2
+Name: Metals
+
+EnergyElectric 5
+WorkTechnical 5
+WorkEngineering 1
 =
 OreMetal 0 ore
+
+## Function
+
+Name: Minerals
+
+EnergyElectric 3
+WorkTechnical 3
+WorkEngineering 1
+=
 OreMineral 0 minerals
+
+## Function
+
+Name: Uranium
+
+EnergyElectric 4
+WaterTechnical 3
+WorkTechnical 2
+WorkEngineering 1
+=
 OreUranium 0 uranium
 
 ## Properties
