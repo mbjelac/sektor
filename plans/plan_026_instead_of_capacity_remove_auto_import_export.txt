@@ -4,4 +4,37 @@
     - Sektor capacity calculations (and tests for those)
     - capacity UI display & modification
 
-#2
+#2 Buildings with multiple functions can have functions turned off
+- if a building has more than one function, each function can be turned off individually
+- Sektor has methods
+    - deactivateFunction(buildingLocation: BuildingLocation, functionIndex: number)
+    - activateFunction(buildingLocation: BuildingLocation, functionIndex: number)
+- a function of a building with just one function cannot be deactivated
+    - it is activated initially
+- a building with multiple functions initially has only the first function activated
+    - all other functions are deactivated
+- a building's function which is deactivated does not factor in any calculations of inputs/imports & outputs/exports
+- create Sektor tests which confirm initial activation statuses & deactivation
+    - use Sektor.getSektorState to assert that only activated functions contribute to the calculation of inputs/exports
+- a player sees which functions are activated in the UI
+    - building panel below each function contains a label
+        - "Active"/"Inactive"
+        - text white bold
+        - label not visible for buildings with only one function
+    - if a function is inactive, it's input & output numbers are gray
+- a player can activate or deactivate a function
+    - next to the activity label is a toggle switch
+    - toggle is in the on position if function is active
+    - when clicked, function is activated or deactivated
+    - toggle not visible for buildings with only one function
+    - create UI tests for
+        - initially active
+        - initially inactive
+        - toggling to active
+        - toggling to inactive
+
+#3 Toolbar building panel clearly marks location properties on multiple functions
+- "Affected by" list is underneath all functions
+    - each function should have it's own "Affected by" list which lists all outputs of that function affected by a location property
+    - update UI tests
+
