@@ -693,7 +693,7 @@ pri4 s(20,130,10) c(#8a3000) t(0,0,13) r(90,0,0)
 pri4 s(20,130,10) c(#8a3000) t(0,0,13) r(45,0,0)
 pri4 s(20,130,10) c(#8a3000) t(0,0,13) r(-45,0,0)
 pri4 s(130,130,13) c(#402312)
-pri4 s(142,142,14) c(#402312) t(0,0,-8)
+pri4 s(142,142,1) c(#402312) t(0,0,7)
 cyl s(3,3,40) t(40,2,24) h(70) c(#dda98d)
 cyl s(4,4,7) t(40,2,20) c(#dda98d)
 cyl s(1,1,15) t(40,-1,20) c(#75a0a9)
@@ -778,11 +778,6 @@ WaterTechnical 15
 OreUranium 5
 =
 Uranium 3
-
-## Properties
-
-showFloor=false
-
 
 # Town Square
 
