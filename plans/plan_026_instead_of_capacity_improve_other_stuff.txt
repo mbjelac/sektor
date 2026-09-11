@@ -65,5 +65,5 @@
 - if a Function section in building specification contains property "Active: always"
     - that function is initially active even if it is not the first function in a building specification
     - deactivation of that function does nothing
-    - building panel label always shows "Active"
+    - building panel does not display active/inactive label
     - building panel does not display toggle switch
