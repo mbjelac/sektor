@@ -735,17 +735,6 @@ Metals 5
 
 ## Function
 
-Name: Uranium
-
-WorkTechnical 6
-EnergyElectric 5
-WaterTechnical 15
-OreUranium 5
-=
-Uranium 3
-
-## Function
-
 Name: Minerals
 
 WorkTechnical 2
@@ -754,6 +743,17 @@ WaterTechnical 2
 OreMineral 5
 =
 Minerals 10
+
+## Function
+
+Name: Uranium
+
+WorkTechnical 6
+EnergyElectric 5
+WaterTechnical 15
+OreUranium 5
+=
+Uranium 3
 
 ## Properties
 
