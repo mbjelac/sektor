@@ -6,11 +6,12 @@ WorkMaintenance 🪜 #ffb638
 WorkEngineering 🧮 #82baff
 WaterPottable 💧 #55aaff
 WaterTechnical 🚱 #6c87ba
+WaterSewage 🟤 #a17d4c
 FoodRaw 🥕 #ff9955
 FoodProcessed 🥫 #ff6338
 EducationElementary 📖 #D4F4FF
-OreMetal ⚪ #cccccc
-OreMineral 🔴 #b52b2b
+OreMetal 🔴 #cccccc
+OreMineral 🟣 #b52b2b
 OreUranium 🟡 #e3ed21
 HealthMental 🧠 #FFD4FA
 HealthPhysical 🫀 #F03818
@@ -21,4 +22,4 @@ MachineParts ⚙️#d5e5e6
 Metals ⚓ #c5c9c9
 Uranium ☢️ #ffb236
 Minerals 🪨 #d6713e
-Biomass 🪵 #267530
+WasteBio 🌿 #267530
