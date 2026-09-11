@@ -103,11 +103,11 @@ pri4 s(24,24,18) t(0,0,0) c(#9977cc)
 Name: Tool making
 Ore 4
 =
-Metal 2
+Metal 2 ore
 
 ## Function
 
 Name: Cart making
 Wood 3
 =
-Fuel 1
+Fuel 1 wind

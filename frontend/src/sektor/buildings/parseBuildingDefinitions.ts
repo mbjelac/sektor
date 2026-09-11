@@ -4,6 +4,10 @@ export interface BuildingFunction {
   name?: string;
   inputs: ResourceThroughput[];
   outputs: ResourceThroughput[];
+  // The modifiers of this function's own outputs. Two functions of a building can produce the
+  // same resource with different location properties affecting each, so a modifier belongs to
+  // the function whose output it modifies.
+  outputModifiers?: OutputModifier[];
 }
 
 export interface BuildingProperties {
@@ -144,12 +148,12 @@ function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFun
 
   if (inputs.length === 0 && outputs.length === 0) {
     console.error("Building function has no inputs or outputs:", lines.join("\n"));
-    return { buildingFunction: { inputs: [], outputs: [] }, outputModifiers: [] };
+    return { buildingFunction: { inputs: [], outputs: [], outputModifiers: [] }, outputModifiers: [] };
   }
 
   const buildingFunction: BuildingFunction = functionName === undefined
-    ? { inputs, outputs }
-    : { name: functionName, inputs, outputs };
+    ? { inputs, outputs, outputModifiers }
+    : { name: functionName, inputs, outputs, outputModifiers };
 
   return { buildingFunction, outputModifiers };
 }

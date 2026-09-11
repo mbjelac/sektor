@@ -33,8 +33,8 @@
         - toggling to active
         - toggling to inactive
 
-#3 Toolbar building panel clearly marks location properties on multiple functions
-- "Affected by" list is underneath all functions
+#3 [done] Toolbar building panel clearly marks location properties on multiple functions
+- [done] "Affected by" list is underneath all functions
     - each function should have it's own "Affected by" list which lists all outputs of that function affected by a location property
     - update UI tests
 
@@ -47,4 +47,16 @@
             - select an activated building function of an existing building which has the same input resource
                 - repeat selecting until the sum of selected input amounts equals or is greater than the import amount
             - adjust calculation as if selected functions were deactivated
-            - repeat
+        - in SektorState add property starvedFunctions[]: BuildingFunction
+            - BuildingFunction = { buildingLocation: BuildingLocation, functionIndex: number }
+            - put all selected functions in this array
+    - in SektorState.exports remove all exports of local resource types
+- a player can see which buildings lack local resources
+    - in map, above each building which has at least one starved function, put a warning icon
+        - shape of an upwards triangle
+        - bright yellow
+        - with black exclamation point inside
+- a player can see which functions of a building lack local resources
+    - in building panel next to each function name, put a warning icon
+        - heroicon exclamation-triangle, solid, yellow
+- update warning icons on modification of SektorState

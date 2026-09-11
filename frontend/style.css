@@ -171,8 +171,6 @@ body > main {
   flex-direction: column;
   gap: 2px;
   margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid #444;
 }
 
 .tf-modifier-header {
@@ -189,6 +187,21 @@ body > main {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+/* The property affecting an output sits right beside it, so the two read as one pair. */
+.tf-modifier-resource {
+  white-space: nowrap;
+}
+
+.tf-modifier-arrow {
+  display: flex;
+  align-items: center;
+  color: #ccc;
+}
+
+.tf-modifier-arrow .icon {
+  width: 12px;
+  height: 12px;
 }
 
 .tf-modifier-swatch {

@@ -67,6 +67,7 @@ describe("parseBuildingDefinitions", () => {
       outputs: [
         { name: "Steel", value: 5 },
       ],
+      outputModifiers: [],
     });
   });
 
@@ -92,6 +93,7 @@ describe("parseBuildingDefinitions", () => {
       outputs: [
         { name: "Steel", value: 5 },
       ],
+      outputModifiers: [],
     });
   });
 
@@ -118,10 +120,12 @@ describe("parseBuildingDefinitions", () => {
         name: "Steel making",
         inputs: [{ name: "Iron", value: 3 }],
         outputs: [{ name: "Steel", value: 5 }],
+        outputModifiers: [],
       },
       {
         inputs: [{ name: "Coal", value: 2 }],
         outputs: [{ name: "Heat", value: 1 }],
+        outputModifiers: [],
       },
     ]);
   });
@@ -140,6 +144,7 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [{ name: "Water", value: 5 }],
       outputs: [],
+      outputModifiers: [],
     });
   });
 
@@ -158,6 +163,7 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [],
       outputs: [{ name: "Energy", value: 10 }],
+      outputModifiers: [],
     });
   });
 
@@ -196,6 +202,7 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [{ name: "Iron", value: 3 }],
       outputs: [{ name: "Steel", value: 5 }],
+      outputModifiers: [],
     });
   });
 
@@ -216,6 +223,7 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [{ name: "Iron", value: 3 }],
       outputs: [{ name: "Steel", value: 5 }],
+      outputModifiers: [],
     });
   });
 
@@ -308,6 +316,7 @@ describe("parseBuildingDefinitions", () => {
         buildingFunctions: [{
           inputs: [{ name: "Water", value: 2 }],
           outputs: [{ name: "Steam", value: 1 }],
+          outputModifiers: [],
         }],
         outputModifiers: [],
         properties: {},
@@ -318,6 +327,7 @@ describe("parseBuildingDefinitions", () => {
         buildingFunctions: [{
           inputs: [{ name: "Iron", value: 4 }],
           outputs: [{ name: "Steel", value: 3 }],
+          outputModifiers: [],
         }],
         outputModifiers: [],
         properties: {},
@@ -403,6 +413,29 @@ describe("parseBuildingDefinitions", () => {
     ]);
   });
 
+  it("gives each building function the modifiers of its own outputs", () => {
+    const result = parseBuildingDefinitions([
+      "# Workshop",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Function",
+      "Ore 4",
+      "=",
+      "Tools 2 ore",
+      "## Function",
+      "Wood 3",
+      "=",
+      "Tools 3 wind",
+    ]);
+
+    expect(result[0].buildingFunctions.map(buildingFunction => buildingFunction.outputModifiers)).toEqual([
+      [{ resource: "Tools", property: "ore" }],
+      [{ resource: "Tools", property: "wind" }],
+    ]);
+  });
+
   it("parses a building with two function sections", () => {
     const result = parseBuildingDefinitions([
       "# Workshop",
@@ -424,10 +457,12 @@ describe("parseBuildingDefinitions", () => {
       {
         inputs: [{ name: "Ore", value: 4 }],
         outputs: [{ name: "Tools", value: 2 }],
+        outputModifiers: [],
       },
       {
         inputs: [{ name: "Wood", value: 3 }],
         outputs: [{ name: "Tools", value: 3 }],
+        outputModifiers: [],
       },
     ]);
   });

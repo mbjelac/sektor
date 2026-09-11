@@ -370,6 +370,19 @@ test("displays function panel with modifier property", async ({ page }) => {
   });
 });
 
+test("displays function panel with a modifier property per function", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  // TestWorkshop has two functions, each of its outputs affected by a different property
+  await page.locator('.building-item[data-building-name="TestWorkshop"]').click();
+  await page.waitForTimeout(100);
+  const panel = page.locator("#toolbar-function-panel");
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveScreenshot("toolbar-function-panel-per-function-modifiers.png", {
+    maxDiffPixelRatio: 0,
+    timeout: 10000,
+  });
+});
+
 test("destroys building when trash icon is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");
