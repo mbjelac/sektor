@@ -71,7 +71,7 @@ because in a timespan of 200ms there will be 10 steps.
 - [done] create visual tests for hollow objects
 
 #7 Some objects can turn around
-- when rotation animation specified, rotate object
+- [done] when rotation animation specified, rotate object
     - function ar(d1,d2,d3,t) specifies object rotation
         - d params are deltas to increase params of r function
         - t is millisecond delay between a single step

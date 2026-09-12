@@ -1,6 +1,4 @@
-import { parseCommands } from "../../shared/parseCommands";
-
-export function readCommands() {
+export function readCommandsText(): string {
   const textarea = document.querySelector("#editor textarea") as HTMLTextAreaElement;
-  return parseCommands(textarea.value);
+  return textarea.value;
 }

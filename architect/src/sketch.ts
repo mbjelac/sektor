@@ -1,7 +1,8 @@
 import p5 from "p5";
 import {drawFloor} from "../../shared/drawFloor";
-import {readCommands} from "./readCommands";
-import {applyCommands} from "../../shared/applyCommands";
+import {readCommandsText} from "./readCommands";
+import {parseCommands} from "../../shared/parseCommands";
+import {BakedBodies, bakeCommands, drawBakedBodies, freeBakedBodies} from "../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../shared/constants";
 import {initEditorPanel} from "./editor/editorPanel";
 
@@ -46,6 +47,7 @@ const sketch = (p: p5) => {
 
     p.orbitControl();
 
+    // Stroke has to be set before baking, so that the wireframe ends up in the geometry.
     if (wireframeOn) {
       p.stroke(150);
     } else {
@@ -55,12 +57,33 @@ const sketch = (p: p5) => {
       drawFloor(p, BLOCK_SIZE);
     }
 
-    const commands = readCommands();
-    applyCommands(p, commands, p.millis());
+    drawBakedBodies(p, bakedBodies(p, wireframeOn), p.millis());
 
     document.getElementById("canvas-container")!.dataset.rendered = "true";
   };
 };
+
+// Drawing every body anew each frame made turning and zooming a shape of any size crawl, because
+// each body cost p5 a geometry rebuild and a fresh upload to the graphics card. Bodies which stand
+// still are therefore baked into a geometry which is drawn as it is, frame after frame. The bake
+// only has to be redone when the shape being designed changes, which is when the editor text
+// changes, or when the wireframe is toggled, since the wireframe is baked into the geometry.
+let baked: BakedBodies | null = null;
+let bakedCommandsText: string | null = null;
+let bakedWireframe = false;
+
+function bakedBodies(p: p5, wireframeOn: boolean): BakedBodies {
+  const commandsText = readCommandsText();
+  if (baked && commandsText === bakedCommandsText && wireframeOn === bakedWireframe) return baked;
+
+  if (baked) {
+    freeBakedBodies(p, baked);
+  }
+  baked = bakeCommands(p, parseCommands(commandsText));
+  bakedCommandsText = commandsText;
+  bakedWireframe = wireframeOn;
+  return baked;
+}
 
 new p5(sketch);
 initEditorPanel();

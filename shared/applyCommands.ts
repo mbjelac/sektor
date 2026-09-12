@@ -7,7 +7,7 @@ import {drawCone} from "./primitive/drawCone";
 import {drawTorus} from "./primitive/drawTorus";
 import {CreateBody} from "./parseCommands";
 import {BLOCK_SIZE} from "./constants";
-import {animatedColor, animatedTranslate} from "./animateCommands";
+import {animatedColor, animatedRotate, animatedTranslate} from "./animateCommands";
 
 const pyrSides: Record<string, number> = {
   pyr3: 3, pyr4: 4, pyr5: 5, pyr6: 6, pyr7: 7, pyr8: 8, pyr9: 9,
@@ -67,11 +67,12 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
       translate[1] * scale
     );
   }
-  if (command.rotate) {
+  if (command.rotate || command.animateRotate) {
+    const rotate = animatedRotate(command, elapsedMilliseconds);
     const toRad = Math.PI / 180;
-    p.rotateY(command.rotate[0] * toRad);
-    p.rotateX(command.rotate[1] * toRad);
-    p.rotateZ(command.rotate[2] * toRad);
+    p.rotateY(rotate[0] * toRad);
+    p.rotateX(rotate[1] * toRad);
+    p.rotateZ(rotate[2] * toRad);
   }
   if (command.scale) {
     const toFactor = (v: number) => Math.max(v, 1) / 100;

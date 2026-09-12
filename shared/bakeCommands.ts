@@ -39,11 +39,23 @@ export function drawBakedBodies(p: p5, bakedBodies: BakedBodies, elapsedMillisec
   });
 }
 
+// Geometries live on the graphics card until they are handed back, so a bake which is replaced by
+// a later one has to give its geometries up, or every rebake leaves its own behind.
+export function freeBakedBodies(p: p5, bakedBodies: BakedBodies) {
+  if (bakedBodies.opaqueGeometry) {
+    p.freeGeometry(bakedBodies.opaqueGeometry);
+  }
+  if (bakedBodies.transparentGeometry) {
+    p.freeGeometry(bakedBodies.transparentGeometry);
+  }
+}
+
 // A body counts as animated when anything about it can change from one frame to the next.
 // A colour animation matters even when the body never moves, because it can turn a body
 // transparent, which decides the pass the body has to be drawn in.
 function isAnimated(command: CreateBody): boolean {
   return command.animateTranslate !== null
+    || command.animateRotate !== null
     || command.animateColorToggle !== null
     || command.animateColorGradual !== null;
 }

@@ -1,4 +1,4 @@
-import {AnimateColorGradual, AnimateColorToggle, CreateBody} from "./parseCommands";
+import {AnimateColorGradual, AnimateColorToggle, AnimateRotate, CreateBody} from "./parseCommands";
 import {ANIMATION_STEP_MILLISECONDS} from "./constants";
 import {colorToRgb} from "./primitive/colorToRgb";
 
@@ -26,6 +26,25 @@ function translationForwardStep(cycleStep: number, phaseSteps: number, phaseSwit
   if (cycleStep <= phaseSteps + phaseSwitchDelaySteps) return phaseSteps;
   if (cycleStep <= 2 * phaseSteps + phaseSwitchDelaySteps) return 2 * phaseSteps + phaseSwitchDelaySteps - cycleStep;
   return 0;
+}
+
+export function animatedRotate(command: CreateBody, elapsedMilliseconds: number): [number, number, number] {
+  const baseRotate = command.rotate ?? [0, 0, 0];
+  const animateRotate = command.animateRotate;
+  if (!animateRotate) return baseRotate;
+
+  const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateRotate.delay) / animateRotate.stepDelay);
+
+  return [
+    wrappedDegrees(baseRotate[0] + animateRotate.d1 * elapsedStep),
+    wrappedDegrees(baseRotate[1] + animateRotate.d2 * elapsedStep),
+    wrappedDegrees(baseRotate[2] + animateRotate.d3 * elapsedStep),
+  ];
+}
+
+// Rotation accumulates without end, so a full turn is taken off to keep the angle in (-360, 360).
+function wrappedDegrees(degrees: number): number {
+  return degrees % 360;
 }
 
 export function animatedColor(command: CreateBody, elapsedMilliseconds: number): string | null {

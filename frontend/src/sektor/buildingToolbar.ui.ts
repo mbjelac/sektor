@@ -123,6 +123,7 @@ function hideToolbarFunctionPanel() {
 
 export function initToolbar() {
   const toolbar = document.getElementById("toolbar")!;
+  const thumbnails: Thumbnail[] = [];
 
   for (const building of buildingDefinitions) {
     const item = document.createElement("div");
@@ -160,20 +161,31 @@ export function initToolbar() {
 
     toolbar.appendChild(item);
 
-    showBuildingThumbnail(canvasContainer, building);
+    thumbnails.push({building, canvasContainer});
   }
+
+  showBuildingThumbnails(thumbnails);
+}
+
+interface Thumbnail {
+  building: BuildingDefinition;
+  canvasContainer: HTMLElement;
 }
 
 // A browser lends out only so many WebGL canvases at once, and one canvas per building in the
-// toolbar took so many of them that the map lost its own canvas and went blank. A thumbnail never
-// changes once it is drawn, so it is drawn once, kept as a picture, and its canvas handed back.
-function showBuildingThumbnail(canvasContainer: HTMLElement, building: BuildingDefinition) {
+// toolbar took so many of them that the map lost its own canvas and went blank. Every thumbnail is
+// therefore drawn on one single canvas, one building after another, and each drawing is kept as a
+// picture, which never has to change once it is taken. The canvas is handed back once the last
+// building has been drawn on it.
+function showBuildingThumbnails(thumbnails: Thumbnail[]) {
+  if (thumbnails.length === 0) return;
+
   new p5((sketch: p5) => {
     let thumbnailCanvas: HTMLCanvasElement;
 
     sketch.setup = () => {
       const canvas = sketch.createCanvas(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, sketch.WEBGL);
-      canvas.parent(canvasContainer);
+      canvas.parent(offscreenCanvasContainer());
       thumbnailCanvas = canvas.elt as HTMLCanvasElement;
       const viewWidth = THUMBNAIL_WIDTH / 0.7;
       const viewHeight = viewWidth * THUMBNAIL_HEIGHT / THUMBNAIL_WIDTH;
@@ -190,34 +202,57 @@ function showBuildingThumbnail(canvasContainer: HTMLElement, building: BuildingD
     };
 
     sketch.draw = () => {
-      sketch.background(42);
-      sketch.ambientLight(60);
-      sketch.pointLight(255, 255, 255, 2 * BLOCK_SIZE, -3 * BLOCK_SIZE, -2 * BLOCK_SIZE);
-      sketch.noStroke();
-
-      sketch.translate(0, BLOCK_SIZE * 0.15, 0);
-      if (building.properties.showFloor !== false) {
-        drawFloor(sketch, BLOCK_SIZE, [162, 220, 134]);
+      for (const thumbnail of thumbnails) {
+        // Every building is drawn on the canvas the one before it was drawn on, so each of them
+        // starts from the state the canvas was set up in, and its picture is taken before the
+        // next building paints over it.
+        sketch.push();
+        drawBuildingThumbnail(sketch, thumbnail.building);
+        sketch.pop();
+        keepThumbnailAsImage(thumbnailCanvas, thumbnail.canvasContainer);
       }
-      const commands = parseCommands(building.renderingCode);
-      applyCommands(sketch, commands);
 
-      // The picture is taken once the drawn frame is finished, which is also when the canvas can
-      // be given up without taking the drawing with it.
-      setTimeout(() => keepThumbnailAsImage(sketch, thumbnailCanvas, canvasContainer), 0);
+      // Giving up the canvas waits until the frame it was drawn in is over, so that p5 is done
+      // with the sketch before the sketch is taken away from it.
+      setTimeout(() => {
+        releaseWebGlContext(thumbnailCanvas);
+        sketch.remove();
+      }, 0);
     };
   });
 }
 
-function keepThumbnailAsImage(sketch: p5, thumbnailCanvas: HTMLCanvasElement, canvasContainer: HTMLElement) {
+// The one canvas the thumbnails are drawn on shows none of them in the end, so it is kept out of
+// sight while it is being drawn on.
+function offscreenCanvasContainer(): HTMLElement {
+  const container = document.createElement("div");
+  container.style.position = "absolute";
+  container.style.left = "-9999px";
+  document.body.appendChild(container);
+  return container;
+}
+
+function drawBuildingThumbnail(sketch: p5, building: BuildingDefinition) {
+  sketch.background(42);
+  sketch.ambientLight(60);
+  sketch.pointLight(255, 255, 255, 2 * BLOCK_SIZE, -3 * BLOCK_SIZE, -2 * BLOCK_SIZE);
+  sketch.noStroke();
+
+  sketch.translate(0, BLOCK_SIZE * 0.15, 0);
+  if (building.properties.showFloor !== false) {
+    drawFloor(sketch, BLOCK_SIZE, [162, 220, 134]);
+  }
+  const commands = parseCommands(building.renderingCode);
+  applyCommands(sketch, commands);
+}
+
+function keepThumbnailAsImage(thumbnailCanvas: HTMLCanvasElement, canvasContainer: HTMLElement) {
   const thumbnailImage = document.createElement("img");
   thumbnailImage.className = "building-thumbnail";
   thumbnailImage.width = THUMBNAIL_WIDTH;
   thumbnailImage.height = THUMBNAIL_HEIGHT;
   thumbnailImage.src = thumbnailCanvas.toDataURL();
   canvasContainer.appendChild(thumbnailImage);
-  releaseWebGlContext(thumbnailCanvas);
-  sketch.remove();
 }
 
 // Taking the canvas out of the page leaves the browser to free its WebGL context whenever it gets
