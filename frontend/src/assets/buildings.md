@@ -217,6 +217,7 @@ FoodProcessed 3
 EnergyElectric 4
 =
 Work 8
+WaterSewage 3
 
 ## Function
 
@@ -1104,6 +1105,7 @@ WorkEducational 4
 WorkMaintenance 1
 =
 Childcare 5
+WaterSewage 3
 
 # WaterTreatment
 

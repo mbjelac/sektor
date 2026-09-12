@@ -6,7 +6,7 @@ WorkMaintenance 🪜 #ffb638
 WorkEngineering 🧮 #82baff
 WaterPottable 💧 #55aaff
 WaterTechnical 🚱 #6c87ba
-WaterSewage 🟤 #a17d4c
+WaterSewage 🟤 #a17d4c negative
 FoodRaw 🥕 #ff9955
 FoodProcessed 🥫 #ff6338
 EducationElementary 📖 #D4F4FF
@@ -22,6 +22,6 @@ MachineParts ⚙️#d5e5e6
 Metals ⚓ #c5c9c9
 Uranium ☢️ #ffb236
 Minerals 🪨 #d6713e
-WasteBio 🌿 #267530
+WasteBio 🌿 #267530 negative
 Childcare 🧸 #ffa6e9 local
 
