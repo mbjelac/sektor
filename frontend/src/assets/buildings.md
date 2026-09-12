@@ -133,7 +133,6 @@ pri4 s(18,18,1) t(22,22,24) c(#806652)
 pri4 s(10,10,2) t(22,22,25) c(#00eeff40)
 pri4 s(12,12,2) t(22,22,27) c(#ffc800)
 
-
 pri4 s(50,50,2) t(22,-22,7) c(#827d78)
 pri4 s(54,54,2) t(22,-22,9) c(#ffc800) h(95)
 pri4 s(53,53,1) t(22,-22,9) c(#806652)
@@ -242,6 +241,14 @@ Active: always
 HealthSocial 3
 =
 Work 3
+
+## Function
+
+Active: always
+
+Childcare 2
+=
+Work 2
 
 # Library
 
@@ -376,6 +383,7 @@ pri4 r(90,90,0) s(4,4,30) t(17,12,8) c(#1c750b)
 ## Function
 
 WaterPottable 4
+Fertilizer 2
 EnergyElectric 1
 WorkTechnical 2
 =
@@ -779,7 +787,7 @@ OreUranium 5
 =
 Uranium 3
 
-# Town Square
+# TownSquare
 
 ## Render
 
@@ -988,3 +996,111 @@ WorkMaintenance 2
 HealthPhysical 1
 HealthMental 1
 HealthSocial 2
+
+# Fertilizatron
+
+## Render
+
+```
+xpri4 s(138,138,1) t(0,0,7) c(#b5b5b5)
+cyl s(20,20,30) t(0,0,5) c(#ffffff)
+cyl s(21,21,3) t(0,0,34) c(#0dc200)
+cyl s(21,21,3) t(0,0,29) c(#0dc200)
+sph s(20,20,20) t(0,0,19) c(#d3eee5)
+cyl s(20,20,1) t(0,0,37) c(#ffffff) h(70)
+pri4 s(10,10,15) t(10,0,6) c(#ffffff)
+pri4 s(10,10,15) t(-7,-8,6) r(45,0,0) c(#ffffff)
+pri4 s(10,10,15) t(-7,8,6) r(45,0,0) c(#ffffff)
+pri4 s(10,2,4) t(6,-5,9) r(45,0,90) c(#ffffff)
+pri4 s(10,2,4) t(4,-6,9) r(56,0,90) c(#ffffff)
+pri4 s(10,2,4) t(6,5,9) r(-45,0,90) c(#ffffff)
+pri4 s(10,2,4) t(4,6,9) r(-56,0,90) c(#ffffff)
+cyl s(10,10,20) t(33,0,6) c(#ffffff)
+sph s(10,10,10) t(33,0,22) c(#ffffff)
+cyl s(12,12,2) t(33,0,7) c(#c0c0c0)
+cyl s(3,3,16) t(12,0,19) r(0,0,90) c(#00e1ff)
+cyl s(3,3,16) t(12,0,15) r(0,0,90) c(#00e1ff)
+pri3 s(5,5,1) t(37,0,25) r(0,45,90) c(#0dc200)
+pri4 s(20,20,5) t(-30,-30,6) r(45,0,0) c(#ffffff)
+pri3 s(8,8,1) t(-30,-30,11) r(90,0,0) c(#0dc200)
+cyl s(1,1,11) t(-12,-10,8) c(#00e1ff)
+cyl s(1,1,20) t(-11,-9,9) r(135,0,90) c(#00e1ff)
+cyl s(1,1,3) t(-10,-8,20) r(135,0,90) c(#00e1ff)
+cyl s(1,1,11) t(-10,-12,8) c(#00e1ff)
+cyl s(1,1,20) t(-9,-11,9) r(135,0,90) c(#00e1ff)
+cyl s(1,1,3) t(-8,-10,20) r(135,0,90) c(#00e1ff)
+pri4 s(5,10,8) t(-13,14,6) r(45,0,0) c(#ffffff)
+pri4 s(5,10,8) t(-18,19,6) r(45,0,0) c(#ffffff)
+pri4 s(5,10,8) t(-23,24,6) r(45,0,0) c(#ffffff)
+cyl s(3,3,26) t(-29,30,12) r(0,90,45) c(#00e1ff)
+cyl s(3,3,6) t(-28,29,5) c(#00e1ff)
+sph s(3,3,3) t(-28,29,10) c(#00e1ff)
+cyl s(8,8,1) t(-28,29,7) c(#c0c0c0)
+```
+
+## Function
+
+Chemicals 4
+EnergyElectric 2
+WorkTechnical 2
+WorkEngineering 1
+=
+Fertilizer 6
+
+# Childkeep
+
+## Render
+
+```
+tor s(75,75,80) t(0,0,-16) c(#005706)
+cyl s(80,80,1) t(0,0,7) c(#72dd64)
+cyl s(10,10,3) t(18,4,7) c(#b53030)
+cyl s(10,10,3) t(18,4,11) c(#b53030)
+sph s(7,7,7) t(18,4,11) c(#b53030)
+cyl s(10,10,3) t(-16,7,7) c(#404ca5)
+cyl s(10,10,3) t(-16,7,11) c(#404ca5)
+sph s(7,7,7) t(-16,7,11) c(#404ca5)
+cyl s(10,10,3) t(-12,-13,7) c(#eeff00)
+cyl s(10,10,3) t(-12,-13,11) c(#eeff00)
+sph s(7,7,7) t(-12,-13,11) c(#eeff00)
+cyl s(10,10,3) t(3,19,7) c(#9230b5)
+cyl s(10,10,3) t(3,19,11) c(#9230b5)
+sph s(7,7,7) t(3,19,11) c(#9230b5)
+cyl s(10,10,3) t(11,-15,7) c(#00ffbf)
+cyl s(10,10,3) t(11,-15,11) c(#00ffbf)
+sph s(7,7,7) t(11,-15,10) c(#00ffbf)
+pri3 s(25,25,1) t(0,0,8) h(70) c(#ff4800)
+sph s(3,3,4) t(19,-5,7) c(#158f3a)
+sph s(3,3,4) t(11,13,7) c(#158f3a)
+sph s(3,3,4) t(-6,14,7) c(#158f3a)
+sph s(3,3,4) t(5,-20,7) c(#158f3a)
+sph s(3,3,4) t(-20,-5,7) c(#158f3a)
+sph s(5,5,6) t(17,-10,7) c(#158f3a)
+sph s(3,3,4) t(14,16,7) c(#158f3a)
+sph s(3,3,4) t(-11,15,7) c(#158f3a)
+sph s(4,4,5) t(-2,-16,7) c(#158f3a)
+sph s(4,4,5) t(-18,-2,7) c(#158f3a)
+cyl s(2,2,20) t(20,30,15) c(#ffffff)
+sph s(2,2,2) t(20,30,36) c(#00fbff)
+con s(4,4,1) t(20,30,38) c(#ffffff)
+con s(4,4,1) t(20,30,37) r(0,180,0) c(#ffffff)
+cyl s(2,2,20) t(-35,-8,15) c(#ffffff)
+sph s(2,2,2) t(-35,-8,36) c(#00fbff)
+con s(4,4,1) t(-35,-8,38) c(#ffffff)
+con s(4,4,1) t(-35,-8,37) r(0,180,0) c(#ffffff)
+cyl s(2,2,20) t(22,-33,15) c(#ffffff)
+sph s(2,2,2) t(22,-33,36) c(#00fbff)
+con s(4,4,1) t(22,-33,38) c(#ffffff)
+con s(4,4,1) t(22,-33,37) r(0,180,0) c(#ffffff)
+```
+
+## Function
+
+WaterPottable 5
+FoodRaw 2
+FoodProcessed 3
+EnergyElectric 4
+WorkEducational 4
+WorkMaintenance 1
+=
+Childcare 5

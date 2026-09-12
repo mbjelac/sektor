@@ -23,3 +23,5 @@ Metals ⚓ #c5c9c9
 Uranium ☢️ #ffb236
 Minerals 🪨 #d6713e
 WasteBio 🌿 #267530
+Childcare 🧸 #ffa6e9 local
+
