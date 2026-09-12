@@ -69,3 +69,11 @@ because in a timespan of 200ms there will be 10 steps.
         - hole does not exist at h(0)
         - hole is equal to prism base at h(100), sides still rendered but "paper thin"
 - [done] create visual tests for hollow objects
+
+#7 Some objects can turn around
+- when rotation animation specified, rotate object
+    - function ar(d1,d2,d3,t) specifies object rotation
+        - d params are deltas to increase params of r function
+        - t is millisecond delay between a single step
+        - when any r param increases past 360, subtract 360 (these are degrees)
+            - same for -360 (add 360 then)
