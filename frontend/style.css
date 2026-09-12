@@ -140,7 +140,8 @@ body > main {
   border-color: red;
 }
 
-.building-item canvas {
+.building-item canvas,
+.building-item img {
   display: block;
 }
 

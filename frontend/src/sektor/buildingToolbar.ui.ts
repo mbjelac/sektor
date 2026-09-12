@@ -5,12 +5,14 @@ import { parseCommands } from "../../../shared/parseCommands";
 import { applyCommands } from "../../../shared/applyCommands";
 import { drawFloor } from "../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../shared/constants";
-import { BuildingFunction, OutputModifier } from "./buildings/parseBuildingDefinitions";
+import { BuildingDefinition, BuildingFunction, OutputModifier } from "./buildings/parseBuildingDefinitions";
 import { propertyDefinitions } from "../properties";
 import { getResourceIcon } from "../resources";
 import { arrowLeftIcon } from "../icons";
 
 const TOOLBAR_FUNCTION_PANEL_MARGIN = 8;
+const THUMBNAIL_WIDTH = 100;
+const THUMBNAIL_HEIGHT = 70;
 
 // The destruction tool sits among the buildings in the toolbar and is selected like one,
 // but clicking the map with it destroys the building there instead of constructing.
@@ -158,39 +160,71 @@ export function initToolbar() {
 
     toolbar.appendChild(item);
 
-    const size = 100;
-    const height = 70;
-    new p5((p: p5) => {
-      p.setup = () => {
-        const canvas = p.createCanvas(size, height, p.WEBGL);
-        canvas.parent(canvasContainer);
-        const viewSize = size / 0.7;
-        const vh = viewSize * height / size;
-        p.ortho(-viewSize / 2, viewSize / 2, -vh / 2, vh / 2);
-
-        const camDist = 800;
-        const camAngleY = Math.PI / 4;
-        const camAngleX = Math.PI / 6;
-        const camX = camDist * Math.sin(camAngleY) * Math.cos(camAngleX);
-        const camY = -camDist * Math.sin(camAngleX);
-        const camZ = camDist * Math.cos(camAngleY) * Math.cos(camAngleX);
-        p.camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
-        p.noLoop();
-      };
-
-      p.draw = () => {
-        p.background(42);
-        p.ambientLight(60);
-        p.pointLight(255, 255, 255, 2 * BLOCK_SIZE, -3 * BLOCK_SIZE, -2 * BLOCK_SIZE);
-        p.noStroke();
-
-        p.translate(0, BLOCK_SIZE * 0.15, 0);
-        if (building.properties.showFloor !== false) {
-          drawFloor(p, BLOCK_SIZE, [162, 220, 134]);
-        }
-        const commands = parseCommands(building.renderingCode);
-        applyCommands(p, commands);
-      };
-    });
+    showBuildingThumbnail(canvasContainer, building);
   }
+}
+
+// A browser lends out only so many WebGL canvases at once, and one canvas per building in the
+// toolbar took so many of them that the map lost its own canvas and went blank. A thumbnail never
+// changes once it is drawn, so it is drawn once, kept as a picture, and its canvas handed back.
+function showBuildingThumbnail(canvasContainer: HTMLElement, building: BuildingDefinition) {
+  new p5((sketch: p5) => {
+    let thumbnailCanvas: HTMLCanvasElement;
+
+    sketch.setup = () => {
+      const canvas = sketch.createCanvas(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, sketch.WEBGL);
+      canvas.parent(canvasContainer);
+      thumbnailCanvas = canvas.elt as HTMLCanvasElement;
+      const viewWidth = THUMBNAIL_WIDTH / 0.7;
+      const viewHeight = viewWidth * THUMBNAIL_HEIGHT / THUMBNAIL_WIDTH;
+      sketch.ortho(-viewWidth / 2, viewWidth / 2, -viewHeight / 2, viewHeight / 2);
+
+      const cameraDistance = 800;
+      const cameraAngleY = Math.PI / 4;
+      const cameraAngleX = Math.PI / 6;
+      const cameraX = cameraDistance * Math.sin(cameraAngleY) * Math.cos(cameraAngleX);
+      const cameraY = -cameraDistance * Math.sin(cameraAngleX);
+      const cameraZ = cameraDistance * Math.cos(cameraAngleY) * Math.cos(cameraAngleX);
+      sketch.camera(cameraX, cameraY, cameraZ, 0, 0, 0, 0, 1, 0);
+      sketch.noLoop();
+    };
+
+    sketch.draw = () => {
+      sketch.background(42);
+      sketch.ambientLight(60);
+      sketch.pointLight(255, 255, 255, 2 * BLOCK_SIZE, -3 * BLOCK_SIZE, -2 * BLOCK_SIZE);
+      sketch.noStroke();
+
+      sketch.translate(0, BLOCK_SIZE * 0.15, 0);
+      if (building.properties.showFloor !== false) {
+        drawFloor(sketch, BLOCK_SIZE, [162, 220, 134]);
+      }
+      const commands = parseCommands(building.renderingCode);
+      applyCommands(sketch, commands);
+
+      // The picture is taken once the drawn frame is finished, which is also when the canvas can
+      // be given up without taking the drawing with it.
+      setTimeout(() => keepThumbnailAsImage(sketch, thumbnailCanvas, canvasContainer), 0);
+    };
+  });
+}
+
+function keepThumbnailAsImage(sketch: p5, thumbnailCanvas: HTMLCanvasElement, canvasContainer: HTMLElement) {
+  const thumbnailImage = document.createElement("img");
+  thumbnailImage.className = "building-thumbnail";
+  thumbnailImage.width = THUMBNAIL_WIDTH;
+  thumbnailImage.height = THUMBNAIL_HEIGHT;
+  thumbnailImage.src = thumbnailCanvas.toDataURL();
+  canvasContainer.appendChild(thumbnailImage);
+  releaseWebGlContext(thumbnailCanvas);
+  sketch.remove();
+}
+
+// Taking the canvas out of the page leaves the browser to free its WebGL context whenever it gets
+// around to it, which is too late for the canvases waiting for one, so the context is given up
+// explicitly.
+function releaseWebGlContext(thumbnailCanvas: HTMLCanvasElement) {
+  const webGlContext = thumbnailCanvas.getContext("webgl2") ?? thumbnailCanvas.getContext("webgl");
+  if (!webGlContext) return;
+  webGlContext.getExtension("WEBGL_lose_context")?.loseContext();
 }
