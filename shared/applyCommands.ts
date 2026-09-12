@@ -99,7 +99,7 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
     drawCone(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
   }
   if (command.type === "tor") {
-    drawTorus(p, color);
+    drawTorus(p, color, command.hollow ?? undefined);
   }
   p.pop();
 }

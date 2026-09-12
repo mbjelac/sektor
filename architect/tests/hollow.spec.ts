@@ -59,3 +59,20 @@ test("cone with no hollow", async ({ page }) => {
   await page.locator("#editor textarea").fill("con h(0) t(0,0,100) r(0,180,0)");
   await expectScreenshot(page, "con-hollow-none");
 });
+
+// A torus is hollowed from the middle: the hole widens and the tube thins, while the outer
+// edge stays put.
+test("torus with hollow", async ({ page }) => {
+  await page.locator("#editor textarea").fill("tor h(75)");
+  await expectScreenshot(page, "tor-hollow");
+});
+
+test("torus with full hollow", async ({ page }) => {
+  await page.locator("#editor textarea").fill("tor h(100)");
+  await expectScreenshot(page, "tor-hollow-full");
+});
+
+test("torus with no hollow", async ({ page }) => {
+  await page.locator("#editor textarea").fill("tor h(0)");
+  await expectScreenshot(page, "tor-hollow-none");
+});
