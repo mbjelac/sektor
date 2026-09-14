@@ -28,9 +28,9 @@
         - no brackets
         - no green background
 
-#2 Fix building panel Geography section
+#2 [done] Fix building panel Geography section
 - [done] remove + prefixes from Geography section location property values
 - [done] move color swatches next to property names
-- bring values closer to property names
-- display swatches in specified property color
-    - do not fade it because of lower value
+- [done] bring values closer to property names
+- [done] display swatches in specified property color
+    - [done] do not fade it because of lower value

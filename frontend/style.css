@@ -288,6 +288,7 @@ body > main {
 }
 
 .bp-properties-header {
+  grid-column: 1 / -1;
   color: #fff;
   font-family: sans-serif;
   font-size: 11px;
@@ -384,10 +385,14 @@ body > main {
   border-radius: 2px;
 }
 
+/* The properties are laid out in three columns, so every name, the color it is drawn in and its
+   value on this location line up with those of the properties above and below it. The columns
+   are only as wide as what they hold, which keeps each value beside the name it belongs to. */
 .bp-properties {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  justify-content: center;
+  gap: 2px 6px;
   margin-top: 8px;
   padding: 8px 16px 0;
   border-top: 1px solid #444;
@@ -395,21 +400,16 @@ body > main {
 }
 
 .bp-property-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
   color: #ccc;
   font-family: sans-serif;
   font-size: 12px;
-  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 4px;
-}
-
-.bp-property-name {
-  flex: 1;
 }
 
 .bp-property-value {
-  width: 24px;
   text-align: right;
 }
 

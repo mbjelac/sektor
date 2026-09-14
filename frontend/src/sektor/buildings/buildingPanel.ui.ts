@@ -6,7 +6,7 @@ import { BLOCK_SIZE } from "../../../../shared/constants";
 import { trashIcon } from "../../icons";
 import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
 import { BuildingFunctionState, BuildingLocation } from "../Sektor";
-import { propertyValueColor } from "../../properties";
+import { propertyDefinitions } from "../../properties";
 import { formatNumber } from "../../formatNumber";
 
 let panelEl: HTMLElement | null = null;
@@ -150,16 +150,20 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
       nameCell.textContent = propertyName;
       row.appendChild(nameCell);
 
-      const valueCell = document.createElement("span");
-      valueCell.className = "bp-property-value";
-      valueCell.textContent = propertyValue > 0 ? `+${formatNumber(propertyValue)}` : formatNumber(propertyValue);
-      row.appendChild(valueCell);
-
+      // The swatch says which property the row is about, so it is the property's own color,
+      // the same on every location, and not the shade the location's value is drawn in.
       const swatch = document.createElement("span");
       swatch.className = "bp-property-swatch";
-      const [red, green, blue] = propertyValueColor(propertyName, propertyValue);
-      swatch.style.backgroundColor = `rgb(${red},${green},${blue})`;
+      const propertyDefinition = propertyDefinitions.find(definition => definition.name === propertyName);
+      if (propertyDefinition) {
+        swatch.style.backgroundColor = propertyDefinition.color;
+      }
       row.appendChild(swatch);
+
+      const valueCell = document.createElement("span");
+      valueCell.className = "bp-property-value";
+      valueCell.textContent = formatNumber(propertyValue);
+      row.appendChild(valueCell);
 
       propertiesSection.appendChild(row);
     }
