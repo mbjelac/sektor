@@ -1,0 +1,73 @@
+New sektors can be automatically created using an algorithm.
+Each sektor has a complexity which can be mapped to a level.
+When creating a sektor, the algorithm should create sektors of complexity corresponding to current players' level.
+Additionally, there should be at least a couple of sektors corresponding to one level above the best player's level.
+
+For example, if there are
+    3 players of level 1,
+    2 of players 2
+    & 1 of level 3,
+the algorithm should create
+    6 sektors of level 1,
+    4 sektors of level 2,
+    2 sektor of level 3
+    and 2 sektors of level 4 just in case the level 3 player advances to level 4.
+
+A sektor is created according to the player's score.
+
+Sektor complexity is (for now) determined by:
+- requirements & restrictions
+    - more strict = more complex
+    - more of them = more complex
+- location properties
+    - lower numbers = more complex
+
+Requirements and restrictions are grouped together so that for a given requirement, restrictions are placed on input resources of the building which produces the required output.
+This forces the player to not just put a building which produces the required output, but also buildings which produce the input for that building, etc.
+Placing restrictions like this can be done in layers, forcing player to move backwards in the production chain, placing more buildings as more inputs are needed.
+Most buildings have more inputs than outputs. Restrictions don't need to be placed on all building's inputs, just one one.
+A multi-layer restriction plan can then have one restriction per layer.
+Example:
+    - for these production chains (lowercase letters are resources and Bx are buildings):
+        a,b>B1>c
+        c,d,e>B2>f
+    - a requirement can be put for f
+    - 1st restriction layer can be put only on c (not d & e)
+    - 2nd restriction layer can be put on a (not b)
+
+If a building produces a resource needed for a requirement, directly or indirectly,
+and that resource is not specified with an amount but referenced by a location property,
+a sektor complexity can be modified by controlling the location property matrix values of that property.
+Example:
+    - a requirement is Food
+    - Farm produces Food but needs Water
+    - WaterWell produces water but needs groundwater (location property)
+    - if a sektor is to be more complex, do not create groundwater matrix with high values
+
+Level complexity examples:
+    - level 1:
+        - 1 requirement
+        - 2 layers of restrictions
+        - moderate amount of required location properties
+    - level 2:
+        - 2 requirements
+        - 3-4 layers of restrictions
+        - moderate to low amount of required location properties
+    - level 3:
+        - 3 requirements
+        - 5-6 layers of restrictions
+        - low amount of required location properties
+    - level 4:
+        - 4 requirements
+        - 7-8 layers of restrictions
+        - very low amount of required location properties
+
+#1 New sektors appear every once in a while
+- every 10 seconds an algorithm is started in background
+    - determine whether to create new sektor:
+        - do not create if there are 10 or more unclaimed empty sektors
+            - unclaimed = no owner
+            - empty = number of buildings is 0
+        - create a sektor in one of needed levels, chosen randomly
+            - needed levels are all current player levels
+            - plus one level above for each player
