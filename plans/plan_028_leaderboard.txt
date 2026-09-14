@@ -1,0 +1,10 @@
+#1 Player sees the leaderboard
+- on the sektor list page there is a leaderboard
+    - sektor list is on the left half of the screen
+    - leaderboard on the right
+    - leaderboard is a list with all players (owners of sektors)
+    - each list item has:
+        - player name
+        - total player score (sum of all their sektor scores)
+        - level of player
+            - computed from player score using the function level=max(1,floor(log2(score+1)))
