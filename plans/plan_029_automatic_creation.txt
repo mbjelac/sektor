@@ -112,32 +112,33 @@ is a performance optimization only, and is not done here.
     - [done] so a hand-edited or older saved sektor cannot smuggle one in
     - [done] unit test with a made-up palette
 
-#3 Generating a sektor of a given level
-- generation code in frontend/src/creation/createSektor.ts
-- build the production graph out of buildingDefinitions
-    - for each resource, which buildings produce it and what those buildings consume
-    - a building with no function is not in the graph
-- pick the requirements
-    - requirementCount resources, at random, out of those some building produces
-    - each requirement is for a fixed moderate amount for now
-- walk backwards from each requirement, building the palette and the restrictions together
-    - restrictionLayers layers, or fewer if the walk runs out of chain
-    - at each layer:
-        - pick a building which produces the current resource, put it in the palette
-        - pick one of its inputs which some other building produces and which is not already restricted
-        - if there is no such input, the walk for this requirement ends here
-        - restrict the picked input at restrictionValue, and make it the current resource
-- add alternatives to the palette
-    - for each restricted resource, up to alternativeCount further buildings which produce it
-- add distractors to the palette
-    - distractorCount buildings which appear on no walk
-- generate the location property matrices
-    - a property is needed if some building in the palette produces from it
-    - needed property: every value between propertyMinimum and MODIFIER_MAX
-    - property which is not needed: every value between MODIFIER_MIN and MODIFIER_MAX
-- unit tests with a made-up building set, not buildings.md
-    - a generated sektor's restricted resources all have a producer in its palette
-    - a generated sektor's needed properties are never all 0
+#3 [done] Generating a sektor of a given level
+- [done] generation code in frontend/src/creation/createSektor.ts
+- [done] build the production graph out of buildingDefinitions
+    - [done] for each resource, which buildings produce it and what those buildings consume
+    - [done] a building with no function is not in the graph
+- [done] pick the requirements
+    - [done] requirementCount resources, at random, out of those some building produces
+    - [done] never a local resource, which can never be exported, nor a negative one, which would score against the player for finishing
+    - [done] each requirement is for a fixed moderate amount for now
+- [done] walk backwards from each requirement, building the palette and the restrictions together
+    - [done] restrictionLayers layers, or fewer if the walk runs out of chain
+    - [done] at each layer:
+        - [done] pick a building which produces the current resource, put it in the palette
+        - [done] pick one of its inputs which some other building produces and which is not already restricted
+        - [done] if there is no such input, the walk for this requirement ends here
+        - [done] restrict the picked input at restrictionValue, and make it the current resource
+- [done] add alternatives to the palette
+    - [done] for each restricted resource, up to alternativeCount further buildings which produce it
+- [done] add distractors to the palette
+    - [done] distractorCount buildings which appear on no walk
+- [done] generate the location property matrices
+    - [done] a property is needed if some building in the palette produces from it
+    - [done] needed property: every value between propertyMinimum and MODIFIER_MAX
+    - [done] property which is not needed: every value between MODIFIER_MIN and MODIFIER_MAX
+- [done] unit tests with a made-up building set, not buildings.md
+    - [done] a generated sektor's restricted resources all have a producer in its palette
+    - [done] a generated sektor's needed properties are never all 0
 
 #4 New sektors appear every once in a while
 - every 10 seconds an algorithm is started in background
