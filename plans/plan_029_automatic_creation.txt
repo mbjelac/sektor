@@ -93,7 +93,7 @@ What these work out to today, as illustration only:
 NOTE: a sektor's storage could be split in two, its initial definition and its current state. That
 is a performance optimization only, and is not done here.
 
-#1 Sektors have a level
+#1 [done] Sektors have a level
 - [done] add level to SektorData
     - required, every sektor has one
     - a whole number, the lowest being the first level in levels.md
