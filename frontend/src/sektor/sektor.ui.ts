@@ -18,7 +18,7 @@ import { floorColor as soilFloorColor, propertyValueColor } from "../properties"
 import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { arrowLeftIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
-import { MODIFIER_MIN } from "../../../shared/modifierLimits";
+import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showNameDialog } from "../nameDialog.ui";
@@ -146,15 +146,19 @@ function showSektorNotFound() {
   throw new Error("Sektor not found");
 }
 
+// Every location gets the same properties every time the test sektor is opened, so that the
+// tests always see the same map. Each value is spread over the whole range a property value
+// can take, however wide that range is.
 function createTestLocations(gridSize: number): Location[][] {
+  const propertyValueCount = MODIFIER_MAX - MODIFIER_MIN + 1;
   return Array.from({ length: gridSize }, (_, x) =>
     Array.from({ length: gridSize }, (_, z) => ({
       properties: {
-        soil: ((x * 17 + z * 31) % 13) + MODIFIER_MIN,
-        groundwater: ((x * 13 + z * 23) % 13) + MODIFIER_MIN,
-        ore: ((x * 7 + z * 41) % 13) + MODIFIER_MIN,
-        insolation: ((x * 29 + z * 11) % 13) + MODIFIER_MIN,
-        wind: ((x * 37 + z * 19) % 13) + MODIFIER_MIN,
+        soil: ((x * 17 + z * 31) % propertyValueCount) + MODIFIER_MIN,
+        groundwater: ((x * 13 + z * 23) % propertyValueCount) + MODIFIER_MIN,
+        ore: ((x * 7 + z * 41) % propertyValueCount) + MODIFIER_MIN,
+        insolation: ((x * 29 + z * 11) % propertyValueCount) + MODIFIER_MIN,
+        wind: ((x * 37 + z * 19) % propertyValueCount) + MODIFIER_MIN,
       },
     }))
   );
@@ -297,7 +301,6 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     code: code,
     buildingFunctions: buildingState.buildingFunctions,
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
-    modifierProperties: definition?.outputModifiers.map(modifier => modifier.property),
     floorColor: floorColor,
     showFloor: definition?.properties.showFloor,
     location: placed.location,
@@ -345,7 +348,6 @@ function openEmptyLocationPanel(location: BuildingLocation) {
     code: "",
     buildingFunctions: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
-    modifierProperties: [],
     floorColor: floorColor,
     location: location,
   });
@@ -359,12 +361,13 @@ function getOverlayProperty(): string | null {
   return selectedProperty === FLOOR_PROPERTY ? null : selectedProperty;
 }
 
-// Selecting a building in the toolbar selects the location property its output depends on,
-// so that the overlay shows where the building produces the most; deselecting it, or
-// selecting a building whose output depends on nothing, goes back to plain soil floors.
+// Selecting a building in the toolbar selects the location property its output is named after,
+// so that the overlay shows where the building produces the most; deselecting it, or selecting
+// a building whose outputs name no property, goes back to plain soil floors.
 function selectBuildingProperty(buildingName: string | null) {
   const buildingDefinition = buildingDefinitions.find(definition => definition.name === buildingName);
-  selectProperty(buildingDefinition?.outputModifiers[0]?.property ?? FLOOR_PROPERTY);
+  const outputs = buildingDefinition?.buildingFunctions.map(buildingFunction => buildingFunction.outputs).flat() ?? [];
+  selectProperty(outputs.find(output => output.locationProperty !== undefined)?.locationProperty ?? FLOOR_PROPERTY);
 }
 
 function drawPropertyOverlay(p: p5, propertyName: string) {

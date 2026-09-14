@@ -167,50 +167,6 @@ body > main {
   z-index: 100;
 }
 
-.tf-modifier-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-top: 8px;
-}
-
-.tf-modifier-header {
-  color: #999;
-  font-family: sans-serif;
-  font-size: 11px;
-  margin-bottom: 2px;
-}
-
-.tf-modifier-item {
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-/* The property affecting an output sits right beside it, so the two read as one pair. */
-.tf-modifier-resource {
-  white-space: nowrap;
-}
-
-.tf-modifier-arrow {
-  display: flex;
-  align-items: center;
-  color: #ccc;
-}
-
-.tf-modifier-arrow .icon {
-  width: 12px;
-  height: 12px;
-}
-
-.tf-modifier-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-}
-
 #right-panels {
   position: absolute;
   /* The logged in player is shown above the panels, in the top right corner. */
@@ -408,6 +364,26 @@ body > main {
   text-align: center;
 }
 
+/* The location property an output is produced in the amount of runs under that output, across
+   both of its columns and indented, so it reads as belonging to the output above it. */
+.bf-output-property {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 12px;
+  color: #999;
+  font-family: sans-serif;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.bf-output-property-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
 .bp-properties {
   display: flex;
   flex-direction: column;
@@ -426,8 +402,6 @@ body > main {
   align-items: center;
   gap: 6px;
   padding: 2px 4px;
-  border: 1px solid transparent;
-  border-radius: 3px;
 }
 
 .bp-property-name {
@@ -443,10 +417,6 @@ body > main {
   width: 10px;
   height: 10px;
   border-radius: 2px;
-}
-
-.bp-property-modifier {
-  border-color: #888;
 }
 
 /* The activity sits at the right end of the header row, whether or not the function is named. */
@@ -499,26 +469,6 @@ body > main {
 .bf-function-inactive .bf-inputs-amount,
 .bf-function-inactive .bf-outputs-amount {
   color: #777;
-}
-
-.bf-function-inactive .bf-output-boosted,
-.bf-function-inactive .bf-output-reduced {
-  background-color: #555;
-  color: #999;
-}
-
-.bf-output-boosted {
-  background-color: var(--color-good);
-  color: #fff;
-  padding: 1px 4px;
-  border-radius: 3px;
-}
-
-.bf-output-reduced {
-  background-color: var(--color-bad);
-  color: #000;
-  padding: 1px 4px;
-  border-radius: 3px;
 }
 
 .bf-inputs-table {

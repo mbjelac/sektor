@@ -5,10 +5,7 @@ import { parseCommands } from "../../../shared/parseCommands";
 import { applyCommands } from "../../../shared/applyCommands";
 import { drawFloor } from "../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../shared/constants";
-import { BuildingDefinition, BuildingFunction, OutputModifier } from "./buildings/parseBuildingDefinitions";
-import { propertyDefinitions } from "../properties";
-import { getResourceIcon } from "../resources";
-import { arrowLeftIcon } from "../icons";
+import { BuildingDefinition, BuildingFunction } from "./buildings/parseBuildingDefinitions";
 
 const TOOLBAR_FUNCTION_PANEL_MARGIN = 8;
 const THUMBNAIL_WIDTH = 100;
@@ -45,8 +42,8 @@ export function deselectBuilding(): void {
 
 let toolbarFnPanel: HTMLElement | null = null;
 
-// A building can do several things, each of them affected by a different location property, so
-// every function is followed by the list of its own outputs which a property affects.
+// A building which has not been built yet stands on no location, so an output of its named
+// after a location property is shown by that property's name alone, without an amount.
 function showToolbarFunctionPanel(buildingFunctions: BuildingFunction[]) {
   hideToolbarFunctionPanel();
 
@@ -54,12 +51,7 @@ function showToolbarFunctionPanel(buildingFunctions: BuildingFunction[]) {
   toolbarFnPanel.id = "toolbar-function-panel";
 
   for (const buildingFunction of buildingFunctions) {
-    const functionBlock = createFunctionDisplay({ buildingFunction: buildingFunction });
-    const outputModifiers = buildingFunction.outputModifiers ?? [];
-    if (outputModifiers.length > 0) {
-      functionBlock.appendChild(createModifierList(outputModifiers));
-    }
-    toolbarFnPanel.appendChild(functionBlock);
+    toolbarFnPanel.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction }));
   }
 
   document.body.appendChild(toolbarFnPanel);
@@ -70,48 +62,6 @@ function showToolbarFunctionPanel(buildingFunctions: BuildingFunction[]) {
   const constructionPanelRect = constructionPanel.getBoundingClientRect();
   toolbarFnPanel.style.left = `${constructionPanelRect.right + TOOLBAR_FUNCTION_PANEL_MARGIN}px`;
   toolbarFnPanel.style.top = `${constructionPanelRect.top}px`;
-}
-
-function createModifierList(outputModifiers: OutputModifier[]): HTMLElement {
-  const modifierList = document.createElement("div");
-  modifierList.className = "tf-modifier-list";
-
-  const modifierHeader = document.createElement("div");
-  modifierHeader.className = "tf-modifier-header";
-  modifierHeader.textContent = "Affected by";
-  modifierList.appendChild(modifierHeader);
-
-  for (const modifier of outputModifiers) {
-    const item = document.createElement("div");
-    item.className = "tf-modifier-item";
-
-    const resourceSpan = document.createElement("span");
-    resourceSpan.className = "tf-modifier-resource";
-    const icon = getResourceIcon(modifier.resource);
-    resourceSpan.textContent = `${modifier.resource} ${icon ?? ""}`;
-    item.appendChild(resourceSpan);
-
-    const arrowElement = document.createElement("span");
-    arrowElement.className = "tf-modifier-arrow";
-    arrowElement.innerHTML = arrowLeftIcon;
-    item.appendChild(arrowElement);
-
-    const propertySpan = document.createElement("span");
-    propertySpan.textContent = modifier.property;
-    item.appendChild(propertySpan);
-
-    const propertyDefinition = propertyDefinitions.find(definition => definition.name === modifier.property);
-    if (propertyDefinition) {
-      const swatch = document.createElement("span");
-      swatch.className = "tf-modifier-swatch";
-      swatch.style.backgroundColor = propertyDefinition.color;
-      item.appendChild(swatch);
-    }
-
-    modifierList.appendChild(item);
-  }
-
-  return modifierList;
 }
 
 function hideToolbarFunctionPanel() {

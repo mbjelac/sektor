@@ -3,7 +3,7 @@ import { MODIFIER_MIN, MODIFIER_MAX } from "../shared/modifierLimits";
 import restrictionsRequirements from "./restrictions_requirements";
 
 const GRID_SIZE = 10;
-const PROPERTY_NAMES = ["soil", "groundwater", "ore", "insolation", "wind"];
+const PROPERTY_NAMES = ["soil", "groundwater", "metals", "minerals", "uranium", "insolation", "wind"];
 
 function createSektor(): SektorData {
   return {

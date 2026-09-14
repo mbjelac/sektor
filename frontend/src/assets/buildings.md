@@ -63,7 +63,7 @@ pri4 c(#c7c2a9) s(23,23,10) t(-30,30,0)
 EnergyElectric 3
 WorkTechnical 1
 =
-WaterPottable 4 groundwater
+WaterPottable groundwater
 
 # Habitats
 
@@ -388,7 +388,7 @@ Fertilizer 2
 EnergyElectric 1
 WorkTechnical 2
 =
-FoodRaw 6 soil
+FoodRaw soil
 
 # Extractor
 
@@ -465,7 +465,7 @@ EnergyElectric 5
 WorkTechnical 5
 WorkEngineering 1
 =
-OreMetal 0 ore
+OreMetal metals
 
 ## Function
 
@@ -475,7 +475,7 @@ EnergyElectric 3
 WorkTechnical 3
 WorkEngineering 1
 =
-OreMineral 0 minerals
+OreMineral minerals
 
 ## Function
 
@@ -486,7 +486,7 @@ WaterTechnical 3
 WorkTechnical 2
 WorkEngineering 1
 =
-OreUranium 0 uranium
+OreUranium uranium
 
 ## Properties
 
@@ -524,7 +524,7 @@ sph c(#8fdaff00) s(1,100,1) t(-8,0,32) acg(#8fdaff80, 1000)
 
 WorkTechnical 1
 =
-EnergyElectric 4 wind
+EnergyElectric wind
 
 
 # SunCatcher
@@ -555,7 +555,7 @@ sph s(6,6,6) t(0,0,18) c(#9a9589) r(0,0,0)
 
 WorkTechnical 1
 =
-EnergyElectric 4 insolation
+EnergyElectric insolation
 
 # Arena
 
@@ -1254,7 +1254,6 @@ EnergyElectric 4
 WorkTechnical 3
 =
 WaterTechnical 4
-WasteMineral 2
 
 ## Function
 
@@ -1262,7 +1261,5 @@ Name: Advanced
 
 WaterTechnical 5
 EnergyElectric 6
-WaterPottable 4
 =
-WaterTechnical 4
-WasteMineral 1
+WaterPottable 4

@@ -15,7 +15,6 @@ const testDefinitions: BuildingDefinition[] = [
         { name: "Flour", value: 3 },
       ],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -23,9 +22,8 @@ const testDefinitions: BuildingDefinition[] = [
     renderingCode: "box s(1,1,1)",
     buildingFunctions: [{
       inputs: [{ name: "Water", value: 2 }],
-      outputs: [{ name: "Wheat", value: 5 }],
+      outputs: [{ name: "Wheat", locationProperty: "soil" }],
     }],
-    outputModifiers: [{ resource: "Wheat", property: "soil" }],
     properties: {},
   },
 ];
@@ -56,7 +54,7 @@ describe("getBuildingState", () => {
             { name: "Flour", value: 3 },
           ],
         },
-        modifiedOutputs: [
+        outputAmounts: [
           { name: "Flour", value: 3 },
         ],
         active: true,
@@ -65,12 +63,12 @@ describe("getBuildingState", () => {
     });
   });
 
-  it("returns outputs modified by location properties", () => {
+  it("returns the location property value as the amount of an output named after it", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "Farm", location: { x: 0, y: 0 } });
 
-    expect(sektor.getBuildingState({ x: 0, y: 0 })!.buildingFunctions[0].modifiedOutputs).toEqual([
-      { name: "Wheat", value: 7 },
+    expect(sektor.getBuildingState({ x: 0, y: 0 })!.buildingFunctions[0].outputAmounts).toEqual([
+      { name: "Wheat", value: 2 },
     ]);
   });
 });

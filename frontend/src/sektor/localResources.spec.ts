@@ -14,7 +14,6 @@ const testDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Food", value: 1 }],
       outputs: [{ name: "Care", value: 4 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -24,7 +23,6 @@ const testDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Care", value: 3 }],
       outputs: [{ name: "Work", value: 5 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -34,7 +32,6 @@ const testDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Care", value: 10 }],
       outputs: [{ name: "Work", value: 20 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -44,7 +41,6 @@ const testDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Care", value: 4 }],
       outputs: [{ name: "Care", value: 6 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -54,7 +50,6 @@ const testDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Care", value: 4 }],
       outputs: [{ name: "Water", value: 5 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -64,7 +59,6 @@ const testDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Water", value: 5 }],
       outputs: [{ name: "Work", value: 2 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
 ];

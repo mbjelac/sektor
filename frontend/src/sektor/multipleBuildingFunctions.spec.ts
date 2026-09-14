@@ -16,7 +16,6 @@ const testDefinitions: BuildingDefinition[] = [
         outputs: [{ name: "Tools", value: 3 }],
       },
     ],
-    outputModifiers: [],
     properties: {},
   },
 ];

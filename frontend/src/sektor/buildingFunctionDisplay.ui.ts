@@ -1,15 +1,18 @@
 
 import { getResourceIcon } from "../resources";
-import { BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
+import { BuildingFunction, BuildingFunctionOutput, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { arrowRightIcon, exclamationTriangleSolidIcon } from "../icons";
 import { formatNumber } from "../formatNumber";
+import { propertyDefinitions } from "../properties";
 
 // Only a building with several functions can have them turned on and off, so a function shown
 // without an activation gets no activity label. A function which is only being looked at, not
 // played, gets the label without a toggle to change it by.
-export function createFunctionDisplay({ buildingFunction, modifiedOutputs, activation, starved }: {
+// A building which is not on the map yet stands on no location, so it is shown without output
+// amounts, which only a location it stands on can decide.
+export function createFunctionDisplay({ buildingFunction, outputAmounts, activation, starved }: {
   buildingFunction: BuildingFunction,
-  modifiedOutputs?: ResourceThroughput[],
+  outputAmounts?: ResourceThroughput[],
   activation?: { active: boolean, onToggle?: () => void },
   starved?: boolean,
 }): HTMLElement {
@@ -34,7 +37,7 @@ export function createFunctionDisplay({ buildingFunction, modifiedOutputs, activ
   arrowEl.innerHTML = arrowRightIcon;
   functionDisplay.appendChild(arrowEl);
 
-  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, modifiedOutputs));
+  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts));
 
   return functionBlock;
 }
@@ -134,7 +137,7 @@ function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
   return table;
 }
 
-function createOutputColumn(outputs: ResourceThroughput[], modifiedOutputs?: ResourceThroughput[]): HTMLElement {
+function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts?: ResourceThroughput[]): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-outputs-table";
 
@@ -164,19 +167,47 @@ function createOutputColumn(outputs: ResourceThroughput[], modifiedOutputs?: Res
 
     const amountCell = document.createElement("div");
     amountCell.className = "bf-outputs-cell bf-outputs-amount";
-    const modifiedOutput = modifiedOutputs?.find(modifiedOutput => modifiedOutput.name === output.name);
-    if (modifiedOutput && modifiedOutput.value !== output.value) {
-      const modifiedValue = document.createElement("span");
-      modifiedValue.textContent = formatNumber(modifiedOutput.value);
-      modifiedValue.className = modifiedOutput.value > output.value ? "bf-output-boosted" : "bf-output-reduced";
-      amountCell.append(modifiedValue, ` (${formatNumber(output.value)})`);
-    } else {
-      amountCell.textContent = formatNumber(output.value);
-    }
+    amountCell.textContent = findOutputAmount(output, outputAmounts);
     row.appendChild(amountCell);
 
     table.appendChild(row);
+
+    if (output.locationProperty !== undefined) {
+      table.appendChild(createOutputPropertyRow(output.locationProperty));
+    }
   }
 
   return table;
+}
+
+// The amount of an output named after a location property is the property's value on the
+// building's location, so an output is left without an amount until the building stands
+// somewhere.
+function findOutputAmount(output: BuildingFunctionOutput, outputAmounts?: ResourceThroughput[]): string {
+  if (outputAmounts) {
+    const outputAmount = outputAmounts.find(outputAmount => outputAmount.name === output.name);
+    if (outputAmount) return formatNumber(outputAmount.value);
+  }
+  return output.value === undefined ? "" : formatNumber(output.value);
+}
+
+// The location property an output is named after is shown under that output, indented, so it
+// reads as belonging to the output above it.
+function createOutputPropertyRow(locationProperty: string): HTMLElement {
+  const propertyRow = document.createElement("div");
+  propertyRow.className = "bf-output-property";
+
+  const propertyName = document.createElement("span");
+  propertyName.textContent = locationProperty;
+  propertyRow.appendChild(propertyName);
+
+  const propertyDefinition = propertyDefinitions.find(definition => definition.name === locationProperty);
+  if (propertyDefinition) {
+    const swatch = document.createElement("span");
+    swatch.className = "bf-output-property-swatch";
+    swatch.style.backgroundColor = propertyDefinition.color;
+    propertyRow.appendChild(swatch);
+  }
+
+  return propertyRow;
 }

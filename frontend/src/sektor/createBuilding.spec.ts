@@ -7,7 +7,6 @@ function buildingDefinition(name: string, inputs: { name: string, value: number 
     name,
     renderingCode: "box s(1,1,1)",
     buildingFunctions: [{ inputs, outputs }],
-    outputModifiers: [],
     properties: {},
   };
 }

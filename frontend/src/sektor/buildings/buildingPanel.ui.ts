@@ -57,12 +57,11 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, modifierProperties, floorColor, showFloor, location, onDestroy, onToggleFunction }: {
+export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, floorColor, showFloor, location, onDestroy, onToggleFunction }: {
   name: string,
   code: string,
   buildingFunctions: BuildingFunctionState[],
   locationProperties?: { [_: string]: number },
-  modifierProperties?: string[],
   floorColor: [number, number, number],
   showFloor?: boolean,
   location: BuildingLocation,
@@ -120,7 +119,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
     const switchable = buildingFunctions.length > 1 && !buildingFunctionState.buildingFunction.alwaysActive;
     const functionBlock = createFunctionDisplay({
       buildingFunction: buildingFunctionState.buildingFunction,
-      modifiedOutputs: buildingFunctionState.modifiedOutputs,
+      outputAmounts: buildingFunctionState.outputAmounts,
       activation: switchable
         ? {
           active: buildingFunctionState.active,
@@ -145,9 +144,6 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
     for (const [propertyName, propertyValue] of Object.entries(locationProperties)) {
       const row = document.createElement("div");
       row.className = "bp-property-row";
-      if (modifierProperties?.includes(propertyName)) {
-        row.classList.add("bp-property-modifier");
-      }
 
       const nameCell = document.createElement("span");
       nameCell.className = "bp-property-name";

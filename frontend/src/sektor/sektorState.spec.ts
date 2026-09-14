@@ -17,7 +17,6 @@ const testDefinitions: BuildingDefinition[] = [
         { name: "Water", value: 4 },
       ],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -33,7 +32,6 @@ const testDefinitions: BuildingDefinition[] = [
         { name: "Food", value: 5 },
       ],
     }],
-    outputModifiers: [],
     properties: {},
   },
 ];
@@ -112,7 +110,6 @@ const poolDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Water", value: 5 }],
       outputs: [],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -122,7 +119,6 @@ const poolDefinitions: BuildingDefinition[] = [
       inputs: [],
       outputs: [{ name: "Water", value: 7 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -132,7 +128,6 @@ const poolDefinitions: BuildingDefinition[] = [
       inputs: [],
       outputs: [{ name: "Water", value: 10 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
 ];
@@ -228,7 +223,6 @@ const statusDefinitions: BuildingDefinition[] = [
         { name: "Power", value: 10 },
       ],
     }],
-    outputModifiers: [],
     properties: {},
   },
 ];
@@ -314,7 +308,7 @@ describe("status", () => {
   });
 });
 
-const modifierDefinitions: BuildingDefinition[] = [
+const locationPropertyDefinitions: BuildingDefinition[] = [
   {
     name: "SolarFarm",
     renderingCode: "box s(1,1,1)",
@@ -323,12 +317,9 @@ const modifierDefinitions: BuildingDefinition[] = [
         { name: "Work", value: 2 },
       ],
       outputs: [
-        { name: "Energy", value: 10 },
+        { name: "Energy", locationProperty: "insolation" },
       ],
     }],
-    outputModifiers: [
-      { resource: "Energy", property: "insolation" },
-    ],
     properties: {},
   },
   {
@@ -342,16 +333,15 @@ const modifierDefinitions: BuildingDefinition[] = [
         { name: "Ore", value: 5 },
       ],
     }],
-    outputModifiers: [],
     properties: {},
   },
 ];
 
-describe("output modifiers", () => {
-  it("adds location property value to output when modifier is present", () => {
+describe("outputs named after a location property", () => {
+  it("produces the location property value as the output amount", () => {
     const sektor = new Sektor(
       [[{ properties: { insolation: 3 } }]],
-      modifierDefinitions,
+      locationPropertyDefinitions,
       { importRestrictions: [], exportRequirements: [] },
       [],
       [],
@@ -359,14 +349,14 @@ describe("output modifiers", () => {
     sektor.loadState({ buildings: [{ type: "SolarFarm", location: { x: 0, y: 0 } }] });
 
     expect(sektor.getSektorState().exports).toEqual([
-      { name: "Energy", value: 13, score: 26 },
+      { name: "Energy", value: 3, score: 6 },
     ]);
   });
 
-  it("clamps modified output to minimum of 0", () => {
+  it("produces nothing where the location has none of the property", () => {
     const sektor = new Sektor(
-      [[{ properties: { insolation: -6 } }]],
-      modifierDefinitions,
+      [[{ properties: { insolation: 0 } }]],
+      locationPropertyDefinitions,
       { importRestrictions: [], exportRequirements: [] },
       [],
       [],
@@ -374,14 +364,14 @@ describe("output modifiers", () => {
     sektor.loadState({ buildings: [{ type: "SolarFarm", location: { x: 0, y: 0 } }] });
 
     expect(sektor.getSektorState().exports).toEqual([
-      { name: "Energy", value: 4, score: 8 },
+      { name: "Energy", value: 0, score: 0 },
     ]);
   });
 
-  it("uses unmodified output when no modifier is present", () => {
+  it("produces the written amount when the output names no location property", () => {
     const sektor = new Sektor(
       [[{ properties: { insolation: 3 } }]],
-      modifierDefinitions,
+      locationPropertyDefinitions,
       { importRestrictions: [], exportRequirements: [] },
       [],
       [],
@@ -393,10 +383,10 @@ describe("output modifiers", () => {
     ]);
   });
 
-  it("modified output is pooled with the other buildings' inputs and outputs", () => {
+  it("pools the produced amount with the other buildings' inputs and outputs", () => {
     const sektor = new Sektor(
-      [[{ properties: { insolation: -4 } }, { properties: { insolation: -4 } }]],
-      modifierDefinitions,
+      [[{ properties: { insolation: 4 } }, { properties: { insolation: 4 } }]],
+      locationPropertyDefinitions,
       { importRestrictions: [], exportRequirements: [] },
       [],
       [],
@@ -414,7 +404,7 @@ describe("output modifiers", () => {
         { name: "Energy", value: 0, score: 0 },
       ],
       exports: [
-        { name: "Energy", value: 3, score: 6 },
+        { name: "Energy", value: 1, score: 2 },
         { name: "Ore", value: 5, score: 10 },
       ],
       status: "Done",
@@ -433,7 +423,6 @@ const scoringDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Energy", value: 17 }],
       outputs: [],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -443,7 +432,6 @@ const scoringDefinitions: BuildingDefinition[] = [
       inputs: [],
       outputs: [{ name: "Food", value: 17 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -453,7 +441,6 @@ const scoringDefinitions: BuildingDefinition[] = [
       inputs: [],
       outputs: [{ name: "Food", value: 12 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -463,7 +450,6 @@ const scoringDefinitions: BuildingDefinition[] = [
       inputs: [],
       outputs: [{ name: "Food", value: 3 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -473,7 +459,6 @@ const scoringDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Work", value: 6 }],
       outputs: [],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -483,7 +468,6 @@ const scoringDefinitions: BuildingDefinition[] = [
       inputs: [],
       outputs: [{ name: "Work", value: 6 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
 ];

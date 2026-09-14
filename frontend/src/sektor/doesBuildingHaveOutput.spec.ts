@@ -10,7 +10,6 @@ const testDefinitions: BuildingDefinition[] = [
       inputs: [{ name: "Wheat", value: 4 }],
       outputs: [{ name: "Flour", value: 3 }],
     }],
-    outputModifiers: [],
     properties: {},
   },
   {
@@ -18,15 +17,14 @@ const testDefinitions: BuildingDefinition[] = [
     renderingCode: "box s(1,1,1)",
     buildingFunctions: [{
       inputs: [],
-      outputs: [{ name: "Energy", value: 4 }],
+      outputs: [{ name: "Energy", locationProperty: "insolation" }],
     }],
-    outputModifiers: [{ resource: "Energy", property: "insolation" }],
     properties: {},
   },
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { insolation: -4 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, [], []);
+  return new Sektor([[{ properties: { insolation: 0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, [], []);
 }
 
 describe("doesBuildingHaveOutput", () => {
@@ -44,7 +42,7 @@ describe("doesBuildingHaveOutput", () => {
     expect(sektor.doesBuildingHaveOutput({ x: 0, y: 0 }, "Wheat")).toEqual(false);
   });
 
-  it("returns false when location properties reduce the output to zero", () => {
+  it("returns false when the location has nothing of the property the output is named after", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "SolarFarm", location: { x: 0, y: 0 } });
 

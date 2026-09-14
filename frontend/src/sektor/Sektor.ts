@@ -34,7 +34,7 @@ interface StarvationCandidate {
 
 export interface BuildingFunctionState {
   buildingFunction: BuildingFunction;
-  modifiedOutputs: ResourceThroughput[];
+  outputAmounts: ResourceThroughput[];
   active: boolean;
   starved: boolean;
 }
@@ -113,7 +113,7 @@ export class Sektor {
     return {
       buildingFunctions: buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) => ({
         buildingFunction: buildingFunction,
-        modifiedOutputs: this.getModifiedOutputs(buildingFunction, buildingDefinition, location),
+        outputAmounts: this.getOutputAmounts(buildingFunction, location),
         active: functionActivations[functionIndex],
         starved: isFunctionStarved(starvedFunctions, location, functionIndex),
       })),
@@ -326,7 +326,7 @@ export class Sektor {
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
       this.getRunningBuildingFunctions(building, buildingDefinition, starvedFunctions).map(buildingFunction =>
-        this.getModifiedOutputs(buildingFunction, buildingDefinition, building.location)
+        this.getOutputAmounts(buildingFunction, building.location)
       ).flat()
     );
   }
@@ -352,16 +352,17 @@ export class Sektor {
     );
   }
 
-  private getModifiedOutputs(buildingFunction: BuildingFunction, buildingDefinition: BuildingDefinition, location: BuildingLocation): ResourceThroughput[] {
+  // An output naming a location property is produced in the amount the building's own location
+  // has of that property, and a location which has nothing of it makes the building produce
+  // nothing, never a negative amount.
+  private getOutputAmounts(buildingFunction: BuildingFunction, location: BuildingLocation): ResourceThroughput[] {
     const locationProperties = this.locations[location.x]?.[location.y]?.properties ?? {};
-    return buildingFunction.outputs.map(output => {
-      const outputModifier = buildingDefinition.outputModifiers.find(modifier => modifier.resource === output.name);
-      const propertyValue = outputModifier ? (locationProperties[outputModifier.property] ?? 0) : 0;
-      return {
-        name: output.name,
-        value: outputModifier ? Math.max(0, output.value + propertyValue) : output.value,
-      };
-    });
+    return buildingFunction.outputs.map(output => ({
+      name: output.name,
+      value: output.locationProperty !== undefined
+        ? Math.max(0, locationProperties[output.locationProperty] ?? 0)
+        : output.value ?? 0,
+    }));
   }
 
   createBuilding(building: BuildingCreation): CreateBuildingResult {

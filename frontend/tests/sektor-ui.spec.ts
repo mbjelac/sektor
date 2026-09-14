@@ -157,7 +157,7 @@ test("displays building panel with many inputs", async ({ page }) => {
   await expectScreenshot(page, "building-panel-large", "#building-panel");
 });
 
-test("displays building panel with boosted output modifier", async ({ page }) => {
+test("displays building panel with an output named after a location property", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await page.evaluate(() => {
@@ -167,22 +167,21 @@ test("displays building panel with boosted output modifier", async ({ page }) =>
       buildingFunctions: [{
         buildingFunction: {
           inputs: [{ name: "Work", value: 2 }],
-          outputs: [{ name: "Energy", value: 10 }],
+          outputs: [{ name: "Energy", locationProperty: "insolation" }],
         },
-        modifiedOutputs: [{ name: "Energy", value: 15 }],
+        outputAmounts: [{ name: "Energy", value: 4 }],
         active: true,
       }],
-      locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
-      modifierProperties: ["insolation"],
+      locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
       location: { x: 0, y: 0 },
     });
   });
 
-  await expectScreenshot(page, "building-panel-boosted-output", "#building-panel");
+  await expectScreenshot(page, "building-panel-location-property-output", "#building-panel");
 });
 
-test("displays building panel with reduced output modifier", async ({ page }) => {
+test("displays building panel with an output named after a location property the location has none of", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await page.evaluate(() => {
@@ -192,22 +191,21 @@ test("displays building panel with reduced output modifier", async ({ page }) =>
       buildingFunctions: [{
         buildingFunction: {
           inputs: [{ name: "Work", value: 2 }],
-          outputs: [{ name: "Energy", value: 10 }],
+          outputs: [{ name: "Energy", locationProperty: "insolation" }],
         },
-        modifiedOutputs: [{ name: "Energy", value: 3.5 }],
+        outputAmounts: [{ name: "Energy", value: 0 }],
         active: true,
       }],
-      locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: -4, wind: 1 },
-      modifierProperties: ["insolation"],
+      locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 0, wind: 1 },
       floorColor: [200, 200, 100],
       location: { x: 0, y: 0 },
     });
   });
 
-  await expectScreenshot(page, "building-panel-reduced-output", "#building-panel");
+  await expectScreenshot(page, "building-panel-empty-location-property-output", "#building-panel");
 });
 
-test("displays building panel without output modifier", async ({ page }) => {
+test("displays building panel with an output produced in a written amount", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await page.evaluate(() => {
@@ -219,17 +217,16 @@ test("displays building panel without output modifier", async ({ page }) => {
           inputs: [{ name: "Wood", value: 3 }],
           outputs: [{ name: "Goods", value: 4 }],
         },
-        modifiedOutputs: [{ name: "Goods", value: 4 }],
+        outputAmounts: [{ name: "Goods", value: 4 }],
         active: true,
       }],
-      locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
-      modifierProperties: [],
+      locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
       location: { x: 0, y: 0 },
     });
   });
 
-  await expectScreenshot(page, "building-panel-no-modifier", "#building-panel");
+  await expectScreenshot(page, "building-panel-written-amount-output", "#building-panel");
 });
 
 test("displays building panel with several building functions", async ({ page }) => {
@@ -246,7 +243,7 @@ test("displays building panel with several building functions", async ({ page })
             inputs: [{ name: "Ore", value: 4 }],
             outputs: [{ name: "Tools", value: 2 }],
           },
-          modifiedOutputs: [{ name: "Tools", value: 2 }],
+          outputAmounts: [{ name: "Tools", value: 2 }],
           active: true,
         },
         {
@@ -254,12 +251,11 @@ test("displays building panel with several building functions", async ({ page })
             inputs: [{ name: "Wood", value: 3 }],
             outputs: [{ name: "Tools", value: 3 }],
           },
-          modifiedOutputs: [{ name: "Tools", value: 3 }],
+          outputAmounts: [{ name: "Tools", value: 3 }],
           active: false,
         },
       ],
-      locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
-      modifierProperties: [],
+      locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
       location: { x: 0, y: 0 },
       onToggleFunction: () => {},
@@ -376,8 +372,7 @@ test("displays building panel for empty location", async ({ page }) => {
       name: "Empty",
       code: "",
       buildingFunctions: [],
-      locationProperties: { soil: 2, groundwater: -3, ore: -5, insolation: 4, wind: 1 },
-      modifierProperties: [],
+      locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
       location: { x: 3, y: 5 },
     });
@@ -417,26 +412,26 @@ test("displays function panel when building tool is selected", async ({ page }) 
   });
 });
 
-test("displays function panel with modifier property", async ({ page }) => {
+test("displays function panel with an output named after a location property", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
   const panel = page.locator("#toolbar-function-panel");
   await expect(panel).toBeVisible();
-  await expect(panel).toHaveScreenshot("toolbar-function-panel-with-modifier.png", {
+  await expect(panel).toHaveScreenshot("toolbar-function-panel-with-location-property.png", {
     maxDiffPixelRatio: 0,
     timeout: 10000,
   });
 });
 
-test("displays function panel with a modifier property per function", async ({ page }) => {
+test("displays function panel with a location property per function", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  // TestWorkshop has two functions, each of its outputs affected by a different property
+  // TestWorkshop has two functions, each of its outputs named after a different property
   await page.locator('.building-item[data-building-name="TestWorkshop"]').click();
   await page.waitForTimeout(100);
   const panel = page.locator("#toolbar-function-panel");
   await expect(panel).toBeVisible();
-  await expect(panel).toHaveScreenshot("toolbar-function-panel-per-function-modifiers.png", {
+  await expect(panel).toHaveScreenshot("toolbar-function-panel-per-function-location-properties.png", {
     maxDiffPixelRatio: 0,
     timeout: 10000,
   });

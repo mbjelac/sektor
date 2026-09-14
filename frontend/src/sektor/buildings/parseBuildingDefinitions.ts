@@ -1,16 +1,20 @@
 export type { ResourceThroughput } from "../../../../shared/sektorData";
 
+// An output is produced either in an amount the building makes wherever it stands, or in the
+// amount the location it stands on has of a location property, and never in both.
+export interface BuildingFunctionOutput {
+  name: string;
+  value?: number;
+  locationProperty?: string;
+}
+
 export interface BuildingFunction {
   name?: string;
   // A function the building always does: the player cannot turn it off, and it runs from the
   // moment the building is built even when it is not the building's first function.
   alwaysActive?: boolean;
   inputs: ResourceThroughput[];
-  outputs: ResourceThroughput[];
-  // The modifiers of this function's own outputs. Two functions of a building can produce the
-  // same resource with different location properties affecting each, so a modifier belongs to
-  // the function whose output it modifies.
-  outputModifiers?: OutputModifier[];
+  outputs: BuildingFunctionOutput[];
 }
 
 const ALWAYS_ACTIVE_VALUE = "always";
@@ -19,16 +23,10 @@ export interface BuildingProperties {
   showFloor?: boolean;
 }
 
-export interface OutputModifier {
-  resource: string;
-  property: string;
-}
-
 export interface BuildingDefinition {
   name: string;
   renderingCode: string;
   buildingFunctions: BuildingFunction[];
-  outputModifiers: OutputModifier[];
   properties: BuildingProperties;
 }
 
@@ -46,12 +44,10 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
 
   function pushBuilding() {
     if (currentName && codeLines.length > 0) {
-      const parsedFunctions = functionLineGroups.map(functionLines => parseBuildingFunction(functionLines));
       buildings.push({
         name: currentName,
         renderingCode: codeLines.join("\n"),
-        buildingFunctions: parsedFunctions.map(parsedFunction => parsedFunction.buildingFunction),
-        outputModifiers: parsedFunctions.map(parsedFunction => parsedFunction.outputModifiers).flat(),
+        buildingFunctions: functionLineGroups.map(functionLines => parseBuildingFunction(functionLines)),
         properties: parseProperties(propertyLines),
       });
     }
@@ -119,10 +115,9 @@ function parseProperties(lines: string[]): BuildingProperties {
   return props;
 }
 
-function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFunction; outputModifiers: OutputModifier[] } {
+function parseBuildingFunction(lines: string[]): BuildingFunction {
   const inputs: ResourceThroughput[] = [];
-  const outputs: ResourceThroughput[] = [];
-  const outputModifiers: OutputModifier[] = [];
+  const outputs: BuildingFunctionOutput[] = [];
   let functionName: string | undefined = undefined;
   let alwaysActive = false;
   let seenEquals = false;
@@ -144,27 +139,37 @@ function parseBuildingFunction(lines: string[]): { buildingFunction: BuildingFun
       alwaysActive = activeMatch[1].trim() === ALWAYS_ACTIVE_VALUE;
       continue;
     }
-    const match = trimmed.match(/^(\S+)\s+(\d+)(?:\s+(\S+))?$/);
+    const match = trimmed.match(/^(\S+)\s+(\S+)$/);
     if (!match) continue;
-    const entry = { name: match[1], value: parseInt(match[2]) };
+    const resourceName = match[1];
+    const amountOrProperty = match[2];
     if (seenEquals) {
-      outputs.push(entry);
-      if (match[3]) {
-        outputModifiers.push({ resource: match[1], property: match[3] });
-      }
-    } else {
-      inputs.push(entry);
+      outputs.push(parseOutput(resourceName, amountOrProperty));
+    } else if (isAmount(amountOrProperty)) {
+      inputs.push({ name: resourceName, value: parseInt(amountOrProperty) });
     }
   }
 
   if (inputs.length === 0 && outputs.length === 0) {
     console.error("Building function has no inputs or outputs:", lines.join("\n"));
-    return { buildingFunction: { inputs: [], outputs: [], outputModifiers: [] }, outputModifiers: [] };
+    return { inputs: [], outputs: [] };
   }
 
-  const buildingFunction: BuildingFunction = { inputs, outputs, outputModifiers };
+  const buildingFunction: BuildingFunction = { inputs, outputs };
   if (functionName !== undefined) buildingFunction.name = functionName;
   if (alwaysActive) buildingFunction.alwaysActive = true;
 
-  return { buildingFunction, outputModifiers };
+  return buildingFunction;
+}
+
+// An output is written either with the amount it produces or with the name of the location
+// property whose value on the building's location is the amount it produces.
+function parseOutput(resourceName: string, amountOrProperty: string): BuildingFunctionOutput {
+  return isAmount(amountOrProperty)
+    ? { name: resourceName, value: parseInt(amountOrProperty) }
+    : { name: resourceName, locationProperty: amountOrProperty };
+}
+
+function isAmount(amountOrProperty: string): boolean {
+  return /^\d+$/.test(amountOrProperty);
 }
