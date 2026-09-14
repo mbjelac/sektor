@@ -1,21 +1,10 @@
 New sektors can be automatically created using an algorithm.
-Each sektor has a complexity which can be mapped to a level.
-When creating a sektor, the algorithm should create sektors of complexity corresponding to current players' level.
-Additionally, there should be at least a couple of sektors corresponding to one level above the best player's level.
-
-For example, if there are
-    3 players of level 1,
-    2 of players 2
-    & 1 of level 3,
-the algorithm should create
-    6 sektors of level 1,
-    4 sektors of level 2,
-    2 sektor of level 3
-    and 2 sektors of level 4 just in case the level 3 player advances to level 4.
-
-A sektor is created according to the player's score.
+Each sektor has a level, and a palette of buildings which may be placed in it.
 
 Sektor complexity is (for now) determined by:
+- allowed buildings
+    - fewer buildings which help = more complex
+    - more buildings which do not help = more complex
 - requirements & restrictions
     - more strict = more complex
     - more of them = more complex
@@ -25,7 +14,7 @@ Sektor complexity is (for now) determined by:
 Requirements and restrictions are grouped together so that for a given requirement, restrictions are placed on input resources of the building which produces the required output.
 This forces the player to not just put a building which produces the required output, but also buildings which produce the input for that building, etc.
 Placing restrictions like this can be done in layers, forcing player to move backwards in the production chain, placing more buildings as more inputs are needed.
-Most buildings have more inputs than outputs. Restrictions don't need to be placed on all building's inputs, just one one.
+Most buildings have more inputs than outputs. Restrictions don't need to be placed on all building's inputs, just one.
 A multi-layer restriction plan can then have one restriction per layer.
 Example:
     - for these production chains (lowercase letters are resources and Bx are buildings):
@@ -39,35 +28,134 @@ If a building produces a resource needed for a requirement, directly or indirect
 and that resource is not specified with an amount but referenced by a location property,
 a sektor complexity can be modified by controlling the location property matrix values of that property.
 Example:
-    - a requirement is Food
-    - Farm produces Food but needs Water
-    - WaterWell produces water but needs groundwater (location property)
+    - a requirement is FoodRaw
+    - Agriplot produces FoodRaw but needs WaterPottable
+    - WaterWells produces WaterPottable but needs groundwater (location property)
     - if a sektor is to be more complex, do not create groundwater matrix with high values
 
-Level complexity examples:
-    - level 1:
-        - 1 requirement
-        - 2 layers of restrictions
-        - moderate amount of required location properties
-    - level 2:
-        - 2 requirements
-        - 3-4 layers of restrictions
-        - moderate to low amount of required location properties
-    - level 3:
-        - 3 requirements
-        - 5-6 layers of restrictions
-        - low amount of required location properties
-    - level 4:
-        - 4 requirements
-        - 7-8 layers of restrictions
-        - very low amount of required location properties
+THE BACKWARD WALK
 
-#1 New sektors appear every once in a while
+Allowed buildings are the crucial knob, because choosing them and choosing the restrictions in the
+same backward walk makes the sektor solvable by construction. The walk is:
+    - start at a required resource
+    - pick a building which produces it and put that building in the palette
+    - pick one of that building's inputs and restrict it
+    - the restricted input becomes the current resource, and the walk repeats
+
+When the walk ends, every restricted resource has a producer in the palette, and the chain ends at
+something the player can either import freely or pull out of the ground. The walk has therefore
+built a solution the player can place. Nothing has to be solved or simulated to know the sektor can
+be finished.
+
+This only holds if the palette and the restrictions are chosen together, in one pass. Choosing a
+palette first and restrictions afterwards brings back the failure: leaving WindLoop and SunCatcher
+out of the palette while restricting EnergyElectric gives the player no local producer and no import
+allowance, and the sektor is dead.
+
+RULE: Do not impose a restriction if it makes the sektor unsolvable! Same goes for location properties - do not put all 0s if this resource is needed to solve the sektor.
+The walk satisfies this rule by construction. It is still a rule, for anything added to a sektor outside the walk.
+
+PALETTE BEYOND THE WALK
+
+A palette holding only the walk's buildings is constrained but easy - every building is needed and
+there is nothing to work out. What makes a palette hard is having to find which buildings matter. So
+two more kinds of building go in, in opposite directions:
+    - alternatives - other producers of a resource already on the walk
+        - more of them = more ways to succeed = easier
+        - so their number falls as level rises
+    - distractors - buildings which produce nothing on any walk
+        - more of them = more to sift through = harder
+        - so their number rises as level rises
+        - they can never make a sektor unsolvable, because the walk's buildings are already in
+
+COMPLEXITY BY LEVEL
+
+Every knob is an absolute function of the level, not a table, because there is no highest level.
+Absolute means a sektor of a given level stays the same amount of work as buildings.md grows, so
+sektors made now stay comparable to sektors made later. New buildings instead raise the ceiling:
+they lengthen the longest production chain, which lets levels above today's clamp become real.
+
+    requirementCount    = 1 + floor(level / 2)
+    restrictionLayers   = min(1 + level, longest backward chain from the required resource)
+    restrictionValue    = max(0, 4 - level)
+    alternativeCount    = max(0, 3 - floor(level / 2))
+    distractorCount     = level
+    propertyMinimum     = max(1, MODIFIER_MAX - level)
+
+What these work out to today, as illustration only:
+    - level 1: 1 requirement, 2 restriction layers, imports allowed up to 3, 3 alternatives per
+      restricted resource, 1 distractor, needed properties in 5..6
+    - level 2: 2 requirements, 3 layers, imports up to 2, 2 alternatives, 2 distractors, 4..6
+    - level 3: 2 requirements, 4 layers, imports up to 1, 2 alternatives, 3 distractors, 3..6
+    - level 4: 3 requirements, 5 layers, no imports of restricted resources, 1 alternative,
+      4 distractors, 2..6
+
+NOTE: a sektor's storage could be split in two, its initial definition and its current state. That
+is a performance optimization only, and is not done here.
+
+#1 Sektors have a level
+- add level to SektorData
+    - required, every sektor has one
+    - a whole number, the lowest being the first level in levels.md
+- set a level in the scratch sektors sektor_B.json and sektor_C.json so they stay valid
+- saveState in sektor.ui.ts rebuilds SektorData from scratch on every save, so make it keep the sektor's level
+- show the level of each sektor in the sektor list
+    - own column, after the name
+
+#2 Sektors have a palette of allowed buildings
+- add allowedBuildings to SektorData
+    - required, a list of building type names
+- the building toolbar in sektor.ui.ts only offers buildings in the palette
+- the destruction tool is always offered
+    - Destroy has no Function section in buildings.md, so it is not a producer and is never part of a palette
+- Sektor.createBuilding refuses a building which is not in the palette
+    - so a hand-edited or older saved sektor cannot smuggle one in
+    - unit test with a made-up palette
+
+#3 Generating a sektor of a given level
+- generation code in frontend/src/creation/createSektor.ts
+- build the production graph out of buildingDefinitions
+    - for each resource, which buildings produce it and what those buildings consume
+    - a building with no function is not in the graph
+- pick the requirements
+    - requirementCount resources, at random, out of those some building produces
+    - each requirement is for a fixed moderate amount for now
+- walk backwards from each requirement, building the palette and the restrictions together
+    - restrictionLayers layers, or fewer if the walk runs out of chain
+    - at each layer:
+        - pick a building which produces the current resource, put it in the palette
+        - pick one of its inputs which some other building produces and which is not already restricted
+        - if there is no such input, the walk for this requirement ends here
+        - restrict the picked input at restrictionValue, and make it the current resource
+- add alternatives to the palette
+    - for each restricted resource, up to alternativeCount further buildings which produce it
+- add distractors to the palette
+    - distractorCount buildings which appear on no walk
+- generate the location property matrices
+    - a property is needed if some building in the palette produces from it
+    - needed property: every value between propertyMinimum and MODIFIER_MAX
+    - property which is not needed: every value between MODIFIER_MIN and MODIFIER_MAX
+- unit tests with a made-up building set, not buildings.md
+    - a generated sektor's restricted resources all have a producer in its palette
+    - a generated sektor's needed properties are never all 0
+
+#4 New sektors appear every once in a while
 - every 10 seconds an algorithm is started in background
+    - started with setInterval on the sektor list page
+    - not started when ?test=true, so a snapshot test never sees a sektor appear on its own
     - determine whether to create new sektor:
         - do not create if there are 10 or more unclaimed empty sektors
             - unclaimed = no owner
             - empty = number of buildings is 0
-        - create a sektor in one of needed levels, chosen randomly
-            - needed levels are all current player levels
-            - plus one level above for each player
+    - if creating, create a sektor in one of needed levels, chosen randomly
+        - needed levels are all current player levels
+        - plus one level above for each player
+- a created sektor is identified by a number, counting up by 1 for each sektor created
+    - this id is not the sektor's name - the name is what the player gives it when claiming it
+    - the id continues above the highest id already in the sektor list, so a reload does not reuse one
+    - its data is stored under the key sektor_<id>, which is what saveSektorData already does
+- add the created sektor to the sektor list
+    - add addSektorToList to sektorList.api.ts, writing the "sektors" key the way setSektorOwner writes "sektorOwners"
+- when a sektor is created while the sektor list is open, re-render the list
+    - renderList appends into #sektor-list without clearing it, so clear it first or every row is doubled
+- tests of generation call the generation directly instead of waiting for the interval

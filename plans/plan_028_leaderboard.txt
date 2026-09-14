@@ -11,3 +11,18 @@
         - level of player
             - lime
             - computed from player score using the function level=max(1,floor(log2(score+1)))
+
+#2 Player levels come from a configurable table
+- player levels are defined in frontend/src/assets/levels.md
+    - one line per level: "<level> <minimum score>"
+    - levels ascend, each line's minimum score higher than the one before
+    - the last line's level has no upper bound
+    - seeded with the values of the old formula level=max(1,floor(log2(score+1))) so that no player's level changes
+- add a test asset frontend/src/assets/levels.test.md, used when ?test=true, the same way as resources.md and properties.md
+- parse levels.md in frontend/src/parseLevels.ts into a list of levels with their minimum scores
+    - unit tests with a made-up table
+- playerLevel(score) returns the level of the last line whose minimum score the score reaches
+    - a score below the first line's minimum gives the first level
+    - keep the signature so leaderboard.ui.ts does not change
+    - remove the log2 formula from playerLevel.ts
+    - unit tests with a made-up table
