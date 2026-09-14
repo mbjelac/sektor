@@ -28,3 +28,7 @@
         - no brackets
         - no green background
 
+#2 Fix building panel Georgraphy section
+- remove + prefixes from Geography section location property values
+- move color swatches next to property names
+- bring values closer to property names
