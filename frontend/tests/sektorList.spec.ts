@@ -209,3 +209,32 @@ async function storeSektors(page: Page, unfinishedSektorNames: string[], doneSek
     }
   }, [CURRENT_PLAYER, unfinishedSektorNames, doneSektorNames]);
 }
+
+test("shows every player on the leaderboard", async ({ page }) => {
+  await storeMiningSektor(page, "Alpha", [20, 30, 40]);
+  await storeMiningSektor(page, "Beta", [10]);
+
+  await page.goto("/?test=true");
+
+  await expect(page.locator("#leaderboard")).toHaveScreenshot("leaderboard.png", { maxDiffPixelRatio: 0 });
+});
+
+test("shows the whole list page with the leaderboard beside the sektors", async ({ page }) => {
+  await expect(page.locator("#list-page")).toHaveScreenshot("list-page.png", { maxDiffPixelRatio: 0 });
+});
+
+// A sektor of mines, one on every piece of ore given, which the mines turn into an export the
+// sektor scores for — the more ore, the higher the score its player brings to the leaderboard.
+async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: number[]) {
+  await page.evaluate(([sektorName, oreAmounts]) => {
+    localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
+      locationProperties: { ore: (oreAmounts as number[]).map(oreAmount => [oreAmount]) },
+      importRestrictions: [],
+      exportRequirements: [],
+      buildings: (oreAmounts as number[]).map((oreAmount, oreIndex) => ({
+        type: "TestMine",
+        location: { x: oreIndex, y: 0 },
+      })),
+    }));
+  }, [sektorName, oreAmounts] as [string, number[]]);
+}

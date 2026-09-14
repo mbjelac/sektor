@@ -652,9 +652,20 @@ body > main {
   vertical-align: middle;
 }
 
+/* The sektors a player can work on take the left half of the screen, the standing of all the
+   players the right. */
+#list-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 40px;
+  padding: 40px;
+}
+
 #sektor-list {
+  width: 100%;
   max-width: 640px;
-  margin: 40px auto;
+  justify-self: center;
   display: grid;
   grid-template-columns: 1fr auto auto auto auto auto auto auto auto;
   align-content: start;
@@ -768,6 +779,68 @@ body > main {
 
 .sektor-list-go:hover {
   color: #fff;
+}
+
+#leaderboard {
+  width: 100%;
+  max-width: 420px;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-content: start;
+  gap: 8px 12px;
+}
+
+.leaderboard-header,
+.leaderboard-item {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+}
+
+.leaderboard-header {
+  color: #999;
+  font-family: sans-serif;
+  font-size: 12px;
+  padding: 0 13px;
+}
+
+.leaderboard-item {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.leaderboard-name {
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.leaderboard-score {
+  min-width: 48px;
+  text-align: right;
+  color: pink;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+.leaderboard-level {
+  min-width: 40px;
+  text-align: right;
+  color: lime;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+/* The headers name the columns without taking on the colours of what stands under them. */
+.leaderboard-header .leaderboard-name,
+.leaderboard-header .leaderboard-score,
+.leaderboard-header .leaderboard-level {
+  color: inherit;
+  font-size: 12px;
 }
 
 .panel-title {

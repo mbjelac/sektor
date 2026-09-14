@@ -1,5 +1,5 @@
-#1 Player sees the leaderboard
-- on the sektor list page there is a leaderboard
+#1 [done] Player sees the leaderboard
+- [done] on the sektor list page there is a leaderboard
     - sektor list is on the left half of the screen
     - leaderboard on the right
     - leaderboard is a list with all players (owners of sektors)

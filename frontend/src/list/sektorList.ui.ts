@@ -2,31 +2,21 @@ import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, SektorListItem } from "./sektorList.api";
 import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, starIcon, userIcon } from "../icons";
-import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
-import { getSektorData } from "../sektor/sektor.api";
+import { SektorStatus } from "../sektor/Sektor";
 import { getSektorOwner, removeSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
 import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "../sektor/sektorName.api";
 import { showNameDialog } from "../nameDialog.ui";
 import { createClaimButton } from "../claimButton.ui";
 import { showAbandonDialog } from "./abandonDialog.ui";
 import { getUsername } from "../login/login.api";
-import { buildingDefinitions } from "../sektor/buildings/buildings";
-import { locationPropertiesToLocations } from "../sektor/locationProperties";
-import { getLocalResources, getNegativeScoringResources } from "../resources";
+import { getSektorSummary, SektorSummary } from "./sektorSummary";
+import { renderLeaderboard } from "./leaderboard.ui";
 import { scoreColor } from "../score";
 import { formatNumber } from "../formatNumber";
 
 // A player may only work on so many sektors at a time, so that they finish the ones they have
 // claimed before claiming more.
 const MAXIMUM_UNFINISHED_SEKTORS = 5;
-
-interface SektorSummary {
-  status: SektorStatus;
-  buildingCount: number;
-  importTotal: number;
-  exportTotal: number;
-  score: number;
-}
 
 function renderList() {
   const container = document.getElementById("sektor-list")!;
@@ -219,41 +209,7 @@ function createScore(score: number): HTMLElement {
   return cell;
 }
 
-function getSektorSummary(sektorName: string): SektorSummary {
-  const sektorData = getSektorData(sektorName);
-  if (!sektorData) return { status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
-
-  const sektor = new Sektor(
-    locationPropertiesToLocations(sektorData.locationProperties),
-    buildingDefinitions,
-    {
-      importRestrictions: sektorData.importRestrictions,
-      exportRequirements: sektorData.exportRequirements,
-    },
-    getNegativeScoringResources(),
-    getLocalResources(),
-  );
-  sektor.loadState({ buildings: sektorData.buildings });
-
-  const sektorState = sektor.getSektorState();
-
-  return {
-    status: sektorState.status,
-    buildingCount: sektor.getState().buildings.length,
-    importTotal: sumThroughputs(sektorState.imports),
-    exportTotal: sumThroughputs(sektorState.exports),
-    score: sumScores([...sektorState.imports, ...sektorState.exports]),
-  };
-}
-
-function sumThroughputs(throughputs: { value: number }[]): number {
-  return throughputs.reduce((total, throughput) => total + throughput.value, 0);
-}
-
-function sumScores(throughputs: ScoredThroughput[]): number {
-  return throughputs.reduce((total, throughput) => total + throughput.score, 0);
-}
-
 requireLogin();
 showUser();
 renderList();
+renderLeaderboard();
