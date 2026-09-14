@@ -93,7 +93,7 @@ function claimSektor() {
 function enterEditMode() {
   isViewMode = false;
   document.getElementById("construction-panel")!.hidden = false;
-  initToolbar();
+  initToolbar(allowedBuildings);
 }
 
 // A sektor claimed by another player carries their name, so that the player knows whose sektor
@@ -205,7 +205,8 @@ function getRestrictionsRequirements() {
   return { importRestrictions: [], exportRequirements: [] };
 }
 
-const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources());
+const allowedBuildings = getAllowedBuildings();
+const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources(), allowedBuildings);
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
 const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
@@ -228,11 +229,24 @@ function saveState() {
   const { importRestrictions, exportRequirements } = sektor.getSektorState();
   saveSektorData(sektorName, {
     level: sektorLevel,
+    allowedBuildings,
     locationProperties: locationsToLocationProperties(locations),
     importRestrictions,
     exportRequirements,
     buildings: state.buildings,
   });
+}
+
+// The palette of a sektor is set when it is made and never changes, so it is read once and written
+// back on every save, which would otherwise drop it. A test sektor is built out of made-up
+// definitions and lets the player place all of them.
+function getAllowedBuildings(): string[] {
+  if (isTestMode) return buildingDefinitions.map(definition => definition.name);
+  if (sektorName) {
+    const sektorData = getSektorData(sektorName);
+    if (sektorData) return sektorData.allowedBuildings;
+  }
+  return [];
 }
 
 // The level of a sektor is set when it is made and never changes, so it is read once and written
@@ -809,7 +823,7 @@ showSektorOwner();
 if (isViewMode) {
   document.getElementById("construction-panel")!.hidden = true;
 } else {
-  initToolbar();
+  initToolbar(allowedBuildings);
 }
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);

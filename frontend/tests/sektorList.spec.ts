@@ -202,6 +202,7 @@ async function storeSektors(page: Page, unfinishedSektorNames: string[], doneSek
     for (const doneSektorName of doneSektorNames as string[]) {
       localStorage.setItem(`sektor_${doneSektorName}`, JSON.stringify({
         level: 1,
+        allowedBuildings: [],
         locationProperties: {},
         importRestrictions: [],
         exportRequirements: [],
@@ -230,6 +231,7 @@ async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: num
   await page.evaluate(([sektorName, oreAmounts]) => {
     localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
       level: 1,
+      allowedBuildings: ["TestMine"],
       locationProperties: { ore: (oreAmounts as number[]).map(oreAmount => [oreAmount]) },
       importRestrictions: [],
       exportRequirements: [],

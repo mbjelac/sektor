@@ -71,11 +71,11 @@ function hideToolbarFunctionPanel() {
   }
 }
 
-export function initToolbar() {
+export function initToolbar(allowedBuildings: string[]) {
   const toolbar = document.getElementById("toolbar")!;
   const thumbnails: Thumbnail[] = [];
 
-  for (const building of buildingDefinitions) {
+  for (const building of offeredBuildings(allowedBuildings)) {
     const item = document.createElement("div");
     item.className = "building-item";
     if (building.name === DESTRUCTION_TOOL) {
@@ -115,6 +115,15 @@ export function initToolbar() {
   }
 
   showBuildingThumbnails(thumbnails);
+}
+
+// A sektor only lets the player place the buildings of its palette. The destruction tool is not a
+// building and is never part of one, so it is offered whatever the palette holds — without it the
+// player could not take back a building they misplaced.
+function offeredBuildings(allowedBuildings: string[]): BuildingDefinition[] {
+  return buildingDefinitions.filter(building =>
+    building.name === DESTRUCTION_TOOL || allowedBuildings.includes(building.name)
+  );
 }
 
 interface Thumbnail {

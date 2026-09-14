@@ -59,6 +59,16 @@ test("names the player a sektor is owned by", async ({ page }) => {
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-owned-by-other-player.png", { maxDiffPixelRatio: 0 });
 });
 
+// The palette of a sektor is what makes it hard, so the toolbar has to offer the buildings it names
+// and nothing else — except the destruction tool, which belongs to no palette.
+test("offers only the buildings the sektor allows, and the destruction tool", async ({ page }) => {
+  await storeSektor(page, "Alpha", CURRENT_PLAYER, [], [], ["WaterWells", "Agriplot"]);
+
+  await page.goto("/sektor.html?name=Alpha");
+
+  await expectScreenshot(page, "toolbar-allowed-buildings", "#toolbar");
+});
+
 test("opens a sektor claimed by the current player for building", async ({ page }) => {
   await storeSektor(page, "Alpha", CURRENT_PLAYER);
 
@@ -199,11 +209,12 @@ async function placeTheBuildingWhichFinishesTheSektor(page: import("@playwright/
   await page.locator("#done-dialog").waitFor();
 }
 
-async function storeSektor(page: import("@playwright/test").Page, sektorName: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = []) {
-  await page.evaluate(([sektorName, owner, buildings, exportRequirements]) => {
+async function storeSektor(page: import("@playwright/test").Page, sektorName: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = [], allowedBuildings: string[] = ["Habitats", "Agriplot", "Polytechnic"]) {
+  await page.evaluate(([sektorName, owner, buildings, exportRequirements, allowedBuildings]) => {
     const emptyGrid = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0));
     localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
       level: 1,
+      allowedBuildings,
       locationProperties: { soil: emptyGrid, groundwater: emptyGrid, ore: emptyGrid, insolation: emptyGrid, wind: emptyGrid },
       importRestrictions: [],
       exportRequirements,
@@ -211,5 +222,5 @@ async function storeSektor(page: import("@playwright/test").Page, sektorName: st
     }));
     localStorage.setItem("sektors", JSON.stringify([{ name: sektorName }]));
     localStorage.setItem("sektorOwners", JSON.stringify(owner ? { [sektorName as string]: owner } : {}));
-  }, [sektorName, owner, buildings, exportRequirements] as [string, string | null, object[], object[]]);
+  }, [sektorName, owner, buildings, exportRequirements, allowedBuildings] as [string, string | null, object[], object[], string[]]);
 }

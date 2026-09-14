@@ -63,6 +63,7 @@ export class Sektor {
   private readonly restrictionsRequirements: RestrictionsRequirements;
   private readonly negativeScoringResources: string[];
   private readonly localResources: string[];
+  private readonly allowedBuildings: string[];
 
   constructor(
     locations: Location[][],
@@ -70,12 +71,16 @@ export class Sektor {
     restrictionsRequirements: RestrictionsRequirements,
     negativeScoringResources: string[],
     localResources: string[],
+    // A sektor made by the game names the buildings it allows. One made by a test allows every
+    // definition it was given, so that a test which is not about the palette need not name one.
+    allowedBuildings?: string[],
   ) {
     this.locations = locations;
     this.buildingDefinitions = buildingDefinitions;
     this.restrictionsRequirements = restrictionsRequirements;
     this.negativeScoringResources = negativeScoringResources;
     this.localResources = localResources;
+    this.allowedBuildings = allowedBuildings ?? buildingDefinitions.map(definition => definition.name);
   }
 
   getLocations(): Location[][] {
@@ -366,6 +371,12 @@ export class Sektor {
   }
 
   createBuilding(building: BuildingCreation): CreateBuildingResult {
+    // The toolbar offers only the buildings of the palette, but a sektor saved before the palette
+    // was narrowed, or edited by hand, can still ask for one outside it.
+    if (!this.allowedBuildings.includes(building.type)) {
+      return { error: "buildingNotAllowed", addedBuildings: [] };
+    }
+
     if (this.findBuildingAt(building.location)) {
       return { error: "locationOccupied", addedBuildings: [] };
     }

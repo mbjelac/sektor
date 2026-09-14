@@ -102,15 +102,15 @@ is a performance optimization only, and is not done here.
 - [done] show the level of each sektor in the sektor list
     - [done] own column, after the name
 
-#2 Sektors have a palette of allowed buildings
-- add allowedBuildings to SektorData
+#2 [done] Sektors have a palette of allowed buildings
+- [done] add allowedBuildings to SektorData
     - required, a list of building type names
-- the building toolbar in sektor.ui.ts only offers buildings in the palette
-- the destruction tool is always offered
-    - Destroy has no Function section in buildings.md, so it is not a producer and is never part of a palette
-- Sektor.createBuilding refuses a building which is not in the palette
-    - so a hand-edited or older saved sektor cannot smuggle one in
-    - unit test with a made-up palette
+- [done] the building toolbar in sektor.ui.ts only offers buildings in the palette
+- [done] the destruction tool is always offered
+    - [done] Destroy has no Function section in buildings.md, so it is not a producer and is never part of a palette
+- [done] Sektor.createBuilding refuses a building which is not in the palette
+    - [done] so a hand-edited or older saved sektor cannot smuggle one in
+    - [done] unit test with a made-up palette
 
 #3 Generating a sektor of a given level
 - generation code in frontend/src/creation/createSektor.ts
