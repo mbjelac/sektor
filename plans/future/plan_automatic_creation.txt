@@ -1,4 +1,19 @@
-New sektors are automatically created.
+New sektors can be automatically created using an algorithm.
+Each sektor has a complexity which can be mapped to a level.
+Each player has a score which can be mapped to a level.
+When creating a sektor, the algorithm should create sektors of complexity corresponding to current players' score.
+Additionally, there should be at least a couple of sektors corresponding to one level above the best player's level.
+
+For example, if there are
+    3 players of level 1,
+    2 of players 2
+    & 1 of level 3,
+the algorithm should create
+    6 sektors of level 1,
+    4 sektors of level 2,
+    2 sektor of level 3
+    and 2 sektors of level 4 just in case the level 3 player advances to level 4.
+
 A sektor is created according to the player's score.
 Players with higher score are allowed to administer more complex sektor assignments.
 Complexity: number & value of export requirements & import restrictions

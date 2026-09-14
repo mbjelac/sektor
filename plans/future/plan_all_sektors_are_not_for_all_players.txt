@@ -1,0 +1,7 @@
+Each sektor must be able to have a level value attachend to it.
+If a sektor is more complex it has a higher level.
+Sektor complexity is determined by:
+- allowed buildings (more buildings = more complex)
+- requirements & restrictions (more strict = more complex)
+- location properties (more scarse = more complex)
+
