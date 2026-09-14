@@ -1,0 +1,51 @@
+import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
+import { getSektorData } from "../sektor/sektor.api";
+import { buildingDefinitions } from "../sektor/buildings/buildings";
+import { locationPropertiesToLocations } from "../sektor/locationProperties";
+import { getLocalResources, getNegativeScoringResources } from "../resources";
+
+export interface SektorSummary {
+  status: SektorStatus;
+  buildingCount: number;
+  importTotal: number;
+  exportTotal: number;
+  score: number;
+}
+
+// The stored sektor is played through again so that everything shown about it — how far along it
+// is, what it moves in and out, and what it scores — comes out of the same rules as in the sektor
+// itself.
+export function getSektorSummary(sektorName: string): SektorSummary {
+  const sektorData = getSektorData(sektorName);
+  if (!sektorData) return { status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
+
+  const sektor = new Sektor(
+    locationPropertiesToLocations(sektorData.locationProperties),
+    buildingDefinitions,
+    {
+      importRestrictions: sektorData.importRestrictions,
+      exportRequirements: sektorData.exportRequirements,
+    },
+    getNegativeScoringResources(),
+    getLocalResources(),
+  );
+  sektor.loadState({ buildings: sektorData.buildings });
+
+  const sektorState = sektor.getSektorState();
+
+  return {
+    status: sektorState.status,
+    buildingCount: sektor.getState().buildings.length,
+    importTotal: sumThroughputs(sektorState.imports),
+    exportTotal: sumThroughputs(sektorState.exports),
+    score: sumScores([...sektorState.imports, ...sektorState.exports]),
+  };
+}
+
+function sumThroughputs(throughputs: { value: number }[]): number {
+  return throughputs.reduce((total, throughput) => total + throughput.value, 0);
+}
+
+function sumScores(throughputs: ScoredThroughput[]): number {
+  return throughputs.reduce((total, throughput) => total + throughput.score, 0);
+}
