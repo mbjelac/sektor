@@ -10,6 +10,7 @@ import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui
 import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
 import { showDoneDialog } from "./doneDialog.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
+import { LOWEST_LEVEL } from "../playerLevel";
 import { getSektorOwner, setSektorOwner } from "./sektorOwner.api";
 import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "./sektorName.api";
 import { locationPropertiesToLocations } from "./locationProperties";
@@ -206,6 +207,7 @@ function getRestrictionsRequirements() {
 
 const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources());
 const locations = sektor.getLocations();
+const sektorLevel = getSektorLevel();
 const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
 let errorTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -225,11 +227,23 @@ function saveState() {
   const state = sektor.getState();
   const { importRestrictions, exportRequirements } = sektor.getSektorState();
   saveSektorData(sektorName, {
+    level: sektorLevel,
     locationProperties: locationsToLocationProperties(locations),
     importRestrictions,
     exportRequirements,
     buildings: state.buildings,
   });
+}
+
+// The level of a sektor is set when it is made and never changes, so it is read once and written
+// back on every save, which would otherwise drop it.
+function getSektorLevel(): number {
+  if (isTestMode) return LOWEST_LEVEL;
+  if (sektorName) {
+    const sektorData = getSektorData(sektorName);
+    if (sektorData) return sektorData.level;
+  }
+  return LOWEST_LEVEL;
 }
 
 let previousSektorStatus: SektorStatus | null = null;

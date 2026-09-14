@@ -48,6 +48,11 @@ function createHeader(): HTMLElement {
   name.textContent = "Sektor";
   header.appendChild(name);
 
+  const level = document.createElement("span");
+  level.className = "sektor-list-level";
+  level.textContent = "Level";
+  header.appendChild(level);
+
   const owner = document.createElement("span");
   owner.className = "sektor-list-owner";
   owner.innerHTML = userIcon;
@@ -87,6 +92,7 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
   name.textContent = getGivenSektorName(sektorListItem.name) ?? sektorListItem.name;
   item.appendChild(name);
 
+  item.appendChild(createLevel(summary.level));
   item.appendChild(createOwner(sektorListItem.name, claimingAllowed));
   item.appendChild(createStatus(summary.status));
   item.appendChild(createNumber(summary.buildingCount));
@@ -105,6 +111,13 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
   item.appendChild(createAbandon(sektorListItem.name));
 
   return item;
+}
+
+function createLevel(level: number): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = "sektor-list-level";
+  cell.textContent = `${level}`;
+  return cell;
 }
 
 // Only the player who owns a sektor can give it up, so only they are shown the button for it.

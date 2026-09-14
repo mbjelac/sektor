@@ -201,6 +201,7 @@ async function storeSektors(page: Page, unfinishedSektorNames: string[], doneSek
     ));
     for (const doneSektorName of doneSektorNames as string[]) {
       localStorage.setItem(`sektor_${doneSektorName}`, JSON.stringify({
+        level: 1,
         locationProperties: {},
         importRestrictions: [],
         exportRequirements: [],
@@ -228,6 +229,7 @@ test("shows the whole list page with the leaderboard beside the sektors", async 
 async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: number[]) {
   await page.evaluate(([sektorName, oreAmounts]) => {
     localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
+      level: 1,
       locationProperties: { ore: (oreAmounts as number[]).map(oreAmount => [oreAmount]) },
       importRestrictions: [],
       exportRequirements: [],

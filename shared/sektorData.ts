@@ -27,6 +27,9 @@ export interface Location {
 }
 
 export interface SektorData {
+  // How hard the sektor is, the lowest being the first level of levels.md. Every sektor has one,
+  // whether it was generated or made by hand.
+  level: number;
   locationProperties: { [key: string]: number[][] };
   importRestrictions: ResourceThroughput[];
   exportRequirements: ResourceThroughput[];

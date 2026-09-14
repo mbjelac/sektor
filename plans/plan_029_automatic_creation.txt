@@ -94,13 +94,13 @@ NOTE: a sektor's storage could be split in two, its initial definition and its c
 is a performance optimization only, and is not done here.
 
 #1 Sektors have a level
-- add level to SektorData
+- [done] add level to SektorData
     - required, every sektor has one
     - a whole number, the lowest being the first level in levels.md
-- set a level in the scratch sektors sektor_B.json and sektor_C.json so they stay valid
-- saveState in sektor.ui.ts rebuilds SektorData from scratch on every save, so make it keep the sektor's level
-- show the level of each sektor in the sektor list
-    - own column, after the name
+- [done] set a level in the scratch sektors sektor_B.json and sektor_C.json so they stay valid
+- [done] saveState in sektor.ui.ts rebuilds SektorData from scratch on every save, so make it keep the sektor's level
+- [done] show the level of each sektor in the sektor list
+    - [done] own column, after the name
 
 #2 Sektors have a palette of allowed buildings
 - add allowedBuildings to SektorData

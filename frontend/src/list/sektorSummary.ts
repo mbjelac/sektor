@@ -3,8 +3,10 @@ import { getSektorData } from "../sektor/sektor.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { getLocalResources, getNegativeScoringResources } from "../resources";
+import { LOWEST_LEVEL } from "../playerLevel";
 
 export interface SektorSummary {
+  level: number;
   status: SektorStatus;
   buildingCount: number;
   importTotal: number;
@@ -17,7 +19,7 @@ export interface SektorSummary {
 // itself.
 export function getSektorSummary(sektorName: string): SektorSummary {
   const sektorData = getSektorData(sektorName);
-  if (!sektorData) return { status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
+  if (!sektorData) return { level: LOWEST_LEVEL, status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
 
   const sektor = new Sektor(
     locationPropertiesToLocations(sektorData.locationProperties),
@@ -34,6 +36,7 @@ export function getSektorSummary(sektorName: string): SektorSummary {
   const sektorState = sektor.getSektorState();
 
   return {
+    level: sektorData.level,
     status: sektorState.status,
     buildingCount: sektor.getState().buildings.length,
     importTotal: sumThroughputs(sektorState.imports),

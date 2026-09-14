@@ -7,6 +7,9 @@ const source = isTestMode ? testLevelsMd : levelsMd;
 
 const levelDefinitions = parseLevels(source.split("\n"));
 
+// The first level the table defines, which is the lowest a player or a sektor can be on.
+export const LOWEST_LEVEL = levelDefinitions[0].level;
+
 export function playerLevel(playerScore: number): number {
   return levelForScore(levelDefinitions, playerScore);
 }
