@@ -1,0 +1,29 @@
+#1 Location properties are not modifiers
+- a building function output either has an amount or a reference to a location property
+    - if it has an amount, that amount is applied to the building, wherever the building is placed on the map
+    - if it has a reference to a location property, the value of that property on the building's location in the map is applied as the output amount
+    - in building specification, this is specified as "<outputResourceType> <locationPropertyName>"
+    - example:
+            WorkTechnical 1
+            =
+            EnergyElectric insolation
+        - this function produces EnergyElectric, in the amount of insolation on the location where the building is placed
+        - a similar building which does not depend on insolation would have it's function definition:
+            WorkTechnical 1
+            =
+            EnergyElectric 4
+    - modify existing Sektor tests which verify location properties as modifiers
+        - modify existing buildings.test.md functions to have just a reference to a location property, without the value
+- adjust building toolbar function panel
+    - remove "Affected by" section
+    - each output which references location property should have the property name (with color swatch) *below* it
+        - indented to the right
+    - no amount in those cases (as there is none to display)
+- adjust building panel
+    - remove border around location property in Geography section
+    - under each output in function which references a location property, display property name (with color swatch) *below* it
+        - indented to the right
+    - for output amount, display value of location property
+        - no other values
+        - no brackets
+        - no green background
