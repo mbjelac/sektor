@@ -5,6 +5,9 @@
     - leaderboard is a list with all players (owners of sektors)
     - each list item has:
         - player name
+            - white
         - total player score (sum of all their sektor scores)
+            - pink
         - level of player
+            - lime
             - computed from player score using the function level=max(1,floor(log2(score+1)))
