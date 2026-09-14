@@ -1,7 +1,12 @@
-// A player climbs a level every time they double what they have scored so far, which keeps the
-// early levels quick to reach and the later ones worth working for. A player who has scored
-// nothing — or who is in the red — is still on the first level.
+import levelsMd from "./assets/levels.md?raw";
+import testLevelsMd from "./assets/levels.test.md?raw";
+import { levelForScore, parseLevels } from "./parseLevels";
+
+const isTestMode = import.meta.env.DEV && new URLSearchParams(window.location.search).get("test") === "true";
+const source = isTestMode ? testLevelsMd : levelsMd;
+
+const levelDefinitions = parseLevels(source.split("\n"));
+
 export function playerLevel(playerScore: number): number {
-  if (playerScore <= 0) return 1;
-  return Math.max(1, Math.floor(Math.log2(playerScore + 1)));
+  return levelForScore(levelDefinitions, playerScore);
 }
