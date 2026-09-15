@@ -1,0 +1,11 @@
+{
+  "name": "playtest",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "playtest": "tsx playtest.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}
