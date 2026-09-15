@@ -104,3 +104,8 @@ On the list, all players see all sektors, but they can only edit their own sekto
     - [done] buttons: "Leave", "Continue"
     - [done] continue: hides dialog
     - [done] leave: navigates to sektor list
+
+#10 Allowed buildings must be visible in view mode
+- show building toolbar in view mode
+    - can be scrolled
+    - selecting buildings (including Destroy) not enabled
