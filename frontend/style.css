@@ -701,6 +701,11 @@ body > main {
   font-size: 14px;
 }
 
+/* Kept on one line, so that a sektor waiting for a name does not stand taller than the named ones. */
+.sektor-list-no-name {
+  white-space: nowrap;
+}
+
 .sektor-list-level {
   min-width: 36px;
   text-align: right;

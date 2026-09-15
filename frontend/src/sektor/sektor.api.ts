@@ -2,14 +2,14 @@ import { SektorData } from "../../../shared/sektorData";
 
 export type { SektorData };
 
-export function getSektorData(name: string): SektorData | null {
-  const stored = localStorage.getItem(`sektor_${name}`);
+export function getSektorData(sektorId: string): SektorData | null {
+  const stored = localStorage.getItem(`sektor_${sektorId}`);
   if (!stored) return null;
   return JSON.parse(stored);
 }
 
-export function saveSektorData(name: string, data: SektorData): void {
-  localStorage.setItem(`sektor_${name}`, JSON.stringify(data));
+export function saveSektorData(sektorId: string, sektorData: SektorData): void {
+  localStorage.setItem(`sektor_${sektorId}`, JSON.stringify(sektorData));
 }
 
 // Every sektor's data is stored under its own key, so they are gathered before any is removed:

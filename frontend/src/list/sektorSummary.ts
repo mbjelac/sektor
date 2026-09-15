@@ -17,8 +17,8 @@ export interface SektorSummary {
 // The stored sektor is played through again so that everything shown about it — how far along it
 // is, what it moves in and out, and what it scores — comes out of the same rules as in the sektor
 // itself.
-export function getSektorSummary(sektorName: string): SektorSummary {
-  const sektorData = getSektorData(sektorName);
+export function getSektorSummary(sektorId: string): SektorSummary {
+  const sektorData = getSektorData(sektorId);
   if (!sektorData) return { level: LOWEST_LEVEL, status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
 
   const sektor = new Sektor(

@@ -1,10 +1,8 @@
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
-import { getSektorList, SektorListItem } from "./sektorList.api";
+import { getSektorList, getTakenSektorNames, removeSektorOwner, SektorListItem, setGivenSektorName, setSektorOwner } from "./sektorList.api";
 import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, sunIcon, userIcon } from "../icons";
 import { SektorStatus } from "../sektor/Sektor";
-import { getSektorOwner, removeSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
-import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "../sektor/sektorName.api";
 import { showNameDialog } from "../nameDialog.ui";
 import { createClaimButton } from "../claimButton.ui";
 import { showAbandonDialog } from "./abandonDialog.ui";
@@ -26,7 +24,7 @@ function renderList() {
   // first, or every sektor would be shown twice over.
   container.replaceChildren();
   const sektors = getSektorList();
-  const summaries = sektors.map(sektor => getSektorSummary(sektor.name));
+  const summaries = sektors.map(sektor => getSektorSummary(sektor.id));
   const claimingAllowed = countUnfinishedSektors(sektors, summaries) < MAXIMUM_UNFINISHED_SEKTORS;
 
   container.appendChild(createHeader());
@@ -40,7 +38,7 @@ function renderList() {
 // in any other unfinished state — counts towards the limit.
 function countUnfinishedSektors(sektors: SektorListItem[], summaries: SektorSummary[]): number {
   return sektors.filter((sektor, sektorIndex) =>
-    getSektorOwner(sektor.name) === getUsername() && summaries[sektorIndex].status !== "Done"
+    sektor.owner === getUsername() && summaries[sektorIndex].status !== "Done"
   ).length;
 }
 
@@ -96,11 +94,14 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
 
   const name = document.createElement("span");
   name.className = "sektor-list-name";
-  name.textContent = getGivenSektorName(sektorListItem.name) ?? sektorListItem.name;
+  // A sektor nobody has claimed and named yet is shown as having no name, rather than by its id.
+  const givenName = (sektorListItem.name ?? "").trim();
+  name.textContent = givenName || "No name";
+  if (!givenName) name.classList.add("sektor-list-no-name");
   item.appendChild(name);
 
   item.appendChild(createLevel(summary.level));
-  item.appendChild(createOwner(sektorListItem.name, claimingAllowed));
+  item.appendChild(createOwner(sektorListItem, claimingAllowed));
   item.appendChild(createStatus(summary.status));
   item.appendChild(createNumber(summary.buildingCount));
   item.appendChild(createNumber(summary.importTotal));
@@ -111,11 +112,11 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
   button.className = "sektor-list-go";
   button.innerHTML = arrowRightIcon;
   button.addEventListener("click", () => {
-    window.location.href = `/sektor.html?name=${encodeURIComponent(sektorListItem.name)}`;
+    window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
   });
   item.appendChild(button);
 
-  item.appendChild(createAbandon(sektorListItem.name));
+  item.appendChild(createAbandon(sektorListItem));
 
   return item;
 }
@@ -128,21 +129,21 @@ function createLevel(level: number): HTMLElement {
 }
 
 // Only the player who owns a sektor can give it up, so only they are shown the button for it.
-function createAbandon(sektorName: string): HTMLElement {
-  if (getSektorOwner(sektorName) !== getUsername()) return document.createElement("span");
+function createAbandon(sektorListItem: SektorListItem): HTMLElement {
+  if (sektorListItem.owner !== getUsername()) return document.createElement("span");
 
   const abandonButton = document.createElement("button");
   abandonButton.className = "sektor-list-abandon";
   abandonButton.textContent = "Abandon";
-  abandonButton.addEventListener("click", () => abandonSektor(sektorName));
+  abandonButton.addEventListener("click", () => abandonSektor(sektorListItem));
   return abandonButton;
 }
 
-function abandonSektor(sektorName: string) {
+function abandonSektor(sektorListItem: SektorListItem) {
   showAbandonDialog({
-    sektorName: getGivenSektorName(sektorName) ?? sektorName,
+    sektorName: sektorListItem.name ?? sektorListItem.id,
     onConfirmed: () => {
-      removeSektorOwner(sektorName);
+      removeSektorOwner(sektorListItem.id);
       // The abandoned sektor is up for claiming again, which the list shows once drawn anew.
       window.location.reload();
     },
@@ -151,14 +152,14 @@ function abandonSektor(sektorName: string) {
 
 // A sektor without an owner is up for grabs, the player's own sektors are marked as theirs, and
 // the rest carry the name of the player who claimed them.
-function createOwner(sektorName: string, claimingAllowed: boolean): HTMLElement {
+function createOwner(sektorListItem: SektorListItem, claimingAllowed: boolean): HTMLElement {
   const cell = document.createElement("span");
   cell.className = "sektor-list-owner";
 
-  const owner = getSektorOwner(sektorName);
+  const owner = sektorListItem.owner;
 
   if (!owner) {
-    cell.appendChild(createListClaimButton(sektorName, claimingAllowed));
+    cell.appendChild(createListClaimButton(sektorListItem, claimingAllowed));
     return cell;
   }
 
@@ -174,24 +175,24 @@ function createOwner(sektorName: string, claimingAllowed: boolean): HTMLElement 
   return cell;
 }
 
-function createListClaimButton(sektorName: string, claimingAllowed: boolean): HTMLElement {
-  const claimButton = createClaimButton(() => claimSektor(sektorName));
+function createListClaimButton(sektorListItem: SektorListItem, claimingAllowed: boolean): HTMLElement {
+  const claimButton = createClaimButton(() => claimSektor(sektorListItem));
   claimButton.classList.add("sektor-list-claim");
   claimButton.disabled = !claimingAllowed;
   return claimButton;
 }
 
 // A claimed sektor is named by the player claiming it, and is theirs to build on once named.
-function claimSektor(sektorName: string) {
+function claimSektor(sektorListItem: SektorListItem) {
   showNameDialog({
     // A sektor which has been named before was abandoned by its previous player, and is offered
     // for renaming with the name it was left with.
-    name: getGivenSektorName(sektorName) ?? "",
-    takenNames: getTakenSektorNames(sektorName),
+    name: sektorListItem.name ?? "",
+    takenNames: getTakenSektorNames(sektorListItem.id),
     onNamed: givenName => {
-      setGivenSektorName(sektorName, givenName);
-      setSektorOwner(sektorName, getUsername()!);
-      window.location.href = `/sektor.html?name=${encodeURIComponent(sektorName)}`;
+      setGivenSektorName(sektorListItem.id, givenName);
+      setSektorOwner(sektorListItem.id, getUsername()!);
+      window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
     },
   });
 }

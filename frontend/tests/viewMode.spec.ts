@@ -62,25 +62,25 @@ test("builds nothing when the player clicks the map of a viewed sektor", async (
 
 test("names the sektor it is showing", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
-  await page.evaluate(() => localStorage.setItem("sektorNames", JSON.stringify({ Beta: "Sunset Flats" })));
+  await nameStoredSektor(page, "Beta", "Sunset Flats");
 
-  await page.goto("/sektor.html?name=Beta");
+  await page.goto("/sektor.html?id=Beta");
 
   await expect(page.locator("#sektor-name")).toHaveText("Sunset Flats");
 });
 
-test("names a sektor without a name of its own Unnamed", async ({ page }) => {
+test("names a sektor without a name of its own No name", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
-  await page.evaluate(() => localStorage.setItem("sektorNames", JSON.stringify({ Beta: "" })));
+  await nameStoredSektor(page, "Beta", "");
 
-  await page.goto("/sektor.html?name=Beta");
+  await page.goto("/sektor.html?id=Beta");
 
-  await expect(page.locator("#sektor-name")).toHaveText("Unnamed");
+  await expect(page.locator("#sektor-name")).toHaveText("No name");
 });
 
 test("goes back to the sektor list from the map", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
-  await page.goto("/sektor.html?name=Beta");
+  await page.goto("/sektor.html?id=Beta");
 
   await page.locator("#leave-button").click();
 
@@ -90,7 +90,7 @@ test("goes back to the sektor list from the map", async ({ page }) => {
 test("tells what the button in front of the sektor name does", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
 
-  await page.goto("/sektor.html?name=Beta");
+  await page.goto("/sektor.html?id=Beta");
 
   await expect(page.locator("#leave-button")).toHaveAttribute("title", "Back to list");
 });
@@ -98,7 +98,7 @@ test("tells what the button in front of the sektor name does", async ({ page }) 
 test("names the player a sektor is owned by", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
 
-  await page.goto("/sektor.html?name=Beta");
+  await page.goto("/sektor.html?id=Beta");
 
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-owned-by-other-player.png", { maxDiffPixelRatio: 0 });
 });
@@ -108,7 +108,7 @@ test("names the player a sektor is owned by", async ({ page }) => {
 test("offers only the buildings the sektor allows, and the destruction tool", async ({ page }) => {
   await storeSektor(page, "Alpha", CURRENT_PLAYER, [], [], ["WaterWells", "Agriplot"]);
 
-  await page.goto("/sektor.html?name=Alpha");
+  await page.goto("/sektor.html?id=Alpha");
 
   await expectScreenshot(page, "toolbar-allowed-buildings", "#toolbar");
 });
@@ -116,7 +116,7 @@ test("offers only the buildings the sektor allows, and the destruction tool", as
 test("opens a sektor claimed by the current player for building", async ({ page }) => {
   await storeSektor(page, "Alpha", CURRENT_PLAYER);
 
-  await page.goto("/sektor.html?name=Alpha");
+  await page.goto("/sektor.html?id=Alpha");
 
   await expect(page.locator("#construction-panel")).toHaveCount(1);
 });
@@ -124,7 +124,7 @@ test("opens a sektor claimed by the current player for building", async ({ page 
 test("shows the buildings of a sektor claimed by another player", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
 
-  await page.goto("/sektor.html?name=Beta");
+  await page.goto("/sektor.html?id=Beta");
 
   await expect(page.locator("#construction-panel")).toBeVisible();
 });
@@ -132,7 +132,7 @@ test("shows the buildings of a sektor claimed by another player", async ({ page 
 test("names no owner on a sektor of the current player", async ({ page }) => {
   await storeSektor(page, "Alpha", CURRENT_PLAYER);
 
-  await page.goto("/sektor.html?name=Alpha");
+  await page.goto("/sektor.html?id=Alpha");
 
   await expect(page.locator("#sektor-owner")).toHaveCount(0);
 });
@@ -140,7 +140,7 @@ test("names no owner on a sektor of the current player", async ({ page }) => {
 test("shows the buildings of a sektor claimed by nobody", async ({ page }) => {
   await storeSektor(page, "Gamma", null);
 
-  await page.goto("/sektor.html?name=Gamma");
+  await page.goto("/sektor.html?id=Gamma");
 
   await expect(page.locator("#construction-panel")).toBeVisible();
 });
@@ -148,14 +148,14 @@ test("shows the buildings of a sektor claimed by nobody", async ({ page }) => {
 test("offers an unclaimed sektor for claiming", async ({ page }) => {
   await storeSektor(page, "Gamma", null);
 
-  await page.goto("/sektor.html?name=Gamma");
+  await page.goto("/sektor.html?id=Gamma");
 
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-unclaimed.png", { maxDiffPixelRatio: 0 });
 });
 
 test("asks for a name when a sektor is claimed from the map", async ({ page }) => {
   await storeSektor(page, "Gamma", null);
-  await page.goto("/sektor.html?name=Gamma");
+  await page.goto("/sektor.html?id=Gamma");
 
   await page.locator("#map-claim-button").click();
 
@@ -165,11 +165,8 @@ test("asks for a name when a sektor is claimed from the map", async ({ page }) =
 test("makes the player the owner of a sektor claimed from the map", async ({ page }) => {
   await claimFromMap(page, "Gamma", "Sunset Flats");
 
-  const claim = await page.evaluate(() => ({
-    owners: JSON.parse(localStorage.getItem("sektorOwners")!),
-    names: JSON.parse(localStorage.getItem("sektorNames")!),
-  }));
-  expect(claim).toEqual({ owners: { Gamma: CURRENT_PLAYER }, names: { Gamma: "Sunset Flats" } });
+  const sektors = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
+  expect(sektors).toEqual([{ id: "Gamma", name: "Sunset Flats", owner: CURRENT_PLAYER }]);
 });
 
 test("offers the whole toolbar for building once the sektor is claimed", async ({ page }) => {
@@ -189,9 +186,9 @@ test("shows the claimed sektor under its new name, with nothing left to claim", 
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-claimed.png", { maxDiffPixelRatio: 0 });
 });
 
-async function claimFromMap(page: import("@playwright/test").Page, sektorName: string, givenName: string) {
-  await storeSektor(page, sektorName, null);
-  await page.goto(`/sektor.html?name=${sektorName}`);
+async function claimFromMap(page: import("@playwright/test").Page, sektorId: string, givenName: string) {
+  await storeSektor(page, sektorId, null);
+  await page.goto(`/sektor.html?id=${sektorId}`);
   await page.locator("#map-claim-button").click();
   await page.locator("#sektor-name-input").fill(givenName);
   await page.locator("#name-ok-button").click();
@@ -204,7 +201,7 @@ test("draws the buildings of a sektor shown in view mode", async ({ page }) => {
     { type: "Agriplot", location: { x: 5, y: 5 } },
   ]);
 
-  await page.goto("/sektor.html?name=Beta");
+  await page.goto("/sektor.html?id=Beta");
 
   await expectScreenshot(page, "view-mode-buildings");
 });
@@ -212,7 +209,7 @@ test("draws the buildings of a sektor shown in view mode", async ({ page }) => {
 test("shows a building of a sektor in view mode without the controls which would change it", async ({ page }) => {
   // Polytechnic has several functions, so its panel is the one which would carry the toggles.
   await storeSektor(page, "Beta", OTHER_PLAYER, [{ type: "Polytechnic", location: { x: 5, y: 5 } }]);
-  await page.goto("/sektor.html?name=Beta");
+  await page.goto("/sektor.html?id=Beta");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   const canvas = page.locator("#canvas-container > canvas");
@@ -248,7 +245,7 @@ test("goes back to the list when the player leaves the finished sektor", async (
 // Habitats puts out Work, which is the whole assignment of this sektor, so placing one finishes it.
 async function placeTheBuildingWhichFinishesTheSektor(page: import("@playwright/test").Page) {
   await storeSektor(page, "Alpha", CURRENT_PLAYER, [], [{ name: "Work", value: 0.5 }]);
-  await page.goto("/sektor.html?name=Alpha");
+  await page.goto("/sektor.html?id=Alpha");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await page.locator('.building-item[data-building-name="Habitats"]').click();
@@ -258,10 +255,10 @@ async function placeTheBuildingWhichFinishesTheSektor(page: import("@playwright/
   await page.locator("#done-dialog").waitFor();
 }
 
-async function storeSektor(page: import("@playwright/test").Page, sektorName: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = [], allowedBuildings: string[] = ["Habitats", "Agriplot", "Polytechnic"]) {
-  await page.evaluate(([sektorName, owner, buildings, exportRequirements, allowedBuildings]) => {
+async function storeSektor(page: import("@playwright/test").Page, sektorId: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = [], allowedBuildings: string[] = ["Habitats", "Agriplot", "Polytechnic"]) {
+  await page.evaluate(([sektorId, owner, buildings, exportRequirements, allowedBuildings]) => {
     const emptyGrid = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0));
-    localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
+    localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
       level: 1,
       allowedBuildings,
       locationProperties: { soil: emptyGrid, groundwater: emptyGrid, ore: emptyGrid, insolation: emptyGrid, wind: emptyGrid },
@@ -269,7 +266,16 @@ async function storeSektor(page: import("@playwright/test").Page, sektorName: st
       exportRequirements,
       buildings,
     }));
-    localStorage.setItem("sektors", JSON.stringify([{ name: sektorName }]));
-    localStorage.setItem("sektorOwners", JSON.stringify(owner ? { [sektorName as string]: owner } : {}));
-  }, [sektorName, owner, buildings, exportRequirements, allowedBuildings] as [string, string | null, object[], object[], string[]]);
+    localStorage.setItem("sektors", JSON.stringify([{ id: sektorId, name: owner ? sektorId : null, owner }]));
+  }, [sektorId, owner, buildings, exportRequirements, allowedBuildings] as [string, string | null, object[], object[], string[]]);
+}
+
+// The name a player gave the sektor before the test begins, which it carries beside its id.
+async function nameStoredSektor(page: import("@playwright/test").Page, sektorId: string, givenName: string) {
+  await page.evaluate(([sektorId, givenName]) => {
+    const sektors = JSON.parse(localStorage.getItem("sektors")!);
+    localStorage.setItem("sektors", JSON.stringify(sektors.map((sektor: { id: string }) =>
+      sektor.id === sektorId ? { ...sektor, name: givenName } : sektor
+    )));
+  }, [sektorId, givenName]);
 }

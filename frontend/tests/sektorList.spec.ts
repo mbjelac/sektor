@@ -9,8 +9,11 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/login.html");
   await page.evaluate(([currentPlayer, otherPlayer]) => {
     localStorage.setItem("username", currentPlayer!);
-    localStorage.setItem("sektors", JSON.stringify([{ name: "Alpha" }, { name: "Beta" }, { name: "Gamma" }]));
-    localStorage.setItem("sektorOwners", JSON.stringify({ Alpha: currentPlayer, Beta: otherPlayer }));
+    localStorage.setItem("sektors", JSON.stringify([
+      { id: "Alpha", name: "Alpha", owner: currentPlayer },
+      { id: "Beta", name: "Beta", owner: otherPlayer },
+      { id: "Gamma", name: null, owner: null },
+    ]));
   }, [CURRENT_PLAYER, OTHER_PLAYER]);
   await page.goto("/");
 });
@@ -20,24 +23,29 @@ test("shows the owner of every sektor", async ({ page }) => {
 });
 
 test("makes the player the owner of a sektor they claim and opens it", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
   await page.locator("#sektor-name-input").fill("Gamma");
   await page.locator("#name-ok-button").click();
-  await page.waitForURL(/\/sektor\.html\?name=Gamma$/);
+  await page.waitForURL(/\/sektor\.html\?id=Gamma$/);
 
-  const owners = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorOwners")!));
-  expect({ owners, path: new URL(page.url()).pathname })
-    .toEqual({ owners: { Alpha: CURRENT_PLAYER, Beta: OTHER_PLAYER, Gamma: CURRENT_PLAYER }, path: "/sektor.html" });
+  expect({ sektors: await getStoredSektors(page), path: new URL(page.url()).pathname }).toEqual({
+    sektors: [
+      { id: "Alpha", name: "Alpha", owner: CURRENT_PLAYER },
+      { id: "Beta", name: "Beta", owner: OTHER_PLAYER },
+      { id: "Gamma", name: "Gamma", owner: CURRENT_PLAYER },
+    ],
+    path: "/sektor.html",
+  });
 });
 
 test("asks for a name when a sektor is claimed", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
 
   await expect(page.locator("#name-dialog")).toHaveScreenshot("name-dialog.png", { maxDiffPixelRatio: 0 });
 });
 
 test("offers the name it was left with when a named sektor is claimed again", async ({ page }) => {
-  await page.evaluate(() => localStorage.setItem("sektorNames", JSON.stringify({ Gamma: "Old Gamma" })));
+  await nameStoredSektor(page, "Gamma", "Old Gamma");
   await page.reload();
 
   await page.locator(".sektor-list-item", { hasText: "Old Gamma" }).locator(".sektor-list-claim").click();
@@ -46,18 +54,21 @@ test("offers the name it was left with when a named sektor is claimed again", as
 });
 
 test("names the sektor the player claims", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
 
   await page.locator("#sektor-name-input").fill("Marko's Place");
   await page.locator("#name-ok-button").click();
-  await page.waitForURL(/\/sektor\.html\?name=Gamma$/);
+  await page.waitForURL(/\/sektor\.html\?id=Gamma$/);
 
-  const givenNames = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorNames")!));
-  expect(givenNames).toEqual({ Gamma: "Marko's Place" });
+  expect(await getStoredSektors(page)).toEqual([
+    { id: "Alpha", name: "Alpha", owner: CURRENT_PLAYER },
+    { id: "Beta", name: "Beta", owner: OTHER_PLAYER },
+    { id: "Gamma", name: "Marko's Place", owner: CURRENT_PLAYER },
+  ]);
 });
 
 test("leaves the sektor alone when claiming is cancelled", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
 
   await page.locator("#name-cancel-button").click();
 
@@ -65,16 +76,19 @@ test("leaves the sektor alone when claiming is cancelled", async ({ page }) => {
 });
 
 test("keeps the sektor unclaimed when claiming is cancelled", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
 
   await page.locator("#name-cancel-button").click();
 
-  const owners = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorOwners")!));
-  expect(owners).toEqual({ Alpha: CURRENT_PLAYER, Beta: OTHER_PLAYER });
+  expect(await getStoredSektors(page)).toEqual([
+    { id: "Alpha", name: "Alpha", owner: CURRENT_PLAYER },
+    { id: "Beta", name: "Beta", owner: OTHER_PLAYER },
+    { id: "Gamma", name: null, owner: null },
+  ]);
 });
 
 test("takes no more than thirty characters of a name", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
 
   await page.locator("#sektor-name-input").pressSequentially("123456789012345678901234567890TOOMUCH");
 
@@ -82,7 +96,7 @@ test("takes no more than thirty characters of a name", async ({ page }) => {
 });
 
 test("warns that a name is taken by another sektor", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
 
   await page.locator("#sektor-name-input").fill("Alpha");
 
@@ -90,7 +104,7 @@ test("warns that a name is taken by another sektor", async ({ page }) => {
 });
 
 test("refuses a name taken by another sektor", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
 
   await page.locator("#sektor-name-input").fill("Alpha");
 
@@ -98,7 +112,7 @@ test("refuses a name taken by another sektor", async ({ page }) => {
 });
 
 test("takes a name again once it is no longer the taken one", async ({ page }) => {
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
 
   await page.locator("#sektor-name-input").fill("Alpha");
   await page.locator("#sektor-name-input").fill("Alphabet");
@@ -107,7 +121,7 @@ test("takes a name again once it is no longer the taken one", async ({ page }) =
 });
 
 test("keeps the name a sektor already carries when it is claimed again", async ({ page }) => {
-  await page.evaluate(() => localStorage.setItem("sektorNames", JSON.stringify({ Gamma: "Old Gamma" })));
+  await nameStoredSektor(page, "Gamma", "Old Gamma");
   await page.reload();
 
   await page.locator(".sektor-list-item", { hasText: "Old Gamma" }).locator(".sektor-list-claim").click();
@@ -129,8 +143,11 @@ test("keeps the sektor when abandoning it is not confirmed", async ({ page }) =>
   await page.locator(".sektor-list-item", { hasText: "Alpha" }).locator(".sektor-list-abandon").click();
   await page.locator("#abandon-no-button").click();
 
-  const owners = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorOwners")!));
-  expect(owners).toEqual({ Alpha: CURRENT_PLAYER, Beta: OTHER_PLAYER });
+  expect(await getStoredSektors(page)).toEqual([
+    { id: "Alpha", name: "Alpha", owner: CURRENT_PLAYER },
+    { id: "Beta", name: "Beta", owner: OTHER_PLAYER },
+    { id: "Gamma", name: null, owner: null },
+  ]);
 });
 
 test("leaves an abandoned sektor without an owner", async ({ page }) => {
@@ -138,16 +155,35 @@ test("leaves an abandoned sektor without an owner", async ({ page }) => {
   await page.locator("#abandon-yes-button").click();
   await page.locator(".sektor-list-item", { hasText: "Alpha" }).locator(".sektor-list-claim").waitFor();
 
-  const owners = await page.evaluate(() => JSON.parse(localStorage.getItem("sektorOwners")!));
-  expect(owners).toEqual({ Beta: OTHER_PLAYER });
+  expect(await getStoredSektors(page)).toEqual([
+    { id: "Alpha", name: "Alpha", owner: null },
+    { id: "Beta", name: "Beta", owner: OTHER_PLAYER },
+    { id: "Gamma", name: null, owner: null },
+  ]);
 });
+
+// Everything known about a sektor apart from what stands in it: its id, the name it was given, and
+// the player who owns it.
+function getStoredSektors(page: Page) {
+  return page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
+}
+
+// A sektor named by a player who has since given it up, as it stands before the test begins.
+async function nameStoredSektor(page: Page, sektorId: string, givenName: string) {
+  await page.evaluate(([sektorId, givenName]) => {
+    const sektors = JSON.parse(localStorage.getItem("sektors")!);
+    localStorage.setItem("sektors", JSON.stringify(sektors.map((sektor: { id: string }) =>
+      sektor.id === sektorId ? { ...sektor, name: givenName } : sektor
+    )));
+  }, [sektorId, givenName]);
+}
 
 test("offers an abandoned sektor for claiming under the name it was left with", async ({ page }) => {
   // The whole life of a name: the sektor is claimed and named, then given up, then claimed again.
-  await page.locator(".sektor-list-item", { hasText: "Gamma" }).locator(".sektor-list-claim").click();
+  await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
   await page.locator("#sektor-name-input").fill("Sunset Flats");
   await page.locator("#name-ok-button").click();
-  await page.waitForURL(/\/sektor\.html\?name=Gamma$/);
+  await page.waitForURL(/\/sektor\.html\?id=Gamma$/);
 
   await page.goto("/");
   await page.locator(".sektor-list-item", { hasText: "Sunset Flats" }).locator(".sektor-list-abandon").click();
@@ -192,15 +228,15 @@ test("lets the player claim again once one of their five sektors is done", async
 
 // The player owns every sektor named here, plus an unclaimed "Free" one to claim. A sektor with
 // no requirements left to meet is done, one without any stored data is still in progress.
-async function storeSektors(page: Page, unfinishedSektorNames: string[], doneSektorNames: string[]) {
-  await page.evaluate(([currentPlayer, unfinishedSektorNames, doneSektorNames]) => {
-    const ownedSektorNames = [...unfinishedSektorNames as string[], ...doneSektorNames as string[]];
-    localStorage.setItem("sektors", JSON.stringify([...ownedSektorNames, "Free"].map(name => ({ name }))));
-    localStorage.setItem("sektorOwners", JSON.stringify(
-      Object.fromEntries(ownedSektorNames.map(name => [name, currentPlayer]))
-    ));
-    for (const doneSektorName of doneSektorNames as string[]) {
-      localStorage.setItem(`sektor_${doneSektorName}`, JSON.stringify({
+async function storeSektors(page: Page, unfinishedSektorIds: string[], doneSektorIds: string[]) {
+  await page.evaluate(([currentPlayer, unfinishedSektorIds, doneSektorIds]) => {
+    const ownedSektorIds = [...unfinishedSektorIds as string[], ...doneSektorIds as string[]];
+    localStorage.setItem("sektors", JSON.stringify([
+      ...ownedSektorIds.map(sektorId => ({ id: sektorId, name: sektorId, owner: currentPlayer })),
+      { id: "Free", name: null, owner: null },
+    ]));
+    for (const doneSektorId of doneSektorIds as string[]) {
+      localStorage.setItem(`sektor_${doneSektorId}`, JSON.stringify({
         level: 1,
         allowedBuildings: [],
         locationProperties: {},
@@ -209,7 +245,7 @@ async function storeSektors(page: Page, unfinishedSektorNames: string[], doneSek
         buildings: [],
       }));
     }
-  }, [CURRENT_PLAYER, unfinishedSektorNames, doneSektorNames]);
+  }, [CURRENT_PLAYER, unfinishedSektorIds, doneSektorIds]);
 }
 
 test("shows every player on the leaderboard", async ({ page }) => {
@@ -254,9 +290,9 @@ test("makes a new sektor and puts it on the list", async ({ page }) => {
 
   const created = await createSektorNow(page);
 
-  const sektorList = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
-  expect({ created, names: sektorList.map((sektor: { name: string }) => sektor.name) })
-    .toEqual({ created: true, names: ["Alpha", "Beta", "Gamma", "0"] });
+  const sektors = await getStoredSektors(page);
+  expect({ created, sektorIds: sektors.map((sektor: { id: string }) => sektor.id) })
+    .toEqual({ created: true, sektorIds: ["Alpha", "Beta", "Gamma", "0"] });
 });
 
 test("numbers every sektor it makes above the last one", async ({ page }) => {
@@ -266,8 +302,8 @@ test("numbers every sektor it makes above the last one", async ({ page }) => {
   await createSektorNow(page);
   await createSektorNow(page);
 
-  const sektorList = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
-  expect(sektorList.map((sektor: { name: string }) => sektor.name)).toEqual(["Alpha", "Beta", "Gamma", "0", "1", "2"]);
+  const sektors = await getStoredSektors(page);
+  expect(sektors.map((sektor: { id: string }) => sektor.id)).toEqual(["Alpha", "Beta", "Gamma", "0", "1", "2"]);
 });
 
 test("gives every sektor it makes a level and a palette of buildings", async ({ page }) => {
@@ -286,7 +322,7 @@ test("gives every sektor it makes a level and a palette of buildings", async ({ 
 
 test("stops making sektors while ten unclaimed empty ones are waiting", async ({ page }) => {
   await page.evaluate(() => localStorage.setItem(
-    "sektors", JSON.stringify(Array.from({ length: 10 }, (_, index) => ({ name: `waiting${index}` })))
+    "sektors", JSON.stringify(Array.from({ length: 10 }, (_, index) => ({ id: `waiting${index}`, name: null, owner: null })))
   ));
   await page.goto("/?test=true");
 
@@ -301,16 +337,12 @@ test("purges every sektor there is when PURGE is clicked", async ({ page }) => {
 
   const storage = await page.evaluate(() => ({
     sektors: localStorage.getItem("sektors"),
-    owners: localStorage.getItem("sektorOwners"),
-    names: localStorage.getItem("sektorNames"),
     sektorDataKeys: Object.keys(localStorage).filter(key => key.startsWith("sektor_")),
     rows: document.querySelectorAll(".sektor-list-item").length,
     players: document.querySelectorAll(".leaderboard-item").length,
   }));
 
-  expect(storage).toEqual({
-    sektors: null, owners: null, names: null, sektorDataKeys: [], rows: 0, players: 0,
-  });
+  expect(storage).toEqual({ sektors: null, sektorDataKeys: [], rows: 0, players: 0 });
 });
 
 test("shows the purge button on the list page", async ({ page }) => {

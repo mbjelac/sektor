@@ -1,5 +1,4 @@
 import { addSektorToList, getSektorList } from "../list/sektorList.api";
-import { getSektorOwner } from "../sektor/sektorOwner.api";
 import { getSektorSummary } from "../list/sektorSummary";
 import { saveSektorData } from "../sektor/sektor.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
@@ -47,7 +46,7 @@ export function createSektorIfNeeded(): boolean {
 // A sektor is waiting for somebody as long as nobody owns it and nothing has been built in it.
 function countUnclaimedEmptySektors(): number {
   return getSektorList().filter(sektorListItem =>
-    getSektorOwner(sektorListItem.name) === null && getSektorSummary(sektorListItem.name).buildingCount === 0
+    sektorListItem.owner === null && getSektorSummary(sektorListItem.id).buildingCount === 0
   ).length;
 }
 
@@ -69,11 +68,11 @@ function neededLevels(): number[] {
 }
 
 // Sektors are numbered, and the number carries on above the highest one already made so that a
-// reload never hands out a number twice. The number is not the sektor's name — a name is what the
-// player gives it when they claim it.
+// reload never hands out a number twice. The number is the sektor's id, not its name — a name is
+// what the player gives it when they claim it.
 function nextSektorId(): number {
   const sektorIds = getSektorList()
-    .map(sektorListItem => Number(sektorListItem.name))
+    .map(sektorListItem => Number(sektorListItem.id))
     .filter(sektorId => Number.isInteger(sektorId) && sektorId >= 0);
 
   return sektorIds.length === 0 ? 0 : Math.max(...sektorIds) + 1;

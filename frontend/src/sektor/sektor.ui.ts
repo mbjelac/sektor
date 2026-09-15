@@ -11,8 +11,7 @@ import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
 import { showDoneDialog } from "./doneDialog.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { LOWEST_LEVEL } from "../playerLevel";
-import { getSektorOwner, setSektorOwner } from "./sektorOwner.api";
-import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "./sektorName.api";
+import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
@@ -31,7 +30,7 @@ showUser();
 const GRID_SIZE = 10;
 const FLOOR_PROPERTY = "soil";
 const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
-const sektorName = new URLSearchParams(window.location.search).get("name");
+const sektorId = new URLSearchParams(window.location.search).get("id");
 // A sektor is only opened for building by the player who claimed it. Everybody else looks at
 // it without the tools for changing it, as does its owner when asking for view mode.
 let isViewMode = new URLSearchParams(window.location.search).get("mode") === "view" || !isSektorOwnedByCurrentPlayer();
@@ -44,7 +43,7 @@ function isSektorOwnedByCurrentPlayer(): boolean {
 function getSektorOwnerName(): string | null {
   // The sektor of a test run is made up along with its locations, and belongs to whoever opened it.
   if (isTestMode) return getUsername();
-  return sektorName ? getSektorOwner(sektorName) : null;
+  return sektorId ? getSektorOwner(sektorId) : null;
 }
 
 // The player is shown which sektor they are looking at, above the panels on the left.
@@ -78,11 +77,11 @@ function showSektorName() {
 // being built on.
 function claimSektor() {
   showNameDialog({
-    name: getGivenSektorName(sektorName!) ?? "",
-    takenNames: getTakenSektorNames(sektorName!),
+    name: getGivenSektorName(sektorId!) ?? "",
+    takenNames: getTakenSektorNames(sektorId!),
     onNamed: givenName => {
-      setGivenSektorName(sektorName!, givenName);
-      setSektorOwner(sektorName!, getUsername()!);
+      setGivenSektorName(sektorId!, givenName);
+      setSektorOwner(sektorId!, getUsername()!);
       showSektorName();
       showSektorOwner();
       enterEditMode();
@@ -129,11 +128,11 @@ function showSektorOwner() {
 function getDisplayedSektorName(): string {
   // The sektor of a test run is made up along with its locations, and so is its name.
   if (isTestMode) return "Test Sektor";
-  // A sektor left without a name of its own is still shown as something.
-  return (getGivenSektorName(sektorName!) ?? sektorName!).trim() || "Unnamed";
+  // A sektor nobody has claimed and named yet is shown as having no name, as it is in the list.
+  return (getGivenSektorName(sektorId!) ?? "").trim() || "No name";
 }
 
-if (!isTestMode && (!sektorName || !getSektorData(sektorName))) {
+if (!isTestMode && (!sektorId || !getSektorData(sektorId))) {
   showSektorNotFound();
 }
 
@@ -168,8 +167,8 @@ function getLocations(): Location[][] {
   if (isTestMode) {
     return createTestLocations(GRID_SIZE);
   }
-  if (sektorName) {
-    const sektorData = getSektorData(sektorName);
+  if (sektorId) {
+    const sektorData = getSektorData(sektorId);
     if (sektorData) {
       return locationPropertiesToLocations(sektorData.locationProperties);
     }
@@ -192,8 +191,8 @@ function getRestrictionsRequirements() {
       ],
     };
   }
-  if (sektorName) {
-    const sektorData = getSektorData(sektorName);
+  if (sektorId) {
+    const sektorData = getSektorData(sektorId);
     if (sektorData) {
       return {
         importRestrictions: sektorData.importRestrictions,
@@ -223,10 +222,10 @@ function locationsToLocationProperties(locationMatrix: Location[][]): { [key: st
 }
 
 function saveState() {
-  if (!sektorName) return;
+  if (!sektorId) return;
   const state = sektor.getState();
   const { importRestrictions, exportRequirements } = sektor.getSektorState();
-  saveSektorData(sektorName, {
+  saveSektorData(sektorId, {
     level: sektorLevel,
     allowedBuildings,
     locationProperties: locationsToLocationProperties(locations),
@@ -241,8 +240,8 @@ function saveState() {
 // definitions and lets the player place all of them.
 function getAllowedBuildings(): string[] {
   if (isTestMode) return buildingDefinitions.map(definition => definition.name);
-  if (sektorName) {
-    const sektorData = getSektorData(sektorName);
+  if (sektorId) {
+    const sektorData = getSektorData(sektorId);
     if (sektorData) return sektorData.allowedBuildings;
   }
   return [];
@@ -252,8 +251,8 @@ function getAllowedBuildings(): string[] {
 // back on every save, which would otherwise drop it.
 function getSektorLevel(): number {
   if (isTestMode) return LOWEST_LEVEL;
-  if (sektorName) {
-    const sektorData = getSektorData(sektorName);
+  if (sektorId) {
+    const sektorData = getSektorData(sektorId);
     if (sektorData) return sektorData.level;
   }
   return LOWEST_LEVEL;
@@ -299,8 +298,8 @@ function refreshOpenBuildingPanel() {
 }
 
 function loadSavedState() {
-  if (!sektorName) return;
-  const sektorData = getSektorData(sektorName);
+  if (!sektorId) return;
+  const sektorData = getSektorData(sektorId);
   if (!sektorData) return;
   sektor.loadState({ buildings: sektorData.buildings });
   for (const building of sektorData.buildings) {
