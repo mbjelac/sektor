@@ -92,7 +92,6 @@ function claimSektor() {
 
 function enterEditMode() {
   isViewMode = false;
-  document.getElementById("construction-panel")!.hidden = false;
   initToolbar(allowedBuildings);
 }
 
@@ -737,6 +736,13 @@ const sektorUi = (p: p5) => {
       return;
     }
 
+    // The buildings of a sektor belonging to somebody else are there to be looked at, so a
+    // player without the sektor is told why the one they picked does not go up.
+    if (isViewMode) {
+      showError("noOwnership");
+      return;
+    }
+
     if (selected === DESTRUCTION_TOOL) {
       destroyBuilding({ x: grid.x, y: grid.y });
       return;
@@ -820,11 +826,7 @@ const sektorUi = (p: p5) => {
 new p5(sektorUi);
 showSektorName();
 showSektorOwner();
-if (isViewMode) {
-  document.getElementById("construction-panel")!.hidden = true;
-} else {
-  initToolbar(allowedBuildings);
-}
+initToolbar(allowedBuildings, isViewMode);
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);
 onImportHover(resourceType => { hoveredImportResource = resourceType; });

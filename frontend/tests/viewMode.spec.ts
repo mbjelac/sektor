@@ -10,10 +10,54 @@ test.beforeEach(async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("username", currentPlayer), CURRENT_PLAYER);
 });
 
-test("shows a sektor in view mode without the building toolbar", async ({ page }) => {
+test("shows a sektor in view mode with the building toolbar", async ({ page }) => {
   await page.goto("/sektor.html?test=true&mode=view");
 
   await expectScreenshot(page, "view-mode", "body");
+});
+
+test("shows what a building of a viewed sektor does when it is selected in the toolbar", async ({ page }) => {
+  await page.goto("/sektor.html?test=true&mode=view");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.locator('.building-item[data-building-name="TestHouse"]').click();
+
+  await expect(page.locator("#toolbar-function-panel")).toBeVisible();
+});
+
+test("does not select the destruction tool in a viewed sektor", async ({ page }) => {
+  await page.goto("/sektor.html?test=true&mode=view");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const destructionTool = page.locator('.building-item[data-building-name="Destroy"]');
+
+  await destructionTool.click();
+
+  await expect(destructionTool).not.toHaveClass(/selected/);
+});
+
+test("tells the player a viewed sektor is not theirs to build on", async ({ page }) => {
+  await page.goto("/sektor.html?test=true&mode=view");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await canvas.click({ position: { x: canvasBox!.width / 2, y: canvasBox!.height / 2 } });
+
+  await expect(page.locator("#error-message")).toHaveText("noOwnership");
+});
+
+test("builds nothing when the player clicks the map of a viewed sektor", async ({ page }) => {
+  await page.goto("/sektor.html?test=true&mode=view");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await canvas.click({ position: { x: canvasBox!.width / 2, y: canvasBox!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "view-mode-nothing-built");
 });
 
 test("names the sektor it is showing", async ({ page }) => {
@@ -77,12 +121,12 @@ test("opens a sektor claimed by the current player for building", async ({ page 
   await expect(page.locator("#construction-panel")).toHaveCount(1);
 });
 
-test("opens a sektor claimed by another player without the building toolbar", async ({ page }) => {
+test("shows the buildings of a sektor claimed by another player", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
 
   await page.goto("/sektor.html?name=Beta");
 
-  await expect(page.locator("#construction-panel")).toBeHidden();
+  await expect(page.locator("#construction-panel")).toBeVisible();
 });
 
 test("names no owner on a sektor of the current player", async ({ page }) => {
@@ -93,12 +137,12 @@ test("names no owner on a sektor of the current player", async ({ page }) => {
   await expect(page.locator("#sektor-owner")).toHaveCount(0);
 });
 
-test("opens a sektor claimed by nobody without the building toolbar", async ({ page }) => {
+test("shows the buildings of a sektor claimed by nobody", async ({ page }) => {
   await storeSektor(page, "Gamma", null);
 
   await page.goto("/sektor.html?name=Gamma");
 
-  await expect(page.locator("#construction-panel")).toBeHidden();
+  await expect(page.locator("#construction-panel")).toBeVisible();
 });
 
 test("offers an unclaimed sektor for claiming", async ({ page }) => {
@@ -128,10 +172,15 @@ test("makes the player the owner of a sektor claimed from the map", async ({ pag
   expect(claim).toEqual({ owners: { Gamma: CURRENT_PLAYER }, names: { Gamma: "Sunset Flats" } });
 });
 
-test("stays on the map with the building toolbar once the sektor is claimed", async ({ page }) => {
+test("offers the whole toolbar for building once the sektor is claimed", async ({ page }) => {
   await claimFromMap(page, "Gamma", "Sunset Flats");
 
-  await expect(page.locator("#construction-panel")).toBeVisible();
+  const toolbar = await page.evaluate(() => ({
+    destructionTools: document.querySelectorAll('.building-item[data-building-name="Destroy"]').length,
+    toolsWhichCannotBeSelected: document.querySelectorAll(".building-item.not-selectable").length,
+  }));
+
+  expect(toolbar).toEqual({ destructionTools: 1, toolsWhichCannotBeSelected: 0 });
 });
 
 test("shows the claimed sektor under its new name, with nothing left to claim", async ({ page }) => {

@@ -71,8 +71,15 @@ function hideToolbarFunctionPanel() {
   }
 }
 
-export function initToolbar(allowedBuildings: string[]) {
+// The buildings a sektor allows are shown whether or not the player may build them, so that
+// everybody looking at a sektor sees what belongs in it.
+export function initToolbar(allowedBuildings: string[], isViewMode = false) {
   const toolbar = document.getElementById("toolbar")!;
+  // Claiming a sektor while looking at it builds the toolbar a second time, now with the
+  // buildings selectable, so whatever it held before is taken out of it first.
+  toolbar.innerHTML = "";
+  selectedBuilding = null;
+  hideToolbarFunctionPanel();
   const thumbnails: Thumbnail[] = [];
 
   for (const building of offeredBuildings(allowedBuildings)) {
@@ -92,22 +99,28 @@ export function initToolbar(allowedBuildings: string[]) {
     label.textContent = building.name;
     item.appendChild(label);
 
-    item.addEventListener("click", () => {
-      if (selectedBuilding === building.name) {
-        selectedBuilding = null;
-        item.classList.remove("selected");
-        hideToolbarFunctionPanel();
-      } else {
-        toolbar.querySelectorAll(".building-item").forEach((el) => el.classList.remove("selected"));
-        selectedBuilding = building.name;
-        item.classList.add("selected");
-        hideToolbarFunctionPanel();
-        if (building.buildingFunctions.length > 0) {
-          showToolbarFunctionPanel(building.buildingFunctions);
+    // A sektor being looked at rather than played has nothing in it to take down, so the
+    // destruction tool is shown among the buildings but does not answer to being clicked.
+    if (isViewMode && building.name === DESTRUCTION_TOOL) {
+      item.classList.add("not-selectable");
+    } else {
+      item.addEventListener("click", () => {
+        if (selectedBuilding === building.name) {
+          selectedBuilding = null;
+          item.classList.remove("selected");
+          hideToolbarFunctionPanel();
+        } else {
+          toolbar.querySelectorAll(".building-item").forEach((el) => el.classList.remove("selected"));
+          selectedBuilding = building.name;
+          item.classList.add("selected");
+          hideToolbarFunctionPanel();
+          if (building.buildingFunctions.length > 0) {
+            showToolbarFunctionPanel(building.buildingFunctions);
+          }
         }
-      }
-      selectionCallback?.(selectedBuilding);
-    });
+        selectionCallback?.(selectedBuilding);
+      });
+    }
 
     toolbar.appendChild(item);
 

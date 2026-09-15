@@ -103,11 +103,6 @@ body > main {
   flex-direction: column;
 }
 
-/* The panel sets its own display, which would otherwise win over being hidden. */
-#construction-panel[hidden] {
-  display: none;
-}
-
 #toolbar {
   flex: 1 1 auto;
   min-height: 0;
@@ -134,6 +129,12 @@ body > main {
 
 .building-item.selected {
   border-color: yellow;
+}
+
+/* A tool which cannot be picked in the sektor being looked at is shown as out of reach. */
+.building-item.not-selectable {
+  cursor: default;
+  opacity: 0.4;
 }
 
 .building-item.destruction-tool.selected {
