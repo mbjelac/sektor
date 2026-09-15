@@ -64,7 +64,7 @@ For example:
     1,2,7,3,0
     1,1,3,0,1
 
-#1 Sektors have different layout of property values based on property
-- create functions which generate location property matrices according to rules above
-    - one function for each property type
-- when creating a sektor, apply those function to creation of sektor's location property matrices
+#1 [done] Sektors have different layout of property values based on property
+- [done] create functions which generate location property matrices according to rules above
+    - [done] one function for each property type
+- [done] when creating a sektor, apply those function to creation of sektor's location property matrices
