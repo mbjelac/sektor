@@ -1,0 +1,79 @@
+Sektors are now made by an algorithm, so the question "is a sektor of this level any good to play"
+gets asked every time anything in the economy changes. Answering it by hand does not work: playing
+one sektor through takes a long time, and one sektor says nothing about a level.
+
+Answering it by reasoning does not work either. Over one session of working out the economics of
+buildings.md on paper, the same question was answered wrongly three times:
+    - first by treating every input as imported, which made chains look far worse than they are
+    - then by pricing negative resources as a cost, which hid that importing them pays, and hid
+      two unbounded scoring loops with it
+    - then by letting a requirement be met by importing the resource and exporting it again, which
+      the game does not allow at all, and which put a floor under every number in the analysis
+Every one of those mistakes came from restating the rules of the game in order to reason about
+them. The rules are already written down, in Sektor.ts. Anything which asks a question about them
+should ask that code, not a description of it.
+
+So: a harness which generates sektors the way the game does, plays each one as well as it can, and
+reports what it scored. It answers "too hard" with a measurement instead of an argument, and it is
+run before and after changing anything in the economy.
+
+THE RULE THIS FOLLOWS
+
+Nothing about the rules is restated in playtest/. Scoring, imports, exports, starvation and
+restrictions all come from Sektor.ts. Buildings and resources are read off disk and handed to the
+game's own parsers. Sektors come from the game's own createSektor. A harness which describes the
+game in its own words measures its description instead of the game.
+
+HOW IT PLAYS
+
+A sektor is a standing flow, not a story with a beginning. Nothing has to be built before anything
+else; it only has to add up in the end. This matters because it rules out the obvious approach.
+Placing buildings one at a time, keeping whichever placement helps most, cannot play a restricted
+sektor at all: half a production chain always breaks the very restrictions the whole chain was
+built to satisfy, so every first step looks like a mistake. Worse, a player rewarded step by step
+will happily break a restriction forever when breaking it pays — filling the map with wind loops
+because each one exports more than it costs in penalties.
+
+So the harness plans instead of feeling its way:
+    - work out what the sektor is short of: what it has to export, plus what its buildings eat,
+      less what they make, less what it is allowed to bring in
+    - a resource which is required cannot be covered by importing, since an import only ever
+      cancels against what is consumed and can never become an export
+    - put up whatever makes the most of whatever it is shortest of
+    - do it again until nothing is short
+Then it places that plan on the best ground, switches every building function on and off to see
+whether that helps, and reports what the sektor finally scores.
+
+What it reports is a floor, not a ceiling: a good way to play, not the best possible one. A ceiling
+would need a real solver. A floor is what a difficulty question needs — if even this scores well,
+the sektor is playable.
+
+#1 [done] A harness which plays generated sektors
+- [done] its own folder playtest/ in the root of the repository, with its own package.json
+- [done] run with "npm run playtest" from that folder
+    - [done] --levels 1,4 to choose which levels, --runs 20 for how many of each
+    - [done] --detail to print every sektor rather than only the summary
+- [done] playtest/assets.ts reads buildings.md and resources.md off disk
+    - [done] parsed with the game's own parseBuildingDefinitions and parseResources
+    - [done] the game reads them through Vite, which a plain script cannot do
+- [done] playtest/planBuildings.ts works out what to build, as described above
+- [done] playtest/playSektor.ts builds the plan and reports the result
+    - [done] a building put up for one function has its other functions switched off
+    - [done] a building whose output is named after a location property goes where it is richest
+    - [done] after the plan is built, keep placing anything which still improves the sektor
+    - [done] then switch functions on and off while it helps
+- [done] playtest/playtest.ts generates and plays, and prints per level:
+    - [done] how many sektors were finished
+    - [done] worst, median and best score
+    - [done] how many left the player worse off than an empty sektor
+    - [done] how many buildings the median sektor took
+
+#2 Trusting what it reports
+- a sektor the harness fails to finish is not proof the sektor cannot be finished
+    - report the two apart: sektors which are impossible, and sektors it merely could not play
+    - a sektor whose requirement no allowed building produces is impossible, and can be found
+      without playing it at all
+- the plan picks whichever producer makes the most per building, which is not the same as the one
+  which costs least to run
+    - try each producer and keep the best
+- nothing is measured about how long a sektor takes to work out, only what it ends up scoring

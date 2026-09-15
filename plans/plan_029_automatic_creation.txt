@@ -169,3 +169,62 @@ is a performance optimization only, and is not done here.
 - [done] when a sektor is created while the sektor list is open, re-render the list
     - [done] renderList appends into #sektor-list without clearing it, so clear it first or every row is doubled
 - [done] tests of generation call the generation directly instead of waiting for the interval
+
+
+CONCLUSIONS
+
+Playing the generated sektors showed them to be hard, and meeting a requirement to be barely worth
+the imports it took. Working out why turned up the following, in rough order of how much each one
+matters. Most of it is about the economy rather than about the making of sektors, but it is written
+down here because it is what the making of sektors ran into.
+
+1. Importing a negative-scoring resource pays.
+    applyNegativeScoring flips the sign of a score, and it is applied to imports as well as exports.
+    So a resource marked negative — Work, WaterSewage, WasteBio — earns 2 a unit when brought in.
+    This is very probably not what "negative" was meant to say, and it is the largest single force
+    in the economy:
+        - a Polytechnic fed on imported Work, its energy from a wind loop, is worth about +20 a
+          building with no requirement met at all: around +1860 on a full map
+        - imported sewage makes WaterTechnical cost less than nothing, which quietly subsidises
+          every chain which touches water
+    Everything else in the economy is worth tuning only after this is decided. Exporting waste being
+    bad does not obviously mean being paid to take waste in.
+
+2. Every unit of every resource is worth the same.
+    Two points, whatever it is. So a building can only pay by making more units than it eats, and a
+    recipe which says "much of something cheap becomes a little of something precious" cannot pay,
+    however its numbers are set. Refining is exactly that shape. This is structural rather than a
+    matter of the numbers in buildings.md, and it gets worse with every resource added, not better.
+    Worth per resource, kept in resources.md, would fix it without breaking the rule that a unit
+    costs on the way in exactly what it earns on the way out. It is also the same mechanism that
+    requirements driven by global scarcity would need: scarce, so valuable, so worth requiring.
+
+3. A requirement cannot be met by importing.
+    Imports and exports are both worked out from what buildings eat and make, so there is no buying
+    and re-selling. To export something the sektor has to make it. This means a requirement has no
+    floor: a sektor can be finished exactly as asked and leave the player worse off than an empty
+    one. Requirements chosen by scarcity will need a check for this, or the algorithm will keep
+    asking for the one thing nobody can afford to make — and nobody making it keeps it scarce.
+
+4. What was changed, and what it measured at.
+    Location property maximum raised from 6 to 12, and every fixed output in buildings.md doubled.
+    Extraction is fed by location properties and processing by fixed amounts, so the two levers are
+    disjoint and both were needed. Afterwards, measured over 25 generated sektors a level:
+        level  1: finished 20/25, median score  84, median  3 buildings
+        level  3: finished 14/25, median score 238, median 15 buildings
+        level  6: finished 10/25, median score 364, median 29 buildings
+        level 10: finished  7/25, median score 436, median 41 buildings
+    No sektor at any level left the player worse off. Sektors are worth playing now; how many of
+    the unfinished ones are unfinishable rather than merely unplayed is not yet known (plan 30).
+
+5. A local resource needs a producer in the palette.
+    A restriction only caps what may be imported, and the walk always supplies a local route for
+    whatever it restricts. A local resource is stricter: it cannot be imported at all, so a building
+    which eats one is useless unless the palette also holds something which makes it. Fixed.
+
+6. Left open.
+    Whether Work should be local rather than negative. Making it local kills the Polytechnic loop
+    and makes shortages visible through starvation instead of being papered over by imports, which
+    both read as improvements — but it does not by itself force a player to house their workers,
+    since WorkTechnical and WorkMaintenance stay importable one step downstream. Decide the negative
+    import rule first; this depends on it.
