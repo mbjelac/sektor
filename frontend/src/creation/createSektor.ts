@@ -1,14 +1,31 @@
 import { SektorData } from "../../../shared/sektorData";
 import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
-import { BuildingDefinition } from "../sektor/buildings/parseBuildingDefinitions";
+import { SEKTOR_SIZES } from "../../../shared/sektorSizes";
+import { BuildingDefinition, BuildingFunction } from "../sektor/buildings/parseBuildingDefinitions";
 
-const GRID_SIZE = 10;
 const REQUIREMENT_AMOUNT = 10;
+// The player needs more ground than the bare solution stands on: room to put a building up and take
+// it down again, room to make more of something than the least that will do, and room for whatever
+// pays but was never asked for. Three times over is what leaves sektors as finishable under
+// playtesting as they were back when every one of them was handed the whole hundred tiles.
+const GROUND_TO_SPARE = 3;
+// How much likelier a squeeze grows with every level, so that the highest levels are always squeezed.
+const SQUEEZE_CHANCE_PER_LEVEL = 0.1;
 
-// One way of making a resource: the building which makes it, and what that building takes to do so.
+// One way of making a resource: the building which makes it, and the one thing that building does
+// to make it, which is what says how much of the resource it makes and what it takes to do so.
 export interface ResourceProducer {
   buildingName: string;
-  inputs: string[];
+  buildingFunction: BuildingFunction;
+}
+
+// One building of a sektor's solution: which building it is, what it stands there to make, how much
+// of that the solution needs out of it, and the one thing it does to make it.
+interface SolutionStep {
+  buildingName: string;
+  buildingFunction: BuildingFunction;
+  resource: string;
+  demand: number;
 }
 
 // Every resource some building makes, against the ways of making it.
@@ -33,20 +50,25 @@ export function createSektor(
     productionGraph, [...localResources, ...negativeScoringResources], level, randomNumber
   );
 
-  const paletteBuildingNames = new Set<string>();
+  // What the walk leaves behind is the sektor's solution, and the ground the sektor needs is
+  // measured against it; everything added afterwards is there to be looked at and ruled out.
   const restrictedResources = new Map<string, number>();
-  for (const requiredResource of requiredResources) {
-    walkBackwards(productionGraph, requiredResource, level, randomNumber, paletteBuildingNames, restrictedResources);
-  }
+  const solutionSteps = requiredResources.flatMap(requiredResource =>
+    walkBackwards(productionGraph, requiredResource, level, randomNumber, restrictedResources)
+  );
+  const paletteBuildingNames = new Set<string>(solutionSteps.map(solutionStep => solutionStep.buildingName));
 
   addAlternatives(productionGraph, restrictedResources, level, randomNumber, paletteBuildingNames);
   addDistractors(buildingDefinitions, level, randomNumber, paletteBuildingNames);
   addLocalResourceProducers(productionGraph, buildingDefinitions, localResources, randomNumber, paletteBuildingNames);
 
+  const size = chooseSektorSize(solutionSteps, level, randomNumber);
+
   return {
     level,
+    size,
     allowedBuildings: [...paletteBuildingNames],
-    locationProperties: createLocationProperties(buildingDefinitions, paletteBuildingNames, level, randomNumber),
+    locationProperties: createLocationProperties(buildingDefinitions, paletteBuildingNames, level, size, randomNumber),
     importRestrictions: [...restrictedResources].map(([name, value]) => ({ name, value })),
     exportRequirements: requiredResources.map(name => ({ name, value: REQUIREMENT_AMOUNT })),
     buildings: [],
@@ -60,10 +82,9 @@ function buildProductionGraph(buildingDefinitions: BuildingDefinition[]): Produc
 
   for (const buildingDefinition of buildingDefinitions) {
     for (const buildingFunction of buildingDefinition.buildingFunctions) {
-      const inputs = buildingFunction.inputs.map(input => input.name);
       for (const output of buildingFunction.outputs) {
         const producers = productionGraph.get(output.name) ?? [];
-        producers.push({ buildingName: buildingDefinition.name, inputs });
+        producers.push({ buildingName: buildingDefinition.name, buildingFunction });
         productionGraph.set(output.name, producers);
       }
     }
@@ -99,35 +120,49 @@ function pickRequiredResources(
 
 // The walk goes as deep as the level asks for, but no deeper than the chain allows: it stops early
 // when the current resource has no producer left, or when every input of the chosen producer is
-// already restricted or is something no building makes and the player can simply import.
+// already restricted or is something no building makes and the player can simply import. What it
+// returns is the chain it built: the buildings which, standing together, make what was required,
+// each with the amount the layer above it asks of it.
 function walkBackwards(
   productionGraph: ProductionGraph,
   requiredResource: string,
   level: number,
   randomNumber: RandomNumber,
-  paletteBuildingNames: Set<string>,
   restrictedResources: Map<string, number>,
-) {
+): SolutionStep[] {
   const restrictionLayers = Math.min(1 + level, longestBackwardChain(productionGraph, requiredResource));
   const restrictionValue = Math.max(0, 4 - level);
+  const solutionSteps: SolutionStep[] = [];
 
   let currentResource = requiredResource;
+  // The topmost layer is there to meet the requirement, which is the whole of what is asked for.
+  let currentDemand = REQUIREMENT_AMOUNT;
   for (let layer = 0; layer < restrictionLayers; layer++) {
     const producers = productionGraph.get(currentResource);
-    if (!producers || producers.length === 0) return;
+    if (!producers || producers.length === 0) return solutionSteps;
 
     const producer = pickRandom(producers, randomNumber);
-    paletteBuildingNames.add(producer.buildingName);
+    const solutionStep = { ...producer, resource: currentResource, demand: currentDemand };
+    solutionSteps.push(solutionStep);
 
-    const restrictableInputs = producer.inputs.filter(input =>
-      productionGraph.has(input) && !restrictedResources.has(input) && input !== currentResource
-    );
-    if (restrictableInputs.length === 0) return;
+    const restrictableInputs = producer.buildingFunction.inputs
+      .map(input => input.name)
+      .filter(input => productionGraph.has(input) && !restrictedResources.has(input) && input !== currentResource);
+    if (restrictableInputs.length === 0) return solutionSteps;
 
     const restrictedInput = pickRandom(restrictableInputs, randomNumber);
     restrictedResources.set(restrictedInput, restrictionValue);
+    // Whatever this layer eats of the resource just restricted, over and above the little of it the
+    // restriction still lets the player bring in, is what the layer below has to make.
+    currentDemand = Math.max(0, inputAmount(producer.buildingFunction, restrictedInput) * copiesNeeded(solutionStep, level) - restrictionValue);
     currentResource = restrictedInput;
   }
+
+  return solutionSteps;
+}
+
+function inputAmount(buildingFunction: BuildingFunction, resource: string): number {
+  return buildingFunction.inputs.find(input => input.name === resource)?.value ?? 0;
 }
 
 // How many resources a walk backwards from here can restrict before it runs out of chain. The
@@ -137,7 +172,7 @@ function longestBackwardChain(productionGraph: ProductionGraph, resource: string
   function chainFrom(currentResource: string, path: string[]): number {
     let longest = path.length;
     for (const producer of productionGraph.get(currentResource) ?? []) {
-      for (const input of producer.inputs) {
+      for (const input of producer.buildingFunction.inputs.map(input => input.name)) {
         if (!productionGraph.has(input) || path.includes(input)) continue;
         longest = Math.max(longest, chainFrom(input, [...path, input]));
       }
@@ -233,6 +268,63 @@ function findUnproducedLocalResource(
     .find(resource => localResources.includes(resource) && !producedResources.has(resource));
 }
 
+// A sektor is given the smallest map its solution comfortably fits on, so that a chain of three
+// buildings is not handed a field of tiles nobody will ever build on.
+// That map is then squeezed one size down, the more often the higher the level, and twice as often
+// again when the solution reads the ground: with tiles to spare every building simply goes on its
+// best square and choosing where to build asks nothing of the player, whereas on a tight map the
+// one location which suits two buildings can only be had by one of them. The squeeze never goes
+// below the size the solution needs, so a squeezed sektor is still one which can be finished.
+function chooseSektorSize(solutionSteps: SolutionStep[], level: number, randomNumber: RandomNumber): number {
+  const neededTiles = solutionTileCount(solutionSteps, level);
+  const comfortableSizeIndex = smallestSizeIndexFitting(neededTiles * GROUND_TO_SPARE);
+  const tightestSizeIndex = smallestSizeIndexFitting(neededTiles);
+
+  const squeezeChance = level * SQUEEZE_CHANCE_PER_LEVEL * (doesSolutionReadTheGround(solutionSteps) ? 2 : 1);
+  const isSqueezed = randomNumber() < squeezeChance;
+
+  const sizeIndex = isSqueezed ? Math.max(tightestSizeIndex, comfortableSizeIndex - 1) : comfortableSizeIndex;
+  return SEKTOR_SIZES[sizeIndex].tilesPerSide;
+}
+
+// How much ground the solution stands on: every building of every chain, as many times over as it
+// has to stand before it makes what the layer above it asks of it.
+function solutionTileCount(solutionSteps: SolutionStep[], level: number): number {
+  return solutionSteps.reduce((tiles, solutionStep) => tiles + copiesNeeded(solutionStep, level), 0);
+}
+
+// A building makes what it makes, so to make twice as much it has to stand twice. One standing
+// there for something it turns out not to make at all still takes up its tile.
+function copiesNeeded(solutionStep: SolutionStep, level: number): number {
+  const amountPerBuilding = outputAmount(solutionStep, level);
+  if (amountPerBuilding <= 0) return 1;
+  return Math.max(1, Math.ceil(solutionStep.demand / amountPerBuilding));
+}
+
+// An output named after a location property is worth whatever the ground holds of it, and the
+// poorest ground the sektor is made with is what the player can count on anywhere in it.
+function outputAmount(solutionStep: SolutionStep, level: number): number {
+  const producedOutput = solutionStep.buildingFunction.outputs.find(output => output.name === solutionStep.resource);
+  if (!producedOutput) return 0;
+  return producedOutput.value ?? (producedOutput.locationProperty === undefined ? 0 : propertyMinimum(level));
+}
+
+// A building whose output is drawn from the ground is worth more on one location than on another,
+// which is what makes where it goes a choice. One whose output is simply written down is worth the
+// same wherever it stands, and a solution built out of those has nothing to squeeze.
+function doesSolutionReadTheGround(solutionSteps: SolutionStep[]): boolean {
+  return solutionSteps
+    .flatMap(solutionStep => solutionStep.buildingFunction.outputs)
+    .some(output => output.locationProperty !== undefined);
+}
+
+// The smallest size with room for this many tiles. Nothing the game offers is bigger than the
+// largest size, so a solution which outgrows even that is given the largest there is.
+function smallestSizeIndexFitting(tiles: number): number {
+  const sizeIndex = SEKTOR_SIZES.findIndex(sektorSize => sektorSize.tilesPerSide ** 2 >= tiles);
+  return sizeIndex === -1 ? SEKTOR_SIZES.length - 1 : sizeIndex;
+}
+
 // A property the palette draws on is what the sektor is solved with, so its poorest location still
 // holds something: the higher the level the less that is, but never nothing. Every other property
 // is left to take any value it likes, having nothing to do with finishing the sektor.
@@ -240,17 +332,23 @@ function createLocationProperties(
   buildingDefinitions: BuildingDefinition[],
   paletteBuildingNames: Set<string>,
   level: number,
+  size: number,
   randomNumber: RandomNumber,
 ): { [key: string]: number[][] } {
-  const propertyMinimum = Math.max(1, MODIFIER_MAX - level);
   const neededProperties = neededLocationProperties(buildingDefinitions, paletteBuildingNames);
 
   return Object.fromEntries(
     allLocationProperties(buildingDefinitions).map(propertyName => [
       propertyName,
-      createPropertyMatrix(neededProperties.has(propertyName) ? propertyMinimum : MODIFIER_MIN, randomNumber),
+      createPropertyMatrix(neededProperties.has(propertyName) ? propertyMinimum(level) : MODIFIER_MIN, size, randomNumber),
     ])
   );
+}
+
+// What the poorest location of a property the sektor is solved with still holds: the higher the
+// level the less that is, but never nothing.
+function propertyMinimum(level: number): number {
+  return Math.max(1, MODIFIER_MAX - level);
 }
 
 function neededLocationProperties(buildingDefinitions: BuildingDefinition[], paletteBuildingNames: Set<string>): Set<string> {
@@ -271,9 +369,11 @@ function locationPropertyNames(buildingDefinitions: BuildingDefinition[]): strin
     .filter((propertyName): propertyName is string => propertyName !== undefined);
 }
 
-function createPropertyMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return Array.from({ length: GRID_SIZE }, () =>
-    Array.from({ length: GRID_SIZE }, () =>
+// A property holds a value for every location of the sektor, so the matrix is as wide and as deep
+// as the sektor's map is.
+function createPropertyMatrix(minimumValue: number, size: number, randomNumber: RandomNumber): number[][] {
+  return Array.from({ length: size }, () =>
+    Array.from({ length: size }, () =>
       minimumValue + Math.floor(randomNumber() * (MODIFIER_MAX - minimumValue + 1))
     )
   );

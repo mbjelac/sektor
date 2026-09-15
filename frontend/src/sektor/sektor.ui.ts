@@ -19,6 +19,7 @@ import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { arrowLeftIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
+import { LARGEST_SEKTOR_SIZE } from "../../../shared/sektorSizes";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showNameDialog } from "../nameDialog.ui";
@@ -27,7 +28,6 @@ import { showUser } from "../login/userDisplay.ui";
 requireLogin();
 showUser();
 
-const GRID_SIZE = 10;
 const FLOOR_PROPERTY = "soil";
 const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
 const sektorId = new URLSearchParams(window.location.search).get("id");
@@ -165,7 +165,7 @@ function createTestLocations(gridSize: number): Location[][] {
 
 function getLocations(): Location[][] {
   if (isTestMode) {
-    return createTestLocations(GRID_SIZE);
+    return createTestLocations(sektorSize);
   }
   if (sektorId) {
     const sektorData = getSektorData(sektorId);
@@ -204,6 +204,7 @@ function getRestrictionsRequirements() {
 }
 
 const allowedBuildings = getAllowedBuildings();
+const sektorSize = getSektorSize();
 const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources(), allowedBuildings);
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
@@ -227,6 +228,7 @@ function saveState() {
   const { importRestrictions, exportRequirements } = sektor.getSektorState();
   saveSektorData(sektorId, {
     level: sektorLevel,
+    size: sektorSize,
     allowedBuildings,
     locationProperties: locationsToLocationProperties(locations),
     importRestrictions,
@@ -256,6 +258,19 @@ function getSektorLevel(): number {
     if (sektorData) return sektorData.level;
   }
   return LOWEST_LEVEL;
+}
+
+// A sektor is as big as it was made, for as long as it exists, so its size is read once and written
+// back on every save. The sektor of a test run is made up on the spot and is as big as the test asks
+// for. A sektor saved before sektors had sizes carries none, and was made back when every sektor was
+// of the one size there was, which is the largest.
+function getSektorSize(): number {
+  if (isTestMode) return Number(new URLSearchParams(window.location.search).get("size")) || LARGEST_SEKTOR_SIZE;
+  if (sektorId) {
+    const sektorData = getSektorData(sektorId);
+    if (sektorData) return sektorData.size ?? LARGEST_SEKTOR_SIZE;
+  }
+  return LARGEST_SEKTOR_SIZE;
 }
 
 let previousSektorStatus: SektorStatus | null = null;
@@ -397,8 +412,8 @@ function selectBuildingProperty(buildingName: string | null) {
 }
 
 function drawPropertyOverlay(p: p5, propertyName: string) {
-  for (let x = 0; x < GRID_SIZE; x++) {
-    for (let y = 0; y < GRID_SIZE; y++) {
+  for (let x = 0; x < sektorSize; x++) {
+    for (let y = 0; y < sektorSize; y++) {
       const propertyValue = locations[x]?.[y]?.properties[propertyName] ?? 0;
       drawLocationHighlight(p, { x, y }, propertyValueColor(propertyName, propertyValue));
     }
@@ -477,8 +492,8 @@ function rebakeFloorGeometry(p: p5) {
     p.freeGeometry(floorGeometry);
   }
   floorGeometry = p.buildGeometry(() => {
-    for (let x = 0; x < GRID_SIZE; x++) {
-      for (let z = 0; z < GRID_SIZE; z++) {
+    for (let x = 0; x < sektorSize; x++) {
+      for (let z = 0; z < sektorSize; z++) {
         if (!isFloorVisible(x, z)) continue;
         p.push();
         const { wx, wz } = gridToWorld(x, z);
@@ -519,15 +534,19 @@ function showError(message: string) {
   }, 5000);
 }
 
-const ZOOM = 1.2;
+// The view is set so that the map fills it whatever the map's size: a tiny sektor is looked at from
+// as near as a large one is looked at from far, rather than sitting as a speck in the middle of the
+// ground a large sektor would have covered.
+const ZOOM_FOR_LARGEST_SEKTOR = 1.2;
+const ZOOM = ZOOM_FOR_LARGEST_SEKTOR * sektorSize / LARGEST_SEKTOR_SIZE;
 
 const HALF = BLOCK_SIZE / 2;
 const FLOOR_HEIGHT = BLOCK_SIZE * 0.15;
 
 function gridToWorld(gx: number, gy: number): { wx: number; wz: number } {
   return {
-    wx: (gx - GRID_SIZE / 2 + 0.5) * BLOCK_SIZE,
-    wz: (gy - GRID_SIZE / 2 + 0.5) * BLOCK_SIZE,
+    wx: (gx - sektorSize / 2 + 0.5) * BLOCK_SIZE,
+    wz: (gy - sektorSize / 2 + 0.5) * BLOCK_SIZE,
   };
 }
 
@@ -627,8 +646,8 @@ function findClickedTile(p: p5, currentZoom: number): { x: number; y: number } |
   let bestT = Infinity;
   let bestTile: { x: number; y: number } | null = null;
 
-  for (let gx = 0; gx < GRID_SIZE; gx++) {
-    for (let gy = 0; gy < GRID_SIZE; gy++) {
+  for (let gx = 0; gx < sektorSize; gx++) {
+    for (let gy = 0; gy < sektorSize; gy++) {
       const { wx, wz } = gridToWorld(gx, gy);
       const t = rayAABB(
         ox, oy, oz,

@@ -30,6 +30,9 @@ export interface SektorData {
   // How hard the sektor is, the lowest being the first level of levels.md. Every sektor has one,
   // whether it was generated or made by hand.
   level: number;
+  // How many tiles the sektor's map is across. A sektor is square, and keeps the size it was made
+  // with for as long as it exists, so its locations and its ground are all this many tiles wide.
+  size: number;
   // The building types which may be placed in the sektor. Leaving buildings out is what makes a
   // sektor harder, so every sektor names the ones it allows.
   allowedBuildings: string[];

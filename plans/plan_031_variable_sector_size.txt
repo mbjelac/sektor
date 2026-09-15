@@ -4,17 +4,17 @@ Map sizes and names:
 - 8x8 medium
 - 10x10 large
 
-#1 A sektor's map can be of various sizes
-- once created, a Sektor has that size forever
-- before creation, a size needs to be chosen from the available sizes
-    - size should be chosen according to sektor level
-    - choose size so as not to "waste" too much tiles when smaller number is enough to fulfill requirements and restrictions
-    - but also, sektors of higher level may have smaller size to present a bigger difficulty in building placement
-        - especially if location properties are important
-            - the same location may be good for several buildings so the player has to decide which one to choose for that location
-- location property matrices have the same size as the sektor
-- sektor map displays floor tiles adjusted to the sektor size
-    - if sektor is 4x4, there are four by four tiles in the map
+#1 [done] A sektor's map can be of various sizes
+- [done] once created, a Sektor has that size forever
+- [done] before creation, a size needs to be chosen from the available sizes
+    - [done] size should be chosen according to sektor level
+    - [done] choose size so as not to "waste" too much tiles when smaller number is enough to fulfill requirements and restrictions
+    - [done] but also, sektors of higher level may have smaller size to present a bigger difficulty in building placement
+        - [done] especially if location properties are important
+            - [done] the same location may be good for several buildings so the player has to decide which one to choose for that location
+- [done] location property matrices have the same size as the sektor
+- [done] sektor map displays floor tiles adjusted to the sektor size
+    - [done] if sektor is 4x4, there are four by four tiles in the map
 
 #2 Sektor size visible in list
 - sektor list displays sektor size in a column

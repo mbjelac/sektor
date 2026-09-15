@@ -89,6 +89,32 @@ describe("createSektor", () => {
       .toEqual([1, 2, 3, 4]);
   });
 
+  // A short chain is not handed a field of tiles nobody will build on, and a long one is not
+  // crammed onto ground it cannot stand on, so the map grows along with what the sektor asks for.
+  it("gives a sektor of a high level more ground than one of the lowest level", () => {
+    const sizes = [1, 12].map(level =>
+      createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange).size
+    );
+
+    expect(sizes).toEqual([4, 8]);
+  });
+
+  // Every location of the sektor holds a value of every property, so a property covers the map and
+  // no more of it: a matrix wider than the sektor describes ground which is not there.
+  it("lays every location property out over the whole of the sektor's map and no further", () => {
+    const sektorData = createSektor(3, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange);
+
+    expect(Object.entries(sektorData.locationProperties).map(([propertyName, matrix]) => ({
+      property: propertyName,
+      rows: matrix.length,
+      rowLengths: [...new Set(matrix.map(row => row.length))],
+    }))).toEqual([
+      { property: "soil", rows: sektorData.size, rowLengths: [sektorData.size] },
+      { property: "groundwater", rows: sektorData.size, rowLengths: [sektorData.size] },
+      { property: "rock", rows: sektorData.size, rowLengths: [sektorData.size] },
+    ]);
+  });
+
   it("never allows a building which does nothing", () => {
     const sektorData = createSektor(6, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange);
 

@@ -7,7 +7,7 @@ import { getPlayers } from "../players";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { createSektor } from "./createSektor";
 
-const CREATION_INTERVAL_MILLISECONDS = 10000;
+const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Sektors nobody has taken up pile up if they are made faster than they are claimed, so no more are
 // made once there are this many waiting.
 const MAXIMUM_UNCLAIMED_EMPTY_SEKTORS = 10;

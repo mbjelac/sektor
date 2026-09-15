@@ -1,0 +1,66 @@
+Location property matrices have to be populated with values when creating a sektor.
+These values should not be totally random - each type of property has certain patterns.
+
+How each property is populated into it's matrix:
+- metals: vein-like "seams", like
+    ......
+    .#...#
+    .##..#
+    ..#...
+    ..#...
+    ......
+- minerals: large blotches, like
+    ..##..
+    .###..
+    .##...
+    ....##
+    ...###
+    ....##
+- uranium: irregular smaller pockets, like
+    ....#.
+    ...#..
+    ...##.
+    ..#...
+    ..##..
+    ......
+- insolation: lower on tiles next to high altitude mountains (see plan_x_terrain), or just randomly
+- wind: flows through the map, like
+    ....#.
+    ....#.
+    ....#.
+    ....#.
+    ....#.
+    ....#.
+    or
+    ......
+    ......
+    ######
+    ......
+    ......
+    ......
+- groundwater: pockets, like
+    ......
+    ..##..
+    .##...
+    ....#.
+    ...##.
+    ....#.
+- soil: more fertile next to rivers and near hills, less fertile at higher altitude (see plan_x_rivers, plan_x_terrain)
+    - if no rivers or terrain, large blobs similar to minerals but maybe even larger
+
+In these examples we use # to represent a "hotspot" of high value. Examples are crude so all other cells are . but when populating the matrix, values should randomly fall when being further from the hotspot.
+Tiles 3 or more away from any hotspot should practically be valued randomly from 0 to 2.
+Hotspots should be high values but do not need to be maximums. This will depend on what the sektor requirements & restrictions are.
+For example:
+    .....
+    .....
+    ..#..
+    .....
+    .....
+    could have randomized values
+    0,1,2,0,1
+    1,4,5,3,0
+    3,6,9,7,2
+    1,2,7,3,0
+    1,1,3,0,1
+
