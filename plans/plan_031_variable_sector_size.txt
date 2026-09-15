@@ -16,7 +16,7 @@ Map sizes and names:
 - [done] sektor map displays floor tiles adjusted to the sektor size
     - [done] if sektor is 4x4, there are four by four tiles in the map
 
-#2 Sektor size visible in list
-- sektor list displays sektor size in a column
-    - header: heroicon arrows-pointing-out
-    - values: Tiny, Small, Medium, Large
+#2 [done] Sektor size visible in list
+- [done] sektor list displays sektor size in a column
+    - [done] header: heroicon arrows-pointing-out
+    - [done] values: Tiny, Small, Medium, Large

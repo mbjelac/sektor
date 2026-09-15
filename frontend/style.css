@@ -665,10 +665,12 @@ body > main {
 
 #sektor-list {
   width: 100%;
-  max-width: 640px;
+  /* Wide enough for every column of a sektor to stand beside the last, down to the button for
+     giving one up, which sits at the far end of the row. */
+  max-width: 700px;
   justify-self: center;
   display: grid;
-  grid-template-columns: 1fr auto auto auto auto auto auto auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto auto auto auto auto auto auto;
   align-content: start;
   gap: 8px 12px;
 }
@@ -727,6 +729,22 @@ body > main {
 .sektor-list-header .sektor-list-status {
   display: flex;
   align-items: center;
+}
+
+.sektor-list-size {
+  min-width: 48px;
+  text-align: left;
+  color: #ccc;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+/* The header of the column carries the same washed out look as the other column headers, with its
+   icon where the names below it begin. */
+.sektor-list-header .sektor-list-size {
+  display: flex;
+  align-items: center;
+  color: inherit;
 }
 
 .sektor-list-owner {
@@ -813,7 +831,9 @@ body > main {
 #leaderboard {
   width: 100%;
   max-width: 420px;
-  justify-self: center;
+  /* Held against the sektors rather than centred in what is left beside them, so that a wider list
+     of sektors does not push the standings out from under the buttons in the top right corner. */
+  justify-self: start;
   display: grid;
   grid-template-columns: 1fr auto auto auto;
   align-content: start;

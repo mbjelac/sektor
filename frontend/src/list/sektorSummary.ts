@@ -4,9 +4,12 @@ import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { LOWEST_LEVEL } from "../playerLevel";
+import { LARGEST_SEKTOR_SIZE } from "../../../shared/sektorSizes";
 
 export interface SektorSummary {
   level: number;
+  // How many tiles the sektor's map is across.
+  size: number;
   status: SektorStatus;
   buildingCount: number;
   importTotal: number;
@@ -19,7 +22,7 @@ export interface SektorSummary {
 // itself.
 export function getSektorSummary(sektorId: string): SektorSummary {
   const sektorData = getSektorData(sektorId);
-  if (!sektorData) return { level: LOWEST_LEVEL, status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
+  if (!sektorData) return { level: LOWEST_LEVEL, size: LARGEST_SEKTOR_SIZE, status: "InProgress", buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
 
   const sektor = new Sektor(
     locationPropertiesToLocations(sektorData.locationProperties),
@@ -37,6 +40,9 @@ export function getSektorSummary(sektorId: string): SektorSummary {
 
   return {
     level: sektorData.level,
+    // A sektor saved before sektors had sizes was made back when every sektor was of the one size
+    // there was, which is the largest.
+    size: sektorData.size ?? LARGEST_SEKTOR_SIZE,
     status: sektorState.status,
     buildingCount: sektor.getState().buildings.length,
     importTotal: sumThroughputs(sektorState.imports),

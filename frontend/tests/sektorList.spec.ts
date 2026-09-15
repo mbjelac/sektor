@@ -22,6 +22,38 @@ test("shows the owner of every sektor", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-owners.png", { maxDiffPixelRatio: 0 });
 });
 
+// A sektor is as big as it was made, and the list says which of the four sizes that is, so that a
+// player can tell a handful of tiles from the whole hundred before opening anything.
+test("names the size of the map of every sektor", async ({ page }) => {
+  await storeSektorOfEverySize(page);
+
+  await page.goto("/");
+
+  await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-sizes.png", { maxDiffPixelRatio: 0 });
+});
+
+// The sektors are named after nothing in particular, so that what the list shows of their size can
+// only have come from the size they were stored with.
+async function storeSektorOfEverySize(page: Page) {
+  await page.evaluate(currentPlayer => {
+    const sektorSizes = { Alpha: 4, Beta: 6, Gamma: 8, Delta: 10 };
+    localStorage.setItem("sektors", JSON.stringify(
+      Object.keys(sektorSizes).map(sektorName => ({ id: sektorName, name: sektorName, owner: currentPlayer }))
+    ));
+    for (const [sektorName, size] of Object.entries(sektorSizes)) {
+      localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
+        level: 1,
+        size,
+        allowedBuildings: [],
+        locationProperties: {},
+        importRestrictions: [],
+        exportRequirements: [],
+        buildings: [],
+      }));
+    }
+  }, CURRENT_PLAYER);
+}
+
 test("makes the player the owner of a sektor they claim and opens it", async ({ page }) => {
   await page.locator(".sektor-list-item", { hasText: "No name" }).locator(".sektor-list-claim").click();
   await page.locator("#sektor-name-input").fill("Gamma");

@@ -14,3 +14,10 @@ export const SEKTOR_SIZES: SektorSize[] = [
 ];
 
 export const LARGEST_SEKTOR_SIZE = SEKTOR_SIZES[SEKTOR_SIZES.length - 1].tilesPerSide;
+
+// What a sektor of this many tiles across is called. A sektor of a size the game no longer makes —
+// one saved before the sizes changed — has no name to go by, so it is shown by its measurements.
+export function sektorSizeName(tilesPerSide: number): string {
+  return SEKTOR_SIZES.find(sektorSize => sektorSize.tilesPerSide === tilesPerSide)?.name
+    ?? `${tilesPerSide}x${tilesPerSide}`;
+}
