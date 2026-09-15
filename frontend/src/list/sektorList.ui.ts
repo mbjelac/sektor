@@ -13,6 +13,7 @@ import { getSektorSummary, SektorSummary } from "./sektorSummary";
 import { renderLeaderboard } from "./leaderboard.ui";
 import { scoreColor } from "../score";
 import { formatNumber } from "../formatNumber";
+import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 
 // A player may only work on so many sektors at a time, so that they finish the ones they have
 // claimed before claiming more.
@@ -20,6 +21,9 @@ const MAXIMUM_UNFINISHED_SEKTORS = 5;
 
 function renderList() {
   const container = document.getElementById("sektor-list")!;
+  // The list is drawn again whenever a sektor appears, so whatever stands there is cleared away
+  // first, or every sektor would be shown twice over.
+  container.replaceChildren();
   const sektors = getSektorList();
   const summaries = sektors.map(sektor => getSektorSummary(sektor.name));
   const claimingAllowed = countUnfinishedSektors(sektors, summaries) < MAXIMUM_UNFINISHED_SEKTORS;
@@ -224,5 +228,15 @@ function createScore(score: number): HTMLElement {
 
 requireLogin();
 showUser();
+// A test sektor list has to stand still to be looked at, so no sektors are made while one is shown.
+const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
+
 renderList();
+if (isTestMode) {
+  // A test drives the making of a sektor itself rather than sitting out the ten seconds between
+  // one round of it and the next.
+  (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded = createSektorIfNeeded;
+} else {
+  startCreatingSektors(renderList);
+}
 renderLeaderboard();

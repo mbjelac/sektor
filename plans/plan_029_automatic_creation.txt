@@ -140,23 +140,23 @@ is a performance optimization only, and is not done here.
     - [done] a generated sektor's restricted resources all have a producer in its palette
     - [done] a generated sektor's needed properties are never all 0
 
-#4 New sektors appear every once in a while
-- every 10 seconds an algorithm is started in background
-    - started with setInterval on the sektor list page
-    - not started when ?test=true, so a snapshot test never sees a sektor appear on its own
-    - determine whether to create new sektor:
-        - do not create if there are 10 or more unclaimed empty sektors
-            - unclaimed = no owner
-            - empty = number of buildings is 0
-    - if creating, create a sektor in one of needed levels, chosen randomly
-        - needed levels are all current player levels
-        - plus one level above for each player
-- a created sektor is identified by a number, counting up by 1 for each sektor created
-    - this id is not the sektor's name - the name is what the player gives it when claiming it
-    - the id continues above the highest id already in the sektor list, so a reload does not reuse one
-    - its data is stored under the key sektor_<id>, which is what saveSektorData already does
-- add the created sektor to the sektor list
-    - add addSektorToList to sektorList.api.ts, writing the "sektors" key the way setSektorOwner writes "sektorOwners"
-- when a sektor is created while the sektor list is open, re-render the list
-    - renderList appends into #sektor-list without clearing it, so clear it first or every row is doubled
-- tests of generation call the generation directly instead of waiting for the interval
+#4 [done] New sektors appear every once in a while
+- [done] every 10 seconds an algorithm is started in background
+    - [done] started with setInterval on the sektor list page
+    - [done] not started when ?test=true, so a snapshot test never sees a sektor appear on its own
+    - [done] determine whether to create new sektor:
+        - [done] do not create if there are 10 or more unclaimed empty sektors
+            - [done] unclaimed = no owner
+            - [done] empty = number of buildings is 0
+    - [done] if creating, create a sektor in one of needed levels, chosen randomly
+        - [done] needed levels are all current player levels
+        - [done] plus one level above for each player
+- [done] a created sektor is identified by a number, counting up by 1 for each sektor created
+    - [done] this id is not the sektor's name - the name is what the player gives it when claiming it
+    - [done] the id continues above the highest id already in the sektor list, so a reload does not reuse one
+    - [done] its data is stored under the key sektor_<id>, which is what saveSektorData already does
+- [done] add the created sektor to the sektor list
+    - [done] add addSektorToList to sektorList.api.ts, writing the "sektors" key the way setSektorOwner writes "sektorOwners"
+- [done] when a sektor is created while the sektor list is open, re-render the list
+    - [done] renderList appends into #sektor-list without clearing it, so clear it first or every row is doubled
+- [done] tests of generation call the generation directly instead of waiting for the interval

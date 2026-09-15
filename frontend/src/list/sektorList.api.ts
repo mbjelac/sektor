@@ -7,3 +7,9 @@ export function getSektorList(): SektorListItem[] {
   if (!stored) return [];
   return (JSON.parse(stored) as SektorListItem[]).map(sektor => ({ name: sektor.name }));
 }
+
+export function addSektorToList(sektorName: string): void {
+  const sektorList = getSektorList();
+  sektorList.push({ name: sektorName });
+  localStorage.setItem("sektors", JSON.stringify(sektorList));
+}

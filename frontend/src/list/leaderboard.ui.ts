@@ -1,13 +1,6 @@
-import { getSektorList } from "./sektorList.api";
-import { getSektorOwner } from "../sektor/sektorOwner.api";
-import { getSektorSummary } from "./sektorSummary";
 import { playerLevel } from "../playerLevel";
 import { formatNumber } from "../formatNumber";
-
-interface Player {
-  name: string;
-  score: number;
-}
+import { getPlayers, Player } from "../players";
 
 // Next to the sektors stands the standing of everyone playing, so that a player sees at a glance
 // where the sektors they are working on put them among the others.
@@ -41,23 +34,6 @@ function createLeaderboardHeader(): HTMLElement {
   header.appendChild(level);
 
   return header;
-}
-
-// Everyone who owns a sektor is a player, and what all of their sektors score together is what
-// they are ranked by, the best standing first.
-function getPlayers(): Player[] {
-  const scoresByPlayerName = new Map<string, number>();
-
-  for (const sektorListItem of getSektorList()) {
-    const owner = getSektorOwner(sektorListItem.name);
-    if (!owner) continue;
-    const score = getSektorSummary(sektorListItem.name).score;
-    scoresByPlayerName.set(owner, (scoresByPlayerName.get(owner) ?? 0) + score);
-  }
-
-  return [...scoresByPlayerName.entries()]
-    .map(([name, score]) => ({ name, score }))
-    .sort((player, otherPlayer) => otherPlayer.score - player.score);
 }
 
 function createLeaderboardItem(player: Player): HTMLElement {

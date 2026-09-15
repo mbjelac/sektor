@@ -242,3 +242,53 @@ async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: num
     }));
   }, [sektorName, oreAmounts] as [string, number[]]);
 }
+
+// The sektors of a player's own level are made in the background as they are claimed. A test calls
+// the making of them itself, rather than sitting out the ten seconds between one round and the next.
+function createSektorNow(page: Page) {
+  return page.evaluate(() => (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded());
+}
+
+test("makes a new sektor and puts it on the list", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  const created = await createSektorNow(page);
+
+  const sektorList = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
+  expect({ created, names: sektorList.map((sektor: { name: string }) => sektor.name) })
+    .toEqual({ created: true, names: ["Alpha", "Beta", "Gamma", "0"] });
+});
+
+test("numbers every sektor it makes above the last one", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await createSektorNow(page);
+  await createSektorNow(page);
+  await createSektorNow(page);
+
+  const sektorList = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
+  expect(sektorList.map((sektor: { name: string }) => sektor.name)).toEqual(["Alpha", "Beta", "Gamma", "0", "1", "2"]);
+});
+
+test("gives every sektor it makes a level and a palette of buildings", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await createSektorNow(page);
+
+  const sektorData = await page.evaluate(() => JSON.parse(localStorage.getItem("sektor_0")!));
+  expect({
+    hasLevel: Number.isInteger(sektorData.level),
+    allowsBuildings: sektorData.allowedBuildings.length > 0,
+    requires: sektorData.exportRequirements.length > 0,
+    buildings: sektorData.buildings,
+  }).toEqual({ hasLevel: true, allowsBuildings: true, requires: true, buildings: [] });
+});
+
+test("stops making sektors while ten unclaimed empty ones are waiting", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem(
+    "sektors", JSON.stringify(Array.from({ length: 10 }, (_, index) => ({ name: `waiting${index}` })))
+  ));
+  await page.goto("/?test=true");
+
+  expect(await createSektorNow(page)).toEqual(false);
+});
