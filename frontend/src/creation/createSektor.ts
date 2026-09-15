@@ -41,6 +41,7 @@ export function createSektor(
 
   addAlternatives(productionGraph, restrictedResources, level, randomNumber, paletteBuildingNames);
   addDistractors(buildingDefinitions, level, randomNumber, paletteBuildingNames);
+  addLocalResourceProducers(productionGraph, buildingDefinitions, localResources, randomNumber, paletteBuildingNames);
 
   return {
     level,
@@ -189,6 +190,47 @@ function addDistractors(
     paletteBuildingNames.add(buildingName);
     distractors.splice(distractors.indexOf(buildingName), 1);
   }
+}
+
+// A restriction only caps what may be imported, so the walk hands the player a local route for
+// whatever it restricts. A local resource is stricter than any restriction: it cannot be imported
+// at all, at any level. So a building which consumes one is useless wherever nothing in the palette
+// makes it — its functions simply starve — whether or not that resource was ever restricted. The
+// producers added here can need local resources of their own, so this goes on until none is missing.
+function addLocalResourceProducers(
+  productionGraph: ProductionGraph,
+  buildingDefinitions: BuildingDefinition[],
+  localResources: string[],
+  randomNumber: RandomNumber,
+  paletteBuildingNames: Set<string>,
+) {
+  for (;;) {
+    const missingResource = findUnproducedLocalResource(buildingDefinitions, localResources, paletteBuildingNames);
+    if (missingResource === undefined) return;
+
+    const producers = (productionGraph.get(missingResource) ?? []).map(producer => producer.buildingName);
+    // Nothing in the game makes it, so no palette can do anything about it.
+    if (producers.length === 0) return;
+
+    paletteBuildingNames.add(pickRandom(producers, randomNumber));
+  }
+}
+
+function findUnproducedLocalResource(
+  buildingDefinitions: BuildingDefinition[],
+  localResources: string[],
+  paletteBuildingNames: Set<string>,
+): string | undefined {
+  const paletteFunctions = buildingDefinitions
+    .filter(buildingDefinition => paletteBuildingNames.has(buildingDefinition.name))
+    .flatMap(buildingDefinition => buildingDefinition.buildingFunctions);
+
+  const producedResources = new Set(paletteFunctions.flatMap(buildingFunction => buildingFunction.outputs).map(output => output.name));
+
+  return paletteFunctions
+    .flatMap(buildingFunction => buildingFunction.inputs)
+    .map(input => input.name)
+    .find(resource => localResources.includes(resource) && !producedResources.has(resource));
 }
 
 // A property the palette draws on is what the sektor is solved with, so its poorest location still

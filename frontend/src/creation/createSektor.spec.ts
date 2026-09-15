@@ -28,7 +28,13 @@ const testDefinitions: BuildingDefinition[] = [
   buildingDefinition("Well", [], { name: "Water", locationProperty: "groundwater" }),
   buildingDefinition("Scrapyard", ["Bread"], { name: "Scrap", value: 1 }),
   buildingDefinition("Surgery", ["Bread"], { name: "Care", value: 2 }),
+  buildingDefinition("Hostel", ["Bread", "Care"], { name: "Lodging", value: 4 }),
   { name: "Wrecker", renderingCode: "box s(1,1,1)", buildingFunctions: [], properties: {} },
+  // A trade of its own, of no use to anyone baking bread — something for a palette to be padded with.
+  buildingDefinition("Quarry", [], { name: "Stone", locationProperty: "rock" }),
+  buildingDefinition("Kiln", ["Stone"], { name: "Brick", value: 4 }),
+  buildingDefinition("Smithy", ["Brick"], { name: "Tool", value: 3 }),
+  buildingDefinition("Depot", ["Tool"], { name: "Crate", value: 2 }),
 ];
 
 // Care is made in the sektor and used there, and can never be carried out of it.
@@ -99,6 +105,23 @@ describe("createSektor", () => {
     expect(requiredResources.some(resource =>
       [...LOCAL_RESOURCES, ...NEGATIVE_SCORING_RESOURCES].includes(resource)
     )).toEqual(false);
+  });
+
+  // A local resource cannot be imported at any level, so a building needing one starves unless the
+  // palette also holds something which makes it. The Hostel needs Care, which only the Surgery makes.
+  it("allows a producer of every local resource its buildings need", () => {
+    const palettesMissingAProducer = Array.from({ length: 300 }, (_, run) => 1 + run % 4).flatMap(level => {
+      const sektorData = createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, Math.random);
+      const palette = testDefinitions.filter(definition => sektorData.allowedBuildings.includes(definition.name));
+      const produced = palette.flatMap(definition => definition.buildingFunctions).flatMap(buildingFunction => buildingFunction.outputs).map(output => output.name);
+      return palette
+        .flatMap(definition => definition.buildingFunctions)
+        .flatMap(buildingFunction => buildingFunction.inputs)
+        .map(input => input.name)
+        .filter(resource => LOCAL_RESOURCES.includes(resource) && !produced.includes(resource));
+    });
+
+    expect(palettesMissingAProducer).toEqual([]);
   });
 
   it("makes a sektor which has no buildings in it yet", () => {
