@@ -216,8 +216,8 @@ FoodRaw 5
 FoodProcessed 3
 EnergyElectric 4
 =
-Work 8
-WaterSewage 3
+Work 16
+WaterSewage 6
 
 ## Function
 
@@ -225,7 +225,7 @@ Active: always
 
 HealthPhysical 3
 =
-Work 3
+Work 6
 
 ## Function
 
@@ -233,7 +233,7 @@ Active: always
 
 HealthMental 3
 =
-Work 3
+Work 6
 
 ## Function
 
@@ -241,7 +241,7 @@ Active: always
 
 HealthSocial 3
 =
-Work 3
+Work 6
 
 ## Function
 
@@ -249,7 +249,7 @@ Active: always
 
 Childcare 2
 =
-Work 2
+Work 4
 
 # Library
 
@@ -316,7 +316,7 @@ sph s(4,4,7) t(33,-40,6) c(#1a650b)
 EnergyElectric 1
 WorkEducational 1
 =
-HealthMental 3
+HealthMental 6
 
 # Agriplot
 
@@ -590,7 +590,7 @@ pri4 s(4,10,1) t(0,23,20) r(0,90,0) c(#fbff00)
 EnergyElectric 10
 WorkAdministrative 2
 =
-HealthSocial 10
+HealthSocial 20
 
 # Polytechnic
 
@@ -673,7 +673,7 @@ WorkTechnical 1
 EnergyElectric 4
 Work 8
 =
-WorkMaintenance 8
+WorkMaintenance 16
 
 ## Function
 
@@ -684,7 +684,7 @@ WorkTechnical 1
 EnergyElectric 4
 WorkMaintenance 8
 =
-WorkTechnical 8
+WorkTechnical 16
 
 # Refinery
 
@@ -764,7 +764,7 @@ EnergyElectric 10
 WaterTechnical 5
 OreMetal 5
 =
-Metals 5
+Metals 10
 
 ## Function
 
@@ -775,7 +775,7 @@ EnergyElectric 3
 WaterTechnical 2
 OreMineral 5
 =
-Minerals 10
+Minerals 20
 
 ## Function
 
@@ -786,7 +786,7 @@ EnergyElectric 5
 WaterTechnical 15
 OreUranium 5
 =
-Uranium 3
+Uranium 6
 
 # TownSquare
 
@@ -881,7 +881,7 @@ WorkMaintenance 2
 EnergyElectric 1
 WaterPottable 2
 =
-HealthSocial 4
+HealthSocial 8
 
 # Park
 
@@ -994,9 +994,9 @@ EnergyElectric 1
 WaterPottable 2
 WorkMaintenance 2
 =
-HealthPhysical 1
-HealthMental 1
-HealthSocial 2
+HealthPhysical 2
+HealthMental 2
+HealthSocial 4
 
 # Fertilizatron
 
@@ -1046,7 +1046,7 @@ EnergyElectric 2
 WorkTechnical 2
 WorkEngineering 1
 =
-Fertilizer 6
+Fertilizer 12
 
 # ChildKeep
 
@@ -1104,8 +1104,8 @@ EnergyElectric 4
 WorkEducational 4
 WorkMaintenance 1
 =
-Childcare 5
-WaterSewage 3
+Childcare 10
+WaterSewage 6
 
 # WaterTreatment
 
@@ -1253,7 +1253,7 @@ WaterSewage 5
 EnergyElectric 4
 WorkTechnical 3
 =
-WaterTechnical 4
+WaterTechnical 8
 
 ## Function
 
@@ -1262,4 +1262,4 @@ Name: Advanced
 WaterTechnical 5
 EnergyElectric 6
 =
-WaterPottable 4
+WaterPottable 8

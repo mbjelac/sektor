@@ -74,8 +74,8 @@ describe("createSektor", () => {
 
     expect(neededProperties.map(propertyName => ({
       property: propertyName,
-      lowestValue: Math.min(...sektorData.locationProperties[propertyName].flat()),
-    }))).toEqual(neededProperties.map(propertyName => ({ property: propertyName, lowestValue: 1 })));
+      everyLocationHasSome: sektorData.locationProperties[propertyName].flat().every(value => value > 0),
+    }))).toEqual(neededProperties.map(propertyName => ({ property: propertyName, everyLocationHasSome: true })));
   });
 
   it("requires more of a higher level than of a lower one", () => {
