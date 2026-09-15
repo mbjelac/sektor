@@ -6,7 +6,8 @@
     - each list item has:
         - player name
             - white
-        - total player score (sum of all their sektor scores)
+        - total player score
+            - this is the sum of all player's Done sektor scores
             - pink
         - level of player
             - lime
