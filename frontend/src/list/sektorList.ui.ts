@@ -1,7 +1,7 @@
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, SektorListItem } from "./sektorList.api";
-import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, starIcon, userIcon } from "../icons";
+import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, sunIcon, userIcon } from "../icons";
 import { SektorStatus } from "../sektor/Sektor";
 import { getSektorOwner, removeSektorOwner, setSektorOwner } from "../sektor/sektorOwner.api";
 import { getGivenSektorName, getTakenSektorNames, setGivenSektorName } from "../sektor/sektorName.api";
@@ -54,23 +54,25 @@ function createHeader(): HTMLElement {
 
   const level = document.createElement("span");
   level.className = "sektor-list-level";
-  level.textContent = "Level";
+  level.innerHTML = puzzlePieceIcon;
+  level.title = "Difficulty";
   header.appendChild(level);
 
   const owner = document.createElement("span");
   owner.className = "sektor-list-owner";
   owner.innerHTML = userIcon;
-  owner.title = "Owner";
+  owner.title = "Owned by";
   header.appendChild(owner);
 
   const status = document.createElement("span");
   status.className = "sektor-list-status";
-  status.textContent = "Status";
+  status.innerHTML = sunIcon;
+  status.title = "Status";
   header.appendChild(status);
 
-  header.appendChild(createHeaderIcon(buildingOfficeIcon));
-  header.appendChild(createHeaderIcon(arrowDownTrayIcon));
-  header.appendChild(createHeaderIcon(arrowUpTrayIcon));
+  header.appendChild(createHeaderIcon(buildingOfficeIcon, "Buildings"));
+  header.appendChild(createHeaderIcon(arrowDownTrayIcon, "Imports"));
+  header.appendChild(createHeaderIcon(arrowUpTrayIcon, "Exports"));
   header.appendChild(createHeaderIcon(starIcon, "Score"));
 
   header.appendChild(document.createElement("span"));

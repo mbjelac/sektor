@@ -95,21 +95,21 @@ is a performance optimization only, and is not done here.
 
 #1 [done] Sektors have a level
 - [done] add level to SektorData
-    - required, every sektor has one
-    - a whole number, the lowest being the first level in levels.md
+    - [done] required, every sektor has one
+    - [done] a whole number, the lowest being the first level in levels.md
 - [done] set a level in the scratch sektors sektor_B.json and sektor_C.json so they stay valid
 - [done] saveState in sektor.ui.ts rebuilds SektorData from scratch on every save, so make it keep the sektor's level
 - [done] show the level of each sektor in the sektor list
     - [done] own column, after the name
-    - header: heroicon puzzle-piece
-        - tooltip: "Difficulty"
-    - existing header tooltips:
-        - owner: "Owned by"
-        - number of buildings: "Buildings"
-        - number of imports: "Imports"
-        - number of exports: "Exports"
-        - status: "Status"
-    - status header: no text, just icon heroicon "sun"
+    - [done] header: heroicon puzzle-piece
+        - [done] tooltip: "Difficulty"
+    - [done] existing header tooltips:
+        - [done] owner: "Owned by"
+        - [done] number of buildings: "Buildings"
+        - [done] number of imports: "Imports"
+        - [done] number of exports: "Exports"
+        - [done] status: "Status"
+    - [done] status header: no text, just icon heroicon "sun"
 
 #2 [done] Sektors have a palette of allowed buildings
 - [done] add allowedBuildings to SektorData

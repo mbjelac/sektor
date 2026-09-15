@@ -708,9 +708,19 @@ body > main {
   font-size: 12px;
 }
 
-/* The header of the column carries the same washed out look as the other column headers. */
+/* The header of the column carries the same washed out look as the other column headers, with its
+   icon over the numbers it names. */
 .sektor-list-header .sektor-list-level {
   color: inherit;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* The status column is named by a picture, which stands where the words below it begin. */
+.sektor-list-header .sektor-list-status {
+  display: flex;
+  align-items: center;
 }
 
 .sektor-list-owner {
