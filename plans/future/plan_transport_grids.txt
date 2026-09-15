@@ -48,3 +48,23 @@ Transport is done in 3 types:
 - each new transport hub decreases that penalty further
 - visually, transport hubs have either elevated train lines going into them or deep tunnels (deeper than all local lines) which then climb above the surface outside of the sektor
     - if needed to be depicted visually, elevated train lines are more effective and are different from underground lines
+
+
+
+Simplified underground map:
+- it is composed of intersections and edges
+- each crossroad is also a crossroad above, having 4 squares (except on edges)
+- each edge is an edge of one or two squares in the map
+- an intersection may or may not have a station
+- an edge may or may not have a tunnel
+
++-O-+-+-+-+-O
+|
++-O-+-+-O-+ +
+  |       |
++ +-+-O + + +
+  |   |   |
++-+ + +-+-O +
+|
++-+-+-O + + +
+
