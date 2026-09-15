@@ -32,6 +32,7 @@
     - player: user icon
     - score: star icon
     - level: heroicon trophy
+        - tooltip "Level"
 - add new column: "points to next level"
     - value: next level threshold minus player's score
     - text yellow
