@@ -101,6 +101,15 @@ is a performance optimization only, and is not done here.
 - [done] saveState in sektor.ui.ts rebuilds SektorData from scratch on every save, so make it keep the sektor's level
 - [done] show the level of each sektor in the sektor list
     - [done] own column, after the name
+    - header: heroicon puzzle-piece
+        - tooltip: "Difficulty"
+    - existing header tooltips:
+        - owner: "Owned by"
+        - number of buildings: "Buildings"
+        - number of imports: "Imports"
+        - number of exports: "Exports"
+        - status: "Status"
+    - status header: no text, just icon heroicon "sun"
 
 #2 [done] Sektors have a palette of allowed buildings
 - [done] add allowedBuildings to SektorData
