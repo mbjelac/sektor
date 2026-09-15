@@ -108,4 +108,10 @@ On the list, all players see all sektors, but they can only edit their own sekto
 #10 Allowed buildings must be visible in view mode
 - show building toolbar in view mode
     - can be scrolled
-    - selecting buildings (including Destroy) not enabled
+    - selecting buildings enabled
+        - show function panel
+        - Destroy is exception - not enabled to select
+    - clicking on map not enabled
+        - if building selected and player clicks on map
+            - show error "noOwnership"
+            - same error behaviour as other map errors
