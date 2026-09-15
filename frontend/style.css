@@ -799,7 +799,7 @@ body > main {
   max-width: 420px;
   justify-self: center;
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto auto auto;
   align-content: start;
   gap: 8px 12px;
 }
@@ -846,14 +846,32 @@ body > main {
   color: lime;
   font-family: sans-serif;
   font-size: 12px;
+  font-weight: bold;
+}
+
+.leaderboard-points {
+  min-width: 40px;
+  text-align: right;
+  color: yellow;
+  font-family: sans-serif;
+  font-size: 12px;
 }
 
 /* The headers name the columns without taking on the colours of what stands under them. */
 .leaderboard-header .leaderboard-name,
 .leaderboard-header .leaderboard-score,
-.leaderboard-header .leaderboard-level {
+.leaderboard-header .leaderboard-level,
+.leaderboard-header .leaderboard-points {
   color: inherit;
   font-size: 12px;
+}
+
+/* An icon naming a column sits at the end of it, above the numbers it stands for. */
+.leaderboard-header .leaderboard-score,
+.leaderboard-header .leaderboard-level,
+.leaderboard-header .leaderboard-points {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .panel-title {

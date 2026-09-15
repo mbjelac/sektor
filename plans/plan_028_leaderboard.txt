@@ -27,14 +27,15 @@
     - [done] remove the log2 formula from playerLevel.ts
     - [done] unit tests with a made-up table
 
-#3 Improve leaderboard UI
-- list header:
-    - player: user icon
-    - score: star icon
-    - level: heroicon trophy
-        - tooltip "Level"
-- add new column: "points to next level"
-    - value: next level threshold minus player's score
-    - text yellow
-    - header: heroicon arrow-up
-    - header tooltip "Points to next level"
+#3 [done] Improve leaderboard UI
+- [done] list header:
+    - [done] player: user icon
+    - [done] score: star icon
+    - [done] level: heroicon trophy
+        - [done] tooltip "Level"
+- [done] add new column: "points to next level"
+    - [done] value: next level threshold minus player's score
+    - [done] text yellow
+    - [done] header: heroicon arrow-up
+    - [done] header tooltip "Points to next level"
+- [done] level text bold
