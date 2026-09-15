@@ -14,6 +14,7 @@ import { renderLeaderboard } from "./leaderboard.ui";
 import { scoreColor } from "../score";
 import { formatNumber } from "../formatNumber";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
+import { showPurgeButton } from "./purgeButton.ui";
 
 // A player may only work on so many sektors at a time, so that they finish the ones they have
 // claimed before claiming more.
@@ -234,11 +235,18 @@ showUser();
 const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
 
 renderList();
+showPurgeButton(refreshPage);
 if (isTestMode) {
   // A test drives the making of a sektor itself rather than sitting out the ten seconds between
   // one round of it and the next.
   (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded = createSektorIfNeeded;
 } else {
-  startCreatingSektors(renderList);
+  startCreatingSektors(refreshPage);
 }
 renderLeaderboard();
+
+// The standings are worked out from the sektors, so they are drawn anew whenever the sektors change.
+function refreshPage() {
+  renderList();
+  renderLeaderboard();
+}

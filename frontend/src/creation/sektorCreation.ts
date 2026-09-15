@@ -13,10 +13,19 @@ const CREATION_INTERVAL_MILLISECONDS = 10000;
 // made once there are this many waiting.
 const MAXIMUM_UNCLAIMED_EMPTY_SEKTORS = 10;
 
+let creationTimer: ReturnType<typeof setInterval> | null = null;
+
 export function startCreatingSektors(onSektorCreated: () => void) {
-  setInterval(() => {
+  creationTimer = setInterval(() => {
     if (createSektorIfNeeded()) onSektorCreated();
   }, CREATION_INTERVAL_MILLISECONDS);
+}
+
+// Stopping is harmless when nothing was ever started, which is the case on a page opened by a test.
+export function stopCreatingSektors() {
+  if (creationTimer === null) return;
+  clearInterval(creationTimer);
+  creationTimer = null;
 }
 
 // Returns whether a sektor was made, so that a list already on screen can be drawn again.

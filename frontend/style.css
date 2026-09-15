@@ -989,6 +989,29 @@ body > main {
   color: #fff;
 }
 
+/* Sits under the player's name in the corner, where it is out of the way of everything but plain
+   to see, looking as dangerous as it is. */
+#purge-button {
+  position: fixed;
+  top: 52px;
+  right: 16px;
+  z-index: 200;
+  background: #e00000;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+#purge-button:hover {
+  background: #ff1a1a;
+}
+
 #user-display {
   position: fixed;
   top: 16px;

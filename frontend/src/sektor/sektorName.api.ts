@@ -22,6 +22,10 @@ export function getTakenSektorNames(claimedSektorName: string): string[] {
     .map(sektor => getGivenSektorName(sektor.name) ?? sektor.name);
 }
 
+export function removeAllGivenSektorNames(): void {
+  localStorage.removeItem(SEKTOR_NAMES_STORAGE_KEY);
+}
+
 function getGivenSektorNames(): { [sektorName: string]: string } {
   const stored = localStorage.getItem(SEKTOR_NAMES_STORAGE_KEY);
   if (!stored) return {};

@@ -7,6 +7,8 @@ import { arrowUpIcon, starIcon, trophyIcon, userIcon } from "../icons";
 // where the sektors they are working on put them among the others.
 export function renderLeaderboard() {
   const container = document.getElementById("leaderboard")!;
+  // Drawn again whenever the sektors change, so what stands there is cleared away first.
+  container.replaceChildren();
 
   container.appendChild(createLeaderboardHeader());
 

@@ -16,6 +16,10 @@ export function removeSektorOwner(sektorName: string): void {
   localStorage.setItem(SEKTOR_OWNERS_STORAGE_KEY, JSON.stringify(sektorOwners));
 }
 
+export function removeAllSektorOwners(): void {
+  localStorage.removeItem(SEKTOR_OWNERS_STORAGE_KEY);
+}
+
 function getSektorOwners(): { [sektorName: string]: string } {
   const stored = localStorage.getItem(SEKTOR_OWNERS_STORAGE_KEY);
   if (!stored) return {};

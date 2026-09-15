@@ -13,3 +13,7 @@ export function addSektorToList(sektorName: string): void {
   sektorList.push({ name: sektorName });
   localStorage.setItem("sektors", JSON.stringify(sektorList));
 }
+
+export function clearSektorList(): void {
+  localStorage.removeItem("sektors");
+}

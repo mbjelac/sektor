@@ -292,3 +292,29 @@ test("stops making sektors while ten unclaimed empty ones are waiting", async ({
 
   expect(await createSektorNow(page)).toEqual(false);
 });
+
+test("purges every sektor there is when PURGE is clicked", async ({ page }) => {
+  await page.goto("/?test=true");
+  await createSektorNow(page);
+
+  await page.locator("#purge-button").click();
+
+  const storage = await page.evaluate(() => ({
+    sektors: localStorage.getItem("sektors"),
+    owners: localStorage.getItem("sektorOwners"),
+    names: localStorage.getItem("sektorNames"),
+    sektorDataKeys: Object.keys(localStorage).filter(key => key.startsWith("sektor_")),
+    rows: document.querySelectorAll(".sektor-list-item").length,
+    players: document.querySelectorAll(".leaderboard-item").length,
+  }));
+
+  expect(storage).toEqual({
+    sektors: null, owners: null, names: null, sektorDataKeys: [], rows: 0, players: 0,
+  });
+});
+
+test("shows the purge button on the list page", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await expect(page.locator("#purge-button")).toHaveScreenshot("purge-button.png", { maxDiffPixelRatio: 0 });
+});
