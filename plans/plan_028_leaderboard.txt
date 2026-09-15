@@ -26,3 +26,14 @@
     - [done] keep the signature so leaderboard.ui.ts does not change
     - [done] remove the log2 formula from playerLevel.ts
     - [done] unit tests with a made-up table
+
+#3 Improve leaderboard UI
+- list header:
+    - player: user icon
+    - score: star icon
+    - level: heroicon trophy
+- add new column: "points to next level"
+    - value: next level threshold minus player's score
+    - text yellow
+    - header: heroicon arrow-up
+    - header tooltip "Points to next level"
