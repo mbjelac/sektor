@@ -53,8 +53,8 @@ export interface CreateBuildingResult {
   addedBuildings: Building[];
 }
 
-const SCORE_PER_UNIT = 2;
-const SCORE_PER_REQUIRED_UNIT = 3;
+export const SCORE_PER_UNIT = 2;
+export const SCORE_PER_REQUIRED_UNIT = 3;
 
 export class Sektor {
   private buildings: Building[] = [];

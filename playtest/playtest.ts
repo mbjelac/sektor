@@ -1,68 +1,51 @@
-import { createSektor } from "../frontend/src/creation/createSektor";
+import { mkdirSync, writeFileSync } from "fs";
+import { execSync } from "child_process";
+import { join } from "path";
 import { buildingDefinitions, localResources, negativeScoringResources } from "./assets";
-import { PlayResult, playSektor } from "./playSektor";
+import { buildReport } from "./report";
 
-// Generates sektors the way the game does and plays each one as well as a patient player would, so
-// that "is this too hard" can be answered by measuring rather than by arguing about the numbers in
-// buildings.md. Run it before and after changing anything in the economy.
+// Measures what the numbers of the game currently add up to, by generating sektors the way the game
+// does and playing each one as well as it can. Run it before and after changing anything which
+// touches the economy, and hold the two reports against each other.
 //
-//   npm run playtest                          levels 1-6, 20 sektors each
-//   npm run playtest -- --levels 1,4 --runs 5
-//   npm run playtest -- --levels 3 --runs 1 --detail
+//   npm run playtest                                   print a report
+//   npm run playtest -- --save                         and keep it under reports/
+//   npm run playtest -- --levels 1,4 --runs 5 --seed 7
 function main() {
   const options = readOptions(process.argv.slice(2));
+  const report = buildReport(options, buildingDefinitions, localResources, negativeScoringResources);
 
-  for (const level of options.levels) {
-    const results: PlayResult[] = [];
-    for (let run = 0; run < options.runs; run++) {
-      const sektorData = createSektor(level, buildingDefinitions, localResources, negativeScoringResources);
-      const result = playSektor(sektorData, buildingDefinitions, localResources, negativeScoringResources);
-      results.push(result);
-      if (options.detail) printDetail(sektorData.allowedBuildings, sektorData.importRestrictions, result);
-    }
-    printSummary(level, results);
+  console.log(report);
+
+  if (options.save) {
+    const directory = join(import.meta.dirname, "reports");
+    mkdirSync(directory, { recursive: true });
+    const path = join(directory, `${new Date().toISOString().slice(0, 10)}-${commitHash()}.md`);
+    writeFileSync(path, report);
+    console.log(`\nkept as ${path}`);
   }
 }
 
-function readOptions(args: string[]): { levels: number[]; runs: number; detail: boolean } {
+function readOptions(args: string[]) {
   const value = (name: string) => {
     const index = args.indexOf(`--${name}`);
     return index >= 0 ? args[index + 1] : undefined;
   };
   return {
-    levels: (value("levels") ?? "1,2,3,4,5,6").split(",").map(Number),
-    runs: Number(value("runs") ?? 20),
-    detail: args.includes("--detail"),
+    levels: (value("levels") ?? "1,2,3,4,5,6,8,10").split(",").map(Number),
+    runs: Number(value("runs") ?? 30),
+    // Fixed by default, so that two reports differ only where the game differs.
+    seed: Number(value("seed") ?? 1),
+    save: args.includes("--save"),
   };
 }
 
-function printSummary(level: number, results: PlayResult[]) {
-  const scores = results.map(result => result.score).sort((a, b) => a - b);
-  const finished = results.filter(result => result.status === "Done").length;
-  const losses = results.filter(result => result.score < 0).length;
-  const buildings = results.map(result => result.buildingCount).sort((a, b) => a - b);
-
-  console.log(
-    `level ${level}  `
-    + `finished ${finished}/${results.length}  `
-    + `score worst ${scores[0].toFixed(0)} / median ${median(scores).toFixed(0)} / best ${scores[scores.length - 1].toFixed(0)}  `
-    + `left the player worse off ${losses}/${results.length}  `
-    + `buildings median ${median(buildings).toFixed(0)}`
-  );
-}
-
-function printDetail(allowedBuildings: string[], importRestrictions: { name: string; value: number }[], result: PlayResult) {
-  console.log(`\n--- level ${result.level}: ${result.status}, score ${result.score.toFixed(1)}`);
-  console.log(`  allowed    ${allowedBuildings.join(", ")}`);
-  console.log(`  restricted ${importRestrictions.map(r => `${r.name}<=${r.value}`).join(", ") || "(none)"}`);
-  console.log(`  required   ${result.exportRequirements.map(r => `${r.name} ${r.exported.toFixed(1)}/${r.value}`).join(", ")}`);
-  console.log(`  built      ${result.buildingsPlaced.map(b => `${b.type} x${b.count}`).join(", ") || "(nothing)"}`);
-  console.log(`  imported   ${result.imports.map(i => `${i.name} ${i.value.toFixed(1)} (${i.score.toFixed(0)})`).join(", ") || "(nothing)"}`);
-  console.log(`  exported   ${result.exports.map(e => `${e.name} ${e.value.toFixed(1)} (${e.score.toFixed(0)})`).join(", ") || "(nothing)"}`);
-}
-
-function median(sortedNumbers: number[]): number {
-  return sortedNumbers[Math.floor(sortedNumbers.length / 2)];
+function commitHash(): string {
+  try {
+    return execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim();
+  } catch {
+    return "unknown";
+  }
 }
 
 main();

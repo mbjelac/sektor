@@ -29,6 +29,32 @@ export interface PlayResult {
 // over and over, until nothing improves it any further, then try every function switch. It finds a
 // good sektor, not the best possible one, so what it reports is a floor on what a player could
 // score — which is what a difficulty question needs. A ceiling would need a real solver.
+// What the sektor scores for a player who ignores what it asks for and simply builds whatever pays,
+// keeping to the restrictions. Held against what finishing it properly scores, it says whether the
+// game rewards doing the task or ignoring it.
+export function farmSektor(
+  sektorData: SektorData,
+  buildingDefinitions: BuildingDefinition[],
+  localResources: string[],
+  negativeScoringResources: string[],
+): number {
+  const locations = locationPropertiesToLocations(sektorData.locationProperties);
+  const sektor = new Sektor(
+    locations,
+    buildingDefinitions,
+    { importRestrictions: sektorData.importRestrictions, exportRequirements: [] },
+    negativeScoringResources,
+    localResources,
+    sektorData.allowedBuildings,
+  );
+
+  placeBuildings(sektor, { ...sektorData, exportRequirements: [] }, buildingDefinitions, locations.length);
+
+  const sektorState = sektor.getSektorState();
+  if (sektorState.status === "RestrictionsExceeded") return 0;
+  return [...sektorState.imports, ...sektorState.exports].reduce((total, throughput) => total + throughput.score, 0);
+}
+
 export function playSektor(
   sektorData: SektorData,
   buildingDefinitions: BuildingDefinition[],
@@ -187,7 +213,7 @@ function switchFunctionsWhileItHelps(sektor: Sektor, sektorData: SektorData, bui
 
 // What the sektor is worth to a player working towards finishing it: what it scores, less what is
 // still missing from what it has to export, less whatever it brings in over what it is allowed to.
-function valueOf(sektor: Sektor, sektorData: SektorData): number {
+function valueOf(sektor: Sektor, sektorData: SektorData, shortfallPenalty = SHORTFALL_PENALTY): number {
   const sektorState = sektor.getSektorState();
 
   const score = [...sektorState.imports, ...sektorState.exports]
@@ -203,7 +229,7 @@ function valueOf(sektor: Sektor, sektorData: SektorData): number {
     return total + Math.max(0, imported - restriction.value);
   }, 0);
 
-  return score - shortfall * SHORTFALL_PENALTY - excess * EXCESS_PENALTY;
+  return score - shortfall * shortfallPenalty - excess * EXCESS_PENALTY;
 }
 
 function report(sektor: Sektor, sektorData: SektorData): PlayResult {
