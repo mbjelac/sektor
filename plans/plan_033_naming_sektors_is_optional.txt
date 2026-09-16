@@ -14,8 +14,7 @@
 
 #3 Claiming sektor from the sektor map does not require naming
 - in sektor map, when Claim button is clicked do not show name dialog
-- instead, show "Do you want to claim sektor <name>?"
-    - Yes, No
+- instead, show claim dialog, same as in #2
     - if Yes clicked, assign player to sektor and open sektor map in edit mode
 
 #4 Player can rename sektor within map
