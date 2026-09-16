@@ -29,5 +29,5 @@
 
 #5 Improve list visibility
 - Claim button should be in same place as Abandon button
-- arrow icon for entering a sektor should be the last item in row
+- arrow icon for entering a sektor should be after sektor name
 - if noone owns a sektor, owner field should be empty
