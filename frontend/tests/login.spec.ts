@@ -1,5 +1,13 @@
 import { test, expect } from "@playwright/test";
 
+// The sektor list makes sektors of its own while it is open, each of them named. The name is laid
+// out here for it to take, so that no test of the login reaches over the network for one.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as unknown as { preparedSektorNames: string[] }).preparedSektorNames = ["quiet-harvest"];
+  });
+});
+
 test("routes the sektor list to the login page when no player is logged in", async ({ page }) => {
   await page.goto("/");
 

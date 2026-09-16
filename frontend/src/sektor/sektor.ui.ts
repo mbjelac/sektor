@@ -11,7 +11,7 @@ import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
 import { showDoneDialog } from "./doneDialog.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { LOWEST_LEVEL } from "../playerLevel";
-import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
+import { getGivenSektorName, getSektorOwner, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
@@ -22,7 +22,7 @@ import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { LARGEST_SEKTOR_SIZE } from "../../../shared/sektorSizes";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
-import { showNameDialog } from "../nameDialog.ui";
+import { showClaimDialog } from "../claimDialog.ui";
 import { showUser } from "../login/userDisplay.ui";
 
 requireLogin();
@@ -73,14 +73,12 @@ function showSektorName() {
   document.getElementById("left-panels")!.prepend(header);
 }
 
-// The sektor is claimed without leaving the map, which then turns from being looked at into
-// being built on.
+// A sektor carries the name it was made with, so the player is only asked whether they want it.
+// It is claimed without leaving the map, which then turns from being looked at into being built on.
 function claimSektor() {
-  showNameDialog({
-    name: getGivenSektorName(sektorId!) ?? "",
-    takenNames: getTakenSektorNames(sektorId!),
-    onNamed: givenName => {
-      setGivenSektorName(sektorId!, givenName);
+  showClaimDialog({
+    sektorName: getGivenSektorName(sektorId!) ?? sektorId!,
+    onConfirmed: () => {
       setSektorOwner(sektorId!, getUsername()!);
       showSektorName();
       showSektorOwner();

@@ -12,9 +12,9 @@
     - Yes, No
     - if Yes clicked, assign player to sektor and open sektor map in edit mode
 
-#3 Claiming sektor from the sektor map does not require naming
-- in sektor map, when Claim button is clicked do not show name dialog
-- instead, show claim dialog, same as in #2
+#3 [done] Claiming sektor from the sektor map does not require naming
+- [done] in sektor map, when Claim button is clicked do not show name dialog
+- [done] instead, show claim dialog, same as in #2
     - if Yes clicked, assign player to sektor and open sektor map in edit mode
 
 #4 Player can rename sektor within map

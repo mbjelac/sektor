@@ -153,24 +153,38 @@ test("offers an unclaimed sektor for claiming", async ({ page }) => {
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-unclaimed.png", { maxDiffPixelRatio: 0 });
 });
 
-test("asks for a name when a sektor is claimed from the map", async ({ page }) => {
+// A sektor already has a name when it is offered, so claiming it asks for nothing but a yes.
+test("asks the player to confirm claiming a sektor from the map", async ({ page }) => {
   await storeSektor(page, "Gamma", null);
+  await nameStoredSektor(page, "Gamma", "Sunset Flats");
   await page.goto("/sektor.html?id=Gamma");
 
   await page.locator("#map-claim-button").click();
 
-  await expect(page.locator("#name-dialog")).toHaveScreenshot("name-dialog-from-map.png", { maxDiffPixelRatio: 0 });
+  await expect(page.locator("#claim-dialog")).toHaveScreenshot("claim-dialog-from-map.png", { maxDiffPixelRatio: 0 });
 });
 
 test("makes the player the owner of a sektor claimed from the map", async ({ page }) => {
-  await claimFromMap(page, "Gamma", "Sunset Flats");
+  await claimFromMap(page, "Gamma");
 
   const sektors = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
   expect(sektors).toEqual([{ id: "Gamma", name: "Sunset Flats", owner: CURRENT_PLAYER }]);
 });
 
+test("leaves the sektor unclaimed when claiming from the map is cancelled", async ({ page }) => {
+  await storeSektor(page, "Gamma", null);
+  await nameStoredSektor(page, "Gamma", "Sunset Flats");
+  await page.goto("/sektor.html?id=Gamma");
+  await page.locator("#map-claim-button").click();
+
+  await page.locator("#claim-no-button").click();
+
+  const sektors = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
+  expect(sektors).toEqual([{ id: "Gamma", name: "Sunset Flats", owner: null }]);
+});
+
 test("offers the whole toolbar for building once the sektor is claimed", async ({ page }) => {
-  await claimFromMap(page, "Gamma", "Sunset Flats");
+  await claimFromMap(page, "Gamma");
 
   const toolbar = await page.evaluate(() => ({
     destructionTools: document.querySelectorAll('.building-item[data-building-name="Destroy"]').length,
@@ -180,19 +194,19 @@ test("offers the whole toolbar for building once the sektor is claimed", async (
   expect(toolbar).toEqual({ destructionTools: 1, toolsWhichCannotBeSelected: 0 });
 });
 
-test("shows the claimed sektor under its new name, with nothing left to claim", async ({ page }) => {
-  await claimFromMap(page, "Gamma", "Sunset Flats");
+test("shows the claimed sektor under the name it carries, with nothing left to claim", async ({ page }) => {
+  await claimFromMap(page, "Gamma");
 
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-claimed.png", { maxDiffPixelRatio: 0 });
 });
 
-async function claimFromMap(page: import("@playwright/test").Page, sektorId: string, givenName: string) {
+async function claimFromMap(page: import("@playwright/test").Page, sektorId: string) {
   await storeSektor(page, sektorId, null);
+  await nameStoredSektor(page, sektorId, "Sunset Flats");
   await page.goto(`/sektor.html?id=${sektorId}`);
   await page.locator("#map-claim-button").click();
-  await page.locator("#sektor-name-input").fill(givenName);
-  await page.locator("#name-ok-button").click();
-  await page.locator("#name-dialog").waitFor({ state: "detached" });
+  await page.locator("#claim-yes-button").click();
+  await page.locator("#claim-dialog").waitFor({ state: "detached" });
 }
 
 test("draws the buildings of a sektor shown in view mode", async ({ page }) => {

@@ -2,12 +2,12 @@ import { test, expect, Page } from "@playwright/test";
 
 const CURRENT_PLAYER = "Tester";
 const OTHER_PLAYER = "Ana";
-// The two words a made sektor is named after. The word service is answered by the test rather than
-// over the network, so that the name of a made sektor is one the test knows.
-const SEKTOR_NAME_WORDS = ["quiet", "harvest"];
+// The name every sektor made by a test is given. It is laid out for the page to take, so that no
+// test waits on the word service or is surprised by what it answers.
+const PREPARED_SEKTOR_NAME = "quiet-harvest";
 
 test.beforeEach(async ({ page }) => {
-  await page.route("https://random-word-api.herokuapp.com/**", route => route.fulfill({ json: SEKTOR_NAME_WORDS }));
+  await prepareSektorNames(page, [PREPARED_SEKTOR_NAME]);
   // Stored from the login page, so that the storage is not put back to these sektors again on
   // every later navigation.
   await page.goto("/login.html");
@@ -21,6 +21,15 @@ test.beforeEach(async ({ page }) => {
   }, [CURRENT_PLAYER, OTHER_PLAYER]);
   await page.goto("/");
 });
+
+// The names a page makes sektors with, laid out before anything of it loads, as only a name put
+// there before the page runs can be taken by the first sektor it makes.
+function prepareSektorNames(page: Page, sektorNames: string[]) {
+  return page.addInitScript(
+    sektorNames => { (window as unknown as { preparedSektorNames: string[] }).preparedSektorNames = sektorNames; },
+    sektorNames,
+  );
+}
 
 test("shows the owner of every sektor", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-owners.png", { maxDiffPixelRatio: 0 });
@@ -275,7 +284,7 @@ test("makes a new sektor and puts it on the list", async ({ page }) => {
 });
 
 // A sektor is made with a name of its own, so that a player never has to think one up.
-test("names every sektor it makes after two words", async ({ page }) => {
+test("names every sektor it makes", async ({ page }) => {
   await page.goto("/?test=true");
 
   await createSektorNow(page);
@@ -286,8 +295,22 @@ test("names every sektor it makes after two words", async ({ page }) => {
       { id: "Alpha", name: "Alpha" },
       { id: "Beta", name: "Beta" },
       { id: "Gamma", name: null },
-      { id: "0", name: "quiet-harvest" },
+      { id: "0", name: PREPARED_SEKTOR_NAME },
     ]);
+});
+
+// The one test which goes the way the game itself goes: no name is laid out for the page, so the
+// word service is asked for two words, which the test answers in place of the network.
+test("names a sektor after two words of the word service", async ({ page }) => {
+  await prepareSektorNames(page, []);
+  await page.route("https://random-word-api.herokuapp.com/**", route => route.fulfill({ json: ["quiet", "harvest"] }));
+  await page.goto("/?test=true");
+
+  await createSektorNow(page);
+
+  const sektors = await getStoredSektors(page);
+  expect(sektors.map((sektor: { id: string; name: string | null }) => sektor.name))
+    .toEqual(["Alpha", "Beta", null, "quiet-harvest"]);
 });
 
 test("numbers every sektor it makes above the last one", async ({ page }) => {
