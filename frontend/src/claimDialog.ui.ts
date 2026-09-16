@@ -26,7 +26,7 @@ export function showClaimDialog({ sektorName, onConfirmed }: {
   dialog.appendChild(question);
 
   const buttons = document.createElement("div");
-  buttons.className = "dialog-buttons claim-dialog-buttons";
+  buttons.className = "dialog-buttons dialog-buttons-centered";
   dialog.appendChild(buttons);
 
   const yesButton = document.createElement("button");

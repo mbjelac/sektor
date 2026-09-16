@@ -1151,16 +1151,17 @@ body > main {
     justify-content: flex-end;
 }
 
-/* The claim dialog is set out down the middle, with the two answers wide apart so that neither of
-   them is clicked for the other. */
+/* Answers set out down the middle of a dialog, wide apart so that neither of them is clicked for
+   the other. */
+.dialog-buttons-centered {
+    justify-content: center;
+    gap: 60px;
+}
+
+/* The claim dialog reads down the middle, above its answers. */
 .claim-dialog-title,
 .claim-dialog-question {
     text-align: center;
-}
-
-.claim-dialog-buttons {
-    justify-content: center;
-    gap: 60px;
 }
 
 .dialog-button {

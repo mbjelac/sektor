@@ -22,7 +22,7 @@ export function showDoneDialog({ username, sektorName, onLeave }: {
   dialog.appendChild(message);
 
   const buttons = document.createElement("div");
-  buttons.className = "dialog-buttons";
+  buttons.className = "dialog-buttons dialog-buttons-centered";
   dialog.appendChild(buttons);
 
   const leaveButton = document.createElement("button");
