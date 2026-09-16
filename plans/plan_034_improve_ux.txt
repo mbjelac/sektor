@@ -9,6 +9,10 @@
     - do not flash status panel
 
 #3 More often than not after constructing a building player does not want to construct another bulding of that type
-- when building constructed, deselect building from toolbar
+- [done] when building constructed, deselect building from toolbar
     - keep constructed building selected on map
     - exception: if player constructs a building while holding SHIFT, do not deselect building from toolbar
+
+#4 Buildings without displayed floor look weird
+- when building specifies floor should not be displayed, draw only floor wireframe
+    - like floor panels completely transparent
