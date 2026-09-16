@@ -141,6 +141,7 @@ describe("createSektor", () => {
       { property: "soil", rows: sektorData.size, rowLengths: [sektorData.size] },
       { property: "groundwater", rows: sektorData.size, rowLengths: [sektorData.size] },
       { property: "rock", rows: sektorData.size, rowLengths: [sektorData.size] },
+      { property: "altitude", rows: sektorData.size, rowLengths: [sektorData.size] },
     ]);
   });
 

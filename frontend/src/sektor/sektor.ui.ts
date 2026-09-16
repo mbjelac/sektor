@@ -19,6 +19,7 @@ import { arrowDownTrayIcon, arrowLeftIcon, arrowsPointingOutIcon, arrowUpTrayIco
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
+import { ALTITUDE_PROPERTY, MAX_ALTITUDE, MIN_ALTITUDE } from "../../../shared/altitude";
 import { LARGEST_SEKTOR_SIZE, sektorSizeName } from "../../../shared/sektorSizes";
 import { displayedSektorStatus, sektorStatusColor, sektorStatusText } from "../sektorStatus";
 import { getUsername } from "../login/login.api";
@@ -188,9 +189,21 @@ function createTestLocations(gridSize: number): Location[][] {
         ore: ((x * 7 + z * 41) % propertyValueCount) + MODIFIER_MIN,
         insolation: ((x * 29 + z * 11) % propertyValueCount) + MODIFIER_MIN,
         wind: ((x * 37 + z * 19) % propertyValueCount) + MODIFIER_MIN,
+        // Half the test map is flat ground and the rest rises, the same way every time, so that
+        // the tests see hills without seeing different ones on every run.
+        altitude: testAltitude(x, z),
       },
     }))
   );
+}
+
+// Ground which the pattern leaves in its lower half lies flat, and the rest of it stands anywhere
+// up to the highest there is.
+function testAltitude(x: number, z: number): number {
+  const altitudeSteps = MAX_ALTITUDE - MIN_ALTITUDE;
+  const pattern = (x * 17 + z * 19) % (2 * altitudeSteps + 2);
+  if (pattern < altitudeSteps + 1) return MIN_ALTITUDE;
+  return MIN_ALTITUDE + 1 + (pattern % altitudeSteps);
 }
 
 function getLocations(): Location[][] {
@@ -513,7 +526,7 @@ function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number
     p.noStroke();
     p.noLights();
     p.fill(color[0], color[1], color[2]);
-    p.translate(side.x, -FLOOR_HEIGHT / 2 - heightAboveFloor - thickness / 2, side.z);
+    p.translate(side.x, groundHeight(location.x, location.y) - FLOOR_HEIGHT / 2 - heightAboveFloor - thickness / 2, side.z);
     p.box(side.w, thickness, side.d);
     p.pop();
   }
@@ -531,7 +544,7 @@ function drawStarvationWarning(p: p5, location: BuildingLocation, cameraAngleY: 
   p.push();
   p.noStroke();
   p.noLights();
-  p.translate(wx, -STARVATION_WARNING_HEIGHT, wz);
+  p.translate(wx, groundHeight(location.x, location.y) - STARVATION_WARNING_HEIGHT, wz);
   p.rotateY(cameraAngleY);
 
   p.fill(255, 221, 0);
@@ -573,9 +586,9 @@ function rebakeFloorGeometry(p: p5) {
         const { wx, wz } = gridToWorld(x, z);
         p.translate(wx, 0, wz);
         if (isFloorSolid(x, z)) {
-          drawFloor(p, BLOCK_SIZE, soilFloorColor(locations[x][z].properties[FLOOR_PROPERTY] ?? 0));
+          drawFloor(p, BLOCK_SIZE, soilFloorColor(locations[x][z].properties[FLOOR_PROPERTY] ?? 0), altitudeAt(x, z));
         } else {
-          drawFloorWireframe(p, BLOCK_SIZE);
+          drawFloorWireframe(p, BLOCK_SIZE, altitudeAt(x, z));
         }
         p.pop();
       }
@@ -633,6 +646,17 @@ function gridToWorld(gx: number, gy: number): { wx: number; wz: number } {
     wx: (gx - sektorSize / 2 + 0.5) * BLOCK_SIZE,
     wz: (gy - sektorSize / 2 + 0.5) * BLOCK_SIZE,
   };
+}
+
+// How far above the lowest ground the top of a location stands. Everything which sits on a
+// location — the building on it, its highlight, the warning over it — is lifted by this much.
+// Screen up is negative, so higher ground has a smaller y.
+function groundHeight(gx: number, gy: number): number {
+  return -altitudeAt(gx, gy) * FLOOR_HEIGHT;
+}
+
+function altitudeAt(gx: number, gy: number): number {
+  return locations[gx]?.[gy]?.properties[ALTITUDE_PROPERTY] ?? MIN_ALTITUDE;
 }
 
 function rayAABB(
@@ -737,7 +761,7 @@ function findClickedTile(p: p5, currentZoom: number): { x: number; y: number } |
       const t = rayAABB(
         ox, oy, oz,
         fwdX, fwdY, fwdZ,
-        wx - HALF, -FLOOR_HEIGHT / 2, wz - HALF,
+        wx - HALF, groundHeight(gx, gy) - FLOOR_HEIGHT / 2, wz - HALF,
         wx + HALF, FLOOR_HEIGHT / 2, wz + HALF,
       );
       if (t !== null && t < bestT) {
@@ -1056,7 +1080,7 @@ const sektorUi = (p: p5) => {
     for (const building of placedBuildings) {
       p.push();
       const { wx, wz } = gridToWorld(building.location.x, building.location.y);
-      p.translate(wx, 0, wz);
+      p.translate(wx, groundHeight(building.location.x, building.location.y), wz);
       drawBakedBodies(p, bakedBuildingBodies(p, building.type, building.code), p.millis());
       p.pop();
     }
