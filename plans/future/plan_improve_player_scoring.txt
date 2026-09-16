@@ -1,0 +1,37 @@
+Abandon scoring imports & exports, including required exports, negative resources, etc.
+
+Scoring should be a mechanism for pushing a player to behave in a certain way.
+For example, instead of just plopping buildings, player has to investigate whether some buildings can do multiple work by turning on more functions (if the building has that feature).
+
+Player score is tied to a difficulty level:
+A player cannot jump from level 1 to level 5 by just playing a bunch of sektors on level 1.
+All sektors played on level 1 only contribute to player reaching level 2.
+All sektors on level 2 contribute just for level 3, etc.
+
+# Construction efficiency contributes to player score
+- each Done Sektor adds to player score with the construction efficiency score
+- construction efficiency is the number of empty squares on a Done sektor (how *little* buildings player constructed to pass requirements & restrictions)
+- each empty square equals X contruction efficiency points
+
+# Happiness contributes to player score
+- each Done Sektor adds to player score with the happiness score
+- happiness score is the total sum of Happiness resource output by all Habitats in the sektor
+
+# Player sees construction efficiency on sektor map
+- next to stats
+
+# Player sees happiness on sektor map
+- next to stats
+
+# Player sees their percentage for reaching next level
+- in leaderboard
+
+
+
+
+
+***
+
+Ideas for future scoring:
+- sociability: how many sektors (from *other* players) has the player connected to their own
+- ecology: how many forests (existing "buildings") has the player avoided clearing
