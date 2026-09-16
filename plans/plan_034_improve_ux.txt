@@ -34,5 +34,5 @@
         - total exports
 - [done] remove status from import/export panel
 
-#6 Player should see sektor list header when scrolling
-- float header on scroll
+#6 [done] Player should see sektor list header when scrolling
+- [done] float header on scroll

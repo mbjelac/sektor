@@ -733,7 +733,15 @@ body > main {
     color: #999;
     font-family: sans-serif;
     font-size: 12px;
-    padding: 0 13px;
+    /* The header says what each column holds, so it stays at the top of the sektors while they are
+       scrolled past it. The page's own background is drawn behind it, and the gap below it is
+       covered too, or a row would be seen through the space between the header and the first
+       sektor as it passes under. */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #1a1a1a;
+    padding: 0 13px 8px;
 }
 
 .sektor-list-item {

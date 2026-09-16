@@ -253,6 +253,24 @@ test("scrolls the sektors on their own, without a bar and without moving the sta
     .toEqual({ scrolledPast: true, taller: true, barWidth: 0, standingsMoved: false });
 });
 
+// The header says what each column of a sektor holds, so it stays at the top of the list while the
+// sektors are scrolled past it rather than going out of sight with the first of them.
+test("keeps the header in sight while the sektors are scrolled past it", async ({ page }) => {
+  await storeManySektors(page, 40);
+
+  await page.goto("/");
+
+  const listTop = (await page.locator("#sektor-list").boundingBox())!.y;
+  const headerTopBeforeScrolling = (await page.locator(".sektor-list-header").boundingBox())!.y;
+  await page.locator("#sektor-list").evaluate(sektorList => {
+    sektorList.scrollTop = sektorList.scrollHeight;
+  });
+  const headerTopAfterScrolling = (await page.locator(".sektor-list-header").boundingBox())!.y;
+
+  expect({ headerTopBeforeScrolling, headerTopAfterScrolling })
+    .toEqual({ headerTopBeforeScrolling: listTop, headerTopAfterScrolling: listTop });
+});
+
 // More sektors than any window shows at once, every one of them the player's own.
 async function storeManySektors(page: Page, sektorCount: number) {
   await page.evaluate(([currentPlayer, sektorCount]) => {
