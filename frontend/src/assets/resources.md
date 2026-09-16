@@ -24,4 +24,4 @@ Uranium ☢️ #ffb236
 Minerals 🪨 #d6713e
 WasteBio 🌿 #267530 negative
 Childcare 🧸 #ffa6e9 local
-
+WasteNuclear 🛢 #96230c negative
