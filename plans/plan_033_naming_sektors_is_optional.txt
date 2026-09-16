@@ -26,7 +26,7 @@
             - pre-filled with existing name
         - Rename, Cancel
 
-#5 Improve list visibility
-- Claim button should be in same place as Abandon button
-- arrow icon for entering a sektor should be after sektor name
-- if noone owns a sektor, owner field should be empty
+#5 [done] Improve list visibility
+- [done] Claim button should be in same place as Abandon button
+- [done] arrow icon for entering a sektor should be after sektor name
+- [done] if noone owns a sektor, owner field should be empty

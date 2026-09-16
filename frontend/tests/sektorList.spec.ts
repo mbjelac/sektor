@@ -229,6 +229,41 @@ async function storeSektors(page: Page, unfinishedSektorIds: string[], doneSekto
   }, [CURRENT_PLAYER, unfinishedSektorIds, doneSektorIds]);
 }
 
+// More sektors than the window holds are scrolled through on their own: the standings beside them
+// stay put, and no bar is drawn down the side of them.
+test("scrolls the sektors on their own, without a bar and without moving the standings", async ({ page }) => {
+  await storeManySektors(page, 40);
+
+  await page.goto("/");
+
+  const standingsBeforeScrolling = await page.locator("#leaderboard").boundingBox();
+  const scrolling = await page.locator("#sektor-list").evaluate(sektorList => {
+    sektorList.scrollTop = sektorList.scrollHeight;
+    return {
+      scrolledPast: sektorList.scrollTop > 0,
+      taller: sektorList.scrollHeight > sektorList.clientHeight,
+      // A bar takes room from the sektors beside it, so a list which is not narrower than it is
+      // wide has none drawn.
+      barWidth: sektorList.offsetWidth - sektorList.clientWidth,
+    };
+  });
+  const standingsAfterScrolling = await page.locator("#leaderboard").boundingBox();
+
+  expect({ ...scrolling, standingsMoved: standingsBeforeScrolling!.y !== standingsAfterScrolling!.y })
+    .toEqual({ scrolledPast: true, taller: true, barWidth: 0, standingsMoved: false });
+});
+
+// More sektors than any window shows at once, every one of them the player's own.
+async function storeManySektors(page: Page, sektorCount: number) {
+  await page.evaluate(([currentPlayer, sektorCount]) => {
+    localStorage.setItem("sektors", JSON.stringify(
+      Array.from({ length: sektorCount as number }, (_, sektorIndex) => ({
+        id: `sektor${sektorIndex}`, name: `sektor-${sektorIndex}`, owner: currentPlayer,
+      }))
+    ));
+  }, [CURRENT_PLAYER, sektorCount] as [string, number]);
+}
+
 test("shows every player on the leaderboard", async ({ page }) => {
   await storeMiningSektor(page, "Alpha", [20, 30, 40]);
   await storeMiningSektor(page, "Beta", [10]);

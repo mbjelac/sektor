@@ -81,7 +81,7 @@ function createHeader(): HTMLElement {
   header.appendChild(createHeaderIcon(arrowUpTrayIcon, "Exports"));
   header.appendChild(createHeaderIcon(starIcon, "Score"));
 
-  header.appendChild(document.createElement("span"));
+  // Nor is the column of buttons for taking a sektor up or giving it up, as the buttons say it.
   header.appendChild(document.createElement("span"));
 
   return header;
@@ -99,34 +99,57 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
   const item = document.createElement("div");
   item.className = "sektor-list-item";
 
-  const name = document.createElement("span");
-  name.className = "sektor-list-name";
-  // A sektor nobody has claimed and named yet is shown as having no name, rather than by its id.
-  const givenName = (sektorListItem.name ?? "").trim();
-  name.textContent = givenName || "No name";
-  if (!givenName) name.classList.add("sektor-list-no-name");
-  item.appendChild(name);
-
+  item.appendChild(createName(sektorListItem));
   item.appendChild(createLevel(summary.level));
   item.appendChild(createSize(summary.size));
-  item.appendChild(createOwner(sektorListItem, claimingAllowed));
+  item.appendChild(createOwner(sektorListItem));
   item.appendChild(createStatus(summary.status));
   item.appendChild(createNumber(summary.buildingCount));
   item.appendChild(createNumber(summary.importTotal));
   item.appendChild(createNumber(summary.exportTotal));
   item.appendChild(createScore(summary.score));
-
-  const button = document.createElement("button");
-  button.className = "sektor-list-go";
-  button.innerHTML = arrowRightIcon;
-  button.addEventListener("click", () => {
-    window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
-  });
-  item.appendChild(button);
-
-  item.appendChild(createAbandon(sektorListItem));
+  item.appendChild(createClaimOrAbandonButton(sektorListItem, claimingAllowed));
 
   return item;
+}
+
+// The way into a sektor stands against the name of the sektor it leads to, rather than in a column
+// of its own: a column would have to be as wide as the longest name to hold its arrows in line, and
+// what it took to do that is taken from the columns after it.
+function createName(sektorListItem: SektorListItem): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = "sektor-list-name";
+
+  const name = document.createElement("span");
+  name.className = "sektor-list-name-text";
+  // A sektor nobody has claimed and named yet is shown as having no name, rather than by its id.
+  const givenName = (sektorListItem.name ?? "").trim();
+  name.textContent = givenName || "No name";
+  if (!givenName) name.classList.add("sektor-list-no-name");
+  cell.appendChild(name);
+
+  cell.appendChild(createGoButton(sektorListItem));
+
+  return cell;
+}
+
+function createGoButton(sektorListItem: SektorListItem): HTMLElement {
+  const goButton = document.createElement("button");
+  goButton.className = "sektor-list-go";
+  goButton.innerHTML = arrowRightIcon;
+  goButton.addEventListener("click", () => {
+    window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
+  });
+  return goButton;
+}
+
+// Taking a sektor up and giving it up are the one thing a player does to a whole sektor rather than
+// to anything in it, so whichever of them is open to them stands in the same place at the end of
+// the row. A sektor somebody else holds offers neither.
+function createClaimOrAbandonButton(sektorListItem: SektorListItem, claimingAllowed: boolean): HTMLElement {
+  if (!sektorListItem.owner) return createListClaimButton(sektorListItem, claimingAllowed);
+  if (sektorListItem.owner === getUsername()) return createAbandonButton(sektorListItem);
+  return document.createElement("span");
 }
 
 function createLevel(level: number): HTMLElement {
@@ -145,10 +168,7 @@ function createSize(size: number): HTMLElement {
   return cell;
 }
 
-// Only the player who owns a sektor can give it up, so only they are shown the button for it.
-function createAbandon(sektorListItem: SektorListItem): HTMLElement {
-  if (sektorListItem.owner !== getUsername()) return document.createElement("span");
-
+function createAbandonButton(sektorListItem: SektorListItem): HTMLElement {
   const abandonButton = document.createElement("button");
   abandonButton.className = "sektor-list-abandon";
   abandonButton.textContent = "Abandon";
@@ -167,18 +187,15 @@ function abandonSektor(sektorListItem: SektorListItem) {
   });
 }
 
-// A sektor without an owner is up for grabs, the player's own sektors are marked as theirs, and
-// the rest carry the name of the player who claimed them.
-function createOwner(sektorListItem: SektorListItem, claimingAllowed: boolean): HTMLElement {
+// A sektor nobody holds says nothing of an owner, the player's own sektors are marked as theirs,
+// and the rest carry the name of the player who claimed them.
+function createOwner(sektorListItem: SektorListItem): HTMLElement {
   const cell = document.createElement("span");
   cell.className = "sektor-list-owner";
 
   const owner = sektorListItem.owner;
 
-  if (!owner) {
-    cell.appendChild(createListClaimButton(sektorListItem, claimingAllowed));
-    return cell;
-  }
+  if (!owner) return cell;
 
   if (owner === getUsername()) {
     const you = document.createElement("span");
