@@ -6,6 +6,7 @@ import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { getPlayers } from "../players";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { createSektor } from "./createSektor";
+import { generateSektorName } from "./sektorName.api";
 
 const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Sektors nobody has taken up pile up if they are made faster than they are claimed, so no more are
@@ -15,8 +16,8 @@ const MAXIMUM_UNCLAIMED_EMPTY_SEKTORS = 10;
 let creationTimer: ReturnType<typeof setInterval> | null = null;
 
 export function startCreatingSektors(onSektorCreated: () => void) {
-  creationTimer = setInterval(() => {
-    if (createSektorIfNeeded()) onSektorCreated();
+  creationTimer = setInterval(async () => {
+    if (await createSektorIfNeeded()) onSektorCreated();
   }, CREATION_INTERVAL_MILLISECONDS);
 }
 
@@ -28,17 +29,20 @@ export function stopCreatingSektors() {
 }
 
 // Returns whether a sektor was made, so that a list already on screen can be drawn again.
-export function createSektorIfNeeded(): boolean {
+export async function createSektorIfNeeded(): Promise<boolean> {
   if (countUnclaimedEmptySektors() >= MAXIMUM_UNCLAIMED_EMPTY_SEKTORS) return false;
 
   const levels = neededLevels();
   const level = levels[Math.floor(Math.random() * levels.length)];
+  // The name is waited for before the sektor is numbered, so that a sektor made while this one
+  // waits is the one holding the number it was given, and neither of them takes the other's.
+  const sektorName = await generateSektorName();
   const sektorId = `${nextSektorId()}`;
 
   saveSektorData(sektorId, createSektor(
     level, buildingDefinitions, getLocalResources(), getNegativeScoringResources()
   ));
-  addSektorToList(sektorId);
+  addSektorToList(sektorId, sektorName);
 
   return true;
 }
@@ -69,7 +73,7 @@ function neededLevels(): number[] {
 
 // Sektors are numbered, and the number carries on above the highest one already made so that a
 // reload never hands out a number twice. The number is the sektor's id, not its name — a name is
-// what the player gives it when they claim it.
+// what the sektor is made with.
 function nextSektorId(): number {
   const sektorIds = getSektorList()
     .map(sektorListItem => Number(sektorListItem.id))

@@ -1,6 +1,6 @@
 // Everything known about a sektor apart from what stands in it: the id its data is stored under,
-// the name a player gave it, and the player who owns it. A sektor has no name and no owner until
-// somebody claims it, and keeps the name when abandoned.
+// the name it carries, and the player who owns it. A sektor is made with a name and keeps it when
+// abandoned, but has no owner until somebody claims it.
 export interface SektorListItem {
   id: string;
   name: string | null;
@@ -41,8 +41,8 @@ function getSektor(sektorId: string): SektorListItem | null {
   return getSektorList().find(sektor => sektor.id === sektorId) ?? null;
 }
 
-export function addSektorToList(sektorId: string): void {
-  saveSektorList([...getSektorList(), { id: sektorId, name: null, owner: null }]);
+export function addSektorToList(sektorId: string, name: string | null): void {
+  saveSektorList([...getSektorList(), { id: sektorId, name, owner: null }]);
 }
 
 export function clearSektorList(): void {

@@ -2,8 +2,12 @@ import { test, expect, Page } from "@playwright/test";
 
 const CURRENT_PLAYER = "Tester";
 const OTHER_PLAYER = "Ana";
+// The two words a made sektor is named after. The word service is answered by the test rather than
+// over the network, so that the name of a made sektor is one the test knows.
+const SEKTOR_NAME_WORDS = ["quiet", "harvest"];
 
 test.beforeEach(async ({ page }) => {
+  await page.route("https://random-word-api.herokuapp.com/**", route => route.fulfill({ json: SEKTOR_NAME_WORDS }));
   // Stored from the login page, so that the storage is not put back to these sektors again on
   // every later navigation.
   await page.goto("/login.html");
@@ -314,7 +318,7 @@ async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: num
 // The sektors of a player's own level are made in the background as they are claimed. A test calls
 // the making of them itself, rather than sitting out the ten seconds between one round and the next.
 function createSektorNow(page: Page) {
-  return page.evaluate(() => (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded());
+  return page.evaluate(() => (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded());
 }
 
 test("makes a new sektor and puts it on the list", async ({ page }) => {
@@ -325,6 +329,22 @@ test("makes a new sektor and puts it on the list", async ({ page }) => {
   const sektors = await getStoredSektors(page);
   expect({ created, sektorIds: sektors.map((sektor: { id: string }) => sektor.id) })
     .toEqual({ created: true, sektorIds: ["Alpha", "Beta", "Gamma", "0"] });
+});
+
+// A sektor is made with a name of its own, so that a player never has to think one up.
+test("names every sektor it makes after two words", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await createSektorNow(page);
+
+  const sektors = await getStoredSektors(page);
+  expect(sektors.map((sektor: { id: string; name: string | null }) => ({ id: sektor.id, name: sektor.name })))
+    .toEqual([
+      { id: "Alpha", name: "Alpha" },
+      { id: "Beta", name: "Beta" },
+      { id: "Gamma", name: null },
+      { id: "0", name: "quiet-harvest" },
+    ]);
 });
 
 test("numbers every sektor it makes above the last one", async ({ page }) => {

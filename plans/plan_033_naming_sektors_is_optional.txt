@@ -1,5 +1,5 @@
-#1 A created sektor already has a name
-- when creating sektor, generate a name for it also
+#1 [done] A created sektor already has a name
+- [done] when creating sektor, generate a name for it also
     - generate name by taking random 2 words
         - use get request on https://random-word-api.herokuapp.com/word?number=2
         - join them with dash "-"

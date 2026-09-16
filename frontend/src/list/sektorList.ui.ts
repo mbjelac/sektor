@@ -257,7 +257,7 @@ showPurgeButton(refreshPage);
 if (isTestMode) {
   // A test drives the making of a sektor itself rather than sitting out the ten seconds between
   // one round of it and the next.
-  (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded = createSektorIfNeeded;
+  (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded = createSektorIfNeeded;
 } else {
   startCreatingSektors(refreshPage);
 }
