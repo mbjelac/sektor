@@ -1,0 +1,26 @@
+#1 A created sektor already has a name
+- when creating sektor, generate a name for it also
+    - generate name by taking random 2 words
+        - use get request on https://random-word-api.herokuapp.com/word?number=2
+        - join them with dash "-"
+
+#2 Claiming sektor from the sektor list does not require naming
+- in sektor list, when Claim button is clicked do not show name dialog
+- instead, show "Do you want to claim sektor <name>?"
+    - Yes, No
+    - if Yes clicked, assign player to sektor and open sektor map in edit mode
+
+#3 Claiming sektor from the sektor map does not require naming
+- in sektor map, when Claim button is clicked do not show name dialog
+- instead, show "Do you want to claim sektor <name>?"
+    - Yes, No
+    - if Yes clicked, assign player to sektor and open sektor map in edit mode
+
+#4 Player can rename sektor within map
+- in edit mode, next to sektor name in map there is a pencil icon
+    - heroicons pencil-square
+    - when clicked, show rename dialog
+        - "Enter new sektor name"
+        - name input field
+            - pre-filled with existing name
+        - Rename, Cancel
