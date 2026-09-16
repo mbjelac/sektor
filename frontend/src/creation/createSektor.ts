@@ -140,13 +140,21 @@ function walkBackwards(
   let currentResource = requiredResource;
   // The topmost layer is there to meet the requirement, which is the whole of what is asked for.
   let currentDemand = REQUIREMENT_AMOUNT;
-  for (let layer = 0; layer < restrictionLayers; layer++) {
+  // A restricted resource has a producer in the palette only because the layer below it puts one
+  // there, so the walk goes one layer deeper than it restricts: whatever it restricts last is made
+  // by the building it adds last. Stopping a layer earlier would hand the player a resource they
+  // may not import and cannot make, which is the one thing the walk exists to prevent.
+  for (let layer = 0; layer <= restrictionLayers; layer++) {
     const producers = productionGraph.get(currentResource);
     if (!producers || producers.length === 0) return solutionSteps;
 
     const producer = pickRandom(producers, randomNumber);
     const solutionStep = { ...producer, resource: currentResource, demand: currentDemand };
     solutionSteps.push(solutionStep);
+
+    // This last building stands there to make what the layer above it may not import; restricting
+    // one of its inputs in turn would leave that input with no producer of its own.
+    if (layer === restrictionLayers) return solutionSteps;
 
     // A resource the sektor requires is already asked for in full, so capping what may be brought
     // in of it says nothing the requirement does not already say.

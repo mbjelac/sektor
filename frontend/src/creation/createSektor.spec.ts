@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { createSektor } from "./createSektor";
 import { BuildingDefinition } from "../sektor/buildings/parseBuildingDefinitions";
+import { SektorData } from "../../../shared/sektorData";
 
 function buildingDefinition(
   name: string,
@@ -37,6 +38,34 @@ const testDefinitions: BuildingDefinition[] = [
   buildingDefinition("Depot", ["Tool"], { name: "Crate", value: 2 }),
 ];
 
+// A chain deeper than a walk can restrict: each building makes what the one above it eats, all the
+// way down to loam, which nothing makes and anyone may import. The quarries are a trade of their
+// own, there so the distractors have something to be drawn from other than the chain itself.
+const deepChainDefinitions: BuildingDefinition[] = [
+  buildingDefinition("Bakery", ["Dough"], { name: "Bread", value: 3 }),
+  buildingDefinition("Doughworks", ["Flour"], { name: "Dough", value: 3 }),
+  buildingDefinition("Mill", ["Wheat"], { name: "Flour", value: 3 }),
+  buildingDefinition("WheatFarm", ["Seed"], { name: "Wheat", value: 3 }),
+  buildingDefinition("SeedHouse", ["Sapling"], { name: "Seed", value: 3 }),
+  buildingDefinition("Nursery", ["Cutting"], { name: "Sapling", value: 3 }),
+  buildingDefinition("Grafter", ["Rootstock"], { name: "Cutting", value: 3 }),
+  buildingDefinition("Rootery", ["Loam"], { name: "Rootstock", value: 3 }),
+  buildingDefinition("Quarry", [], { name: "Stone", value: 1 }),
+  buildingDefinition("Claypit", [], { name: "Clay", value: 1 }),
+  buildingDefinition("Peatworks", [], { name: "Peat", value: 1 }),
+  buildingDefinition("Saltings", [], { name: "Salt", value: 1 }),
+  buildingDefinition("Gravelpit", [], { name: "Gravel", value: 1 }),
+  buildingDefinition("Chalkpit", [], { name: "Chalk", value: 1 }),
+];
+
+// Bread is the only thing worth carrying out of this sektor, since everything else scores against
+// the player, so the only requirement it can be given is bread and every walk goes down the chain.
+const EVERYTHING_BUT_BREAD = deepChainDefinitions
+  .flatMap(definition => definition.buildingFunctions)
+  .flatMap(buildingFunction => buildingFunction.outputs)
+  .map(output => output.name)
+  .filter(resource => resource !== "Bread");
+
 // Care is made in the sektor and used there, and can never be carried out of it.
 const LOCAL_RESOURCES = ["Care"];
 
@@ -53,17 +82,17 @@ describe("createSektor", () => {
   it("allows a producer of every resource it restricts", () => {
     const sektorData = createSektor(3, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange);
 
-    const producersOfRestrictedResources = sektorData.importRestrictions.map(restriction => ({
-      resource: restriction.name,
-      allowsAProducer: testDefinitions.some(definition =>
-        sektorData.allowedBuildings.includes(definition.name)
-        && definition.buildingFunctions.some(buildingFunction =>
-          buildingFunction.outputs.some(output => output.name === restriction.name)
-        )
-      ),
-    }));
+    expect(restrictedResourcesWithoutAProducer(sektorData, testDefinitions)).toEqual([]);
+  });
 
-    expect(producersOfRestrictedResources.every(producer => producer.allowsAProducer)).toEqual(true);
+  // A walk hands a restricted resource its producer only in the layer below the one which restricted
+  // it, so a walk which stops because it has run out of layers must still go that one layer further.
+  // The bread chain is deeper than a level 6 walk can restrict, so the walk down it ends that way
+  // rather than by reaching something no building makes.
+  it("allows a producer of the last resource it restricts, where the chain outlasts the layers", () => {
+    const sektorData = createSektor(6, deepChainDefinitions, LOCAL_RESOURCES, EVERYTHING_BUT_BREAD, middleOfTheRange);
+
+    expect(restrictedResourcesWithoutAProducer(sektorData, deepChainDefinitions)).toEqual([]);
   });
 
   it("leaves something of every location property the palette needs, on every location", () => {
@@ -170,3 +199,16 @@ describe("createSektor", () => {
     expect({ level: sektorData.level, buildings: sektorData.buildings }).toEqual({ level: 2, buildings: [] });
   });
 });
+
+// Every resource a sektor caps the import of, which nothing it allows can make. A player handed one
+// of these can neither bring it in nor produce it, so the sektor cannot be finished.
+function restrictedResourcesWithoutAProducer(sektorData: SektorData, buildingDefinitions: BuildingDefinition[]): string[] {
+  return sektorData.importRestrictions
+    .map(restriction => restriction.name)
+    .filter(resource => !buildingDefinitions.some(definition =>
+      sektorData.allowedBuildings.includes(definition.name)
+      && definition.buildingFunctions.some(buildingFunction =>
+        buildingFunction.outputs.some(output => output.name === resource)
+      )
+    ));
+}
