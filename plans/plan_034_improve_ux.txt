@@ -36,3 +36,12 @@
 
 #6 [done] Player should see sektor list header when scrolling
 - [done] float header on scroll
+
+#7 Sektors not owned by anyone need a new status
+- if sektor is not owned by anyone, disregard normal status calculation and set status to "Idle"
+    - display status as "Idle" in map stats & in sektor list
+        - text color: light-gray
+- change "In progress" color to light-blue
+- change "Done" color to lime
+- change name of status "Restrictions Exceeded" to "Overrun"
+    - change this status color to light-red
