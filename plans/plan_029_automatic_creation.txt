@@ -228,3 +228,8 @@ down here because it is what the making of sektors ran into.
     both read as improvements — but it does not by itself force a player to house their workers,
     since WorkTechnical and WorkMaintenance stay importable one step downstream. Decide the negative
     import rule first; this depends on it.
+
+
+#5 No restriction needed on a resource with a requirement
+- algorithm sometimes creates a restriction and requirement on same resource
+    - this is superfluous, as the requirement will guarantee there are no imports
