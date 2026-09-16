@@ -17,7 +17,7 @@
 - [done] when building specifies floor should not be displayed, draw only floor wireframe
     - like floor panels completely transparent
 
-#5 Player should see sektor's stats in map also
+#5 [done] Player should see sektor's stats in map also
 - [done] display sektor stats next to sektor name (and edit button)
     - each stat should be displayed as "<icon> <value>"
         - value in white text
