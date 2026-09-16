@@ -60,10 +60,21 @@ pri4 c(#c7c2a9) s(23,23,10) t(-30,30,0)
 
 ## Function
 
+Name: Purified 
+
 EnergyElectric 3
 WorkTechnical 1
 =
 WaterPottable groundwater
+
+## Function
+
+Name: Unpurified
+
+EnergyElectric 2
+WorkTechnical 1
+=
+WaterTechnical groundwater
 
 # Habitats
 
