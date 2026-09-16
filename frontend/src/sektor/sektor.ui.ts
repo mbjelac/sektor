@@ -756,6 +756,12 @@ const CAM_ELEVATION = Math.PI / 6;
 const LEFT_MOUSE_BUTTON = 0;
 const MIDDLE_MOUSE_BUTTON = 1;
 
+// Two presses of the panning button count as a doubleclick when they come this close together and
+// land this near one another. The browser's own doubleclick is no use here, as it is only raised
+// for the left button, never for the middle one.
+const DOUBLECLICK_MILLIS = 400;
+const DOUBLECLICK_PIXELS = 5;
+
 const sektorUi = (p: p5) => {
   let camAngleY = Math.PI / 4;
   let camElevation = CAM_ELEVATION;
@@ -770,6 +776,9 @@ const sektorUi = (p: p5) => {
   let mouseDownOnCanvas = false;
   let lastMouseX = 0;
   let lastMouseY = 0;
+  let lastPanPressMillis = -Infinity;
+  let lastPanPressX = 0;
+  let lastPanPressY = 0;
   let zoom = ZOOM;
 
   function updateOrtho(container: HTMLElement) {
@@ -804,6 +813,7 @@ const sektorUi = (p: p5) => {
       // The middle button starts the browser's own scrolling, which has to be called off for it
       // to drag the map instead.
       if (isPanDrag) event.preventDefault();
+      if (isPanDrag && isSecondPressOfDoubleclick(event)) centreMap();
       dragMode = isPanDrag ? "pan" : "rotate";
       didDrag = false;
       // Only a plain left press is a press on a location: dragging the map around is not building
@@ -872,6 +882,28 @@ const sektorUi = (p: p5) => {
       screenX: (right.x * wx + right.z * wz) / zoom,
       screenY: (down.x * wx + down.z * wz) / zoom,
     }));
+  }
+
+  // The map goes back to sitting in the middle of the screen, looked at from the same side and
+  // from as near as before: a player who has dragged themselves into a corner is given the whole
+  // map back without losing the angle and the zoom they had picked.
+  function centreMap() {
+    panScreenX = 0;
+    panScreenY = 0;
+    updateCamera(p);
+  }
+
+  // Whether this press of the panning button finishes a doubleclick: the press before it was on
+  // the same spot and only a moment ago. Every press is remembered as the one to measure the next
+  // against, so a third press doubleclicks with the second.
+  function isSecondPressOfDoubleclick(event: MouseEvent): boolean {
+    const isDoubleclick = p.millis() - lastPanPressMillis < DOUBLECLICK_MILLIS
+      && Math.abs(event.clientX - lastPanPressX) <= DOUBLECLICK_PIXELS
+      && Math.abs(event.clientY - lastPanPressY) <= DOUBLECLICK_PIXELS;
+    lastPanPressMillis = p.millis();
+    lastPanPressX = event.clientX;
+    lastPanPressY = event.clientY;
+    return isDoubleclick;
   }
 
   // Space is the map's to take only while the player is on the map itself — while they are typing

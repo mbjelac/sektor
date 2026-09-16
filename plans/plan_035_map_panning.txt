@@ -11,9 +11,9 @@
     - if dragging up, bottom-most corner is limiting
     - if dragging down, top-most corner is limiting
 
-#2 Player can center the map
-- when player doubleclicks
+#2 [done] Player can center the map
+- [done] when player doubleclicks
     - on middle mouse button
     - on left mouse button doubleclick while holding SPACE
-- move map back to center position
+- [done] move map back to center position
     - rotation angle & zoom level preserved
