@@ -24,12 +24,12 @@ import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showClaimDialog } from "../claimDialog.ui";
 import { showUser } from "../login/userDisplay.ui";
+import { isTestMode } from "../testMode";
 
 requireLogin();
 showUser();
 
 const FLOOR_PROPERTY = "soil";
-const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
 const sektorId = new URLSearchParams(window.location.search).get("id");
 // A sektor is only opened for building by the player who claimed it. Everybody else looks at
 // it without the tools for changing it, as does its owner when asking for view mode.

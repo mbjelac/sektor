@@ -1,11 +1,11 @@
 import { test, expect } from "@playwright/test";
+import { makeSektorsByHand } from "./test-utils";
 
-// The sektor list makes sektors of its own while it is open, each of them named. The name is laid
-// out here for it to take, so that no test of the login reaches over the network for one.
+// No test of the login has anything to do with the sektors a list makes of its own, so the list is
+// kept from filling, which keeps these tests off the word service as well as off sektors they
+// never asked for.
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => {
-    (window as unknown as { preparedSektorNames: string[] }).preparedSektorNames = ["quiet-harvest"];
-  });
+  await makeSektorsByHand(page);
 });
 
 test("routes the sektor list to the login page when no player is logged in", async ({ page }) => {

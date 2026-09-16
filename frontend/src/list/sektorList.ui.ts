@@ -246,14 +246,15 @@ function createScore(score: number): HTMLElement {
 
 requireLogin();
 showUser();
-// A test sektor list has to stand still to be looked at, so no sektors are made while one is shown.
-const isTestMode = new URLSearchParams(window.location.search).get("test") === "true";
+// A list which fills by itself cannot be looked at, as a sektor may appear on it at any moment. A
+// test therefore lays this out before the page loads and makes the sektors it wants by hand, one
+// call at a time, rather than sitting out the second between one round of making them and the next.
+// Nothing in the game lays it out, so a player's list goes on filling on its own.
+const areSektorsMadeByHand = (window as unknown as { makeSektorsByHand?: boolean }).makeSektorsByHand === true;
 
 renderList();
 showPurgeButton(refreshPage);
-if (isTestMode) {
-  // A test drives the making of a sektor itself rather than sitting out the ten seconds between
-  // one round of it and the next.
+if (areSektorsMadeByHand) {
   (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded = createSektorIfNeeded;
 } else {
   startCreatingSektors(refreshPage);

@@ -1,8 +1,8 @@
 import propertiesMd from "./assets/properties.md?raw";
 import testPropertiesMd from "./assets/properties.test.md?raw";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../shared/modifierLimits";
+import { isTestMode } from "./testMode";
 
-const isTestMode = import.meta.env.DEV && new URLSearchParams(window.location.search).get("test") === "true";
 const source = isTestMode ? testPropertiesMd : propertiesMd;
 
 export interface PropertyDefinition {

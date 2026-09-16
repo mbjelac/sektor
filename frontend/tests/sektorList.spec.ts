@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import { makeSektorsByHand, prepareSektorNames } from "./test-utils";
 
 const CURRENT_PLAYER = "Tester";
 const OTHER_PLAYER = "Ana";
@@ -8,6 +9,7 @@ const PREPARED_SEKTOR_NAME = "quiet-harvest";
 
 test.beforeEach(async ({ page }) => {
   await prepareSektorNames(page, [PREPARED_SEKTOR_NAME]);
+  await makeSektorsByHand(page);
   // Stored from the login page, so that the storage is not put back to these sektors again on
   // every later navigation.
   await page.goto("/login.html");
@@ -21,15 +23,6 @@ test.beforeEach(async ({ page }) => {
   }, [CURRENT_PLAYER, OTHER_PLAYER]);
   await page.goto("/");
 });
-
-// The names a page makes sektors with, laid out before anything of it loads, as only a name put
-// there before the page runs can be taken by the first sektor it makes.
-function prepareSektorNames(page: Page, sektorNames: string[]) {
-  return page.addInitScript(
-    sektorNames => { (window as unknown as { preparedSektorNames: string[] }).preparedSektorNames = sektorNames; },
-    sektorNames,
-  );
-}
 
 test("shows the owner of every sektor", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-owners.png", { maxDiffPixelRatio: 0 });

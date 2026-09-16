@@ -1,9 +1,11 @@
-import { test, expect, expectScreenshot } from "./test-utils";
+import { test, expect, expectScreenshot, makeSektorsByHand } from "./test-utils";
 
 const OTHER_PLAYER = "Ana";
 const CURRENT_PLAYER = "Tester";
 
 test.beforeEach(async ({ page }) => {
+  // Leaving a finished sektor lands on the sektor list, which is kept from filling by itself.
+  await makeSektorsByHand(page);
   // The login page is the one page open to a player who is not logged in yet, so it is where the
   // player of the test is logged in, before going on to the sektor being tested.
   await page.goto("/login.html");

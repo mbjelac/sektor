@@ -1,8 +1,8 @@
 import resourcesMd from "./assets/resources.md?raw";
 import testResourcesMd from "./assets/resources.test.md?raw";
 import { localResourceNames, negativeScoringResourceNames, parseResources } from "./parseResources";
+import { isTestMode } from "./testMode";
 
-const isTestMode = import.meta.env.DEV && new URLSearchParams(window.location.search).get("test") === "true";
 const source = isTestMode ? testResourcesMd : resourcesMd;
 
 const resourceDefinitions = parseResources(source.split("\n"));
