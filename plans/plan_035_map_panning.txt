@@ -1,11 +1,11 @@
-#1 Player can pan sektor map
-- when player
+#1 [done] Player can pan sektor map
+- [done] when player
     - drags mouse anywhere on map screen (can be outside of map but in same graphical context rectangle)
         - with middle mouse button pressed
         - with left mouse button pressed while holding SPACE
     - move map in direction of mouse movement
         - rotation angle & zoom level preserved
-- map can be dragged at most so that it's limiting corner square get to the half of the screen
+- [done] map can be dragged at most so that it's limiting corner square get to the half of the screen
     - if dragging to right, left-most corner is limiting
     - if dragging to left, right-most corner is limiting
     - if dragging up, bottom-most corner is limiting

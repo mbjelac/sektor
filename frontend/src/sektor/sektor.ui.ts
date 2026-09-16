@@ -753,10 +753,19 @@ function findClickedTile(p: p5, currentZoom: number): { x: number; y: number } |
 const CAM_DIST = 800;
 const CAM_ELEVATION = Math.PI / 6;
 
+const LEFT_MOUSE_BUTTON = 0;
+const MIDDLE_MOUSE_BUTTON = 1;
+
 const sektorUi = (p: p5) => {
   let camAngleY = Math.PI / 4;
   let camElevation = CAM_ELEVATION;
-  let isDragging = false;
+  // How far the map has been dragged is kept in screen pixels rather than in world units, so that
+  // the map follows the mouse by as many pixels as the mouse moved, whatever angle it is looked at
+  // from and however far it is zoomed in.
+  let panScreenX = 0;
+  let panScreenY = 0;
+  let dragMode: "rotate" | "pan" | null = null;
+  let isSpacePressed = false;
   let didDrag = false;
   let mouseDownOnCanvas = false;
   let lastMouseX = 0;
@@ -777,24 +786,49 @@ const sektorUi = (p: p5) => {
 
     updateCamera(p);
 
-    canvas.elt.addEventListener("mousedown", (e: MouseEvent) => {
-      isDragging = true;
-      didDrag = false;
-      mouseDownOnCanvas = true;
-      lastMouseX = e.clientX;
-      lastMouseY = e.clientY;
+    window.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (!isSpaceOnTheMap(event)) return;
+      isSpacePressed = true;
+      // Left alone, space scrolls the page and takes the map out of view.
+      event.preventDefault();
     });
-    window.addEventListener("mouseup", () => { isDragging = false; });
-    window.addEventListener("mousemove", (e: MouseEvent) => {
-      if (!isDragging) return;
-      const dx = e.clientX - lastMouseX;
-      const dy = e.clientY - lastMouseY;
+    window.addEventListener("keyup", (event: KeyboardEvent) => {
+      if (!isSpaceOnTheMap(event)) return;
+      isSpacePressed = false;
+    });
+
+    canvas.elt.addEventListener("mousedown", (event: MouseEvent) => {
+      const isPanDrag = event.button === MIDDLE_MOUSE_BUTTON
+        || (event.button === LEFT_MOUSE_BUTTON && isSpacePressed);
+      if (!isPanDrag && event.button !== LEFT_MOUSE_BUTTON) return;
+      // The middle button starts the browser's own scrolling, which has to be called off for it
+      // to drag the map instead.
+      if (isPanDrag) event.preventDefault();
+      dragMode = isPanDrag ? "pan" : "rotate";
+      didDrag = false;
+      // Only a plain left press is a press on a location: dragging the map around is not building
+      // on the location the drag happened to start over.
+      mouseDownOnCanvas = dragMode === "rotate";
+      lastMouseX = event.clientX;
+      lastMouseY = event.clientY;
+    });
+    window.addEventListener("mouseup", () => { dragMode = null; });
+    window.addEventListener("mousemove", (event: MouseEvent) => {
+      if (dragMode === null) return;
+      const dx = event.clientX - lastMouseX;
+      const dy = event.clientY - lastMouseY;
       if (Math.abs(dx) > 2 || Math.abs(dy) > 2) didDrag = true;
-      lastMouseX = e.clientX;
-      lastMouseY = e.clientY;
-      camAngleY -= dx * 0.005;
-      camElevation += dy * 0.005;
-      camElevation = Math.max(0.05, Math.min(Math.PI / 2 - 0.05, camElevation));
+      lastMouseX = event.clientX;
+      lastMouseY = event.clientY;
+      if (dragMode === "pan") {
+        panScreenX += dx;
+        panScreenY += dy;
+      } else {
+        camAngleY -= dx * 0.005;
+        camElevation += dy * 0.005;
+        camElevation = Math.max(0.05, Math.min(Math.PI / 2 - 0.05, camElevation));
+      }
+      keepMapWithinReach();
       updateCamera(p);
     });
     canvas.elt.addEventListener("wheel", (e: WheelEvent) => {
@@ -802,14 +836,87 @@ const sektorUi = (p: p5) => {
       zoom *= e.deltaY > 0 ? 1.05 : 0.95;
       zoom = Math.max(0.3, Math.min(3, zoom));
       updateOrtho(container);
+      keepMapWithinReach();
+      updateCamera(p);
     }, { passive: false });
   };
 
+  // The map is never dragged off the screen: however far it is pushed, the middle of the screen
+  // stays over it, so the corner square the map is being dragged away from comes to rest there.
+  // Turning the map or zooming it moves the corners on the screen too, so the same limit is put on
+  // the map after those as after a drag.
+  function keepMapWithinReach() {
+    const cornersAcrossScreen = cornerSquaresOnScreen();
+    panScreenX = Math.max(
+      -Math.max(...cornersAcrossScreen.map(corner => corner.screenX)),
+      Math.min(-Math.min(...cornersAcrossScreen.map(corner => corner.screenX)), panScreenX),
+    );
+    panScreenY = Math.max(
+      -Math.max(...cornersAcrossScreen.map(corner => corner.screenY)),
+      Math.min(-Math.min(...cornersAcrossScreen.map(corner => corner.screenY)), panScreenY),
+    );
+  }
+
+  // Where the four corner squares of the map sit on the screen, in pixels away from the middle of
+  // the screen, as they would sit with the map not dragged at all.
+  function cornerSquaresOnScreen(): { screenX: number; screenY: number }[] {
+    const right = screenRightAxis();
+    const down = screenDownAxis();
+    const lastLocation = sektorSize - 1;
+    return [
+      gridToWorld(0, 0),
+      gridToWorld(lastLocation, 0),
+      gridToWorld(0, lastLocation),
+      gridToWorld(lastLocation, lastLocation),
+    ].map(({ wx, wz }) => ({
+      screenX: (right.x * wx + right.z * wz) / zoom,
+      screenY: (down.x * wx + down.z * wz) / zoom,
+    }));
+  }
+
+  // Space is the map's to take only while the player is on the map itself — while they are typing
+  // a name into a field it is theirs to type with.
+  function isSpaceOnTheMap(event: KeyboardEvent): boolean {
+    if (event.code !== "Space") return false;
+    const target = event.target as HTMLElement | null;
+    const tagName = target?.tagName;
+    return tagName !== "INPUT" && tagName !== "TEXTAREA";
+  }
+
   function updateCamera(p: p5) {
-    const camX = CAM_DIST * Math.sin(camAngleY) * Math.cos(camElevation);
-    const camY = -CAM_DIST * Math.sin(camElevation);
-    const camZ = CAM_DIST * Math.cos(camAngleY) * Math.cos(camElevation);
-    p.camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
+    const lookedAt = pannedCentre();
+    const camX = lookedAt.wx + CAM_DIST * Math.sin(camAngleY) * Math.cos(camElevation);
+    const camY = lookedAt.wy - CAM_DIST * Math.sin(camElevation);
+    const camZ = lookedAt.wz + CAM_DIST * Math.cos(camAngleY) * Math.cos(camElevation);
+    p.camera(camX, camY, camZ, lookedAt.wx, lookedAt.wy, lookedAt.wz, 0, 1, 0);
+  }
+
+  // The point the camera is pointed at. The map is to move with the mouse, so the camera moves
+  // against it: the dragged pixels are laid out along the screen axes in world space and subtracted.
+  function pannedCentre(): { wx: number; wy: number; wz: number } {
+    const right = screenRightAxis();
+    const down = screenDownAxis();
+    return {
+      wx: -(right.x * panScreenX + down.x * panScreenY) * zoom,
+      wy: -(right.y * panScreenX + down.y * panScreenY) * zoom,
+      wz: -(right.z * panScreenX + down.z * panScreenY) * zoom,
+    };
+  }
+
+  // The world direction a pixel to the right on the screen goes in. The camera is never rolled, so
+  // screen right stays level with the floor.
+  function screenRightAxis(): { x: number; y: number; z: number } {
+    return { x: Math.cos(camAngleY), y: 0, z: -Math.sin(camAngleY) };
+  }
+
+  // The world direction a pixel down the screen goes in. Y grows downwards in p5's world, so the
+  // more the map is looked at from above, the more screen-down runs along the floor.
+  function screenDownAxis(): { x: number; y: number; z: number } {
+    return {
+      x: Math.sin(camAngleY) * Math.sin(camElevation),
+      y: Math.cos(camElevation),
+      z: Math.cos(camAngleY) * Math.sin(camElevation),
+    };
   }
 
   p.mouseReleased = (event?: MouseEvent) => {
