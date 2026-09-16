@@ -28,6 +28,52 @@ test("shows the owner of every sektor", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-owners.png", { maxDiffPixelRatio: 0 });
 });
 
+// A sektor nobody has claimed is nobody's work, so the list calls it idle instead of saying how far
+// along it is. Alpha and Beta are owned, Gamma is not.
+test("shows a sektor nobody has claimed as idle", async ({ page }) => {
+  const statuses = await page.locator(".sektor-list-item .sektor-list-status").allTextContents();
+
+  expect(statuses).toEqual(["In progress", "In progress", "Idle"]);
+});
+
+// Each of the four states a sektor can be in is said in a color of its own, so that a player picks
+// the ones needing them out of a long list without reading it: one nobody has claimed, one still
+// short of what it is asked for, one which has met it, and one taking in more than it is allowed.
+test("shows every state a sektor can be in", async ({ page }) => {
+  await storeSektorInEveryState(page);
+
+  await page.goto("/?test=true");
+
+  await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-statuses.png", { maxDiffPixelRatio: 0 });
+});
+
+// One mine on one piece of ore in every sektor, which takes in Energy 4 and puts out ore. What the
+// sektor is asked for, and what it is allowed to take in, is what tells the four apart — the
+// unclaimed one is asked for nothing and would be done, were it anybody's.
+async function storeSektorInEveryState(page: Page) {
+  await page.evaluate(currentPlayer => {
+    const sektorsByState = {
+      Unclaimed: { owner: null, importRestrictions: [], exportRequirements: [] },
+      BuiltOn: { owner: currentPlayer, importRestrictions: [], exportRequirements: [{ name: "Ore", value: 999 }] },
+      Finished: { owner: currentPlayer, importRestrictions: [], exportRequirements: [{ name: "Ore", value: 1 }] },
+      Overtaking: { owner: currentPlayer, importRestrictions: [{ name: "Energy", value: 1 }], exportRequirements: [] },
+    };
+    localStorage.setItem("sektors", JSON.stringify(
+      Object.entries(sektorsByState).map(([sektorName, sektor]) => ({ id: sektorName, name: sektorName, owner: sektor.owner }))
+    ));
+    for (const [sektorName, sektor] of Object.entries(sektorsByState)) {
+      localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
+        level: 1,
+        allowedBuildings: ["TestMine"],
+        locationProperties: { ore: [[20]] },
+        importRestrictions: sektor.importRestrictions,
+        exportRequirements: sektor.exportRequirements,
+        buildings: [{ type: "TestMine", location: { x: 0, y: 0 } }],
+      }));
+    }
+  }, CURRENT_PLAYER);
+}
+
 // A sektor is as big as it was made, and the list says which of the four sizes that is, so that a
 // player can tell a handful of tiles from the whole hundred before opening anything.
 test("names the size of the map of every sektor", async ({ page }) => {

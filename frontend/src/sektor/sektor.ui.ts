@@ -20,6 +20,7 @@ import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { LARGEST_SEKTOR_SIZE, sektorSizeName } from "../../../shared/sektorSizes";
+import { displayedSektorStatus, sektorStatusColor, sektorStatusText } from "../sektorStatus";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showClaimDialog } from "../claimDialog.ui";
@@ -346,7 +347,7 @@ function showSektorStats(sektorState: SektorState) {
   stats.id = "sektor-stats";
   stats.appendChild(createStat(puzzlePieceIcon, "Difficulty", `${sektorLevel}`));
   stats.appendChild(createStat(arrowsPointingOutIcon, "Map size", sektorSizeName(sektorSize)));
-  stats.appendChild(createStatusStat(sektorState.status));
+  stats.appendChild(createStatusStat(displayedSektorStatus(getSektorOwnerName(), sektorState.status)));
   stats.appendChild(createStat(buildingOfficeIcon, "Buildings", formatNumber(sektor.getState().buildings.length)));
   stats.appendChild(createStat(arrowDownTrayIcon, "Imports", formatNumber(sumThroughputs(sektorState.imports))));
   stats.appendChild(createStat(arrowUpTrayIcon, "Exports", formatNumber(sumThroughputs(sektorState.exports))));
@@ -375,23 +376,11 @@ function createStat(icon: string, tooltip: string, value: string): HTMLElement {
 // How far along the sektor is stands out from the rest of the stats, as it is the one of them the
 // player is playing towards.
 function createStatusStat(status: SektorStatus): HTMLElement {
-  const stat = createStat(sunIcon, "Status", statusText(status));
+  const stat = createStat(sunIcon, "Status", sektorStatusText(status));
   const value = stat.querySelector<HTMLElement>(".sektor-stat-value")!;
-  value.style.color = statusColor(status);
+  value.style.color = sektorStatusColor(status);
   value.style.fontWeight = "bold";
   return stat;
-}
-
-function statusText(status: SektorStatus): string {
-  if (status === "InProgress") return "In progress";
-  if (status === "Done") return "Done";
-  return "Restrictions exceeded";
-}
-
-function statusColor(status: SektorStatus): string {
-  if (status === "InProgress") return "var(--color-neutral)";
-  if (status === "Done") return "var(--color-good)";
-  return "var(--color-bad)";
 }
 
 function sumThroughputs(throughputs: { value: number }[]): number {

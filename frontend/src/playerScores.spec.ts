@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { OwnedSektor, playerScores } from "./playerScores";
 
-function sektorOf(owner: string | null, status: "InProgress" | "Done" | "RestrictionsExceeded", score: number): OwnedSektor {
+function sektorOf(owner: string | null, status: "InProgress" | "Done" | "Overrun", score: number): OwnedSektor {
   return { owner, status, score };
 }
 
@@ -23,7 +23,7 @@ describe("playerScores", () => {
   it("credits a player with nothing for a sektor which breaks its restrictions", () => {
     expect(playerScores([
       sektorOf("Ada", "Done", 30),
-      sektorOf("Ada", "RestrictionsExceeded", 100),
+      sektorOf("Ada", "Overrun", 100),
     ])).toEqual([{ name: "Ada", score: 30 }]);
   });
 

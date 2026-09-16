@@ -51,7 +51,7 @@ export function farmSektor(
   placeBuildings(sektor, { ...sektorData, exportRequirements: [] }, buildingDefinitions, locations.length);
 
   const sektorState = sektor.getSektorState();
-  if (sektorState.status === "RestrictionsExceeded") return 0;
+  if (sektorState.status === "Overrun") return 0;
   return [...sektorState.imports, ...sektorState.exports].reduce((total, throughput) => total + throughput.score, 0);
 }
 
@@ -117,7 +117,7 @@ function placeBuildings(
   gridSize: number,
 ) {
   let bestState = sektor.getState();
-  let bestValue = sektor.getSektorState().status === "RestrictionsExceeded" ? -Infinity : valueOf(sektor, sektorData);
+  let bestValue = sektor.getSektorState().status === "Overrun" ? -Infinity : valueOf(sektor, sektorData);
 
   for (let step = 0; step < PLACEMENT_STEPS; step++) {
     let bestBuildingType: string | null = null;
@@ -145,7 +145,7 @@ function placeBuildings(
     if (!bestBuildingType || !bestLocation) break;
     sektor.createBuilding({ type: bestBuildingType, location: bestLocation });
 
-    if (sektor.getSektorState().status !== "RestrictionsExceeded" && bestStepValue > bestValue) {
+    if (sektor.getSektorState().status !== "Overrun" && bestStepValue > bestValue) {
       bestValue = bestStepValue;
       bestState = sektor.getState();
     }

@@ -14,6 +14,7 @@ import { formatNumber } from "../formatNumber";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 import { showPurgeButton } from "./purgeButton.ui";
 import { sektorSizeName } from "../../../shared/sektorSizes";
+import { sektorStatusColor, sektorStatusText } from "../sektorStatus";
 
 // A player may only work on so many sektors at a time, so that they finish the ones they have
 // claimed before claiming more.
@@ -228,23 +229,15 @@ function claimSektor(sektorListItem: SektorListItem) {
   });
 }
 
+// A sektor which is finished, or which has gone past what it is allowed, is set in bold: those are
+// the two the player is looking down the list for. One waiting to be claimed or still being built
+// on is left as it is.
 function createStatus(status: SektorStatus): HTMLElement {
   const element = document.createElement("span");
   element.className = "sektor-list-status";
-
-  if (status === "InProgress") {
-    element.textContent = "In progress";
-    element.style.color = "var(--color-neutral)";
-  } else if (status === "Done") {
-    element.textContent = "Done";
-    element.style.color = "var(--color-good)";
-    element.style.fontWeight = "bold";
-  } else {
-    element.textContent = "Restrictions exceeded";
-    element.style.color = "var(--color-bad)";
-    element.style.fontWeight = "bold";
-  }
-
+  element.textContent = sektorStatusText(status);
+  element.style.color = sektorStatusColor(status);
+  if (status === "Done" || status === "Overrun") element.style.fontWeight = "bold";
   return element;
 }
 

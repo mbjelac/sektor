@@ -241,7 +241,7 @@ describe("status", () => {
     expect(sektor.getSektorState().status).toEqual("Done");
   });
 
-  it("is RestrictionsExceeded when an import is greater than its restriction, no requirements", () => {
+  it("is Overrun when an import is greater than its restriction, no requirements", () => {
     const sektor = new Sektor([[{ properties: {} }]], statusDefinitions, {
       importRestrictions: [{ name: "Coal", value: 3 }],
       exportRequirements: [],
@@ -249,7 +249,7 @@ describe("status", () => {
       [],);
     sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 } }] });
 
-    expect(sektor.getSektorState().status).toEqual("RestrictionsExceeded");
+    expect(sektor.getSektorState().status).toEqual("Overrun");
   });
 
   it("is Done when an import is non-zero but less than its restriction, no requirements", () => {
@@ -296,7 +296,7 @@ describe("status", () => {
     expect(sektor.getSektorState().status).toEqual("Done");
   });
 
-  it("is RestrictionsExceeded even if all exports meet requirements", () => {
+  it("is Overrun even if all exports meet requirements", () => {
     const sektor = new Sektor([[{ properties: {} }]], statusDefinitions, {
       importRestrictions: [{ name: "Coal", value: 3 }],
       exportRequirements: [{ name: "Power", value: 10 }],
@@ -304,7 +304,7 @@ describe("status", () => {
       [],);
     sektor.loadState({ buildings: [{ type: "Generator", location: { x: 0, y: 0 } }] });
 
-    expect(sektor.getSektorState().status).toEqual("RestrictionsExceeded");
+    expect(sektor.getSektorState().status).toEqual("Overrun");
   });
 });
 

@@ -4,7 +4,10 @@ import { BuildingLocation, BuildingCreation, Building, RestrictionsRequirements,
 
 export type { BuildingLocation, BuildingCreation, Building, RestrictionsRequirements, Location };
 
-export type SektorStatus = "InProgress" | "Done" | "RestrictionsExceeded";
+// A sektor nobody has claimed is Idle: it is not being played, so what stands in it is not
+// weighed against its restrictions and requirements. The other three are worked out from what
+// the sektor moves in and out.
+export type SektorStatus = "Idle" | "InProgress" | "Done" | "Overrun";
 
 export interface ScoredThroughput extends ResourceThroughput {
   score: number;
@@ -185,7 +188,7 @@ export class Sektor {
       return exportEntry !== undefined && exportEntry.value >= requirement.value;
     });
 
-    const status = restrictionsExceeded ? "RestrictionsExceeded" : requirementsMet ? "Done" : "InProgress";
+    const status = restrictionsExceeded ? "Overrun" : requirementsMet ? "Done" : "InProgress";
 
     return { imports, exports, status, importRestrictions, exportRequirements, starvedFunctions };
   }

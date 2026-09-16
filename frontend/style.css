@@ -1,8 +1,14 @@
 :root {
-    /* Semantic status colors, reused across CSS and TS (via var(...)). */
-    --color-good: #00c000; /* good: Done, boosted output, requirement met (green, halfway to lime) */
-    --color-bad: orange; /* bad: restrictions exceeded, reduced output */
-    --color-neutral: white; /* neutral: In Progress */
+    /* Semantic colors, reused across CSS and TS (via var(...)), for how a single thing in a sektor
+       is doing: one building's output, one requirement, one restriction. */
+    --color-good: #00c000; /* good: boosted output, requirement met (green, halfway to lime) */
+    --color-bad: orange; /* bad: restriction exceeded, reduced output */
+    /* The state of the sektor as a whole is read off a color of its own, one for each of the four
+       states it can be in, so that the sektor is not taken for one of the things standing in it. */
+    --color-status-idle: lightgray; /* idle: a sektor nobody has claimed */
+    --color-status-in-progress: lightblue; /* in progress: a sektor being built on */
+    --color-status-done: lime; /* done: a sektor which has met everything asked of it */
+    --color-status-overrun: #ff7f7f; /* overrun: a sektor past what it is allowed (light red) */
 }
 
 * {

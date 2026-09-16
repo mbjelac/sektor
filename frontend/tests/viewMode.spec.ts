@@ -247,6 +247,31 @@ test("offers an unclaimed sektor for claiming", async ({ page }) => {
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-unclaimed.png", { maxDiffPixelRatio: 0 });
 });
 
+// A sektor nobody has claimed is nobody's work, so the map calls it idle instead of saying how far
+// along it is.
+test("calls a sektor nobody has claimed idle", async ({ page }) => {
+  await storeSektor(page, "Gamma", null);
+
+  await page.goto("/sektor.html?id=Gamma");
+
+  await expect(statusStat(page)).toHaveText("Idle");
+});
+
+// Claiming the sektor makes it the player's work, so what the sektor works out for itself takes
+// over from the moment it is claimed: the very sektor called idle above is asked for nothing and
+// is therefore done as it stands.
+test("shows a claimed sektor by what it works out for itself rather than as idle", async ({ page }) => {
+  await claimFromMap(page, "Gamma");
+
+  await expect(statusStat(page)).toHaveText("Done");
+});
+
+// The stats carry no word but the picture standing for them, so the state of the sektor is picked
+// out by the picture it stands beside.
+function statusStat(page: Page) {
+  return page.locator('#sektor-stats .sektor-stat:has([title="Status"]) .sektor-stat-value');
+}
+
 // A sektor already has a name when it is offered, so claiming it asks for nothing but a yes.
 test("asks the player to confirm claiming a sektor from the map", async ({ page }) => {
   await storeSektor(page, "Gamma", null);

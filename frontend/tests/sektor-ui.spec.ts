@@ -596,7 +596,7 @@ test("displays sektor state panel with restrictions and requirements", async ({ 
         { name: "Ore", value: 3, score: 6 },
         { name: "Work", value: 3, score: -9 },
       ],
-      status: "RestrictionsExceeded",
+      status: "Overrun",
       importRestrictions: [
         { name: "Water", value: 4 },
         { name: "Energy", value: 3 },
