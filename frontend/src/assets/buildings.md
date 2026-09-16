@@ -227,7 +227,7 @@ FoodRaw 5
 FoodProcessed 3
 EnergyElectric 4
 =
-Work 16
+WorkUnqualified 16
 WaterSewage 6
 
 ## Function
@@ -236,7 +236,7 @@ Active: always
 
 HealthPhysical 3
 =
-Work 6
+WorkUnqualified 6
 
 ## Function
 
@@ -244,7 +244,7 @@ Active: always
 
 HealthMental 3
 =
-Work 6
+WorkUnqualified 6
 
 ## Function
 
@@ -252,7 +252,7 @@ Active: always
 
 HealthSocial 3
 =
-Work 6
+WorkUnqualified 6
 
 ## Function
 
@@ -260,7 +260,7 @@ Active: always
 
 Childcare 2
 =
-Work 4
+WorkUnqualified 4
 
 # Library
 
@@ -682,7 +682,7 @@ Name: Level 1
 WorkEducational 4
 WorkTechnical 1
 EnergyElectric 4
-Work 8
+WorkUnqualified 8
 =
 WorkMaintenance 16
 
