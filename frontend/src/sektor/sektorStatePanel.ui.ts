@@ -10,7 +10,6 @@ const GREATER_OR_EQUAL = "≥";
 
 let panelEl: HTMLElement | null = null;
 let importHoverCallback: ((resourceType: string | null) => void) | null = null;
-let previousStatus: SektorState["status"] | null = null;
 
 export function onImportHover(callback: (resourceType: string | null) => void) {
   importHoverCallback = callback;
@@ -23,19 +22,6 @@ export function updateSektorStatePanel(sektorState: SektorState) {
 
   panelEl!.appendChild(createStatusRow(sektorState.status));
   panelEl!.appendChild(createResourceList(sektorState));
-
-  if (previousStatus !== null && previousStatus !== sektorState.status) {
-    flashPanel(sektorState.status);
-  }
-  previousStatus = sektorState.status;
-}
-
-function flashPanel(status: SektorState["status"]) {
-  const flashColor = status === "Done" ? "var(--color-good)" : status === "RestrictionsExceeded" ? "var(--color-bad)" : "var(--color-neutral)";
-  panelEl!.style.setProperty("--ss-flash-color", flashColor);
-  panelEl!.classList.remove("ss-flash");
-  void panelEl!.offsetWidth;
-  panelEl!.classList.add("ss-flash");
 }
 
 function createStatusRow(status: SektorState["status"]): HTMLElement {

@@ -546,7 +546,6 @@ body > main {
 }
 
 #sektor-state-panel {
-    --ss-flash-color: #2a2a2a;
     flex: none;
     margin-top: auto;
     width: 300px;
@@ -557,19 +556,6 @@ body > main {
     display: flex;
     flex-direction: column;
     gap: 12px;
-}
-
-.ss-flash {
-    animation: ss-flash 1s ease-out 3;
-}
-
-@keyframes ss-flash {
-    from {
-        background-color: var(--ss-flash-color);
-    }
-    to {
-        background-color: #2a2a2a;
-    }
 }
 
 .ss-status {

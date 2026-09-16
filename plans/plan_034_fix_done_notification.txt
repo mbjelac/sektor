@@ -4,6 +4,6 @@
     - display notification "congratulationsYouAreDone"
         - functions same as error notification, only lime text color
 
-#2 Viewing status panel is not interrupted by flashing
-- when sektor transitions to any status
+#2 [done] Viewing status panel is not interrupted by flashing
+- [done] when sektor transitions to any status
     - do not flash status panel
