@@ -83,6 +83,42 @@ test("keeps the tool in hand while SHIFT is held, so several of the same buildin
   await expectScreenshot(page, "building-placed-twice-with-shift", "body");
 });
 
+// The stats of the sektor stand beside its name, so that a player building on it is told what the
+// list tells them about it from outside.
+test("shows the stats of the sektor beside its name", async ({ page }) => {
+  await placeOneBuilding(page);
+
+  await expectScreenshot(page, "sektor-stats", "#sektor-stats");
+});
+
+test("names every stat beside the sektor name by the same tooltip the list names it by", async ({ page }) => {
+  await placeOneBuilding(page);
+
+  const stats = await page.locator("#sektor-stats .sektor-stat").evaluateAll(stats => stats.map(stat => ({
+    tooltip: stat.querySelector(".sektor-stat-icon")!.getAttribute("title"),
+    value: stat.querySelector(".sektor-stat-value")!.textContent,
+  })));
+
+  expect(stats).toEqual([
+    { tooltip: "Difficulty", value: "1" },
+    { tooltip: "Map size", value: "Large" },
+    { tooltip: "Status", value: "In progress" },
+    { tooltip: "Buildings", value: "1" },
+    { tooltip: "Imports", value: "4" },
+    { tooltip: "Exports", value: "6" },
+  ]);
+});
+
+async function placeOneBuilding(page: Page) {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+}
+
 // TestMine is the building which asks for no floor of its own. It goes up on the corner tile
 // nearest the viewer, where the sides of its floor are in plain sight rather than hidden behind
 // the floors in front of them.
@@ -577,7 +613,7 @@ test("displays sektor state panel with restrictions and requirements", async ({ 
   await expectScreenshot(page, "sektor-state-panel", "#sektor-state-panel");
 });
 
-test("displays sektor state panel with Done status", async ({ page }) => {
+test("displays sektor state panel with every restriction and requirement met", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await page.evaluate(() => {
@@ -601,7 +637,7 @@ test("displays sektor state panel with Done status", async ({ page }) => {
     });
   });
 
-  await expectScreenshot(page, "sektor-state-panel-done", "#sektor-state-panel");
+  await expectScreenshot(page, "sektor-state-panel-met", "#sektor-state-panel");
 });
 
 test("highlights buildings importing hovered resource", async ({ page }) => {

@@ -150,6 +150,19 @@ async function openOwnSektor(page: Page, sektorName: string) {
   await page.locator("#sektor-name").waitFor();
 }
 
+// A sektor goes by whatever name the player gave it, which the panels under that name have nothing
+// to do with: they are as wide as the building thumbnails they hold, short name or long.
+test("keeps the panels under the sektor name as wide as what they hold, however long the name is", async ({ page }) => {
+  await openOwnSektor(page, "The Sektor With The Longest Name Of Them All");
+
+  const panelWidths = await page.evaluate(() => ({
+    construction: document.getElementById("construction-panel")!.getBoundingClientRect().width,
+    geography: document.getElementById("property-toggler")!.getBoundingClientRect().width,
+  }));
+
+  expect(panelWidths).toEqual({ construction: 138, geography: 138 });
+});
+
 test("names a sektor without a name of its own No name", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
   await nameStoredSektor(page, "Beta", "");

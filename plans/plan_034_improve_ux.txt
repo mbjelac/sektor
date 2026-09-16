@@ -18,7 +18,7 @@
     - like floor panels completely transparent
 
 #5 Player should see sektor's stats in map also
-- display sektor stats next to sektor name (and edit button)
+- [done] display sektor stats next to sektor name (and edit button)
     - each stat should be displayed as "<icon> <value>"
         - value in white text
     - icon should have a tooltip
@@ -32,4 +32,4 @@
         - number of buildings
         - total imports
         - total exports
-- remove status from import/export panel
+- [done] remove status from import/export panel

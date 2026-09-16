@@ -4,7 +4,7 @@ import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
-import { BuildingLocation, Location, Sektor, SektorStatus } from "./Sektor";
+import { BuildingLocation, Location, Sektor, SektorState, SektorStatus } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
@@ -15,10 +15,11 @@ import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
 import { getLocalResources, getNegativeScoringResources } from "../resources";
-import { arrowLeftIcon, pencilSquareIcon } from "../icons";
+import { arrowDownTrayIcon, arrowLeftIcon, arrowsPointingOutIcon, arrowUpTrayIcon, buildingOfficeIcon, pencilSquareIcon, puzzlePieceIcon, sunIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
+import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
-import { LARGEST_SEKTOR_SIZE } from "../../../shared/sektorSizes";
+import { LARGEST_SEKTOR_SIZE, sektorSizeName } from "../../../shared/sektorSizes";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showClaimDialog } from "../claimDialog.ui";
@@ -75,6 +76,8 @@ function showSektorName() {
   if (!isViewMode) title.appendChild(createRenameButton());
 
   document.getElementById("left-panels")!.prepend(header);
+
+  showSektorStats(sektor.getSektorState());
 }
 
 function createRenameButton(): HTMLElement {
@@ -315,6 +318,7 @@ function updateSektorState() {
       locations.findIndex(other => other.x === location.x && other.y === location.y) === index
     );
   refreshOpenBuildingPanel();
+  showSektorStats(sektorState);
 
   const becameDone = previousSektorStatus !== null && previousSektorStatus !== "Done" && sektorState.status === "Done";
   previousSektorStatus = sektorState.status;
@@ -330,6 +334,68 @@ function refreshOpenBuildingPanel() {
     building.location.x === selectedBuildingLocation!.x && building.location.y === selectedBuildingLocation!.y
   );
   if (openedBuilding) openBuildingPanel(openedBuilding);
+}
+
+// A player looking at a sektor from the outside is told the same things about it as the list tells
+// them, by the same icons in the same order, so the two read as one. What the sektor is worth is
+// left out: a sektor being built on is scored resource by resource in the panel on the right.
+function showSektorStats(sektorState: SektorState) {
+  document.getElementById("sektor-stats")?.remove();
+
+  const stats = document.createElement("div");
+  stats.id = "sektor-stats";
+  stats.appendChild(createStat(puzzlePieceIcon, "Difficulty", `${sektorLevel}`));
+  stats.appendChild(createStat(arrowsPointingOutIcon, "Map size", sektorSizeName(sektorSize)));
+  stats.appendChild(createStatusStat(sektorState.status));
+  stats.appendChild(createStat(buildingOfficeIcon, "Buildings", formatNumber(sektor.getState().buildings.length)));
+  stats.appendChild(createStat(arrowDownTrayIcon, "Imports", formatNumber(sumThroughputs(sektorState.imports))));
+  stats.appendChild(createStat(arrowUpTrayIcon, "Exports", formatNumber(sumThroughputs(sektorState.exports))));
+
+  document.getElementById("sektor-title")!.appendChild(stats);
+}
+
+function createStat(icon: string, tooltip: string, value: string): HTMLElement {
+  const stat = document.createElement("div");
+  stat.className = "sektor-stat";
+
+  const iconElement = document.createElement("span");
+  iconElement.className = "sektor-stat-icon";
+  iconElement.innerHTML = icon;
+  iconElement.title = tooltip;
+  stat.appendChild(iconElement);
+
+  const valueElement = document.createElement("span");
+  valueElement.className = "sektor-stat-value";
+  valueElement.textContent = value;
+  stat.appendChild(valueElement);
+
+  return stat;
+}
+
+// How far along the sektor is stands out from the rest of the stats, as it is the one of them the
+// player is playing towards.
+function createStatusStat(status: SektorStatus): HTMLElement {
+  const stat = createStat(sunIcon, "Status", statusText(status));
+  const value = stat.querySelector<HTMLElement>(".sektor-stat-value")!;
+  value.style.color = statusColor(status);
+  value.style.fontWeight = "bold";
+  return stat;
+}
+
+function statusText(status: SektorStatus): string {
+  if (status === "InProgress") return "In progress";
+  if (status === "Done") return "Done";
+  return "Restrictions exceeded";
+}
+
+function statusColor(status: SektorStatus): string {
+  if (status === "InProgress") return "var(--color-neutral)";
+  if (status === "Done") return "var(--color-good)";
+  return "var(--color-bad)";
+}
+
+function sumThroughputs(throughputs: { value: number }[]): number {
+  return throughputs.reduce((total, throughput) => total + throughput.value, 0);
 }
 
 function loadSavedState() {

@@ -38,20 +38,30 @@ body > main {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
+    /* Wide enough for a building thumbnail and what it is framed by, so that the panels are as
+       wide as what they hold rather than as wide as the name of the sektor above them, which is
+       as long as the player made it. */
+    width: 138px;
 }
 
 #sektor-header {
     flex: 0 0 auto;
+    /* The name is as wide as it is rather than as wide as the panels below, which are of a width
+       of their own. */
+    align-self: flex-start;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
 }
 
+/* The name of the sektor and its stats run past the panels below rather than being folded to their
+   width. */
 #sektor-title {
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 #leave-button,
@@ -82,6 +92,34 @@ body > main {
     font-family: sans-serif;
     font-size: 16px;
     font-weight: bold;
+}
+
+/* What the list says about a sektor from the outside stands beside its name on the map: an icon
+   for each stat, with the stat itself beside it. They stand well clear of the pencil the name is
+   changed by, so that neither is taken for the other. */
+#sektor-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 24px;
+}
+
+.sektor-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+.sektor-stat-icon {
+    display: flex;
+    align-items: center;
+}
+
+.sektor-stat-value {
+    color: #fff;
 }
 
 #sektor-owner {
@@ -556,13 +594,6 @@ body > main {
     display: flex;
     flex-direction: column;
     gap: 12px;
-}
-
-.ss-status {
-    width: 100%;
-    color: #ccc;
-    font-family: sans-serif;
-    font-size: 12px;
 }
 
 .ss-list {

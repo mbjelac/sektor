@@ -20,34 +20,7 @@ export function updateSektorStatePanel(sektorState: SektorState) {
 
   panelEl!.innerHTML = "";
 
-  panelEl!.appendChild(createStatusRow(sektorState.status));
   panelEl!.appendChild(createResourceList(sektorState));
-}
-
-function createStatusRow(status: SektorState["status"]): HTMLElement {
-  const row = document.createElement("div");
-  row.className = "ss-status";
-
-  const label = document.createElement("span");
-  label.textContent = "Status: ";
-  row.appendChild(label);
-
-  const value = document.createElement("span");
-  if (status === "InProgress") {
-    value.textContent = "In progress";
-    value.style.color = "var(--color-neutral)";
-  } else if (status === "Done") {
-    value.textContent = "Done";
-    value.style.color = "var(--color-good)";
-    value.style.fontWeight = "bold";
-  } else {
-    value.textContent = "Restrictions exceeded";
-    value.style.color = "var(--color-bad)";
-    value.style.fontWeight = "bold";
-  }
-  row.appendChild(value);
-
-  return row;
 }
 
 function ensurePanel() {
