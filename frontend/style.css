@@ -54,7 +54,8 @@ body > main {
     gap: 8px;
 }
 
-#leave-button {
+#leave-button,
+#rename-button {
     background: none;
     border: none;
     color: #999;
@@ -64,8 +65,16 @@ body > main {
     cursor: pointer;
 }
 
-#leave-button:hover {
+#leave-button:hover,
+#rename-button:hover {
     color: #fff;
+}
+
+/* The pencil stands beside the name of the sektor rather than in front of it, so it is drawn to
+   the size of the name it changes rather than to the size of the other icons. */
+#rename-button .icon {
+    width: 18px;
+    height: 18px;
 }
 
 #sektor-name {
@@ -1094,13 +1103,7 @@ body > main {
     padding: 16px;
 }
 
-.name-dialog-label {
-    color: #999;
-    font-family: sans-serif;
-    font-size: 12px;
-}
-
-.name-dialog-input {
+.rename-dialog-input {
     background: #333;
     border: 1px solid #555;
     color: #ccc;
@@ -1110,11 +1113,11 @@ body > main {
     outline: none;
 }
 
-.name-dialog-input:focus {
+.rename-dialog-input:focus {
     border-color: #888;
 }
 
-.name-dialog-warning {
+.rename-dialog-warning {
     color: #ff6b6b;
     font-family: sans-serif;
     font-size: 12px;

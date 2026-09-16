@@ -11,12 +11,12 @@ import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
 import { showDoneDialog } from "./doneDialog.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { LOWEST_LEVEL } from "../playerLevel";
-import { getGivenSektorName, getSektorOwner, setSektorOwner } from "../list/sektorList.api";
+import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
 import { getLocalResources, getNegativeScoringResources } from "../resources";
-import { arrowLeftIcon } from "../icons";
+import { arrowLeftIcon, pencilSquareIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { LARGEST_SEKTOR_SIZE } from "../../../shared/sektorSizes";
@@ -25,6 +25,7 @@ import { requireLogin } from "../login/requireLogin";
 import { showClaimDialog } from "../claimDialog.ui";
 import { showUser } from "../login/userDisplay.ui";
 import { isTestMode } from "../testMode";
+import { showRenameDialog } from "../renameDialog.ui";
 
 requireLogin();
 showUser();
@@ -70,7 +71,33 @@ function showSektorName() {
   nameElement.textContent = getDisplayedSektorName();
   title.appendChild(nameElement);
 
+  // A sektor is the player's to call what they like, but only while they are the one building on
+  // it, so the pencil is not there for anybody looking at somebody else's sektor.
+  if (!isViewMode) title.appendChild(createRenameButton());
+
   document.getElementById("left-panels")!.prepend(header);
+}
+
+function createRenameButton(): HTMLElement {
+  const renameButton = document.createElement("button");
+  renameButton.id = "rename-button";
+  renameButton.title = "Rename sektor";
+  renameButton.innerHTML = pencilSquareIcon;
+  renameButton.addEventListener("click", renameSektor);
+  return renameButton;
+}
+
+// The sektor goes by its new name from the moment it is given one, so the header is drawn again
+// with it.
+function renameSektor() {
+  showRenameDialog({
+    name: getGivenSektorName(sektorId!) ?? "",
+    takenNames: getTakenSektorNames(sektorId!),
+    onRenamed: givenName => {
+      setGivenSektorName(sektorId!, givenName);
+      showSektorName();
+    },
+  });
 }
 
 // A sektor carries the name it was made with, so the player is only asked whether they want it.
@@ -80,9 +107,11 @@ function claimSektor() {
     sektorName: getGivenSektorName(sektorId!) ?? sektorId!,
     onConfirmed: () => {
       setSektorOwner(sektorId!, getUsername()!);
+      // Edit mode is entered before the header is drawn again, as it is what puts the pencil for
+      // renaming beside the name.
+      enterEditMode();
       showSektorName();
       showSektorOwner();
-      enterEditMode();
     },
   });
 }

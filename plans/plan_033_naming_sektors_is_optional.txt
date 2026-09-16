@@ -17,8 +17,8 @@
 - [done] instead, show claim dialog, same as in #2
     - if Yes clicked, assign player to sektor and open sektor map in edit mode
 
-#4 Player can rename sektor within map
-- in edit mode, next to sektor name in map there is a pencil icon
+#4 [done] Player can rename sektor within map
+- [done] in edit mode, next to sektor name in map there is a pencil icon
     - heroicons pencil-square
     - when clicked, show rename dialog
         - "Enter new sektor name"

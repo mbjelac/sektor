@@ -1,3 +1,4 @@
+import { Page } from "@playwright/test";
 import { test, expect, expectScreenshot, makeSektorsByHand } from "./test-utils";
 
 const OTHER_PLAYER = "Ana";
@@ -70,6 +71,84 @@ test("names the sektor it is showing", async ({ page }) => {
 
   await expect(page.locator("#sektor-name")).toHaveText("Sunset Flats");
 });
+
+// A sektor is made with a name nobody chose, so the player building on it may put one of their own
+// in its place.
+test("offers the player a pencil for renaming their own sektor", async ({ page }) => {
+  await openOwnSektor(page, "Sunset Flats");
+
+  await expect(page.locator("#sektor-header")).toHaveScreenshot("map-rename-pencil.png", { maxDiffPixelRatio: 0 });
+});
+
+// Somebody else's sektor is only being looked at, and what it is called is not the looker's to say.
+test("offers no pencil on a sektor the player does not build on", async ({ page }) => {
+  await storeSektor(page, "Beta", OTHER_PLAYER);
+  await nameStoredSektor(page, "Beta", "Sunset Flats");
+
+  await page.goto("/sektor.html?id=Beta");
+
+  await expect(page.locator("#rename-button")).toHaveCount(0);
+});
+
+test("asks for the new name under the one the sektor carries", async ({ page }) => {
+  await openOwnSektor(page, "Sunset Flats");
+
+  await page.locator("#rename-button").click();
+
+  await expect(page.locator("#rename-dialog")).toHaveScreenshot("rename-dialog.png", { maxDiffPixelRatio: 0 });
+});
+
+test("renames the sektor, and shows it under its new name", async ({ page }) => {
+  await openOwnSektor(page, "Sunset Flats");
+
+  await page.locator("#rename-button").click();
+  await page.locator("#sektor-name-input").fill("Marko's Place");
+  await page.locator("#rename-ok-button").click();
+
+  const storedName = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!)[0].name);
+  expect({ storedName, shownName: await page.locator("#sektor-name").textContent() })
+    .toEqual({ storedName: "Marko's Place", shownName: "Marko's Place" });
+});
+
+test("leaves the sektor under its old name when renaming is cancelled", async ({ page }) => {
+  await openOwnSektor(page, "Sunset Flats");
+
+  await page.locator("#rename-button").click();
+  await page.locator("#sektor-name-input").fill("Marko's Place");
+  await page.locator("#rename-cancel-button").click();
+
+  const storedName = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!)[0].name);
+  expect({ storedName, shownName: await page.locator("#sektor-name").textContent() })
+    .toEqual({ storedName: "Sunset Flats", shownName: "Sunset Flats" });
+});
+
+// Two sektors cannot go by the same name, though the one being renamed may keep its own.
+test("refuses a name another sektor already carries", async ({ page }) => {
+  await openOwnSektor(page, "Sunset Flats");
+  await addSektorToStoredList(page, "Beta", "Rocky Bottom");
+  await page.reload();
+
+  await page.locator("#rename-button").click();
+  await page.locator("#sektor-name-input").fill("Rocky Bottom");
+
+  await expect(page.locator("#rename-ok-button")).toBeDisabled();
+});
+
+// Another sektor of the list, which is there to have a name of its own and nothing else.
+async function addSektorToStoredList(page: Page, sektorId: string, sektorName: string) {
+  await page.evaluate(([sektorId, sektorName]) => {
+    const sektors = JSON.parse(localStorage.getItem("sektors")!);
+    localStorage.setItem("sektors", JSON.stringify([...sektors, { id: sektorId, name: sektorName, owner: null }]));
+  }, [sektorId, sektorName]);
+}
+
+// The sektor of the player, opened for building on, which is where a sektor may be renamed.
+async function openOwnSektor(page: Page, sektorName: string) {
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await nameStoredSektor(page, "Alpha", sektorName);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#sektor-name").waitFor();
+}
 
 test("names a sektor without a name of its own No name", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
