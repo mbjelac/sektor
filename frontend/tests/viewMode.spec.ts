@@ -47,7 +47,7 @@ test("tells the player a viewed sektor is not theirs to build on", async ({ page
   const canvasBox = await canvas.boundingBox();
   await canvas.click({ position: { x: canvasBox!.width / 2, y: canvasBox!.height / 2 } });
 
-  await expect(page.locator("#error-message")).toHaveText("noOwnership");
+  await expect(page.locator("#notification")).toHaveText("noOwnership");
 });
 
 test("builds nothing when the player clicks the map of a viewed sektor", async ({ page }) => {
@@ -318,23 +318,7 @@ test("shows a building of a sektor in view mode without the controls which would
 test("congratulates the player when the sektor becomes done", async ({ page }) => {
   await placeTheBuildingWhichFinishesTheSektor(page);
 
-  await expect(page.locator("#done-dialog")).toHaveScreenshot("done-dialog.png", { maxDiffPixelRatio: 0 });
-});
-
-test("stays on the sektor when the player continues working on it", async ({ page }) => {
-  await placeTheBuildingWhichFinishesTheSektor(page);
-
-  await page.locator("#done-continue-button").click();
-
-  await expect(page.locator("#done-dialog")).toHaveCount(0);
-});
-
-test("goes back to the list when the player leaves the finished sektor", async ({ page }) => {
-  await placeTheBuildingWhichFinishesTheSektor(page);
-
-  await page.locator("#done-leave-button").click();
-
-  await expect(page).toHaveURL(/\/$/);
+  await expectScreenshot(page, "done-notification");
 });
 
 // Habitats puts out Work, which is the whole assignment of this sektor, so placing one finishes it.
@@ -347,7 +331,7 @@ async function placeTheBuildingWhichFinishesTheSektor(page: import("@playwright/
   const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.locator("#done-dialog").waitFor();
+  await page.locator("#notification").waitFor();
 }
 
 async function storeSektor(page: import("@playwright/test").Page, sektorId: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = [], allowedBuildings: string[] = ["Habitats", "Agriplot", "Polytechnic"]) {

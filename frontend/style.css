@@ -532,13 +532,12 @@ body > main {
     display: none;
 }
 
-#error-message {
+#notification {
     display: none;
     position: absolute;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    color: red;
     font-family: "Roboto Thin", Courier, monospace;
     font-size: 20px;
     font-weight: lighter;
@@ -1162,16 +1161,6 @@ body > main {
     font-family: sans-serif;
     font-size: 14px;
     margin: 10px;
-}
-
-.done-dialog-message {
-    line-height: 1.8;
-    text-align: center;
-}
-
-.done-dialog-bold {
-    color: #fff;
-    font-weight: bold;
 }
 
 .dialog-buttons {

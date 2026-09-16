@@ -1,5 +1,9 @@
-#1 Player is not interrupted with "Done" notification
+#1 [done] Player is not interrupted with "Done" notification
 - when sektor transitions to Done status
     - do NOT display "Done" dialog
     - display notification "congratulationsYouAreDone"
         - functions same as error notification, only lime text color
+
+#2 Viewing status panel is not interrupted by flashing
+- when sektor transitions to any status
+    - do not flash status panel

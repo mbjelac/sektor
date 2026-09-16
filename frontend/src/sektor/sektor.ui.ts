@@ -8,7 +8,6 @@ import { BuildingLocation, Location, Sektor, SektorStatus } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
-import { showDoneDialog } from "./doneDialog.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { LOWEST_LEVEL } from "../playerLevel";
 import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
@@ -236,7 +235,7 @@ const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRe
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
 const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
-let errorTimeout: ReturnType<typeof setTimeout> | null = null;
+let notificationTimeout: ReturnType<typeof setTimeout> | null = null;
 
 function locationsToLocationProperties(locationMatrix: Location[][]): { [key: string]: number[][] } {
   if (locationMatrix.length === 0) return {};
@@ -320,13 +319,7 @@ function updateSektorState() {
   const becameDone = previousSektorStatus !== null && previousSektorStatus !== "Done" && sektorState.status === "Done";
   previousSektorStatus = sektorState.status;
 
-  if (becameDone) {
-    showDoneDialog({
-      username: getUsername()!,
-      sektorName: getDisplayedSektorName(),
-      onLeave: () => { window.location.href = "/"; },
-    });
-  }
+  if (becameDone) showNotification("congratulationsYouAreDone", "lime");
 }
 
 // What a building is starved of can change with anything built or switched elsewhere in the
@@ -552,12 +545,19 @@ function bakedBuildingBodies(p: p5, type: string, renderingCode: string): BakedB
 }
 
 function showError(message: string) {
-  const errorEl = document.getElementById("error-message")!;
-  errorEl.textContent = message;
-  errorEl.style.display = "block";
-  if (errorTimeout) clearTimeout(errorTimeout);
-  errorTimeout = setTimeout(() => {
-    errorEl.style.display = "none";
+  showNotification(message, "red");
+}
+
+// A notification says its piece over the map for a while and then goes away on its own, so that
+// the player is told what happened without being stopped from building.
+function showNotification(message: string, textColor: string) {
+  const notificationElement = document.getElementById("notification")!;
+  notificationElement.textContent = message;
+  notificationElement.style.color = textColor;
+  notificationElement.style.display = "block";
+  if (notificationTimeout) clearTimeout(notificationTimeout);
+  notificationTimeout = setTimeout(() => {
+    notificationElement.style.display = "none";
   }, 5000);
 }
 
