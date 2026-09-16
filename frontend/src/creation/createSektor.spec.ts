@@ -150,6 +150,20 @@ describe("createSektor", () => {
     expect(palettesMissingAProducer).toEqual([]);
   });
 
+  // A requirement asks for a resource to be sent out of the sektor, which already rules out
+  // bringing any of it in, so a restriction on the same resource says nothing new.
+  it("never restricts a resource it already requires", () => {
+    const restrictedRequirements = Array.from({ length: 300 }, (_, run) => 1 + run % 6).flatMap(level => {
+      const sektorData = createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, Math.random);
+      const requiredResources = sektorData.exportRequirements.map(requirement => requirement.name);
+      return sektorData.importRestrictions
+        .map(restriction => restriction.name)
+        .filter(resource => requiredResources.includes(resource));
+    });
+
+    expect(restrictedRequirements).toEqual([]);
+  });
+
   it("makes a sektor which has no buildings in it yet", () => {
     const sektorData = createSektor(2, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange);
 

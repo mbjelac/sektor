@@ -56,7 +56,7 @@ export function createSektor(
   // measured against it; everything added afterwards is there to be looked at and ruled out.
   const restrictedResources = new Map<string, number>();
   const solutionSteps = requiredResources.flatMap(requiredResource =>
-    walkBackwards(productionGraph, requiredResource, level, randomNumber, restrictedResources)
+    walkBackwards(productionGraph, requiredResource, requiredResources, level, randomNumber, restrictedResources)
   );
   const paletteBuildingNames = new Set<string>(solutionSteps.map(solutionStep => solutionStep.buildingName));
 
@@ -122,12 +122,13 @@ function pickRequiredResources(
 
 // The walk goes as deep as the level asks for, but no deeper than the chain allows: it stops early
 // when the current resource has no producer left, or when every input of the chosen producer is
-// already restricted or is something no building makes and the player can simply import. What it
-// returns is the chain it built: the buildings which, standing together, make what was required,
-// each with the amount the layer above it asks of it.
+// already restricted, is required, or is something no building makes and the player can simply
+// import. What it returns is the chain it built: the buildings which, standing together, make what
+// was required, each with the amount the layer above it asks of it.
 function walkBackwards(
   productionGraph: ProductionGraph,
   requiredResource: string,
+  requiredResources: string[],
   level: number,
   randomNumber: RandomNumber,
   restrictedResources: Map<string, number>,
@@ -147,9 +148,16 @@ function walkBackwards(
     const solutionStep = { ...producer, resource: currentResource, demand: currentDemand };
     solutionSteps.push(solutionStep);
 
+    // A resource the sektor requires is already asked for in full, so capping what may be brought
+    // in of it says nothing the requirement does not already say.
     const restrictableInputs = producer.buildingFunction.inputs
       .map(input => input.name)
-      .filter(input => productionGraph.has(input) && !restrictedResources.has(input) && input !== currentResource);
+      .filter(input =>
+        productionGraph.has(input)
+        && !restrictedResources.has(input)
+        && !requiredResources.includes(input)
+        && input !== currentResource
+      );
     if (restrictableInputs.length === 0) return solutionSteps;
 
     const restrictedInput = pickRandom(restrictableInputs, randomNumber);

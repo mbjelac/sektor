@@ -230,6 +230,6 @@ down here because it is what the making of sektors ran into.
     import rule first; this depends on it.
 
 
-#5 No restriction needed on a resource with a requirement
-- algorithm sometimes creates a restriction and requirement on same resource
+#5 [done] No restriction needed on a resource with a requirement
+- [done] algorithm sometimes creates a restriction and requirement on same resource
     - this is superfluous, as the requirement will guarantee there are no imports
