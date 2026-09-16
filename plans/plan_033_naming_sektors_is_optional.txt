@@ -5,8 +5,10 @@
         - join them with dash "-"
 
 #2 Claiming sektor from the sektor list does not require naming
-- in sektor list, when Claim button is clicked do not show name dialog
-- instead, show "Do you want to claim sektor <name>?"
+- [done] in sektor list, when Claim button is clicked do not show name dialog
+- [done] instead, show dialog
+    - title: sektor name, bold, centered
+    - "Claim this sektor?", normal
     - Yes, No
     - if Yes clicked, assign player to sektor and open sektor map in edit mode
 
