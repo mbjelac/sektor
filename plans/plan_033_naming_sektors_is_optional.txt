@@ -4,7 +4,7 @@
         - use get request on https://random-word-api.herokuapp.com/word?number=2
         - join them with dash "-"
 
-#2 Claiming sektor from the sektor list does not require naming
+#2 [done] Claiming sektor from the sektor list does not require naming
 - [done] in sektor list, when Claim button is clicked do not show name dialog
 - [done] instead, show dialog
     - title: sektor name, bold, centered

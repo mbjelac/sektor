@@ -1,9 +1,9 @@
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
-import { getSektorList, getTakenSektorNames, removeSektorOwner, SektorListItem, setGivenSektorName, setSektorOwner } from "./sektorList.api";
+import { getSektorList, removeSektorOwner, SektorListItem, setSektorOwner } from "./sektorList.api";
 import { arrowDownTrayIcon, arrowRightIcon, arrowsPointingOutIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, sunIcon, userIcon } from "../icons";
 import { SektorStatus } from "../sektor/Sektor";
-import { showNameDialog } from "../nameDialog.ui";
+import { showClaimDialog } from "../claimDialog.ui";
 import { createClaimButton } from "../claimButton.ui";
 import { showAbandonDialog } from "./abandonDialog.ui";
 import { getUsername } from "../login/login.api";
@@ -199,15 +199,12 @@ function createListClaimButton(sektorListItem: SektorListItem, claimingAllowed: 
   return claimButton;
 }
 
-// A claimed sektor is named by the player claiming it, and is theirs to build on once named.
+// A sektor carries the name it was made with, so the player is only asked whether they want it.
+// Saying yes makes it theirs and opens it for building on.
 function claimSektor(sektorListItem: SektorListItem) {
-  showNameDialog({
-    // A sektor which has been named before was abandoned by its previous player, and is offered
-    // for renaming with the name it was left with.
-    name: sektorListItem.name ?? "",
-    takenNames: getTakenSektorNames(sektorListItem.id),
-    onNamed: givenName => {
-      setGivenSektorName(sektorListItem.id, givenName);
+  showClaimDialog({
+    sektorName: sektorListItem.name ?? sektorListItem.id,
+    onConfirmed: () => {
       setSektorOwner(sektorListItem.id, getUsername()!);
       window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
     },

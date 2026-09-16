@@ -1,896 +1,896 @@
 :root {
-  /* Semantic status colors, reused across CSS and TS (via var(...)). */
-  --color-good: #00c000;    /* good: Done, boosted output, requirement met (green, halfway to lime) */
-  --color-bad: orange;      /* bad: restrictions exceeded, reduced output */
-  --color-neutral: white;   /* neutral: In Progress */
+    /* Semantic status colors, reused across CSS and TS (via var(...)). */
+    --color-good: #00c000; /* good: Done, boosted output, requirement met (green, halfway to lime) */
+    --color-bad: orange; /* bad: restrictions exceeded, reduced output */
+    --color-neutral: white; /* neutral: In Progress */
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .icon {
-  width: 14px;
-  height: 14px;
+    width: 14px;
+    height: 14px;
 }
 
 html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #1a1a1a;
-  display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #1a1a1a;
+    display: flex;
 }
 
 body > main {
-  display: none;
+    display: none;
 }
 
 #left-panels {
-  position: absolute;
-  top: 16px;
-  bottom: 16px;
-  left: 16px;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 16px;
+    position: absolute;
+    top: 16px;
+    bottom: 16px;
+    left: 16px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
 }
 
 #sektor-header {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
 }
 
 #sektor-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 #leave-button {
-  background: none;
-  border: none;
-  color: #999;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+    background: none;
+    border: none;
+    color: #999;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 
 #leave-button:hover {
-  color: #fff;
+    color: #fff;
 }
 
 #sektor-name {
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 16px;
-  font-weight: bold;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 #sektor-owner {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: sans-serif;
-  font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .sektor-owner-label {
-  color: #999;
-  font-weight: normal;
+    color: #999;
+    font-weight: normal;
 }
 
 .sektor-owner-name {
-  color: #fff;
-  font-weight: bold;
+    color: #fff;
+    font-weight: bold;
 }
 
 #construction-panel {
-  flex: 1 1 auto;
-  min-height: 0;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
 }
 
 #toolbar {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  overflow-y: auto;
-  scrollbar-width: none;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 
 #toolbar::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 .building-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  padding: 4px;
-  border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px;
+    border: 2px solid transparent;
 }
 
 .building-item.selected {
-  border-color: yellow;
+    border-color: yellow;
 }
 
 /* A tool which cannot be picked in the sektor being looked at is shown as out of reach. */
 .building-item.not-selectable {
-  cursor: default;
-  opacity: 0.4;
+    cursor: default;
+    opacity: 0.4;
 }
 
 .building-item.destruction-tool.selected {
-  border-color: red;
+    border-color: red;
 }
 
 .building-item canvas,
 .building-item img {
-  display: block;
+    display: block;
 }
 
 .building-name {
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 11px;
-  margin-top: 4px;
-  text-align: center;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 11px;
+    margin-top: 4px;
+    text-align: center;
 }
 
 #canvas-container {
-  flex: 1;
-  height: 100%;
-  position: relative;
+    flex: 1;
+    height: 100%;
+    position: relative;
 }
 
 #toolbar-function-panel {
-  position: fixed;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  padding: 8px 12px;
-  z-index: 100;
+    position: fixed;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 8px 12px;
+    z-index: 100;
 }
 
 #right-panels {
-  position: absolute;
-  /* The logged in player is shown above the panels, in the top right corner. */
-  top: 48px;
-  bottom: 16px;
-  right: 16px;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  /* The gap between the panels is see-through, so the map can still be dragged there. */
-  pointer-events: none;
+    position: absolute;
+    /* The logged in player is shown above the panels, in the top right corner. */
+    top: 48px;
+    bottom: 16px;
+    right: 16px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    /* The gap between the panels is see-through, so the map can still be dragged there. */
+    pointer-events: none;
 }
 
 #right-panels > * {
-  pointer-events: auto;
+    pointer-events: auto;
 }
 
 /* The panel grows with its content only until it reaches the sektor state panel below it,
    from where on its content scrolls, without a scrollbar taking up room in the panel. */
 #building-panel {
-  flex: 0 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  scrollbar-width: none;
-  width: 288px;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  padding: 12px;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+    width: 288px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
 }
 
 .bf-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  align-self: stretch;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
 }
 
 .bf-location {
-  color: #999;
-  font-family: sans-serif;
-  font-size: 11px;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 11px;
 }
 
 .bf-destroy .icon {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
 }
 
 .bf-destroy {
-  background: none;
-  border: none;
-  color: #999;
-  cursor: pointer;
-  padding: 0 2px;
-  display: flex;
-  align-items: center;
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 0 2px;
+    display: flex;
+    align-items: center;
 }
 
 .bf-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
 .bf-preview canvas {
-  display: block;
+    display: block;
 }
 
 .bf-name {
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 13px;
-  text-align: center;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 13px;
+    text-align: center;
 }
 
 .bf-function-block {
-  align-self: stretch;
+    align-self: stretch;
 }
 
 /* Every function after the first is set off from the one above it by a line. */
 .bf-function-block + .bf-function-block {
-  border-top: 1px solid #444;
-  margin-top: 8px;
-  padding-top: 8px;
+    border-top: 1px solid #444;
+    margin-top: 8px;
+    padding-top: 8px;
 }
 
 .bf-function-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
 }
 
 .bf-function-name {
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 11px;
-  font-weight: normal;
-  text-align: left;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+    text-align: left;
 }
 
 .bf-function-warning {
-  display: flex;
-  align-items: center;
-  color: #ffdd00;
+    display: flex;
+    align-items: center;
+    color: #ffdd00;
 }
 
 .bf-function-warning .icon {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .bp-properties-header {
-  grid-column: 1 / -1;
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 11px;
-  font-weight: normal;
-  text-align: center;
-  margin-bottom: 4px;
+    grid-column: 1 / -1;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 4px;
 }
 
 .bf-function {
-  display: flex;
-  align-items: flex-start;
-  align-self: stretch;
-  gap: 12px;
+    display: flex;
+    align-items: flex-start;
+    align-self: stretch;
+    gap: 12px;
 }
 
 #building-panel .bf-function {
-  display: grid;
-  grid-template-columns: auto auto;
-  column-gap: 6px;
-  row-gap: 2px;
-  align-items: center;
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 6px;
+    row-gap: 2px;
+    align-items: center;
 }
 
 #building-panel .bf-arrow {
-  display: none;
+    display: none;
 }
 
 #building-panel .bf-inputs-table,
 #building-panel .bf-outputs-table {
-  display: contents;
+    display: contents;
 }
 
 #building-panel .bf-outputs-header {
-  margin-top: 6px;
+    margin-top: 6px;
 }
 
 .bf-col {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  gap: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
+    gap: 2px;
 }
 
 .bf-outputs-table {
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 2px 6px;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  align-items: center;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2px 6px;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
+    align-items: center;
 }
 
 .bf-outputs-row {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  align-items: center;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-items: center;
 }
 
 .bf-outputs-header {
-  color: #999;
-  font-size: 11px;
+    color: #999;
+    font-size: 11px;
 }
 
 .bf-outputs-cell {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 
 .bf-outputs-amount {
-  text-align: center;
+    text-align: center;
 }
 
 /* The location property an output is produced in the amount of runs under that output, across
    both of its columns and indented, so it reads as belonging to the output above it. */
 .bf-output-property {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-left: 12px;
-  color: #999;
-  font-family: sans-serif;
-  font-size: 11px;
-  white-space: nowrap;
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 12px;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 11px;
+    white-space: nowrap;
 }
 
 .bf-output-property-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
 }
 
 /* The properties are laid out in three columns, so every name, the color it is drawn in and its
    value on this location line up with those of the properties above and below it. The columns
    are only as wide as what they hold, which keeps each value beside the name it belongs to. */
 .bp-properties {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  justify-content: center;
-  gap: 2px 6px;
-  margin-top: 8px;
-  padding: 8px 16px 0;
-  border-top: 1px solid #444;
-  align-self: stretch;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    gap: 2px 6px;
+    margin-top: 8px;
+    padding: 8px 16px 0;
+    border-top: 1px solid #444;
+    align-self: stretch;
 }
 
 .bp-property-row {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  align-items: center;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
+    align-items: center;
 }
 
 .bp-property-value {
-  text-align: right;
+    text-align: right;
 }
 
 .bp-property-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
 }
 
 /* The activity sits at the right end of the header row, whether or not the function is named. */
 .bf-activity {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
 }
 
 .bf-activity-label {
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 11px;
-  font-weight: bold;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 11px;
+    font-weight: bold;
 }
 
 .bf-toggle {
-  width: 28px;
-  height: 16px;
-  padding: 0;
-  border: 1px solid #666;
-  border-radius: 8px;
-  background-color: #444;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
+    width: 28px;
+    height: 16px;
+    padding: 0;
+    border: 1px solid #666;
+    border-radius: 8px;
+    background-color: #444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 
 .bf-toggle-knob {
-  width: 12px;
-  height: 12px;
-  margin-left: 1px;
-  border-radius: 50%;
-  background-color: #999;
+    width: 12px;
+    height: 12px;
+    margin-left: 1px;
+    border-radius: 50%;
+    background-color: #999;
 }
 
 .bf-toggle-on {
-  background-color: var(--color-good);
-  border-color: var(--color-good);
-  justify-content: flex-end;
+    background-color: var(--color-good);
+    border-color: var(--color-good);
+    justify-content: flex-end;
 }
 
 .bf-toggle-on .bf-toggle-knob {
-  margin-left: 0;
-  margin-right: 1px;
-  background-color: #fff;
+    margin-left: 0;
+    margin-right: 1px;
+    background-color: #fff;
 }
 
 .bf-function-inactive .bf-inputs-amount,
 .bf-function-inactive .bf-outputs-amount {
-  color: #777;
+    color: #777;
 }
 
 .bf-inputs-table {
-  display: grid;
-  grid-template-columns: auto auto;
-  gap: 2px 6px;
-  flex: 1;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  align-items: center;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2px 6px;
+    flex: 1;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
+    align-items: center;
 }
 
 .bf-inputs-row {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  align-items: center;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-items: center;
 }
 
 .bf-inputs-header {
-  color: #888;
-  font-size: 11px;
+    color: #888;
+    font-size: 11px;
 }
 
 .bf-inputs-cell {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 
 .bf-inputs-amount {
-  text-align: center;
+    text-align: center;
 }
 
 .bf-arrow {
-  color: #ccc;
-  display: flex;
-  align-items: center;
+    color: #ccc;
+    display: flex;
+    align-items: center;
 }
 
 .bf-arrow .icon {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
 }
 
 .bf-destroy .icon {
-  width: 16px;
-  height: 16px;
+    width: 16px;
+    height: 16px;
 }
 
 #building-panel::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 #error-message {
-  display: none;
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: red;
-  font-family: "Roboto Thin", Courier, monospace;
-  font-size: 20px;
-  font-weight: lighter;
-  z-index: 100;
-  pointer-events: none;
+    display: none;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: red;
+    font-family: "Roboto Thin", Courier, monospace;
+    font-size: 20px;
+    font-weight: lighter;
+    z-index: 100;
+    pointer-events: none;
 }
 
 #sektor-state-panel {
-  --ss-flash-color: #2a2a2a;
-  flex: none;
-  margin-top: auto;
-  width: 300px;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  padding: 12px;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    --ss-flash-color: #2a2a2a;
+    flex: none;
+    margin-top: auto;
+    width: 300px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .ss-flash {
-  animation: ss-flash 1s ease-out 3;
+    animation: ss-flash 1s ease-out 3;
 }
 
 @keyframes ss-flash {
-  from {
-    background-color: var(--ss-flash-color);
-  }
-  to {
-    background-color: #2a2a2a;
-  }
+    from {
+        background-color: var(--ss-flash-color);
+    }
+    to {
+        background-color: #2a2a2a;
+    }
 }
 
 .ss-status {
-  width: 100%;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
+    width: 100%;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .ss-list {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto auto;
-  gap: 2px 8px;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto;
+    gap: 2px 8px;
 }
 
 .ss-row {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  align-items: center;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
+    align-items: center;
 }
 
 .ss-row:hover {
-  background: #444;
+    background: #444;
 }
 
 .ss-header {
-  color: #999;
-  font-size: 11px;
-  margin-bottom: 2px;
+    color: #999;
+    font-size: 11px;
+    margin-bottom: 2px;
 }
 
 .ss-header:hover {
-  background: none;
+    background: none;
 }
 
 .ss-row.ss-header .icon {
-  width: 14px;
-  height: 14px;
-  stroke: #999;
+    width: 14px;
+    height: 14px;
+    stroke: #999;
 }
 
 .ss-cell-limit {
-  text-align: left;
-  color: #999;
+    text-align: left;
+    color: #999;
 }
 
 .ss-cell-score {
-  min-width: 32px;
-  text-align: right;
+    min-width: 32px;
+    text-align: right;
 }
 
 .ss-total {
-  margin-top: 2px;
+    margin-top: 2px;
 }
 
 .ss-total:hover {
-  background: none;
+    background: none;
 }
 
 .ss-total-score {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .ss-cell-value {
-  width: 32px;
-  text-align: center;
-  padding: 1px 4px;
-  border-radius: 3px;
+    width: 32px;
+    text-align: center;
+    padding: 1px 4px;
+    border-radius: 3px;
 }
 
 .ss-exceeded {
-  background-color: var(--color-bad);
-  color: #000;
+    background-color: var(--color-bad);
+    color: #000;
 }
 
 .ss-met {
-  background-color: var(--color-good);
-  color: #fff;
+    background-color: var(--color-good);
+    color: #fff;
 }
 
 .ss-cell-value .icon {
-  width: 14px;
-  height: 14px;
-  stroke: #fff;
-  vertical-align: middle;
+    width: 14px;
+    height: 14px;
+    stroke: #fff;
+    vertical-align: middle;
 }
 
 /* The sektors a player can work on take the left half of the screen, the standing of all the
    players the right. */
 #list-page {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  gap: 40px;
-  padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 40px;
+    padding: 40px;
 }
 
 #sektor-list {
-  width: 100%;
-  /* Wide enough for every column of a sektor to stand beside the last, down to the button for
-     giving one up, which sits at the far end of the row. */
-  max-width: 700px;
-  justify-self: center;
-  display: grid;
-  grid-template-columns: 1fr auto auto auto auto auto auto auto auto auto auto;
-  align-content: start;
-  gap: 8px 12px;
+    width: 100%;
+    /* Wide enough for every column of a sektor to stand beside the last, down to the button for
+       giving one up, which sits at the far end of the row. */
+    max-width: 700px;
+    justify-self: center;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto auto auto auto auto auto auto;
+    align-content: start;
+    gap: 8px 12px;
 }
 
 .sektor-list-header,
 .sektor-list-item {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  align-items: center;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-items: center;
 }
 
 .sektor-list-header {
-  color: #999;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 0 13px;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 12px;
+    padding: 0 13px;
 }
 
 .sektor-list-item {
-  background: #2a2a2a;
-  border: 1px solid #444;
-  padding: 12px;
-  border-radius: 4px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px;
+    border-radius: 4px;
 }
 
 .sektor-list-name {
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 14px;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 14px;
 }
 
 /* Kept on one line, so that a sektor waiting for a name does not stand taller than the named ones. */
 .sektor-list-no-name {
-  white-space: nowrap;
+    white-space: nowrap;
 }
 
 .sektor-list-level {
-  min-width: 36px;
-  text-align: right;
-  color: lime;
-  font-family: sans-serif;
-  font-size: 12px;
+    min-width: 36px;
+    text-align: right;
+    color: lime;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 /* The header of the column carries the same washed out look as the other column headers, with its
    icon over the numbers it names. */
 .sektor-list-header .sektor-list-level {
-  color: inherit;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+    color: inherit;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 /* The status column is named by a picture, which stands where the words below it begin. */
 .sektor-list-header .sektor-list-status {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .sektor-list-size {
-  min-width: 48px;
-  text-align: left;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
+    min-width: 48px;
+    text-align: left;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 /* The header of the column carries the same washed out look as the other column headers, with its
    icon where the names below it begin. */
 .sektor-list-header .sektor-list-size {
-  display: flex;
-  align-items: center;
-  color: inherit;
+    display: flex;
+    align-items: center;
+    color: inherit;
 }
 
 .sektor-list-owner {
-  min-width: 72px;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
+    min-width: 72px;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 /* The header of the column carries the same washed out look as the other column headers. */
 .sektor-list-header .sektor-list-owner {
-  display: flex;
-  align-items: center;
-  color: inherit;
+    display: flex;
+    align-items: center;
+    color: inherit;
 }
 
 .sektor-list-you {
-  background: var(--color-good);
-  color: #fff;
-  border-radius: 999px;
-  padding: 2px 10px;
-  font-family: sans-serif;
-  font-size: 12px;
+    background: var(--color-good);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .claim-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #1e6fd9;
-  border: none;
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 3px;
-  cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #1e6fd9;
+    border: none;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 .claim-button:hover:enabled {
-  background: #2f83f0;
+    background: #2f83f0;
 }
 
 .claim-icon {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .claim-button:disabled {
-  background: #3c4757;
-  color: #8a8a8a;
-  cursor: default;
+    background: #3c4757;
+    color: #8a8a8a;
+    cursor: default;
 }
 
 .sektor-list-status {
-  width: 140px;
-  text-align: left;
-  font-family: sans-serif;
-  font-size: 12px;
+    width: 140px;
+    text-align: left;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .sektor-list-number {
-  min-width: 28px;
-  text-align: right;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
+    min-width: 28px;
+    text-align: right;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .sektor-list-go {
-  background: none;
-  border: none;
-  color: #ccc;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
 }
 
 .sektor-list-go:hover {
-  color: #fff;
+    color: #fff;
 }
 
 #leaderboard {
-  width: 100%;
-  max-width: 420px;
-  /* Held against the sektors rather than centred in what is left beside them, so that a wider list
-     of sektors does not push the standings out from under the buttons in the top right corner. */
-  justify-self: start;
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-content: start;
-  gap: 8px 12px;
+    width: 100%;
+    max-width: 420px;
+    /* Held against the sektors rather than centred in what is left beside them, so that a wider list
+       of sektors does not push the standings out from under the buttons in the top right corner. */
+    justify-self: start;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-content: start;
+    gap: 8px 12px;
 }
 
 .leaderboard-header,
 .leaderboard-item {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  align-items: center;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-items: center;
 }
 
 .leaderboard-header {
-  color: #999;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 0 13px;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 12px;
+    padding: 0 13px;
 }
 
 .leaderboard-item {
-  background: #2a2a2a;
-  border: 1px solid #444;
-  padding: 12px;
-  border-radius: 4px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px;
+    border-radius: 4px;
 }
 
 .leaderboard-name {
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 14px;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 14px;
 }
 
 .leaderboard-score {
-  min-width: 48px;
-  text-align: right;
-  color: pink;
-  font-family: sans-serif;
-  font-size: 12px;
+    min-width: 48px;
+    text-align: right;
+    color: pink;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .leaderboard-level {
-  min-width: 40px;
-  text-align: right;
-  color: lime;
-  font-family: sans-serif;
-  font-size: 12px;
-  font-weight: bold;
+    min-width: 40px;
+    text-align: right;
+    color: lime;
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 .leaderboard-points {
-  min-width: 40px;
-  text-align: right;
-  color: yellow;
-  font-family: sans-serif;
-  font-size: 12px;
+    min-width: 40px;
+    text-align: right;
+    color: yellow;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 /* The headers name the columns without taking on the colours of what stands under them. */
@@ -898,301 +898,314 @@ body > main {
 .leaderboard-header .leaderboard-score,
 .leaderboard-header .leaderboard-level,
 .leaderboard-header .leaderboard-points {
-  color: inherit;
-  font-size: 12px;
+    color: inherit;
+    font-size: 12px;
 }
 
 /* An icon naming a column sits at the end of it, above the numbers it stands for. */
 .leaderboard-header .leaderboard-score,
 .leaderboard-header .leaderboard-level,
 .leaderboard-header .leaderboard-points {
-  display: flex;
-  justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .panel-title {
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 10px;
-  font-weight: normal;
-  margin-bottom: 8px;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 10px;
+    font-weight: normal;
+    margin-bottom: 8px;
 }
 
 #property-toggler {
-  flex: 0 0 auto;
-  /* Sits at the bottom of the screen whether or not the construction panel is above it. */
-  margin-top: auto;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+    flex: 0 0 auto;
+    /* Sits at the bottom of the screen whether or not the construction panel is above it. */
+    margin-top: auto;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .property-toggle {
-  background: #333;
-  border: 1px solid #555;
-  color: #999;
-  font-family: sans-serif;
-  font-size: 11px;
-  padding: 4px 8px;
-  cursor: pointer;
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    background: #333;
+    border: 1px solid #555;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 11px;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .property-toggle.selected {
-  background: #444;
-  color: #fff;
-  border-color: #888;
+    background: #444;
+    color: #fff;
+    border-color: #888;
 }
 
 .property-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
 }
 
 #sektor-not-found {
-  color: red;
-  font-family: "Courier New", monospace;
-  font-size: 16px;
-  border: 1px solid red;
-  padding: 40px 60px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    color: red;
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+    border: 1px solid red;
+    padding: 40px 60px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #login {
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 4px;
-  padding: 16px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 16px;
 }
 
 .login-label {
-  color: #999;
-  font-family: sans-serif;
-  font-size: 12px;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .login-input {
-  background: #333;
-  border: 1px solid #555;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 14px;
-  padding: 6px 8px;
-  outline: none;
+    background: #333;
+    border: 1px solid #555;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 14px;
+    padding: 6px 8px;
+    outline: none;
 }
 
 .login-input:focus {
-  border-color: #888;
+    border-color: #888;
 }
 
 .login-button {
-  background: #333;
-  border: 1px solid #555;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 6px 8px;
-  border-radius: 3px;
-  cursor: pointer;
+    background: #333;
+    border: 1px solid #555;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 .login-button:hover {
-  border-color: #888;
-  color: #fff;
+    border-color: #888;
+    color: #fff;
 }
 
 /* Sits under the player's name in the corner, where it is out of the way of everything but plain
    to see, looking as dangerous as it is. */
 #purge-button {
-  position: fixed;
-  top: 52px;
-  right: 16px;
-  z-index: 200;
-  background: #e00000;
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  cursor: pointer;
+    position: fixed;
+    top: 52px;
+    right: 16px;
+    z-index: 200;
+    background: #e00000;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
 }
 
 #purge-button:hover {
-  background: #ff1a1a;
+    background: #ff1a1a;
 }
 
 #user-display {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 14px;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 14px;
 }
 
 .user-icon {
-  display: flex;
-  align-items: center;
-  color: #999;
+    display: flex;
+    align-items: center;
+    color: #999;
 }
 
 .log-out-button {
-  background: #333;
-  border: 1px solid #555;
-  color: #999;
-  font-family: sans-serif;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 3px;
-  cursor: pointer;
+    background: #333;
+    border: 1px solid #555;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 .log-out-button:hover {
-  border-color: #888;
-  color: #fff;
+    border-color: #888;
+    color: #fff;
 }
 
 .dialog-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dialog {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 260px;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 4px;
-  padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 260px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 16px;
 }
 
 .name-dialog-label {
-  color: #999;
-  font-family: sans-serif;
-  font-size: 12px;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .name-dialog-input {
-  background: #333;
-  border: 1px solid #555;
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 14px;
-  padding: 6px 8px;
-  outline: none;
+    background: #333;
+    border: 1px solid #555;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 14px;
+    padding: 6px 8px;
+    outline: none;
 }
 
 .name-dialog-input:focus {
-  border-color: #888;
+    border-color: #888;
 }
 
 .name-dialog-warning {
-  color: #ff6b6b;
-  font-family: sans-serif;
-  font-size: 12px;
+    color: #ff6b6b;
+    font-family: sans-serif;
+    font-size: 12px;
 }
 
 .dialog-title {
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 4px;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
 }
 
 .dialog-question {
-  color: #ccc;
-  font-family: sans-serif;
-  font-size: 14px;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 14px;
+    margin: 10px;
 }
 
 .done-dialog-message {
-  line-height: 1.8;
-  text-align: center;
+    line-height: 1.8;
+    text-align: center;
 }
 
 .done-dialog-bold {
-  color: #fff;
-  font-weight: bold;
+    color: #fff;
+    font-weight: bold;
 }
 
 .dialog-buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* The claim dialog is set out down the middle, with the two answers wide apart so that neither of
+   them is clicked for the other. */
+.claim-dialog-title,
+.claim-dialog-question {
+    text-align: center;
+}
+
+.claim-dialog-buttons {
+    justify-content: center;
+    gap: 60px;
 }
 
 .dialog-button {
-  background: #1e6fd9;
-  border: none;
-  color: #fff;
-  font-family: sans-serif;
-  font-size: 12px;
-  padding: 6px 14px;
-  border-radius: 3px;
-  cursor: pointer;
+    background: #1e6fd9;
+    border: none;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 .dialog-button:hover:enabled {
-  background: #2f83f0;
+    background: #2f83f0;
 }
 
 .dialog-button:disabled {
-  background: #3c4757;
-  color: #8a8a8a;
-  cursor: default;
+    background: #3c4757;
+    color: #8a8a8a;
+    cursor: default;
 }
 
 .dialog-button-plain {
-  background: #333;
-  border: 1px solid #555;
-  color: #ccc;
+    background: #333;
+    border: 1px solid #555;
+    color: #ccc;
 }
 
 .dialog-button-plain:hover {
-  background: #3d3d3d;
+    background: #3d3d3d;
 }
 
 .sektor-list-abandon {
-  background: #333;
-  border: 1px solid #555;
-  color: #999;
-  font-family: sans-serif;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 3px;
-  cursor: pointer;
+    background: #333;
+    border: 1px solid #555;
+    color: #999;
+    font-family: sans-serif;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 .sektor-list-abandon:hover {
-  border-color: #888;
-  color: #fff;
+    border-color: #888;
+    color: #fff;
 }
