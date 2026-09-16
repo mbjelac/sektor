@@ -754,7 +754,7 @@ const sektorUi = (p: p5) => {
     p.camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
   }
 
-  p.mouseReleased = () => {
+  p.mouseReleased = (event?: MouseEvent) => {
     if (!mouseDownOnCanvas) return;
     mouseDownOnCanvas = false;
     if (didDrag) return;
@@ -806,6 +806,10 @@ const sektorUi = (p: p5) => {
     if (result.error === undefined) {
       updateSektorState();
       saveState();
+      // After putting a building up a player more often looks at what they built than builds another
+      // of the same, so the tool is put down while the new building stays selected on the map. A
+      // player who does want a row of the same building holds SHIFT to keep the tool in hand.
+      if (!event?.shiftKey) deselectBuilding();
       const newBuilding = placedBuildings.find(building => building.location.x === grid.x && building.location.y === grid.y);
       if (newBuilding) openBuildingPanel(newBuilding);
     }

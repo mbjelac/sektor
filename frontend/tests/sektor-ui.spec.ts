@@ -53,7 +53,19 @@ test("renders building on floor after placement", async ({ page }) => {
   await expectScreenshot(page, "building-placed");
 });
 
-test("keeps the building selected after placement so it can be placed again", async ({ page }) => {
+test("puts the tool down after placement, leaving the new building selected on the map", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "tool-put-down-after-placement", "body");
+});
+
+test("keeps the tool in hand while SHIFT is held, so several of the same building can be placed", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
@@ -63,12 +75,12 @@ test("keeps the building selected after placement so it can be placed again", as
   const centerY = box!.height / 2;
 
   // Place two buildings with a single toolbar selection
-  await canvas.click({ position: { x: centerX - 60, y: centerY - 20 } });
+  await canvas.click({ position: { x: centerX - 60, y: centerY - 20 }, modifiers: ["Shift"] });
   await page.waitForTimeout(200);
-  await canvas.click({ position: { x: centerX + 60, y: centerY - 20 } });
+  await canvas.click({ position: { x: centerX + 60, y: centerY - 20 }, modifiers: ["Shift"] });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "building-placed-twice", "body");
+  await expectScreenshot(page, "building-placed-twice-with-shift", "body");
 });
 
 test("displays the location property overlay while a building affected by it is selected", async ({ page }) => {
