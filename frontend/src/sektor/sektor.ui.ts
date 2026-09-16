@@ -1,5 +1,5 @@
 import p5 from "p5";
-import {drawFloor} from "../../../shared/drawFloor";
+import {drawFloor, drawFloorWireframe} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
@@ -514,11 +514,14 @@ function rebakeFloorGeometry(p: p5) {
   floorGeometry = p.buildGeometry(() => {
     for (let x = 0; x < sektorSize; x++) {
       for (let z = 0; z < sektorSize; z++) {
-        if (!isFloorVisible(x, z)) continue;
         p.push();
         const { wx, wz } = gridToWorld(x, z);
         p.translate(wx, 0, wz);
-        drawFloor(p, BLOCK_SIZE, soilFloorColor(locations[x][z].properties[FLOOR_PROPERTY] ?? 0));
+        if (isFloorSolid(x, z)) {
+          drawFloor(p, BLOCK_SIZE, soilFloorColor(locations[x][z].properties[FLOOR_PROPERTY] ?? 0));
+        } else {
+          drawFloorWireframe(p, BLOCK_SIZE);
+        }
         p.pop();
       }
     }
@@ -526,7 +529,7 @@ function rebakeFloorGeometry(p: p5) {
   floorGeometryNeedsRebaking = false;
 }
 
-function isFloorVisible(x: number, z: number): boolean {
+function isFloorSolid(x: number, z: number): boolean {
   const placedBuilding = placedBuildings.find(building => building.location.x === x && building.location.y === z);
   if (!placedBuilding) return true;
   const buildingDefinition = buildingDefinitions.find(definition => definition.name === placedBuilding.type);

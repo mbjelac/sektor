@@ -3,7 +3,7 @@ import { buildingDefinitions } from "./buildings/buildings";
 import { createFunctionDisplay } from "./buildingFunctionDisplay.ui";
 import { parseCommands } from "../../../shared/parseCommands";
 import { applyCommands } from "../../../shared/applyCommands";
-import { drawFloor } from "../../../shared/drawFloor";
+import { drawFloor, drawFloorWireframe } from "../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../shared/constants";
 import { BuildingDefinition, BuildingFunction } from "./buildings/parseBuildingDefinitions";
 
@@ -213,6 +213,8 @@ function drawBuildingThumbnail(sketch: p5, building: BuildingDefinition) {
   sketch.translate(0, BLOCK_SIZE * 0.15, 0);
   if (building.properties.showFloor !== false) {
     drawFloor(sketch, BLOCK_SIZE, [162, 220, 134]);
+  } else {
+    drawFloorWireframe(sketch, BLOCK_SIZE);
   }
   const commands = parseCommands(building.renderingCode);
   applyCommands(sketch, commands);

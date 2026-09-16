@@ -13,8 +13,8 @@
     - keep constructed building selected on map
     - exception: if player constructs a building while holding SHIFT, do not deselect building from toolbar
 
-#4 Buildings without displayed floor look weird
-- when building specifies floor should not be displayed, draw only floor wireframe
+#4 [done] Buildings without displayed floor look weird
+- [done] when building specifies floor should not be displayed, draw only floor wireframe
     - like floor panels completely transparent
 
 #5 Player should see sektor's stats in map also

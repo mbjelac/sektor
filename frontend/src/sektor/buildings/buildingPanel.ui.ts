@@ -1,7 +1,7 @@
 import p5 from "p5";
 import { parseCommands } from "../../../../shared/parseCommands";
 import { applyCommands } from "../../../../shared/applyCommands";
-import { drawFloor } from "../../../../shared/drawFloor";
+import { drawFloor, drawFloorWireframe } from "../../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../../shared/constants";
 import { trashIcon } from "../../icons";
 import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
@@ -50,6 +50,8 @@ function ensurePreviewP5(parent: HTMLElement) {
       p.translate(0, BLOCK_SIZE * 0.3, 0);
       if (currentDraw.showFloor) {
         drawFloor(p, BLOCK_SIZE, currentDraw.floorColor);
+      } else {
+        drawFloorWireframe(p, BLOCK_SIZE);
       }
       const commands = parseCommands(currentDraw.code);
       applyCommands(p, commands);

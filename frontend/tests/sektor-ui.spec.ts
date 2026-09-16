@@ -83,6 +83,21 @@ test("keeps the tool in hand while SHIFT is held, so several of the same buildin
   await expectScreenshot(page, "building-placed-twice-with-shift", "body");
 });
 
+// TestMine is the building which asks for no floor of its own. It goes up on the corner tile
+// nearest the viewer, where the sides of its floor are in plain sight rather than hidden behind
+// the floors in front of them.
+test("draws only the wireframe of the floor under a building which shows no floor", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestMine"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height - 90 } });
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "floor-wireframe-under-building", "body");
+});
+
 test("displays the location property overlay while a building affected by it is selected", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
