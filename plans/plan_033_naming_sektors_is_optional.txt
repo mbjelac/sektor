@@ -26,3 +26,8 @@
         - name input field
             - pre-filled with existing name
         - Rename, Cancel
+
+#5 Improve list visibility
+- Claim button should be in same place as Abandon button
+- arrow icon for entering a sektor should be the last item in row
+- if noone owns a sektor, owner field should be empty
