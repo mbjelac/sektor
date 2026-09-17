@@ -1,0 +1,24 @@
+Buildings are constructed without (visible) cost.
+However, it is realistic that this construction also requires resources like functioning of buildings.
+
+One way to solve this is to keep track of how fast (in real time) buildings are constructed and transform this into resource flow.
+
+Example:
+- to keep things simple, let's assume all buildings require 1 steel, 2 concrete and 2 glass
+- if, within one sektor, 50 buildings are constructed in 3 days,
+    - 50/3 buildings per day roughly 17
+    - imports of:
+        - steel 17
+        - concrete 34
+        - glass 34
+- these imports are *dynamic*
+    - on the day the player built 10 buildings from scratch, nothing shows up in imports
+    - on the 2nd day, however, the player sees
+        - 10 steel
+        - 20 concrete
+        - 20 glass
+    - if the player builds nothing on the 2nd day, on the 3rd day imports are
+        - 5 steel
+        - 10 concrete
+        - 10 glass
+    - after a while (real time) of not building in the sektor, imports drop to 0 or almost 0
