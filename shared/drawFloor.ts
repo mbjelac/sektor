@@ -10,7 +10,7 @@ export function drawFloor(p: p5, s: number, topColor?: [number, number, number],
   const green: [number, number, number] = topColor ?? [30, 200, 80];
   const brown: [number, number, number] = [180, 140, 90];
   const darkBrown: [number, number, number] = [100, 70, 40];
-  const sideColor = altitude > MIN_ALTITUDE ? darkened(green) : darkBrown;
+  const sideColor = altitude > MIN_ALTITUDE ? green : darkBrown;
   const bottom = floorBlockBottom(s);
   const top = bottom - height;
 
@@ -106,15 +106,6 @@ function drawSideOutline(
   p.vertex(endX, bottom, endZ);
   p.vertex(startX, bottom, startZ);
   p.endShape(p.CLOSE);
-}
-
-// Ground at the lowest altitude shows nothing down its sides but the earth it is cut out of.
-// Ground standing above it is grown over, so its sides carry the same green as its top, in the
-// shade a wall of it stands in.
-const SIDE_SHADE = 0.75;
-
-function darkened([red, green, blue]: [number, number, number]): [number, number, number] {
-  return [Math.round(red * SIDE_SHADE), Math.round(green * SIDE_SHADE), Math.round(blue * SIDE_SHADE)];
 }
 
 // Every step of altitude adds another block's worth of height to the ground.

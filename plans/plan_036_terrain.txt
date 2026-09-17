@@ -1,12 +1,12 @@
-#1 Map floors are displayed according to their altitude
-- every location has a property "altitude"
-- it can be from 0 to MAX_ALTITUDE
-- MAX_ALTITUDE = 4
-- if a location has an altitude of 1
-    - display the floor block 2 times higher than it is
-    - floor block's bottom should be level with the bottoms of floor blocks with altitude 0
-    - altitude 2 = 3 times bigger, altitude 3 = 4 times bigger, etc.
-- if a building is placed on a location with an altitude greater than 0, apply the altitude when drawing the building
+#1 [done] Map floors are displayed according to their altitude
+- [done] every location has a property "altitude"
+- [done] it can be from 0 to MAX_ALTITUDE
+- [done] MAX_ALTITUDE = 4
+- [done] if a location has an altitude of 1
+    - [done] display the floor block 2 times higher than it is
+    - [done] floor block's bottom should be level with the bottoms of floor blocks with altitude 0
+    - [done] altitude 2 = 3 times bigger, altitude 3 = 4 times bigger, etc.
+- [done] if a building is placed on a location with an altitude greater than 0, apply the altitude when drawing the building
 
 #2 Player can discern an altitude by floor color
 - color floors of higher altitudes differently
