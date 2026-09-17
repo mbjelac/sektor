@@ -4,6 +4,6 @@ Editor for designing 3D shapes using text instructions (one line per shape) with
 
 - p5.js app served with Vite
 - Entry point: `index.html` + `src/sketch.ts`
-- Run dev server: `npm run dev`
-- Run tests: `npx playwright test`
+- Run dev server: `npm run dev` (port 5173)
+- Run tests: `npx playwright test` — Playwright starts its own Vite server on port 5273 and stops it afterwards, so a dev server on 5173 can stay running and is never reused
 - Update snapshots: `npx playwright test --update-snapshots`
