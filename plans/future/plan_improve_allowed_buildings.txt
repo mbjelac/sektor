@@ -1,0 +1,12 @@
+Problem: allowed buildings are used too arbitrarily
+- the original idea was to always have the basic buildings, then as the player develops (increases their score) other buildings are unlocked
+
+Unlock buildings as player advances:
+- now just a few buildings exist
+- however, will be ok when a lot of them are created
+  - a lot of buildings can do similar stuff as existing ones, it's not about function it's about color & flavor
+- player advancement is not based on import/export score, as this changes all the time (see below)
+- player advancement is based on how much a player has played the game
+  - could be how high score the player has reached by *their* actions
+  - or simpler, how many times the player logged in, how many buildings they placed, etc.
+
