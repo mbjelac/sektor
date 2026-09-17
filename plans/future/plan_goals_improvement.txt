@@ -4,7 +4,7 @@ Current problems:
 - in each sektor, player first looks at requirements and then builds backwards from it
     - repetitive, mundane
 
-Solution ideas:
+Solution sketch:
 - replace requirements & restrictions with global player scoring:
     - the planet has global imports & exports which are just total sums of all existing sektor imports & exports
         - same as sektor with sum of building inputs & outputs
@@ -30,6 +30,12 @@ Solution ideas:
         - playing the game is not limited by score advancement
         - score advancement is incentivised by the leaderboard (fame!) but nothing else
 
+#1 Remove requirements, restrictions & sektor status
+- remove from Sektor logic
+- remove status display from sektor map stats & sektor list
+- remove highlights of imports and exports in import/export panel dependent on meeting requirements and/or restrictions
+- remove requirements & restrictions column in sektor map import/export panel
+- remove creation algorithm calculations for requirements & restrictions
 
 musings:
 
