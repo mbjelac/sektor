@@ -1,0 +1,69 @@
+#1 Map floors are displayed according to their altitude
+- every location has a property "altitude"
+- it can be from 0 to MAX_ALTITUDE
+- MAX_ALTITUDE = 4
+- if a location has an altitude of 1
+    - display the floor block 2 times higher than it is
+    - floor block's bottom should be level with the bottoms of floor blocks with altitude 0
+    - altitude 2 = 3 times bigger, altitude 3 = 4 times bigger, etc.
+- if a building is placed on a location with an altitude greater than 0, apply the altitude when drawing the building
+
+#2 Player can discern an altitude by floor color
+- color floors of higher altitudes differently
+    - 0: plains: default, apply soil value for color
+    - 1: elevated plains: default, apply soil value for color
+    - 2: low mountains: apply soil value, but skew towards blue
+    - 3: high mountains: randomly spread between #cef2e9 and #d5e0de
+    - 4: snowy mountains: randomly spread between #ffffff and #ddf0ed
+- floor block sides of blocks with altitude > 0 should be colored same as the floor (top panel of block)
+
+#3 Some buildings can not be built on higher altitudes
+- if a building definition has a property in Properties section "maxAltitude", it is not permitted to construct it on a map square with higher altitude
+    - example: building with maxAltitude=2 can only be built on squares with altitudes 0, 1 and 2
+    - when a player tries to construct the building on a higher altitude than permitted
+        - do not construct building
+        - display error "altitudeTooHigh"
+
+#4 Terrain can be populated by lone mountains or mountain ranges
+- when generating the altitude matrix, observe these rules:
+    - at least 40% to 80% of the altitude should be 0
+        - this can be used to create more difficult sektors
+            - more difficulty = less squares with altitude 0
+- constructing mountains (altitude number lists like "1, 2, 3" mean pick a random altitude from that list):
+    - lone mountains are constructed as:
+        - one square with altitude 2, 3
+        - surrounded by squares with altitude 1, 2
+        - and those surrounded by squares with altitude 0, 1
+        - altitude should fall by distance from peak, a bit randomly, like this:
+            000000
+            000021
+            000132
+            000121
+            000010
+            000000
+        - for peaks pick random locations but closer to the edge of the map
+            - it is ok to pick a peak *on* the edge
+    - mountain ranges are constructed as:
+        - several squares with altitude 3, 4
+            - in line, either vertically, horizontally or diagonally in the map matrix
+        - surrounded by squares with altitude 1, 2, 3
+        - and those surrounded by squares with altitude 0, 1, 2
+        - altitude should fall more rapidly than in lone mountains by distance from peaks, a bit randomly, like this:
+            000000
+            120000
+            342000
+            123100
+            002410
+            001200
+        - for peaks pick random locations but closer to the edge of the map
+            - it is ok to pick peaks *on* the edge
+    - calculate how many lone mountains and mountain ranges are placed based on sektor size and sektor difficulty
+        - bigger sektors & more difficult can have more mountains
+        - tiny sektors should typically have just one lone mountain with it's peak on an edge or corner
+            - peak in one of center sqares of the 4x4 map should be possible but low probability
+
+#5 Higher altitude of terrain effects location properties
+- soil: -4 per altitude level (soil 12 is 8 on altitude 1, 4 on altitude 2, etc. minimum 0)
+- wind: +2 per altitude level
+- insolation: -2 for every direct neighboring location (north, west, east, south, not diagonal) with higher altitude
+- create Sektor tests to check this modification of location property matrices
