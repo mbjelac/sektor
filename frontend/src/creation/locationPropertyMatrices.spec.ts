@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createLocationPropertyMatrix, STRONGEST_WIND_ON_FLAT_GROUND } from "./locationPropertyMatrices";
+import { createLocationPropertyMatrix, DIMMEST_SUNLIGHT } from "./locationPropertyMatrices";
 import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 
@@ -8,23 +8,17 @@ const ALL_PROPERTIES = [...PATTERNED_PROPERTIES, "insolation", "somethingNobodyD
 
 const RUNS = 50;
 
-// The most of a property the ground alone ever holds. Wind is the one property flat ground is never
-// full of, because what makes a place windy is standing high.
-function mostOnFlatGround(propertyName: string): number {
-  return propertyName === "wind" ? STRONGEST_WIND_ON_FLAT_GROUND : MODIFIER_MAX;
+// Ground worth going out of the way for: it holds most of what a property is ever found holding.
+function isRich(value: number): boolean {
+  return value >= MODIFIER_MAX * 0.8;
 }
 
-// Ground worth going out of the way for: it holds most of what its property is ever found holding.
-function isRich(propertyName: string, value: number): boolean {
-  return value >= mostOnFlatGround(propertyName) * 0.8;
+function matrixOf(propertyName: string): number[][] {
+  return createLocationPropertyMatrix(propertyName, Math.random);
 }
 
-function matrixOf(propertyName: string, minimumValue = MODIFIER_MIN): number[][] {
-  return createLocationPropertyMatrix(propertyName, minimumValue, Math.random);
-}
-
-function runsOf(propertyName: string, minimumValue = MODIFIER_MIN): number[][][] {
-  return Array.from({ length: RUNS }, () => matrixOf(propertyName, minimumValue));
+function runsOf(propertyName: string): number[][][] {
+  return Array.from({ length: RUNS }, () => matrixOf(propertyName));
 }
 
 describe("createLocationPropertyMatrix", () => {
@@ -37,18 +31,14 @@ describe("createLocationPropertyMatrix", () => {
     })).toEqual(ALL_PROPERTIES.map(propertyName => ({ property: propertyName, rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] })));
   });
 
-  // A sektor solved with a property needs something of it everywhere, and nothing anywhere holds
-  // more of a property than a property can hold.
-  it("never leaves a location poorer than the least asked of it, nor richer than the most there is", () => {
-    const leastAsked = 7;
-
+  // Nothing anywhere holds less of a property than the poorest ground there is or more than the
+  // richest.
+  it("never leaves a location poorer or richer than a property can be", () => {
     expect(ALL_PROPERTIES.map(propertyName => ({
       property: propertyName,
-      valuesOutOfRange: runsOf(propertyName, leastAsked)
+      valuesOutOfRange: runsOf(propertyName)
         .flatMap(matrix => matrix.flat())
-        // A property the flat ground never holds much of cannot be asked for more than its own
-        // most, so what is asked of it is whichever of the two is smaller.
-        .filter(value => value < Math.min(leastAsked, mostOnFlatGround(propertyName)) || value > mostOnFlatGround(propertyName)),
+        .filter(value => value < MODIFIER_MIN || value > MODIFIER_MAX),
     }))).toEqual(ALL_PROPERTIES.map(propertyName => ({ property: propertyName, valuesOutOfRange: [] })));
   });
 
@@ -57,14 +47,22 @@ describe("createLocationPropertyMatrix", () => {
   it("puts a rich hotspot on the map of every property which has a shape", () => {
     expect(PATTERNED_PROPERTIES.map(propertyName => ({
       property: propertyName,
-      runsWithoutARichLocation: runsOf(propertyName).filter(matrix => !isRich(propertyName, Math.max(...matrix.flat()))).length,
+      runsWithoutARichLocation: runsOf(propertyName).filter(matrix => !isRich(Math.max(...matrix.flat()))).length,
     }))).toEqual(PATTERNED_PROPERTIES.map(propertyName => ({ property: propertyName, runsWithoutARichLocation: 0 })));
+  });
+
+  // The sun falls on the whole map alike, so no location starts the day in the dark: the ground
+  // standing over a location is what takes its light away, and that is reckoned later.
+  it("gives every location a good part of the day before anything stands over it", () => {
+    const dimLocations = runsOf("insolation").flatMap(matrix => matrix.flat()).filter(value => value < DIMMEST_SUNLIGHT);
+
+    expect(dimLocations).toEqual([]);
   });
 
   // Wind does not settle anywhere: it comes in one edge of the map and leaves by the other, so
   // there is always a whole row or a whole column of it.
   it("blows wind clear across the map", () => {
-    const isWindy = (value: number) => isRich("wind", value);
+    const isWindy = (value: number) => isRich(value);
 
     expect(runsOf("wind").filter(matrix =>
       !matrix.some(row => row.every(isWindy))

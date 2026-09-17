@@ -1,5 +1,4 @@
 import { ResourceThroughput, SektorData } from "../../../shared/sektorData";
-import { MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { BuildingDefinition, BuildingFunction } from "../sektor/buildings/parseBuildingDefinitions";
 import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
@@ -48,6 +47,7 @@ export function createSektor(
   buildingDefinitions: BuildingDefinition[],
   localResources: string[],
   negativeScoringResources: string[],
+  locationPropertyNames: string[],
   randomNumber: RandomNumber = Math.random,
 ): SektorData {
   const productionGraph = buildProductionGraph(buildingDefinitions);
@@ -60,7 +60,7 @@ export function createSektor(
     walkBackwards(productionGraph, requiredResource, requiredResources, level, randomNumber, restrictedResources);
   }
 
-  const locationProperties = createLocationProperties(buildingDefinitions, level, randomNumber);
+  const locationProperties = createLocationProperties(locationPropertyNames, randomNumber);
 
   // The restrictions can still be loosened by what follows, so they are read off afterwards.
   const exportRequirements = requirementsTheGroundCanMeet(
@@ -260,12 +260,12 @@ function longestBackwardChain(productionGraph: ProductionGraph, resource: string
   return chainFrom(resource, [resource]);
 }
 
-// Every building there is may be put up in the sektor, so every property some building draws on is
-// one the sektor may be solved with, and each of them holds something even on its poorest location:
-// the higher the level the less that is, but never nothing.
+// The ground of a sektor is made of every property there is, whether or not a building in this
+// sektor draws on it. What each of them holds is whatever its own shape and the height of the
+// ground make it: the sektor is built out of the ground it was given rather than the ground being
+// bent to suit the sektor.
 function createLocationProperties(
-  buildingDefinitions: BuildingDefinition[],
-  level: number,
+  locationPropertyNames: string[],
   randomNumber: RandomNumber,
 ): { [key: string]: number[][] } {
   const altitudes = createAltitudeMatrix(randomNumber);
@@ -273,9 +273,9 @@ function createLocationProperties(
   // Every property is laid out over flat ground first and only then made to answer to the height it
   // lies at, so that what the ground is made of and how high it stands are two separate things.
   const propertyMatrices = Object.fromEntries(
-    allLocationProperties(buildingDefinitions).map(propertyName => [
+    locationPropertyNames.map(propertyName => [
       propertyName,
-      createLocationPropertyMatrix(propertyName, propertyMinimum(level), randomNumber),
+      createLocationPropertyMatrix(propertyName, randomNumber),
     ])
   );
 
@@ -285,24 +285,6 @@ function createLocationProperties(
   };
 }
 
-
-// What the poorest location of a property the sektor is solved with still holds: the higher the
-// level the less that is, but never nothing.
-function propertyMinimum(level: number): number {
-  return Math.max(1, MODIFIER_MAX - level);
-}
-
-function allLocationProperties(buildingDefinitions: BuildingDefinition[]): string[] {
-  return [...new Set(locationPropertyNames(buildingDefinitions))];
-}
-
-function locationPropertyNames(buildingDefinitions: BuildingDefinition[]): string[] {
-  return buildingDefinitions
-    .flatMap(buildingDefinition => buildingDefinition.buildingFunctions)
-    .flatMap(buildingFunction => buildingFunction.outputs)
-    .map(output => output.locationProperty)
-    .filter((propertyName): propertyName is string => propertyName !== undefined);
-}
 
 function pickRandom<Item>(items: Item[], randomNumber: RandomNumber): Item {
   return items[Math.floor(randomNumber() * items.length)];

@@ -1,10 +1,10 @@
 // Ground is not scattered at random: metal runs in seams, minerals lie in blotches, uranium sits in
 // pockets, wind blows straight through. Every property is laid out the same way — a handful of
 // hotspots, and ground which falls away from them the further it lies — and one property differs
-// from another only in where its hotspots go. Insolation has no hotspots at all: until there are
-// mountains to stand in the sun's way, it simply falls where it falls.
+// from another only in where its hotspots go. Insolation has no hotspots at all: the sun falls on
+// the whole map alike, and what dims a location is the ground standing over it.
 
-import { MODIFIER_MAX } from "../../../shared/modifierLimits";
+import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { RandomNumber } from "./randomNumber";
 
@@ -21,16 +21,12 @@ const BACKGROUND_MAX = 2;
 
 // A property the game knows the shape of is laid out in that shape. One it does not — a property a
 // building asks for which was never described — simply falls where it falls, as insolation does.
-export function createLocationPropertyMatrix(
-  propertyName: string,
-  minimumValue: number,
-  randomNumber: RandomNumber,
-): number[][] {
+export function createLocationPropertyMatrix(propertyName: string, randomNumber: RandomNumber): number[][] {
   const createMatrix = MATRIX_CREATORS[propertyName] ?? createScatteredMatrix;
-  return createMatrix(minimumValue, randomNumber);
+  return createMatrix(randomNumber);
 }
 
-type MatrixCreator = (minimumValue: number, randomNumber: RandomNumber) => number[][];
+type MatrixCreator = (randomNumber: RandomNumber) => number[][];
 
 const MATRIX_CREATORS: { [propertyName: string]: MatrixCreator } = {
   metals: createMetalsMatrix,
@@ -45,58 +41,52 @@ const MATRIX_CREATORS: { [propertyName: string]: MatrixCreator } = {
 // Metal runs in seams: a line of ground wandering across the map, here and there two tiles wide.
 const METAL_SEAM_COUNT = 2;
 
-function createMetalsMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(seamHotspots(METAL_SEAM_COUNT, randomNumber), minimumValue, randomNumber);
+function createMetalsMatrix(randomNumber: RandomNumber): number[][] {
+  return matrixAroundHotspots(seamHotspots(METAL_SEAM_COUNT, randomNumber), randomNumber);
 }
 
 // Minerals lie in large blotches, a couple to a map.
 const MINERAL_BLOTCH_COUNT = 3;
 
-function createMineralsMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(blobHotspots(MINERAL_BLOTCH_COUNT, 2, 0.7, randomNumber), minimumValue, randomNumber);
+function createMineralsMatrix(randomNumber: RandomNumber): number[][] {
+  return matrixAroundHotspots(blobHotspots(MINERAL_BLOTCH_COUNT, 2, 0.7, randomNumber), randomNumber);
 }
 
 // Uranium sits in small pockets, scattered and ragged: more of them than there are mineral
 // blotches, each of them a tile or two, and holes in even those.
 const URANIUM_POCKET_COUNT = 5;
 
-function createUraniumMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(blobHotspots(URANIUM_POCKET_COUNT, 1, 0.4, randomNumber), minimumValue, randomNumber);
+function createUraniumMatrix(randomNumber: RandomNumber): number[][] {
+  return matrixAroundHotspots(blobHotspots(URANIUM_POCKET_COUNT, 1, 0.4, randomNumber), randomNumber);
 }
 
-// Nothing stands between the sun and the ground yet, so insolation falls where it falls.
-function createInsolationMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return createScatteredMatrix(minimumValue, randomNumber);
+// The sun falls on the whole map alike, so insolation has no pattern of its own and no barren
+// ground: every location sees a good part of the day, and what takes the day away from one is the
+// ground standing over it, which is reckoned once the map has its heights.
+export const DIMMEST_SUNLIGHT = 6;
+
+function createInsolationMatrix(randomNumber: RandomNumber): number[][] {
+  return matrixOfValuesBetween(DIMMEST_SUNLIGHT, MODIFIER_MAX, randomNumber);
 }
 
 // Wind flows through the map rather than settling in it: a line clear across, from one edge to the
 // other, and now and then a second one.
-function createWindMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(
-    windHotspots(randomNumber),
-    Math.min(minimumValue, STRONGEST_WIND_ON_FLAT_GROUND),
-    randomNumber,
-    STRONGEST_WIND_ON_FLAT_GROUND,
-  );
+function createWindMatrix(randomNumber: RandomNumber): number[][] {
+  return matrixAroundHotspots(windHotspots(randomNumber), randomNumber);
 }
-
-// What makes a place windy is standing high, so on the flat the wind is never more than middling
-// and the height of the ground carries it the rest of the way: the windiest flat ground there is
-// blows as hard as a property can once it stands on the highest ground there is.
-export const STRONGEST_WIND_ON_FLAT_GROUND = 6;
 
 // Groundwater gathers in pockets: smaller than mineral blotches, and several of them.
 const GROUNDWATER_POCKET_COUNT = 3;
 
-function createGroundwaterMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(blobHotspots(GROUNDWATER_POCKET_COUNT, 1, 0.8, randomNumber), minimumValue, randomNumber);
+function createGroundwaterMatrix(randomNumber: RandomNumber): number[][] {
+  return matrixAroundHotspots(blobHotspots(GROUNDWATER_POCKET_COUNT, 1, 0.8, randomNumber), randomNumber);
 }
 
 // Soil lies in the largest blobs of all, there being no rivers or hills yet to say where it is deep.
 const SOIL_BLOB_COUNT = 2;
 
-function createSoilMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(blobHotspots(SOIL_BLOB_COUNT, 3, 0.75, randomNumber), minimumValue, randomNumber);
+function createSoilMatrix(randomNumber: RandomNumber): number[][] {
+  return matrixAroundHotspots(blobHotspots(SOIL_BLOB_COUNT, 3, 0.75, randomNumber), randomNumber);
 }
 
 // A seam starts somewhere on the map and keeps going one way until it runs off the far edge,
@@ -174,21 +164,12 @@ function windHotspots(randomNumber: RandomNumber): Hotspot[] {
 
 // Hotspots which fell off the edge describe ground the sektor does not have, so they are dropped
 // before the map is measured against them.
-function matrixAroundHotspots(
-  hotspots: Hotspot[],
-  minimumValue: number,
-  randomNumber: RandomNumber,
-  maximumValue: number = MODIFIER_MAX,
-): number[][] {
+function matrixAroundHotspots(hotspots: Hotspot[], randomNumber: RandomNumber): number[][] {
   const hotspotsOnMap = hotspots.filter(hotspot => isOnMap(hotspot.x, hotspot.z));
 
   return Array.from({ length: SEKTOR_SIZE }, (_, x) =>
     Array.from({ length: SEKTOR_SIZE }, (_, z) =>
-      scaledToRange(
-        valueNearHotspots(distanceToNearestHotspot(x, z, hotspotsOnMap), randomNumber),
-        minimumValue,
-        maximumValue,
-      )
+      valueNearHotspots(distanceToNearestHotspot(x, z, hotspotsOnMap), randomNumber)
     )
   );
 }
@@ -217,20 +198,15 @@ function distanceBetween(fromX: number, fromZ: number, toX: number, toZ: number)
   return Math.sqrt((fromX - toX) ** 2 + (fromZ - toZ) ** 2);
 }
 
-// A property the sektor is solved with holds something on every location, and one which the ground
-// alone never holds much of holds no more than its own most, so what the pattern says is stretched
-// to sit between the two. The shape of the pattern survives the stretching: what was richest is
-// still richest.
-function scaledToRange(value: number, minimumValue: number, maximumValue: number): number {
-  return minimumValue + Math.round(value * (maximumValue - minimumValue) / MODIFIER_MAX);
+// Ground with no pattern to it: every location takes whatever value it likes.
+function createScatteredMatrix(randomNumber: RandomNumber): number[][] {
+  return matrixOfValuesBetween(MODIFIER_MIN, MODIFIER_MAX, randomNumber);
 }
 
-// Ground with no pattern to it: every location takes whatever value it likes.
-function createScatteredMatrix(minimumValue: number, randomNumber: RandomNumber): number[][] {
+// A map whose every location is drawn on its own, between the two values given and including them.
+function matrixOfValuesBetween(lowest: number, highest: number, randomNumber: RandomNumber): number[][] {
   return Array.from({ length: SEKTOR_SIZE }, () =>
-    Array.from({ length: SEKTOR_SIZE }, () =>
-      minimumValue + Math.floor(randomNumber() * (MODIFIER_MAX - minimumValue + 1))
-    )
+    Array.from({ length: SEKTOR_SIZE }, () => lowest + Math.floor(randomNumber() * (highest - lowest + 1)))
   );
 }
 

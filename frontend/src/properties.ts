@@ -5,6 +5,12 @@ import { isTestMode } from "./testMode";
 
 const source = isTestMode ? testPropertiesMd : propertiesMd;
 
+// Every property the ground of a sektor is made of, which is every property described. A sektor
+// carries all of them, whatever its buildings happen to draw on.
+export function getLocationPropertyNames(): string[] {
+  return propertyDefinitions.map(propertyDefinition => propertyDefinition.name);
+}
+
 export interface PropertyDefinition {
   name: string;
   color: string;

@@ -28,14 +28,14 @@ const MOUNTAIN_COUNT_CHANCES: { count: number; chance: number }[] = [
 
 // How likely a mountain is to be drawn each height there is, from the lowest peak to the highest.
 // The taller the mountain the rarer it is, so a map is mostly hills and a peak at the very top of
-// the range is something a player seldom sees.
+// the range is something a player seldom sees. A peak standing a single step above the ground is
+// not a mountain at all, so none is drawn.
 const PEAK_ALTITUDE_CHANCES: { altitude: number; chance: number }[] = [
-  { altitude: 1, chance: 0.2 },
   { altitude: 2, chance: 0.2 },
-  { altitude: 3, chance: 0.2 },
-  { altitude: 4, chance: 0.1 },
-  { altitude: 5, chance: 0.1 },
-  { altitude: 6, chance: 0.05 },
+  { altitude: 3, chance: 0.25 },
+  { altitude: 4, chance: 0.15 },
+  { altitude: 5, chance: 0.15 },
+  { altitude: 6, chance: 0.1 },
   { altitude: 7, chance: 0.05 },
   { altitude: 8, chance: 0.05 },
   { altitude: 9, chance: 0.05 },
