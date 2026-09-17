@@ -76,6 +76,10 @@ WorkTechnical 1
 =
 WaterTechnical groundwater
 
+## Properties
+
+maxAltitude=3
+
 # Habitats
 
 ## Render
@@ -233,6 +237,10 @@ WaterSewage 6
 ## Function
 
 Active: always
+
+## Properties
+
+maxAltitude=3
 
 HealthPhysical 3
 =

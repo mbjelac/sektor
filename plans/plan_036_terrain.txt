@@ -17,12 +17,12 @@
     - [done] 4: snowy mountains: randomly spread between #ffffff and #ddf0ed
 - [done] floor block sides of blocks with altitude > 0 should be colored same as the floor (top panel of block)
 
-#3 Some buildings can not be built on higher altitudes
-- if a building definition has a property in Properties section "maxAltitude", it is not permitted to construct it on a map square with higher altitude
-    - example: building with maxAltitude=2 can only be built on squares with altitudes 0, 1 and 2
-    - when a player tries to construct the building on a higher altitude than permitted
-        - do not construct building
-        - display error "altitudeTooHigh"
+#3 [done] Some buildings can not be built on higher altitudes
+- [done] if a building definition has a property in Properties section "maxAltitude", it is not permitted to construct it on a map square with higher altitude
+    - [done] example: building with maxAltitude=2 can only be built on squares with altitudes 0, 1 and 2
+    - [done] when a player tries to construct the building on a higher altitude than permitted
+        - [done] do not construct building
+        - [done] display error "altitudeTooHigh"
 
 #4 Terrain can be populated by lone mountains or mountain ranges
 - when generating the altitude matrix, observe these rules:
