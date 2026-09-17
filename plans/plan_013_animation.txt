@@ -28,7 +28,7 @@ because in a timespan of 200ms there will be 10 steps.
     - function at can have an optional 5th parameter specifying phase switch delay in milliseconds
         - if not present, delay is 0
         - if present, animation pauses at the end of each phase for the specified delay
-- separate translation with random start delay and without it
+- [done] separate translation with random start delay and without it
     - animation with random start delay has function atr
     - animation without random start delay has function at
 
