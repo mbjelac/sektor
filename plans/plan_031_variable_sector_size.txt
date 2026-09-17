@@ -7,11 +7,24 @@ Map sizes and names:
 #1 [done] A sektor's map can be of various sizes
 - [done] once created, a Sektor has that size forever
 - [done] before creation, a size needs to be chosen from the available sizes
-    - [done] size should be chosen according to sektor level
-    - [done] choose size so as not to "waste" too much tiles when smaller number is enough to fulfill requirements and restrictions
-    - [done] but also, sektors of higher level may have smaller size to present a bigger difficulty in building placement
-        - [done] especially if location properties are important
-            - [done] the same location may be good for several buildings so the player has to decide which one to choose for that location
+    - [done] size is drawn at random from among the sizes the sektor's level allows
+        - [done] difficulty 1 and 2: 4x4 or 6x6
+        - [done] difficulty 3, 4 and 5: 4x4, 6x6 or 8x8
+        - [done] difficulty 6 and onwards: any of the sizes
+    - [done] size is not a function of the level beyond that, and is never measured against the
+      requirements and restrictions
+        - [done] REVISED in plan 36: this section first asked for the size to be measured against
+          the solution, so as not to "waste" tiles when fewer would do, and for higher levels to be
+          squeezed onto smaller maps. Both are now wrong, and were written before there was enough
+          information to know it.
+        - [done] the map, its ground and its terrain are all made before anything is asked of the
+          player, and what the sektor requires is then measured against what that map can actually
+          deliver. There is therefore no solution in existence when the size is chosen, and nothing
+          to measure it against.
+        - [done] a tight map is a harder thing than a roomy one — the same location may suit several
+          buildings, so the player has to choose which one gets it — but that difficulty now comes
+          from the size being drawn, not from squeezing the higher levels. A hard sektor which draws
+          a big map is hard in other ways.
 - [done] location property matrices have the same size as the sektor
 - [done] sektor map displays floor tiles adjusted to the sektor size
     - [done] if sektor is 4x4, there are four by four tiles in the map

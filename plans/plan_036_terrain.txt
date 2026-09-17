@@ -66,8 +66,8 @@
         - [done] tiny sektors should typically have just one lone mountain with it's peak on an edge or corner
             - [done] peak in one of center sqares of the 4x4 map should be possible but low probability
 
-#5 Higher altitude of terrain effects location properties
-- soil: -4 per altitude level (soil 12 is 8 on altitude 1, 4 on altitude 2, etc. minimum 0)
-- wind: +2 per altitude level
-- insolation: -2 for every direct neighboring location (north, west, east, south, not diagonal) with higher altitude
-- create Sektor tests to check this modification of location property matrices
+#5 [done] Higher altitude of terrain effects location properties
+- [done] soil: -4 per altitude level (soil 12 is 8 on altitude 1, 4 on altitude 2, etc. minimum 0)
+- [done] wind: +2 per altitude level
+- [done] insolation: -2 for every direct neighboring location (north, west, east, south, not diagonal) with higher altitude
+- [done] create Sektor tests to check this modification of location property matrices

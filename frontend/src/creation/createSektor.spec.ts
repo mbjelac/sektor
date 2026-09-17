@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import { createSektor } from "./createSektor";
 import { BuildingDefinition } from "../sektor/buildings/parseBuildingDefinitions";
 import { SektorData } from "../../../shared/sektorData";
+import { Sektor } from "../sektor/Sektor";
+import { locationPropertiesToLocations } from "../sektor/locationProperties";
+import { buildTheSolutionOn } from "./solutionPlan";
 
 function buildingDefinition(
   name: string,
@@ -95,7 +98,10 @@ describe("createSektor", () => {
     expect(restrictedResourcesWithoutAProducer(sektorData, deepChainDefinitions)).toEqual([]);
   });
 
-  it("leaves something of every location property the palette needs, on every location", () => {
+  // The guarantee is made on the flat ground, which is most of every map: high ground carries less
+  // soil than flat ground does, so a mountainside can be left holding nothing of a property the
+  // palette needs, and the sektor is solved on the plain below it instead.
+  it("leaves something of every location property the palette needs, on every flat location", () => {
     const sektorData = createSektor(5, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, () => 0);
 
     const neededProperties = ["soil", "groundwater"].filter(propertyName =>
@@ -109,8 +115,8 @@ describe("createSektor", () => {
 
     expect(neededProperties.map(propertyName => ({
       property: propertyName,
-      everyLocationHasSome: sektorData.locationProperties[propertyName].flat().every(value => value > 0),
-    }))).toEqual(neededProperties.map(propertyName => ({ property: propertyName, everyLocationHasSome: true })));
+      everyFlatLocationHasSome: flatLocationValues(sektorData, propertyName).every(value => value > 0),
+    }))).toEqual(neededProperties.map(propertyName => ({ property: propertyName, everyFlatLocationHasSome: true })));
   });
 
   it("requires more of a higher level than of a lower one", () => {
@@ -118,14 +124,20 @@ describe("createSektor", () => {
       .toEqual([1, 2, 3, 4]);
   });
 
-  // A short chain is not handed a field of tiles nobody will build on, and a long one is not
-  // crammed onto ground it cannot stand on, so the map grows along with what the sektor asks for.
-  it("gives a sektor of a high level more ground than one of the lowest level", () => {
-    const sizes = [1, 12].map(level =>
-      createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange).size
-    );
+  // A sektor's map is not settled by its level, only bounded by it: the easiest levels are kept off
+  // the biggest maps, where a short chain would sit in a field of tiles nobody builds on, and from
+  // the sixth level on any size may come up.
+  it("gives a sektor one of the sizes its level allows", () => {
+    const levelsAndAllowedSizes: [number, number[]][] = [
+      [1, [4, 6]], [2, [4, 6]], [3, [4, 6, 8]], [5, [4, 6, 8]], [6, [4, 6, 8, 10]], [12, [4, 6, 8, 10]],
+    ];
 
-    expect(sizes).toEqual([4, 8]);
+    expect(levelsAndAllowedSizes.map(([level]) => ({
+      level,
+      sizes: [...new Set(Array.from({ length: 80 }, () =>
+        createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, Math.random).size
+      ))].sort((size, otherSize) => size - otherSize),
+    }))).toEqual(levelsAndAllowedSizes.map(([level, sizes]) => ({ level, sizes })));
   });
 
   // Every location of the sektor holds a value of every property, so a property covers the map and
@@ -143,6 +155,26 @@ describe("createSektor", () => {
       { property: "rock", rows: sektorData.size, rowLengths: [sektorData.size] },
       { property: "altitude", rows: sektorData.size, rowLengths: [sektorData.size] },
     ]);
+  });
+
+  // The whole point of building the ground before asking anything of it: what a sektor requires is
+  // a share of what a real arrangement of buildings was seen to deliver on that very map, so laying
+  // that arrangement out again finishes the sektor. Not usually, and not with high probability.
+  it("makes sektors which can be finished", () => {
+    const levels = [1, 2, 3, 5, 8, 12];
+
+    const outcomes = levels.map(level => {
+      const sektorData = createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange);
+      return {
+        level,
+        // A sektor asking for nothing would be "Done" the moment it was opened, which is not the
+        // same thing as one which can be finished.
+        asksForSomething: sektorData.exportRequirements.length > 0,
+        status: statusOfTheSolvedSektor(sektorData),
+      };
+    });
+
+    expect(outcomes).toEqual(levels.map(level => ({ level, asksForSomething: true, status: "Done" })));
   });
 
   it("never allows a building which does nothing", () => {
@@ -203,6 +235,38 @@ describe("createSektor", () => {
 
 // Every resource a sektor caps the import of, which nothing it allows can make. A player handed one
 // of these can neither bring it in nor produce it, so the sektor cannot be finished.
+// What the sektor comes to once the solution it was built around is laid out on it: "Done" means a
+// player placing those same buildings on those same locations has met every requirement without
+// breaking a restriction.
+function statusOfTheSolvedSektor(sektorData: SektorData): string {
+  const locations = locationPropertiesToLocations(sektorData.locationProperties);
+  const sektor = new Sektor(
+    locations,
+    testDefinitions,
+    { importRestrictions: sektorData.importRestrictions, exportRequirements: sektorData.exportRequirements },
+    NEGATIVE_SCORING_RESOURCES,
+    LOCAL_RESOURCES,
+    sektorData.allowedBuildings,
+  );
+  buildTheSolutionOn(
+    sektor,
+    sektorData.exportRequirements.map(requirement => requirement.name),
+    sektorData.locationProperties,
+    sektorData.importRestrictions,
+    testDefinitions,
+    sektorData.allowedBuildings,
+    LOCAL_RESOURCES,
+  );
+  return sektor.getSektorState().status;
+}
+
+// What a property holds on the ground lying at the lowest altitude, which is the ground every
+// building can be put up on.
+function flatLocationValues(sektorData: SektorData, propertyName: string): number[] {
+  return sektorData.locationProperties[propertyName]
+    .flatMap((row, x) => row.filter((_, z) => sektorData.locationProperties.altitude[x][z] === 0));
+}
+
 function restrictedResourcesWithoutAProducer(sektorData: SektorData, buildingDefinitions: BuildingDefinition[]): string[] {
   return sektorData.importRestrictions
     .map(restriction => restriction.name)

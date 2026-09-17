@@ -69,8 +69,19 @@ function createInsolationMatrix(size: number, minimumValue: number, randomNumber
 // Wind flows through the map rather than settling in it: a line clear across, from one edge to the
 // other, and now and then a second one.
 function createWindMatrix(size: number, minimumValue: number, randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(windHotspots(size, randomNumber), size, minimumValue, randomNumber);
+  return matrixAroundHotspots(
+    windHotspots(size, randomNumber),
+    size,
+    Math.min(minimumValue, STRONGEST_WIND_ON_FLAT_GROUND),
+    randomNumber,
+    STRONGEST_WIND_ON_FLAT_GROUND,
+  );
 }
+
+// What makes a place windy is standing high, so on the flat the wind is never more than middling
+// and the height of the ground carries it the rest of the way: the windiest flat ground there is
+// blows as hard as a property can once it stands on the highest ground there is.
+export const STRONGEST_WIND_ON_FLAT_GROUND = 6;
 
 // Groundwater gathers in pockets: smaller than mineral blotches, and several of them.
 function createGroundwaterMatrix(size: number, minimumValue: number, randomNumber: RandomNumber): number[][] {
@@ -165,14 +176,16 @@ function matrixAroundHotspots(
   size: number,
   minimumValue: number,
   randomNumber: RandomNumber,
+  maximumValue: number = MODIFIER_MAX,
 ): number[][] {
   const hotspotsOnMap = hotspots.filter(hotspot => isOnMap(hotspot.x, hotspot.z, size));
 
   return Array.from({ length: size }, (_, x) =>
     Array.from({ length: size }, (_, z) =>
-      scaledToMinimum(
+      scaledToRange(
         valueNearHotspots(distanceToNearestHotspot(x, z, hotspotsOnMap), randomNumber),
         minimumValue,
+        maximumValue,
       )
     )
   );
@@ -202,11 +215,12 @@ function distanceBetween(fromX: number, fromZ: number, toX: number, toZ: number)
   return Math.sqrt((fromX - toX) ** 2 + (fromZ - toZ) ** 2);
 }
 
-// A property the sektor is solved with holds something on every location, so what the pattern says
-// is stretched to sit between that least value and the most a property can ever hold. The shape of
-// the pattern survives the stretching: what was richest is still richest.
-function scaledToMinimum(value: number, minimumValue: number): number {
-  return minimumValue + Math.round(value * (MODIFIER_MAX - minimumValue) / MODIFIER_MAX);
+// A property the sektor is solved with holds something on every location, and one which the ground
+// alone never holds much of holds no more than its own most, so what the pattern says is stretched
+// to sit between the two. The shape of the pattern survives the stretching: what was richest is
+// still richest.
+function scaledToRange(value: number, minimumValue: number, maximumValue: number): number {
+  return minimumValue + Math.round(value * (maximumValue - minimumValue) / MODIFIER_MAX);
 }
 
 // Ground with no pattern to it: every location takes whatever value it likes.

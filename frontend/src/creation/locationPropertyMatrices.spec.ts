@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
+import { createLocationPropertyMatrix, STRONGEST_WIND_ON_FLAT_GROUND } from "./locationPropertyMatrices";
 import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 
 const PATTERNED_PROPERTIES = ["metals", "minerals", "uranium", "wind", "groundwater", "soil"];
@@ -7,6 +7,17 @@ const ALL_PROPERTIES = [...PATTERNED_PROPERTIES, "insolation", "somethingNobodyD
 
 const MAP_SIZE = 10;
 const RUNS = 50;
+
+// The most of a property the ground alone ever holds. Wind is the one property flat ground is never
+// full of, because what makes a place windy is standing high.
+function mostOnFlatGround(propertyName: string): number {
+  return propertyName === "wind" ? STRONGEST_WIND_ON_FLAT_GROUND : MODIFIER_MAX;
+}
+
+// Ground worth going out of the way for: it holds most of what its property is ever found holding.
+function isRich(propertyName: string, value: number): boolean {
+  return value >= mostOnFlatGround(propertyName) * 0.8;
+}
 
 function matrixOf(propertyName: string, minimumValue = MODIFIER_MIN): number[][] {
   return createLocationPropertyMatrix(propertyName, MAP_SIZE, minimumValue, Math.random);
@@ -35,7 +46,9 @@ describe("createLocationPropertyMatrix", () => {
       property: propertyName,
       valuesOutOfRange: runsOf(propertyName, leastAsked)
         .flatMap(matrix => matrix.flat())
-        .filter(value => value < leastAsked || value > MODIFIER_MAX),
+        // A property the flat ground never holds much of cannot be asked for more than its own
+        // most, so what is asked of it is whichever of the two is smaller.
+        .filter(value => value < Math.min(leastAsked, mostOnFlatGround(propertyName)) || value > mostOnFlatGround(propertyName)),
     }))).toEqual(ALL_PROPERTIES.map(propertyName => ({ property: propertyName, valuesOutOfRange: [] })));
   });
 
@@ -44,18 +57,18 @@ describe("createLocationPropertyMatrix", () => {
   it("puts a rich hotspot on the map of every property which has a shape", () => {
     expect(PATTERNED_PROPERTIES.map(propertyName => ({
       property: propertyName,
-      runsWithoutARichLocation: runsOf(propertyName).filter(matrix => Math.max(...matrix.flat()) < 10).length,
+      runsWithoutARichLocation: runsOf(propertyName).filter(matrix => !isRich(propertyName, Math.max(...matrix.flat()))).length,
     }))).toEqual(PATTERNED_PROPERTIES.map(propertyName => ({ property: propertyName, runsWithoutARichLocation: 0 })));
   });
 
   // Wind does not settle anywhere: it comes in one edge of the map and leaves by the other, so
   // there is always a whole row or a whole column of it.
   it("blows wind clear across the map", () => {
-    const isRich = (value: number) => value >= 10;
+    const isWindy = (value: number) => isRich("wind", value);
 
     expect(runsOf("wind").filter(matrix =>
-      !matrix.some(row => row.every(isRich))
-      && !matrix[0].some((_, z) => matrix.every(row => isRich(row[z])))
+      !matrix.some(row => row.every(isWindy))
+      && !matrix[0].some((_, z) => matrix.every(row => isWindy(row[z])))
     )).toEqual([]);
   });
 });
