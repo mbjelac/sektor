@@ -57,5 +57,5 @@ The "blocks" (mountains) are too high and look artificial.
     - soil: -2 per altitude level (soil 12 is 10 on altitude 1, 8 on altitude 2, etc. minimum 0)
     - wind: +2 per altitude level
         - maximum 12
-    - insolation: -2 for every direct neighboring location (north, west, east, south, not diagonal) with cliff
+    - insolation: -2 for every direct neighboring location (north, west, east, south, not diagonal) with higher altitude
     - create Sektor tests to check this modification of location property matrices
