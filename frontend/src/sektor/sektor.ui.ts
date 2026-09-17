@@ -1,5 +1,5 @@
 import p5 from "p5";
-import {drawFloor, drawFloorWireframe, floorBlockHeight} from "../../../shared/drawFloor";
+import {drawFloor, drawFloorWireframe, floorBlockHeight, SidesOnMapEdge} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
@@ -9,7 +9,8 @@ import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
-import { LOWEST_LEVEL } from "../playerLevel";
+import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
+import { scoreOfPlayer } from "../players";
 import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
@@ -122,7 +123,7 @@ function claimSektor() {
 
 function enterEditMode() {
   isViewMode = false;
-  initToolbar(allowedBuildings);
+  initToolbar(builderLevel);
 }
 
 // A sektor claimed by another player carries their name, so that the player knows whose sektor
@@ -246,8 +247,8 @@ function getRestrictionsRequirements() {
   return { importRestrictions: [], exportRequirements: [] };
 }
 
-const allowedBuildings = getAllowedBuildings();
-const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources(), allowedBuildings);
+const builderLevel = getBuilderLevel();
+const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources());
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
 const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
@@ -270,7 +271,6 @@ function saveState() {
   const { importRestrictions, exportRequirements } = sektor.getSektorState();
   saveSektorData(sektorId, {
     level: sektorLevel,
-    allowedBuildings,
     locationProperties: locationsToLocationProperties(locations),
     importRestrictions,
     exportRequirements,
@@ -278,16 +278,11 @@ function saveState() {
   });
 }
 
-// The palette of a sektor is set when it is made and never changes, so it is read once and written
-// back on every save, which would otherwise drop it. A test sektor is built out of made-up
-// definitions and lets the player place all of them.
-function getAllowedBuildings(): string[] {
-  if (isTestMode) return buildingDefinitions.map(definition => definition.name);
-  if (sektorId) {
-    const sektorData = getSektorData(sektorId);
-    if (sektorData) return sektorData.allowedBuildings;
-  }
-  return [];
+// Which buildings a toolbar offers depends on how far the player building on this sektor has come.
+// A sektor nobody has claimed is there for whoever is looking at it to claim, so until somebody
+// does, it is the level of the player looking at it which says what its toolbar holds.
+function getBuilderLevel(): number {
+  return playerLevel(scoreOfPlayer(getSektorOwnerName() ?? getUsername()));
 }
 
 // The level of a sektor is set when it is made and never changes, so it is read once and written
@@ -570,7 +565,7 @@ function rebakeFloorGeometry(p: p5) {
         const { wx, wz } = gridToWorld(x, z);
         p.translate(wx, 0, wz);
         if (isFloorSolid(x, z)) {
-          drawFloor(p, BLOCK_SIZE, floorColorAt(x, z), altitudeAt(x, z));
+          drawFloor(p, BLOCK_SIZE, floorColorAt(x, z), altitudeAt(x, z), sidesOnMapEdgeAt(x, z));
         } else {
           drawFloorWireframe(p, BLOCK_SIZE, altitudeAt(x, z));
         }
@@ -579,6 +574,18 @@ function rebakeFloorGeometry(p: p5) {
     }
   });
   floorGeometryNeedsRebaking = false;
+}
+
+// A location on the rim of the map looks out over nothing on that side, and what shows there is
+// the earth the map is cut out of rather than the ground standing on it. A location in a corner
+// looks out on two sides, one anywhere else on the rim on one, and one inside the map on none.
+function sidesOnMapEdgeAt(x: number, z: number): SidesOnMapEdge {
+  return {
+    left: x === 0,
+    right: x === SEKTOR_SIZE - 1,
+    back: z === 0,
+    front: z === SEKTOR_SIZE - 1,
+  };
 }
 
 function isFloorSolid(x: number, z: number): boolean {
@@ -1095,7 +1102,7 @@ const sektorUi = (p: p5) => {
 new p5(sektorUi);
 showSektorName();
 showSektorOwner();
-initToolbar(allowedBuildings, isViewMode);
+initToolbar(builderLevel, isViewMode);
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);
 onImportHover(resourceType => { hoveredImportResource = resourceType; });

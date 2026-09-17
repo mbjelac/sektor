@@ -236,6 +236,20 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].properties).toEqual({ showFloor: false });
   });
 
+  it("parses minLevel property", () => {
+    const result = parseBuildingDefinitions([
+      "# Mine",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Properties",
+      "minLevel=4",
+    ]);
+
+    expect(result[0].properties).toEqual({ minLevel: 4 });
+  });
+
   it("returns empty properties when no Properties section exists", () => {
     const result = parseBuildingDefinitions([
       "# Factory",

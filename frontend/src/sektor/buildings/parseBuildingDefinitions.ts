@@ -27,6 +27,9 @@ export interface BuildingProperties {
   // The highest ground the building may stand on. A building whose definition names none may be
   // put up at any altitude.
   maxAltitude?: number;
+  // The level a player has to have reached before the building is offered to them. A building
+  // whose definition names none is offered to every player from the start.
+  minLevel?: number;
 }
 
 export interface BuildingDefinition {
@@ -119,6 +122,9 @@ function parseProperties(lines: string[]): BuildingProperties {
     }
     if (match[1] === "maxAltitude" && isAmount(match[2])) {
       props.maxAltitude = parseInt(match[2]);
+    }
+    if (match[1] === "minLevel" && isAmount(match[2])) {
+      props.minLevel = parseInt(match[2]);
     }
   }
   return props;

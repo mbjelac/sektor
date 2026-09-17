@@ -7,6 +7,19 @@ test("renders empty grid of floors", async ({ page }) => {
   await expectScreenshot(page, "empty-grid");
 });
 
+// A building a player has not climbed high enough for is kept out of their toolbar, while every
+// building asking for no level at all stands in it from the start.
+test("leaves out a building the player has not reached the level of", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  const toolbar = await page.evaluate(() => ({
+    lockedBuildings: document.querySelectorAll('.building-item[data-building-name="TestTower"]').length,
+    unlockedBuildings: document.querySelectorAll('.building-item[data-building-name="TestHouse"]').length,
+  }));
+
+  expect(toolbar).toEqual({ lockedBuildings: 0, unlockedBuildings: 1 });
+});
+
 test("highlights selected building in toolbar", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();

@@ -64,7 +64,6 @@ async function storeSektorInEveryState(page: Page) {
     for (const [sektorName, sektor] of Object.entries(sektorsByState)) {
       localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
         level: 1,
-        allowedBuildings: ["TestMine"],
         locationProperties: { ore: [[20]] },
         importRestrictions: sektor.importRestrictions,
         exportRequirements: sektor.exportRequirements,
@@ -233,7 +232,6 @@ async function storeSektors(page: Page, unfinishedSektorIds: string[], doneSekto
     for (const doneSektorId of doneSektorIds as string[]) {
       localStorage.setItem(`sektor_${doneSektorId}`, JSON.stringify({
         level: 1,
-        allowedBuildings: [],
         locationProperties: {},
         importRestrictions: [],
         exportRequirements: [],
@@ -315,7 +313,6 @@ async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: num
   await page.evaluate(([sektorName, oreAmounts]) => {
     localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
       level: 1,
-      allowedBuildings: ["TestMine"],
       locationProperties: { ore: (oreAmounts as number[]).map(oreAmount => [oreAmount]) },
       importRestrictions: [],
       exportRequirements: [],
@@ -384,7 +381,7 @@ test("numbers every sektor it makes above the last one", async ({ page }) => {
   expect(sektors.map((sektor: { id: string }) => sektor.id)).toEqual(["Alpha", "Beta", "Gamma", "0", "1", "2"]);
 });
 
-test("gives every sektor it makes a level and a palette of buildings", async ({ page }) => {
+test("gives every sektor it makes a level and something to deliver", async ({ page }) => {
   await page.goto("/?test=true");
 
   await createSektorNow(page);
@@ -392,10 +389,9 @@ test("gives every sektor it makes a level and a palette of buildings", async ({ 
   const sektorData = await page.evaluate(() => JSON.parse(localStorage.getItem("sektor_0")!));
   expect({
     hasLevel: Number.isInteger(sektorData.level),
-    allowsBuildings: sektorData.allowedBuildings.length > 0,
     requires: sektorData.exportRequirements.length > 0,
     buildings: sektorData.buildings,
-  }).toEqual({ hasLevel: true, allowsBuildings: true, requires: true, buildings: [] });
+  }).toEqual({ hasLevel: true, requires: true, buildings: [] });
 });
 
 test("stops making sektors while ten unclaimed empty ones are waiting", async ({ page }) => {

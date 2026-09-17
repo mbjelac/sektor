@@ -197,16 +197,6 @@ test("names the player a sektor is owned by", async ({ page }) => {
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-owned-by-other-player.png", { maxDiffPixelRatio: 0 });
 });
 
-// The palette of a sektor is what makes it hard, so the toolbar has to offer the buildings it names
-// and nothing else — except the destruction tool, which belongs to no palette.
-test("offers only the buildings the sektor allows, and the destruction tool", async ({ page }) => {
-  await storeSektor(page, "Alpha", CURRENT_PLAYER, [], [], ["WaterWells", "Agriplot"]);
-
-  await page.goto("/sektor.html?id=Alpha");
-
-  await expectScreenshot(page, "toolbar-allowed-buildings", "#toolbar");
-});
-
 test("opens a sektor claimed by the current player for building", async ({ page }) => {
   await storeSektor(page, "Alpha", CURRENT_PLAYER);
 
@@ -372,19 +362,18 @@ async function placeTheBuildingWhichFinishesTheSektor(page: import("@playwright/
   await page.locator("#notification").waitFor();
 }
 
-async function storeSektor(page: import("@playwright/test").Page, sektorId: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = [], allowedBuildings: string[] = ["Habitats", "Agriplot", "Polytechnic"]) {
-  await page.evaluate(([sektorId, owner, buildings, exportRequirements, allowedBuildings]) => {
+async function storeSektor(page: import("@playwright/test").Page, sektorId: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = []) {
+  await page.evaluate(([sektorId, owner, buildings, exportRequirements]) => {
     const emptyGrid = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0));
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
       level: 1,
-      allowedBuildings,
       locationProperties: { soil: emptyGrid, groundwater: emptyGrid, ore: emptyGrid, insolation: emptyGrid, wind: emptyGrid },
       importRestrictions: [],
       exportRequirements,
       buildings,
     }));
     localStorage.setItem("sektors", JSON.stringify([{ id: sektorId, name: owner ? sektorId : null, owner }]));
-  }, [sektorId, owner, buildings, exportRequirements, allowedBuildings] as [string, string | null, object[], object[], string[]]);
+  }, [sektorId, owner, buildings, exportRequirements] as [string, string | null, object[], object[]]);
 }
 
 // The name a player gave the sektor before the test begins, which it carries beside its id.

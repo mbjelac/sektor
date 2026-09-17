@@ -42,13 +42,13 @@ The "blocks" (mountains) are too high and look artificial.
 - [done] mountains should be far apart from each other
     - not necessarily in map corners, but near corners or edges
 
-#4 Adjust colors to new altitude range
-- color all floor blocks with color derived from soil
+#4 [done] Adjust colors to new altitude range
+- [done] color all floor blocks with color derived from soil
     - except altitude > 6; color those like:
         - 7: random spread between #d9d8b8 and #d6d6c5
         - 8: random spread between #d5e0e0 and #cae3e3
         - 9: random spread between #dff5f5 and #ffffff
-- keep sides of blocks higher than 0 of the floor color
+- [done] keep sides of blocks higher than 0 of the floor color
     - exception: sides on the edge of the map have to be dark brown like altitude-0 floor blocks
         - so, if a high floor block is in the map corner, two of it's sides should be dark brown and the other two soil-colored
 

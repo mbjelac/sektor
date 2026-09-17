@@ -26,36 +26,33 @@ for (const line of source.split("\n")) {
 const FLOOR_PROPERTY = "soil";
 const FLOOR_LOW_COLOR = "#E3CA86";
 
-// The kinds of ground a floor can be, by how high it stands. Plains and elevated plains are ground
-// things grow on and are colored by their soil; from the low mountains up there is less and less
-// growing on the ground and it is colored more and more by the height it stands at.
-const LOW_MOUNTAIN_ALTITUDE = 2;
-const HIGH_MOUNTAIN_ALTITUDE = 3;
-const SNOWY_MOUNTAIN_ALTITUDE = 4;
+// How high ground can stand and still have things growing on it. Up to here a location is colored
+// by its soil, however high it lies; above it the ground is bare rock and the snow lying on it.
+const TREE_LINE_ALTITUDE = 6;
 
-// Where a low mountain's soil color is pulled towards, and how far: enough of the blue of cold and
-// distance to tell a mountain from the plain below it, not so much that its soil stops showing.
-const LOW_MOUNTAIN_BLUE = "#6E8FB5";
-const LOW_MOUNTAIN_BLUE_SKEW = 0.45;
+// The pairs of colors the bare ground above the tree line lies between, the first pair for the
+// first altitude above it and so on up: stone going pale, then the cold of it, then snow. A pair
+// rather than a color, so that no two locations of such ground are quite the same shade.
+const COLORS_ABOVE_THE_TREE_LINE: [string, string][] = [
+  ["#d9d8b8", "#d6d6c5"],
+  ["#d5e0e0", "#cae3e3"],
+  ["#dff5f5", "#ffffff"],
+];
 
-// The two colors the bare stone of a high mountain lies between, and the two the snow of the
-// highest ground lies between. No two locations of such ground are quite the same shade.
-const HIGH_MOUNTAIN_COLORS: [string, string] = ["#b8d9d1", "#c3d4d1"];
-const SNOWY_MOUNTAIN_COLORS: [string, string] = ["#ffffff", "#ddf0ed"];
-
-// A floor is colored by the kind of ground it is. The two lowest kinds show the soil property: the
-// lowest value is sandy, the highest is soil's own color, and values in between are the color in
-// between. Higher ground takes its color from its height instead, the two highest kinds spreading
-// over a pair of colors so that a mountainside is not one flat sheet of the same shade. Where a
-// location falls in that spread is what colorVariation says, from 0 for the first color to 1 for
-// the second.
+// A floor is colored by its soil: the lowest value is sandy, the highest is soil's own color, and
+// values in between are the color in between. That holds however high the ground stands, up to the
+// tree line; above it the ground takes its color from its height instead, spreading over a pair of
+// colors so that a mountainside is not one flat sheet of the same shade. Where a location falls in
+// that spread is what colorVariation says, from 0 for the first color to 1 for the second.
 export function floorColor(soilValue: number, altitude: number, colorVariation: number): [number, number, number] {
-  if (altitude >= SNOWY_MOUNTAIN_ALTITUDE) return spreadBetween(SNOWY_MOUNTAIN_COLORS, colorVariation);
-  if (altitude >= HIGH_MOUNTAIN_ALTITUDE) return spreadBetween(HIGH_MOUNTAIN_COLORS, colorVariation);
-  if (altitude >= LOW_MOUNTAIN_ALTITUDE) {
-    return interpolateColors(soilFloorColor(soilValue), parseHexColor(LOW_MOUNTAIN_BLUE), LOW_MOUNTAIN_BLUE_SKEW);
-  }
+  if (altitude > TREE_LINE_ALTITUDE) return spreadBetween(colorsAt(altitude), colorVariation);
   return soilFloorColor(soilValue);
+}
+
+// Ground standing higher than there are colors laid out for is colored like the highest there is.
+function colorsAt(altitude: number): [string, string] {
+  const stepsAboveTheTreeLine = altitude - TREE_LINE_ALTITUDE - 1;
+  return COLORS_ABOVE_THE_TREE_LINE[Math.min(stepsAboveTheTreeLine, COLORS_ABOVE_THE_TREE_LINE.length - 1)];
 }
 
 function soilFloorColor(soilValue: number): [number, number, number] {

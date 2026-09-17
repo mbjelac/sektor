@@ -71,9 +71,9 @@ function hideToolbarFunctionPanel() {
   }
 }
 
-// The buildings a sektor allows are shown whether or not the player may build them, so that
-// everybody looking at a sektor sees what belongs in it.
-export function initToolbar(allowedBuildings: string[], isViewMode = false) {
+// The buildings are shown whether or not the player may build them, so that everybody looking at a
+// sektor sees what can stand in it.
+export function initToolbar(playerLevel: number, isViewMode = false) {
   const toolbar = document.getElementById("toolbar")!;
   // Claiming a sektor while looking at it builds the toolbar a second time, now with the
   // buildings selectable, so whatever it held before is taken out of it first.
@@ -82,7 +82,7 @@ export function initToolbar(allowedBuildings: string[], isViewMode = false) {
   hideToolbarFunctionPanel();
   const thumbnails: Thumbnail[] = [];
 
-  for (const building of offeredBuildings(allowedBuildings)) {
+  for (const building of offeredBuildings(playerLevel)) {
     const item = document.createElement("div");
     item.className = "building-item";
     if (building.name === DESTRUCTION_TOOL) {
@@ -130,13 +130,20 @@ export function initToolbar(allowedBuildings: string[], isViewMode = false) {
   showBuildingThumbnails(thumbnails);
 }
 
-// A sektor only lets the player place the buildings of its palette. The destruction tool is not a
-// building and is never part of one, so it is offered whatever the palette holds — without it the
-// player could not take back a building they misplaced.
-function offeredBuildings(allowedBuildings: string[]): BuildingDefinition[] {
+// Every building the player has unlocked is theirs to place in any sektor. The destruction tool is
+// no building and asks for no level, so it is always offered — without it the player could not take
+// back a building they misplaced.
+function offeredBuildings(playerLevel: number): BuildingDefinition[] {
   return buildingDefinitions.filter(building =>
-    building.name === DESTRUCTION_TOOL || allowedBuildings.includes(building.name)
+    building.name === DESTRUCTION_TOOL || isUnlockedAt(building, playerLevel)
   );
+}
+
+// A building the player has not yet climbed high enough for is no part of their toolbar. A building
+// whose definition asks for no level is there for everybody from the start.
+function isUnlockedAt(building: BuildingDefinition, playerLevel: number): boolean {
+  const minLevel = building.properties.minLevel;
+  return minLevel === undefined || playerLevel >= minLevel;
 }
 
 interface Thumbnail {

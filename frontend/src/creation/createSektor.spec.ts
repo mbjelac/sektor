@@ -35,7 +35,7 @@ const testDefinitions: BuildingDefinition[] = [
   buildingDefinition("Surgery", ["Bread"], { name: "Care", value: 2 }),
   buildingDefinition("Hostel", ["Bread", "Care"], { name: "Lodging", value: 4 }),
   { name: "Wrecker", renderingCode: "box s(1,1,1)", buildingFunctions: [], properties: {} },
-  // A trade of its own, of no use to anyone baking bread — something for a palette to be padded with.
+  // A trade of its own, of no use to anyone baking bread.
   buildingDefinition("Quarry", [], { name: "Stone", locationProperty: "rock" }),
   buildingDefinition("Kiln", ["Stone"], { name: "Brick", value: 4 }),
   buildingDefinition("Smithy", ["Brick"], { name: "Tool", value: 3 }),
@@ -44,7 +44,7 @@ const testDefinitions: BuildingDefinition[] = [
 
 // A chain deeper than a walk can restrict: each building makes what the one above it eats, all the
 // way down to loam, which nothing makes and anyone may import. The quarries are a trade of their
-// own, there so the distractors have something to be drawn from other than the chain itself.
+// own, standing apart from the chain.
 const deepChainDefinitions: BuildingDefinition[] = [
   buildingDefinition("Bakery", ["Dough"], { name: "Bread", value: 3 }),
   buildingDefinition("Doughworks", ["Flour"], { name: "Dough", value: 3 }),
@@ -116,15 +116,14 @@ describe("createSektor", () => {
   });
 
   // The guarantee is made on the flat ground, which is most of every map: high ground carries less
-  // soil than flat ground does, so a mountainside can be left holding nothing of a property the
-  // palette needs, and the sektor is solved on the plain below it instead.
-  it("leaves something of every location property the palette needs, on every flat location", () => {
+  // soil than flat ground does, so a mountainside can be left holding nothing of a property some
+  // building draws on, and the sektor is solved on the plain below it instead.
+  it("leaves something of every location property a building draws on, on every flat location", () => {
     const sektorData = createSektor(5, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, () => 0);
 
     const neededProperties = ["soil", "groundwater"].filter(propertyName =>
       testDefinitions.some(definition =>
-        sektorData.allowedBuildings.includes(definition.name)
-        && definition.buildingFunctions.some(buildingFunction =>
+        definition.buildingFunctions.some(buildingFunction =>
           buildingFunction.outputs.some(output => output.locationProperty === propertyName)
         )
       )
@@ -178,12 +177,6 @@ describe("createSektor", () => {
     expect(outcomes).toEqual(levels.map(level => ({ level, asksForSomething: true, status: "Done" })));
   });
 
-  it("never allows a building which does nothing", () => {
-    const sektorData = createSektor(6, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange);
-
-    expect(sektorData.allowedBuildings.includes("Wrecker")).toEqual(false);
-  });
-
   // A local resource cannot be exported at all, and exporting a negative one scores against the
   // player, so a sektor requiring either could never be worth finishing.
   it("never requires a resource which cannot leave the sektor or scores against the player", () => {
@@ -194,23 +187,6 @@ describe("createSektor", () => {
     expect(requiredResources.some(resource =>
       [...LOCAL_RESOURCES, ...NEGATIVE_SCORING_RESOURCES].includes(resource)
     )).toEqual(false);
-  });
-
-  // A local resource cannot be imported at any level, so a building needing one starves unless the
-  // palette also holds something which makes it. The Hostel needs Care, which only the Surgery makes.
-  it("allows a producer of every local resource its buildings need", () => {
-    const palettesMissingAProducer = Array.from({ length: 300 }, (_, run) => 1 + run % 4).flatMap(level => {
-      const sektorData = createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, Math.random);
-      const palette = testDefinitions.filter(definition => sektorData.allowedBuildings.includes(definition.name));
-      const produced = palette.flatMap(definition => definition.buildingFunctions).flatMap(buildingFunction => buildingFunction.outputs).map(output => output.name);
-      return palette
-        .flatMap(definition => definition.buildingFunctions)
-        .flatMap(buildingFunction => buildingFunction.inputs)
-        .map(input => input.name)
-        .filter(resource => LOCAL_RESOURCES.includes(resource) && !produced.includes(resource));
-    });
-
-    expect(palettesMissingAProducer).toEqual([]);
   });
 
   // A requirement asks for a resource to be sent out of the sektor, which already rules out
@@ -258,8 +234,6 @@ describe("createSektor", () => {
   });
 });
 
-// Every resource a sektor caps the import of, which nothing it allows can make. A player handed one
-// of these can neither bring it in nor produce it, so the sektor cannot be finished.
 // What the sektor comes to once the solution it was built around is laid out on it: "Done" means a
 // player placing those same buildings on those same locations has met every requirement without
 // breaking a restriction.
@@ -271,7 +245,6 @@ function statusOfTheSolvedSektor(sektorData: SektorData): string {
     { importRestrictions: sektorData.importRestrictions, exportRequirements: sektorData.exportRequirements },
     NEGATIVE_SCORING_RESOURCES,
     LOCAL_RESOURCES,
-    sektorData.allowedBuildings,
   );
   buildTheSolutionOn(
     sektor,
@@ -279,7 +252,6 @@ function statusOfTheSolvedSektor(sektorData: SektorData): string {
     sektorData.locationProperties,
     sektorData.importRestrictions,
     testDefinitions,
-    sektorData.allowedBuildings,
     LOCAL_RESOURCES,
   );
   return sektor.getSektorState().status;
@@ -292,12 +264,13 @@ function flatLocationValues(sektorData: SektorData, propertyName: string): numbe
     .flatMap((row, x) => row.filter((_, z) => sektorData.locationProperties.altitude[x][z] === 0));
 }
 
+// Every resource a sektor caps the import of, which no building can make. A player handed one of
+// these can neither bring it in nor produce it, so the sektor cannot be finished.
 function restrictedResourcesWithoutAProducer(sektorData: SektorData, buildingDefinitions: BuildingDefinition[]): string[] {
   return sektorData.importRestrictions
     .map(restriction => restriction.name)
     .filter(resource => !buildingDefinitions.some(definition =>
-      sektorData.allowedBuildings.includes(definition.name)
-      && definition.buildingFunctions.some(buildingFunction =>
+      definition.buildingFunctions.some(buildingFunction =>
         buildingFunction.outputs.some(output => output.name === resource)
       )
     ));

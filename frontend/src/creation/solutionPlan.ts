@@ -37,7 +37,6 @@ export function exportsOfThePlacedSolution(
   locationProperties: { [key: string]: number[][] },
   importRestrictions: ResourceThroughput[],
   buildingDefinitions: BuildingDefinition[],
-  allowedBuildings: string[],
   localResources: string[],
   negativeScoringResources: string[],
 ): Map<string, number> {
@@ -48,10 +47,9 @@ export function exportsOfThePlacedSolution(
     { importRestrictions, exportRequirements: [] },
     negativeScoringResources,
     localResources,
-    allowedBuildings,
   );
 
-  buildTheSolutionOn(sektor, requiredResources, locationProperties, importRestrictions, buildingDefinitions, allowedBuildings, localResources);
+  buildTheSolutionOn(sektor, requiredResources, locationProperties, importRestrictions, buildingDefinitions, localResources);
 
   return new Map(sektor.getSektorState().exports.map(({ name, value }) => [name, value]));
 }
@@ -64,7 +62,6 @@ export function buildTheSolutionOn(
   locationProperties: { [key: string]: number[][] },
   importRestrictions: ResourceThroughput[],
   buildingDefinitions: BuildingDefinition[],
-  allowedBuildings: string[],
   localResources: string[],
 ) {
   const takenTiles = new Set<string>();
@@ -81,7 +78,7 @@ export function buildTheSolutionOn(
     // The sektor is buying something it was told to make for itself, so whatever makes that goes up.
     const overboughtResource = resourceBoughtBeyondItsRestriction(sektor, importRestrictions, overbuyingNoProducerAnswers);
     if (overboughtResource !== undefined) {
-      if (!placingAProducerLowersTheImport(sektor, overboughtResource, locationProperties, takenTiles, buildingDefinitions, allowedBuildings)) {
+      if (!placingAProducerLowersTheImport(sektor, overboughtResource, locationProperties, takenTiles, buildingDefinitions)) {
         overbuyingNoProducerAnswers.add(overboughtResource);
       }
       continue;
@@ -90,7 +87,7 @@ export function buildTheSolutionOn(
     // Something here cannot get what it needs from anywhere but here, so more of that is made.
     const starvedResource = resourceSomethingIsStarvedOf(sektor, buildingDefinitions, localResources);
     if (starvedResource !== undefined) {
-      if (!placeProducerOf(sektor, starvedResource, locationProperties, takenTiles, buildingDefinitions, allowedBuildings)) {
+      if (!placeProducerOf(sektor, starvedResource, locationProperties, takenTiles, buildingDefinitions)) {
         if (!removeNewestBuilding(sektor, takenTiles)) break;
       }
       // Feeding what was starving sets something running which was not running before, so a
@@ -105,7 +102,7 @@ export function buildTheSolutionOn(
     if (requiredResources.length === 0) break;
     const resource = requiredResources[nextResourceToGrow % requiredResources.length];
     nextResourceToGrow++;
-    if (!placeProducerOf(sektor, resource, locationProperties, takenTiles, buildingDefinitions, allowedBuildings)) break;
+    if (!placeProducerOf(sektor, resource, locationProperties, takenTiles, buildingDefinitions)) break;
     overbuyingNoProducerAnswers.clear();
   }
 
@@ -139,10 +136,9 @@ function placingAProducerLowersTheImport(
   locationProperties: { [key: string]: number[][] },
   takenTiles: Set<string>,
   buildingDefinitions: BuildingDefinition[],
-  allowedBuildings: string[],
 ): boolean {
   const importedBefore = importedAmountOf(sektor, resource);
-  if (!placeProducerOf(sektor, resource, locationProperties, takenTiles, buildingDefinitions, allowedBuildings)) return false;
+  if (!placeProducerOf(sektor, resource, locationProperties, takenTiles, buildingDefinitions)) return false;
   if (importedAmountOf(sektor, resource) < importedBefore) return true;
 
   removeNewestBuilding(sektor, takenTiles);
@@ -188,17 +184,16 @@ function pullBackUntilRestrictionsAreKept(sektor: Sektor) {
   }
 }
 
-// Of everything the sektor allows which makes the resource, the one making most of it per building
-// is the one put up, on the best ground left to it.
+// Of everything which makes the resource, the one making most of it per building is the one put up,
+// on the best ground left to it.
 function placeProducerOf(
   sektor: Sektor,
   resource: string,
   locationProperties: { [key: string]: number[][] },
   takenTiles: Set<string>,
   buildingDefinitions: BuildingDefinition[],
-  allowedBuildings: string[],
 ): boolean {
-  const producer = bestProducerOf(buildingDefinitions, allowedBuildings, locationProperties, resource);
+  const producer = bestProducerOf(buildingDefinitions, locationProperties, resource);
   if (producer === undefined) return false;
   return placeOnBestFreeTile(sektor, producer, locationProperties, takenTiles);
 }
@@ -214,7 +209,6 @@ interface PlaceableProducer {
 
 function bestProducerOf(
   buildingDefinitions: BuildingDefinition[],
-  allowedBuildings: string[],
   locationProperties: { [key: string]: number[][] },
   resource: string,
 ): PlaceableProducer | undefined {
@@ -222,7 +216,6 @@ function bestProducerOf(
   let bestAmount = -1;
 
   for (const buildingDefinition of buildingDefinitions) {
-    if (!allowedBuildings.includes(buildingDefinition.name)) continue;
     for (const [functionIndex, buildingFunction] of buildingDefinition.buildingFunctions.entries()) {
       for (const output of buildingFunction.outputs) {
         if (output.name !== resource) continue;

@@ -1,16 +1,34 @@
 import p5 from "p5";
 import { MIN_ALTITUDE } from "./altitude";
 
+// Which of a floor block's four sides stand on the edge of the map, with nothing beyond them, named
+// as the faces of the block below are. A block lying anywhere else on the map has none of them.
+export interface SidesOnMapEdge {
+  front?: boolean;
+  back?: boolean;
+  left?: boolean;
+  right?: boolean;
+}
+
 // A location standing higher than the lowest ground is drawn as a taller block rather than a
-// raised one: its bottom stays level with every other floor's, so what shows of it is the rock the
-// ground stands on.
-export function drawFloor(p: p5, s: number, topColor?: [number, number, number], altitude: number = 0) {
+// raised one: its bottom stays level with every other floor's, so what shows of it is the ground
+// carried on. A side of raised ground is the same color as its top, being the same ground seen
+// from the side — except where it stands on the edge of the map, which is the bare earth the whole
+// map is cut out of and is colored like the lowest ground there is.
+export function drawFloor(
+  p: p5,
+  s: number,
+  topColor?: [number, number, number],
+  altitude: number = 0,
+  sidesOnMapEdge: SidesOnMapEdge = {},
+) {
   const h = s / 2;
   const height = floorBlockHeight(s, altitude);
   const green: [number, number, number] = topColor ?? [30, 200, 80];
   const brown: [number, number, number] = [180, 140, 90];
   const darkBrown: [number, number, number] = [100, 70, 40];
   const sideColor = altitude > MIN_ALTITUDE ? green : darkBrown;
+  const colorOfSide = (isOnMapEdge?: boolean) => isOnMapEdge ? darkBrown : sideColor;
   const bottom = floorBlockBottom(s);
   const top = bottom - height;
 
@@ -35,7 +53,7 @@ export function drawFloor(p: p5, s: number, topColor?: [number, number, number],
   p.endShape(p.CLOSE);
 
   // Front face (+z)
-  p.fill(...sideColor);
+  p.fill(...colorOfSide(sidesOnMapEdge.front));
   p.beginShape();
   p.normal(0, 0, 1);
   p.vertex(-h, top, h);
@@ -45,7 +63,7 @@ export function drawFloor(p: p5, s: number, topColor?: [number, number, number],
   p.endShape(p.CLOSE);
 
   // Back face (-z)
-  p.fill(...sideColor);
+  p.fill(...colorOfSide(sidesOnMapEdge.back));
   p.beginShape();
   p.normal(0, 0, -1);
   p.vertex(-h, top, -h);
@@ -55,7 +73,7 @@ export function drawFloor(p: p5, s: number, topColor?: [number, number, number],
   p.endShape(p.CLOSE);
 
   // Left face (-x)
-  p.fill(...sideColor);
+  p.fill(...colorOfSide(sidesOnMapEdge.left));
   p.beginShape();
   p.normal(-1, 0, 0);
   p.vertex(-h, top, -h);
@@ -65,7 +83,7 @@ export function drawFloor(p: p5, s: number, topColor?: [number, number, number],
   p.endShape(p.CLOSE);
 
   // Right face (+x)
-  p.fill(...sideColor);
+  p.fill(...colorOfSide(sidesOnMapEdge.right));
   p.beginShape();
   p.normal(1, 0, 0);
   p.vertex(h, top, -h);

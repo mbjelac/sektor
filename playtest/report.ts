@@ -16,7 +16,6 @@ interface Played {
   level: number;
   result: PlayResult;
   farmScore: number;
-  allowedBuildings: string[];
 }
 
 export function buildReport(
@@ -35,7 +34,6 @@ export function buildReport(
         level,
         result: playSektor(sektorData, buildingDefinitions, localResources, negativeScoringResources),
         farmScore: farmSektor(sektorData, buildingDefinitions, localResources, negativeScoringResources),
-        allowedBuildings: sektorData.allowedBuildings,
       });
     }
   }
@@ -204,13 +202,14 @@ function whatIsAlwaysBought(played: Played[]): string {
 }
 
 // A building offered again and again and never worth putting up is either priced wrong or pointless.
+// Every sektor offers every building there is, so each of them is offered once per sektor played.
 function contentNeverUsed(played: Played[], buildingDefinitions: BuildingDefinition[]): string {
   const offered = new Map<string, number>();
   const built = new Map<string, number>();
 
   for (const entry of played) {
-    for (const buildingName of entry.allowedBuildings) {
-      offered.set(buildingName, (offered.get(buildingName) ?? 0) + 1);
+    for (const buildingDefinition of buildingDefinitions) {
+      offered.set(buildingDefinition.name, (offered.get(buildingDefinition.name) ?? 0) + 1);
     }
     for (const placed of entry.result.buildingsPlaced) {
       built.set(placed.type, (built.get(placed.type) ?? 0) + 1);

@@ -21,34 +21,7 @@ function createSektor(): Sektor {
   return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, [], []);
 }
 
-// A sektor which allows only the Mill, though its definitions hold the Well and the WheatFarm too.
-function createSektorAllowingOnlyTheMill(): Sektor {
-  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, [], [], ["Mill"]);
-}
-
 describe("createBuilding", () => {
-  it("creates a building which the sektor allows", () => {
-    const sektor = createSektorAllowingOnlyTheMill();
-
-    const result = sektor.createBuilding({ type: "Mill", location: { x: 1, y: 1 } });
-
-    expect({ result, buildings: sektor.getState().buildings }).toEqual({
-      result: { error: undefined, addedBuildings: [{ type: "Mill", location: { x: 1, y: 1 } }] },
-      buildings: [{ type: "Mill", location: { x: 1, y: 1 } }],
-    });
-  });
-
-  it("does not create a building which the sektor does not allow", () => {
-    const sektor = createSektorAllowingOnlyTheMill();
-
-    const result = sektor.createBuilding({ type: "Well", location: { x: 1, y: 1 } });
-
-    expect({ result, buildings: sektor.getState().buildings }).toEqual({
-      result: { error: "buildingNotAllowed", addedBuildings: [] },
-      buildings: [],
-    });
-  });
-
   it("creates building on free location", () => {
     const sektor = createSektor();
 

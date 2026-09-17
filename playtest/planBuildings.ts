@@ -102,7 +102,6 @@ function cheapestProducer(
   let bestAmount = 0;
 
   for (const buildingDefinition of buildingDefinitions) {
-    if (!sektorData.allowedBuildings.includes(buildingDefinition.name)) continue;
     buildingDefinition.buildingFunctions.forEach((buildingFunction, functionIndex) => {
       for (const output of buildingFunction.outputs) {
         if (output.name !== resource) continue;

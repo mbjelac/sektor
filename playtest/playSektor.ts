@@ -45,7 +45,6 @@ export function farmSektor(
     { importRestrictions: sektorData.importRestrictions, exportRequirements: [] },
     negativeScoringResources,
     localResources,
-    sektorData.allowedBuildings,
   );
 
   placeBuildings(sektor, { ...sektorData, exportRequirements: [] }, buildingDefinitions, locations.length);
@@ -68,7 +67,6 @@ export function playSektor(
     { importRestrictions: sektorData.importRestrictions, exportRequirements: sektorData.exportRequirements },
     negativeScoringResources,
     localResources,
-    sektorData.allowedBuildings,
   );
 
   buildThePlan(sektor, sektorData, buildingDefinitions, planBuildings(sektorData, buildingDefinitions), locations.length);
@@ -124,9 +122,9 @@ function placeBuildings(
     let bestLocation: BuildingLocation | null = null;
     let bestStepValue = -Infinity;
 
-    for (const buildingType of sektorData.allowedBuildings) {
-      const buildingDefinition = buildingDefinitions.find(definition => definition.name === buildingType);
-      if (!buildingDefinition || buildingDefinition.buildingFunctions.length === 0) continue;
+    for (const buildingDefinition of buildingDefinitions) {
+      if (buildingDefinition.buildingFunctions.length === 0) continue;
+      const buildingType = buildingDefinition.name;
 
       const location = bestFreeLocation(sektor, sektorData, buildingDefinition, gridSize);
       if (!location) continue;

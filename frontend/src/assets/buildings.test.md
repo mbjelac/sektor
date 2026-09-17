@@ -162,3 +162,21 @@ Active: always
 Energy 1
 ->
 Water 1
+
+# TestTower
+
+## Render
+
+```
+pri4 s(18,18,40) t(0,0,0) c(#bb9944)
+```
+
+## Function
+
+Energy 2
+->
+Work 1
+
+## Properties
+
+minLevel=5
