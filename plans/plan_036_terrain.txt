@@ -9,13 +9,13 @@
 - [done] if a building is placed on a location with an altitude greater than 0, apply the altitude when drawing the building
 
 #2 Player can discern an altitude by floor color
-- color floors of higher altitudes differently
-    - 0: plains: default, apply soil value for color
-    - 1: elevated plains: default, apply soil value for color
-    - 2: low mountains: apply soil value, but skew towards blue
-    - 3: high mountains: randomly spread between #cef2e9 and #d5e0de
-    - 4: snowy mountains: randomly spread between #ffffff and #ddf0ed
-- floor block sides of blocks with altitude > 0 should be colored same as the floor (top panel of block)
+- [done] color floors of higher altitudes differently
+    - [done] 0: plains: default, apply soil value for color
+    - [done] 1: elevated plains: default, apply soil value for color
+    - [done] 2: low mountains: apply soil value, but skew towards blue
+    - [done] 3: high mountains: randomly spread between #b8d9d1 and #c3d4d1
+    - [done] 4: snowy mountains: randomly spread between #ffffff and #ddf0ed
+- [done] floor block sides of blocks with altitude > 0 should be colored same as the floor (top panel of block)
 
 #3 Some buildings can not be built on higher altitudes
 - if a building definition has a property in Properties section "maxAltitude", it is not permitted to construct it on a map square with higher altitude
