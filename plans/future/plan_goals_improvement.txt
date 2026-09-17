@@ -1,0 +1,54 @@
+Current problems:
+- requirements & restrictions seem arbitrary
+- restrictions force the player what to build instead of pushing them with import penalties
+- in each sektor, player first looks at requirements and then builds backwards from it
+    - repetitive, mundane
+- allowed buildings are used too arbitrarily
+    - the original idea was to always have the basic buildings, then as the player develops (increases their score) other buildings are unlocked
+- variable sektor size
+    - benefits not clear
+    - sometimes cool to see what you can do in such a small space
+    - but often confusing and a let-down (players need more room for development)
+    - also, when sektors populated with rivers, forests, etc. there will no longer be so much empty space
+
+Solution ideas:
+- remove variable sektor size
+- unlock buildings as player advances
+    - now just a few buildings exist
+    - however, will be ok when a lot of them are created
+        - a lot of buildings can do similar stuff as existing ones, it's not about function it's about color & flavor
+    - player advancement is not based on import/export score, as this changes all the time (see below)
+    - player advancement is based on how much a player has played the game
+        - could be how high score the player has reached by *their* actions
+        - or simpler, how many times the player logged in, how many buildings they placed, etc.
+- replace requirements & restrictions with global player scoring:
+    - the planet has global imports & exports which are just total sums of all existing sektor imports & exports
+        - same as sektor with sum of building inputs & outputs
+        - example:
+            - sektor A exports water 10 and imports food 15
+            - sektor B exports food 8 and imports water 9
+            - planet has
+                - water export of 1
+                - food import of 7
+    - each player's contribution to exports & imports are scored, taken from every player's sektor
+    - sektor status is not needed
+        - all sektors are active in global imports & exports as soon as the first building is built!
+    - player scores are dynamic
+        - changing all the time
+        - each sektor's imports & exports are contributing with positive and negative points to player's score
+        - each resource is evaluated for all cases and score applied:
+            - importing exported 0 (no damage done)
+            - importing imported -1 * global import (worsening the planet's situation)
+            - exporting exported +1 * global export (contributing to planet's exports)
+            - exporting imported +2 * global import (helping the planet's situation)
+        - as a building is built, sektor's imports & exports change, changing global imports & exports & changing all the players' scores
+    - this empowers the player to build in each sektor towards one, more or none of the current planet's goals!
+        - playing the game is not limited by score advancement
+        - score advancement is incentivised by the leaderboard (fame!) but nothing else
+
+
+musings:
+
+- this makes the planet similar to a collaborative sandbox where each player's action affects everything else (like it is on the real planet we live on)
+- possible expansion of the game is to have more planets (would be cool that they have same buildings, but different floor color scheme, different location property algorithms, etc.)
+    - all planets in the game can swap each other's imports & exports!
