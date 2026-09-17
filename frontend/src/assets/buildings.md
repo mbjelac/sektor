@@ -270,6 +270,10 @@ Childcare 2
 ->
 WorkUnqualified 4
 
+## Properties
+
+maxAltitude=2
+
 # Library
 
 ## Render
@@ -336,6 +340,10 @@ EnergyElectric 1
 WorkEducational 1
 ->
 HealthMental 6
+
+## Properties
+
+maxAltitude=2
 
 # Agriplot
 
@@ -611,6 +619,10 @@ WorkAdministrative 2
 ->
 HealthSocial 20
 
+## Properties
+
+maxAltitude=1
+
 # Polytechnic
 
 ## Render
@@ -704,6 +716,10 @@ EnergyElectric 4
 WorkMaintenance 8
 ->
 WorkTechnical 16
+
+## Properties
+
+maxAltitude=2
 
 # Refinery
 
@@ -807,6 +823,10 @@ OreUranium 5
 ->
 Uranium 6
 
+## Properties
+
+maxAltitude=2
+
 # TownSquare
 
 ## Render
@@ -901,6 +921,10 @@ EnergyElectric 1
 WaterPottable 2
 ->
 HealthSocial 8
+
+## Properties
+
+maxAltitude=2
 
 # Park
 
@@ -1017,6 +1041,10 @@ HealthPhysical 2
 HealthMental 2
 HealthSocial 4
 
+## Properties
+
+maxAltitude=2
+
 # Fertilizatron
 
 ## Render
@@ -1066,6 +1094,10 @@ WorkTechnical 2
 WorkEngineering 1
 ->
 Fertilizer 12
+
+## Properties
+
+maxAltitude=2
 
 # ChildKeep
 
@@ -1125,6 +1157,10 @@ WorkMaintenance 1
 ->
 Childcare 10
 WaterSewage 6
+
+## Properties
+
+maxAltitude=2
 
 # WaterTreatment
 
@@ -1283,6 +1319,10 @@ EnergyElectric 6
 ->
 WaterPottable 8
 
+## Properties
+
+maxAltitude=1
+
 # Fission Plant
 
 ## Render
@@ -1397,3 +1437,7 @@ WaterTechnical 2
 ->
 EnergyElectric 20
 WasteNuclear 2
+
+## Properties
+
+maxAltitude=1
