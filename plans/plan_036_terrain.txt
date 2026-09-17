@@ -24,15 +24,15 @@
         - [done] do not construct building
         - [done] display error "altitudeTooHigh"
 
-#4 Terrain can be populated by lone mountains or mountain ranges
+#4 [done] Terrain can be populated by lone mountains or mountain ranges
 - [done] when generating the altitude matrix, observe these rules:
-    - at least 40% to 100% of the altitude should be 0
-        - this range varies by difficulty level:
-            - difficulty 1: 70%-100%
-            - difficulty 2: 60%-100%
-            - difficulty 3: 50%-100%
-            - difficulty 4 and onwards: 40%-100%
-        - so, it is alwasy possible to construct a level of 100% zero altitude, even if difficulty is a high number provided other stuff makes it difficult
+    - [done] at least 40% to 100% of the altitude should be 0
+        - [done] this range varies by difficulty level:
+            - [done] difficulty 1: 70%-100%
+            - [done] difficulty 2: 60%-100%
+            - [done] difficulty 3: 50%-100%
+            - [done] difficulty 4 and onwards: 40%-100%
+        - [done] so, it is alwasy possible to construct a level of 100% zero altitude, even if difficulty is a high number provided other stuff makes it difficult
 - [done] constructing mountains (altitude number lists like "1, 2, 3" mean pick a random altitude from that list):
     - [done] lone mountains are constructed as:
         - [done] one square with altitude 2, 3

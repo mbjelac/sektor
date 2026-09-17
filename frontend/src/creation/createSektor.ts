@@ -3,7 +3,8 @@ import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZES } from "../../../shared/sektorSizes";
 import { BuildingDefinition, BuildingFunction } from "../sektor/buildings/parseBuildingDefinitions";
 import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
-import { ALTITUDE_PROPERTY, MAX_ALTITUDE, MIN_ALTITUDE } from "../../../shared/altitude";
+import { ALTITUDE_PROPERTY } from "../../../shared/altitude";
+import { createAltitudeMatrix } from "./altitudeMatrix";
 import { RandomNumber } from "./randomNumber";
 
 const REQUIREMENT_AMOUNT = 10;
@@ -375,23 +376,10 @@ function createLocationProperties(
         ),
       ])
     ),
-    [ALTITUDE_PROPERTY]: createAltitudeMatrix(size, randomNumber),
+    [ALTITUDE_PROPERTY]: createAltitudeMatrix(size, level, randomNumber),
   };
 }
 
-// Temporary, until terrain is designed: half the ground lies at the lowest altitude and the rest
-// rises to any height there is, so that a sektor has enough flat ground to read against the hills.
-const FLAT_GROUND_SHARE = 0.5;
-
-function createAltitudeMatrix(size: number, randomNumber: RandomNumber): number[][] {
-  return Array.from({ length: size }, () =>
-    Array.from({ length: size }, () =>
-      randomNumber() < FLAT_GROUND_SHARE
-        ? MIN_ALTITUDE
-        : MIN_ALTITUDE + 1 + Math.floor(randomNumber() * (MAX_ALTITUDE - MIN_ALTITUDE))
-    )
-  );
-}
 
 // What the poorest location of a property the sektor is solved with still holds: the higher the
 // level the less that is, but never nothing.
