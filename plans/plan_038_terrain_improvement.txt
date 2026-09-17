@@ -10,8 +10,8 @@ The "blocks" (mountains) are too high and look artificial.
     - etc.
 
 #2 Cliffs should be possible but rare
-- maximum altitude should be 9
-- a cliff is formed when two neigbouring squares have altitude difference more than 1
+- [done] maximum altitude should be 9
+- [done] a cliff is formed when two neigbouring squares have altitude difference more than 1
 - when creating the altitude matrix, almost always set altitudes with a difference of 1
     - start creating mountains from a peak
         - a peak of 9 should be rare
@@ -40,3 +40,7 @@ The "blocks" (mountains) are too high and look artificial.
 #4 Drop all effects on location properties
 - remove all effects on location properties
     - location properties matrices should be generated only with their functions, not modified by altitude
+
+#5 Drop construction altitude restriction
+- all buildings can be placed on all altitudes
+- remove maxAltitude property parsing and property declarations in buildings.md
