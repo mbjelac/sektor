@@ -53,7 +53,7 @@ The "blocks" (mountains) are too high and look artificial.
         - so, if a high floor block is in the map corner, two of it's sides should be dark brown and the other two soil-colored
 
 #5 [done] Adjust effects on location properties
-- [done] these completely overwrite existing rules:
+- [done] these completely overwrite existing rules for the specified properties (the rest are left as they are):
     - soil: -2 per altitude level (soil 12 is 10 on altitude 1, 8 on altitude 2, etc. minimum 0)
     - wind: +2 per altitude level
         - maximum 12
