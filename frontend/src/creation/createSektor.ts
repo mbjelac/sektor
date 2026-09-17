@@ -132,10 +132,40 @@ function requirementsTheGroundCanMeet(
       .map(name => ({ name, value: amountRequired(deliveredExports.get(name) ?? 0, level) }))
       .filter(requirement => requirement.value > 0);
 
-    if (requirements.length > 0 || loosening === MOST_RESTRICTION_LOOSENINGS) return requirements;
+    if (requirements.length > 0) return requirements;
+
+    // Nothing the sektor set out to ask for came through, and yet the solution standing on this
+    // ground sends something out. A share of that is as good a thing to ask for: it is a thing
+    // these buildings on these locations were seen to deliver, which is the whole of what a
+    // requirement ever claims.
+    const deliveredInstead = requirementsFromWhatWasDelivered(
+      deliveredExports, restrictedResources, negativeScoringResources, level, requiredResources.length
+    );
+    if (deliveredInstead.length > 0) return deliveredInstead;
+
+    if (loosening === MOST_RESTRICTION_LOOSENINGS) return [];
 
     for (const [name, value] of restrictedResources) restrictedResources.set(name, value + 1);
   }
+}
+
+// What the solution sends out which the sektor may ask for, most freely given first. A resource
+// which scores against the player punishes them for finishing, and one the sektor caps the import
+// of is already spoken for by that cap, so neither is ever asked for. A local resource never
+// reaches here: it cannot leave the sektor, so it is no export of it.
+function requirementsFromWhatWasDelivered(
+  deliveredExports: Map<string, number>,
+  restrictedResources: Map<string, number>,
+  negativeScoringResources: string[],
+  level: number,
+  mostRequirements: number,
+): ResourceThroughput[] {
+  return [...deliveredExports]
+    .filter(([name]) => !negativeScoringResources.includes(name) && !restrictedResources.has(name))
+    .sort(([, amount], [, otherAmount]) => otherAmount - amount)
+    .slice(0, mostRequirements)
+    .map(([name, deliveredAmount]) => ({ name, value: amountRequired(deliveredAmount, level) }))
+    .filter(requirement => requirement.value > 0);
 }
 
 // What the sektor asks for of a resource, out of what the solution laid out on its ground delivers.

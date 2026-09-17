@@ -23,8 +23,9 @@ import { locationPropertiesToLocations } from "../sektor/locationProperties";
 // a share of what the solution grown here delivers, and so takes fewer buildings than this did.
 
 // How many times the growing solution may be looked at and answered before the ground is called
-// full. Every round either puts a building up or takes one down, so this only has to outlast the
-// tiles the solution is allowed.
+// full. Most rounds put a building up or take one down, and the few which do neither only give up
+// on a resource no producer can answer for, of which there are never many, so this comfortably
+// outlasts the tiles the solution is allowed.
 const MOST_ROUNDS_PER_TILE = 4;
 
 // What the solution grown on this map actually sends out of the sektor, resource by resource.
@@ -69,16 +70,20 @@ export function buildTheSolutionOn(
   const size = locationPropertiesToLocations(locationProperties).length;
   const takenTiles = new Set<string>();
   const tilesAllowed = Math.max(1, Math.floor(size * size / 2));
+  // What putting a producer up has already been seen not to help with. A producer which does not
+  // bring its resource down is set aside rather than tried again, so that the solution answers what
+  // it can answer instead of burying the map in buildings which change nothing.
+  const overbuyingNoProducerAnswers = new Set<string>();
   let nextResourceToGrow = 0;
 
   for (let round = 0; round < tilesAllowed * MOST_ROUNDS_PER_TILE; round++) {
     if (takenTiles.size >= tilesAllowed) break;
 
     // The sektor is buying something it was told to make for itself, so whatever makes that goes up.
-    const overboughtResource = resourceBoughtBeyondItsRestriction(sektor, importRestrictions);
+    const overboughtResource = resourceBoughtBeyondItsRestriction(sektor, importRestrictions, overbuyingNoProducerAnswers);
     if (overboughtResource !== undefined) {
-      if (!placeProducerOf(sektor, overboughtResource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) {
-        if (!removeNewestBuilding(sektor, takenTiles)) break;
+      if (!placingAProducerLowersTheImport(sektor, overboughtResource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) {
+        overbuyingNoProducerAnswers.add(overboughtResource);
       }
       continue;
     }
@@ -89,6 +94,9 @@ export function buildTheSolutionOn(
       if (!placeProducerOf(sektor, starvedResource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) {
         if (!removeNewestBuilding(sektor, takenTiles)) break;
       }
+      // Feeding what was starving sets something running which was not running before, so a
+      // resource no producer could answer for is worth answering for again.
+      overbuyingNoProducerAnswers.clear();
       continue;
     }
 
@@ -99,18 +107,52 @@ export function buildTheSolutionOn(
     const resource = requiredResources[nextResourceToGrow % requiredResources.length];
     nextResourceToGrow++;
     if (!placeProducerOf(sektor, resource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) break;
+    overbuyingNoProducerAnswers.clear();
   }
 
   pullBackUntilRestrictionsAreKept(sektor);
 }
 
-// Which resource the sektor brings in more of than it is allowed to, if any.
-function resourceBoughtBeyondItsRestriction(sektor: Sektor, importRestrictions: ResourceThroughput[]): string | undefined {
+// Which resource the sektor brings in more of than it is allowed to, if any. Whatever putting up a
+// producer has already failed to answer is passed over, so the next breached restriction gets its
+// turn rather than the first one taking every round there is.
+function resourceBoughtBeyondItsRestriction(
+  sektor: Sektor,
+  importRestrictions: ResourceThroughput[],
+  overbuyingNoProducerAnswers: Set<string>,
+): string | undefined {
   const { imports } = sektor.getSektorState();
 
   return importRestrictions.find(restriction =>
-    (imports.find(bought => bought.name === restriction.name)?.value ?? 0) > restriction.value
+    !overbuyingNoProducerAnswers.has(restriction.name)
+    && (imports.find(bought => bought.name === restriction.name)?.value ?? 0) > restriction.value
   )?.name;
+}
+
+// Puts up a producer of a resource the sektor buys too much of, and keeps it only if it actually
+// lowered what is bought. A producer can raise it instead — a refinery which cannot get its ore buys
+// more of everything else it needs and refines nothing — and standing there it would have the next
+// round put up another, and another, until the ground was full of them and the sektor no closer to
+// keeping its restrictions.
+function placingAProducerLowersTheImport(
+  sektor: Sektor,
+  resource: string,
+  locationProperties: { [key: string]: number[][] },
+  size: number,
+  takenTiles: Set<string>,
+  buildingDefinitions: BuildingDefinition[],
+  allowedBuildings: string[],
+): boolean {
+  const importedBefore = importedAmountOf(sektor, resource);
+  if (!placeProducerOf(sektor, resource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) return false;
+  if (importedAmountOf(sektor, resource) < importedBefore) return true;
+
+  removeNewestBuilding(sektor, takenTiles);
+  return false;
+}
+
+function importedAmountOf(sektor: Sektor, resource: string): number {
+  return sektor.getSektorState().imports.find(bought => bought.name === resource)?.value ?? 0;
 }
 
 // A local resource cannot be brought in from anywhere, so a building which needs one and has none
@@ -161,7 +203,16 @@ function placeProducerOf(
 ): boolean {
   const producer = bestProducerOf(buildingDefinitions, allowedBuildings, locationProperties, resource);
   if (producer === undefined) return false;
-  return placeOnBestFreeTile(sektor, producer.buildingName, producer.locationProperty, locationProperties, size, takenTiles);
+  return placeOnBestFreeTile(sektor, producer, locationProperties, size, takenTiles);
+}
+
+// Which building to put up and which of the things it does it was put up to do. A building does
+// only the first of its functions until somebody switches another on, so a producer which is not
+// the first function of its building is a producer only once that switch is thrown.
+interface PlaceableProducer {
+  buildingName: string;
+  functionIndex: number;
+  locationProperty?: string;
 }
 
 function bestProducerOf(
@@ -169,19 +220,19 @@ function bestProducerOf(
   allowedBuildings: string[],
   locationProperties: { [key: string]: number[][] },
   resource: string,
-): { buildingName: string; locationProperty?: string } | undefined {
-  let best: { buildingName: string; locationProperty?: string } | undefined = undefined;
+): PlaceableProducer | undefined {
+  let best: PlaceableProducer | undefined = undefined;
   let bestAmount = -1;
 
   for (const buildingDefinition of buildingDefinitions) {
     if (!allowedBuildings.includes(buildingDefinition.name)) continue;
-    for (const buildingFunction of buildingDefinition.buildingFunctions) {
+    for (const [functionIndex, buildingFunction] of buildingDefinition.buildingFunctions.entries()) {
       for (const output of buildingFunction.outputs) {
         if (output.name !== resource) continue;
         const amount = output.value ?? richestGround(locationProperties, output.locationProperty);
         if (amount <= bestAmount) continue;
         bestAmount = amount;
-        best = { buildingName: buildingDefinition.name, locationProperty: output.locationProperty };
+        best = { buildingName: buildingDefinition.name, functionIndex, locationProperty: output.locationProperty };
       }
     }
   }
@@ -200,8 +251,7 @@ function richestGround(locationProperties: { [key: string]: number[][] }, proper
 // the same wherever it stands goes anywhere there is room.
 function placeOnBestFreeTile(
   sektor: Sektor,
-  buildingName: string,
-  propertyName: string | undefined,
+  producer: PlaceableProducer,
   locationProperties: { [key: string]: number[][] },
   size: number,
   takenTiles: Set<string>,
@@ -212,14 +262,19 @@ function placeOnBestFreeTile(
       if (!takenTiles.has(tileKey(x, z))) freeTiles.push({ x, z });
     }
   }
-  if (propertyName !== undefined) {
-    const matrix = locationProperties[propertyName];
+  if (producer.locationProperty !== undefined) {
+    const matrix = locationProperties[producer.locationProperty];
     freeTiles.sort((tile, otherTile) => (matrix?.[otherTile.x]?.[otherTile.z] ?? 0) - (matrix?.[tile.x]?.[tile.z] ?? 0));
   }
 
   for (const tile of freeTiles) {
-    const result = sektor.createBuilding({ type: buildingName, location: { x: tile.x, y: tile.z } });
+    const result = sektor.createBuilding({ type: producer.buildingName, location: { x: tile.x, y: tile.z } });
     if (result.error === undefined) {
+      // The building was put up to make one thing, so the function which makes it is switched on.
+      // Whatever else the building was already doing is left doing it: the functions of a building
+      // are often a ladder, each rung making what the next one climbs from, and switching the lower
+      // rungs off would leave the one which was wanted with nothing to work on.
+      sektor.activateFunction({ x: tile.x, y: tile.z }, producer.functionIndex);
       takenTiles.add(tileKey(tile.x, tile.z));
       return true;
     }

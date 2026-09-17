@@ -61,6 +61,22 @@ const deepChainDefinitions: BuildingDefinition[] = [
   buildingDefinition("Chalkpit", [], { name: "Chalk", value: 1 }),
 ];
 
+// A cannery does two things, and the one worth asking for is not the one it does by itself: tins
+// are made only by its second function. A building is set to its first function until somebody
+// switches another on, so nothing can ask for a tin unless the switch is thrown.
+const twoFunctionDefinitions: BuildingDefinition[] = [
+  {
+    name: "Cannery",
+    renderingCode: "box s(1,1,1)",
+    buildingFunctions: [
+      { inputs: [{ name: "Water", value: 1 }], outputs: [{ name: "Broth", value: 3 }] },
+      { inputs: [{ name: "Water", value: 1 }], outputs: [{ name: "Tin", value: 5 }] },
+    ],
+    properties: {},
+  },
+  buildingDefinition("Well", [], { name: "Water", locationProperty: "groundwater" }),
+];
+
 // Bread is the only thing worth carrying out of this sektor, since everything else scores against
 // the player, so the only requirement it can be given is bread and every walk goes down the chain.
 const EVERYTHING_BUT_BREAD = deepChainDefinitions
@@ -224,6 +240,30 @@ describe("createSektor", () => {
     });
 
     expect(restrictedRequirements).toEqual([]);
+  });
+
+  // A building does only the first of its functions until somebody switches another on. The solution
+  // is laid out by the very rules the player plays under, so a resource made by a later function is
+  // one the solution delivers only if it throws that switch — and a sektor can only ask for what its
+  // solution was seen to deliver.
+  it("asks for a resource which only a building's later function makes", () => {
+    const requirements = [1, 2, 3, 4, 5, 6].map(level =>
+      createSektor(level, twoFunctionDefinitions, [], [], middleOfTheRange).exportRequirements
+    );
+
+    expect(requirements.map(requirement => requirement.some(({ name, value }) => name === "Tin" && value > 0)))
+      .toEqual([true, true, true, true, true, true]);
+  });
+
+  // A sektor asking for nothing is Done the moment it is opened, which is no sektor at all. What it
+  // asks for is a share of what its solution was seen to deliver, so as long as that solution sends
+  // anything out, there is something to ask for.
+  it("always asks for something", () => {
+    const sektorsAskingForNothing = Array.from({ length: 200 }, (_, run) => 1 + run % 8)
+      .map(level => createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, Math.random))
+      .filter(sektorData => sektorData.exportRequirements.length === 0);
+
+    expect(sektorsAskingForNothing).toEqual([]);
   });
 
   it("makes a sektor which has no buildings in it yet", () => {

@@ -34,14 +34,22 @@ export async function createSektorIfNeeded(): Promise<boolean> {
 
   const levels = neededLevels();
   const level = levels[Math.floor(Math.random() * levels.length)];
+
+  const sektorData = createSektor(
+    level, buildingDefinitions, getLocalResources(), getNegativeScoringResources()
+  );
+  // Creation can come back with a sektor which asks for nothing, when no arrangement of buildings it
+  // allows was able to send anything out of the ground it was given. Such a sektor is Done the
+  // moment it is opened, so it is dropped rather than offered to anybody, and the next tick tries
+  // again on fresh ground.
+  if (sektorData.exportRequirements.length === 0) return false;
+
   // The name is waited for before the sektor is numbered, so that a sektor made while this one
   // waits is the one holding the number it was given, and neither of them takes the other's.
   const sektorName = await generateSektorName();
   const sektorId = `${nextSektorId()}`;
 
-  saveSektorData(sektorId, createSektor(
-    level, buildingDefinitions, getLocalResources(), getNegativeScoringResources()
-  ));
+  saveSektorData(sektorId, sektorData);
   addSektorToList(sektorId, sektorName);
 
   return true;
