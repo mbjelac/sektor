@@ -14,6 +14,11 @@ const REQUIREMENT_AMOUNT = 10;
 const GROUND_TO_SPARE = 3;
 // How much likelier a squeeze grows with every level, so that the highest levels are always squeezed.
 const SQUEEZE_CHANCE_PER_LEVEL = 0.1;
+// Whether a sektor's map is measured against the solution it was built around, which is what
+// chooseSektorSize describes. Turn this off and every sektor is handed one of the sizes at random
+// instead, which is the way to get maps of every size to look at without waiting for the solutions
+// which would call for them.
+const SIZE_SEKTORS_BY_SOLUTION = false;
 
 // One way of making a resource: the building which makes it, and the one thing that building does
 // to make it, which is what says how much of the resource it makes and what it takes to do so.
@@ -295,6 +300,8 @@ function findUnproducedLocalResource(
 // one location which suits two buildings can only be had by one of them. The squeeze never goes
 // below the size the solution needs, so a squeezed sektor is still one which can be finished.
 function chooseSektorSize(solutionSteps: SolutionStep[], level: number, randomNumber: RandomNumber): number {
+  if (!SIZE_SEKTORS_BY_SOLUTION) return pickRandom(SEKTOR_SIZES, randomNumber).tilesPerSide;
+
   const neededTiles = solutionTileCount(solutionSteps, level);
   const comfortableSizeIndex = smallestSizeIndexFitting(neededTiles * GROUND_TO_SPARE);
   const tightestSizeIndex = smallestSizeIndexFitting(neededTiles);

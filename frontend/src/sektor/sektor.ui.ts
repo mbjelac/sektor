@@ -13,7 +13,7 @@ import { LOWEST_LEVEL } from "../playerLevel";
 import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
-import { floorColor as soilFloorColor, propertyValueColor } from "../properties";
+import { floorColor, propertyValueColor } from "../properties";
 import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { arrowDownTrayIcon, arrowLeftIcon, arrowsPointingOutIcon, arrowUpTrayIcon, buildingOfficeIcon, pencilSquareIcon, puzzlePieceIcon, sunIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
@@ -422,7 +422,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
   if (!buildingState) return;
   const code = getBuildingCode(placed.type);
   if (!code) return;
-  const floorColor = soilFloorColor(locations[placed.location.x][placed.location.y].properties[FLOOR_PROPERTY] ?? 0);
+  const placedFloorColor = floorColorAt(placed.location.x, placed.location.y);
   selectedBuildingLocation = placed.location;
   const definition = buildingDefinitions.find(definition => definition.name === placed.type);
   showBuildingPanel({
@@ -430,7 +430,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     code: code,
     buildingFunctions: buildingState.buildingFunctions,
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
-    floorColor: floorColor,
+    floorColor: placedFloorColor,
     showFloor: definition?.properties.showFloor,
     location: placed.location,
     // A sektor being looked at rather than played is only ever read, so it is shown without the
@@ -470,14 +470,14 @@ function destroyBuilding(location: BuildingLocation) {
 }
 
 function openEmptyLocationPanel(location: BuildingLocation) {
-  const floorColor = soilFloorColor(locations[location.x]?.[location.y]?.properties[FLOOR_PROPERTY] ?? 0);
+  const selectedFloorColor = floorColorAt(location.x, location.y);
   selectedBuildingLocation = location;
   showBuildingPanel({
     name: "Empty",
     code: "",
     buildingFunctions: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
-    floorColor: floorColor,
+    floorColor: selectedFloorColor,
     location: location,
   });
 }
@@ -586,7 +586,7 @@ function rebakeFloorGeometry(p: p5) {
         const { wx, wz } = gridToWorld(x, z);
         p.translate(wx, 0, wz);
         if (isFloorSolid(x, z)) {
-          drawFloor(p, BLOCK_SIZE, soilFloorColor(locations[x][z].properties[FLOOR_PROPERTY] ?? 0), altitudeAt(x, z));
+          drawFloor(p, BLOCK_SIZE, floorColorAt(x, z), altitudeAt(x, z));
         } else {
           drawFloorWireframe(p, BLOCK_SIZE, altitudeAt(x, z));
         }
@@ -657,6 +657,24 @@ function groundHeight(gx: number, gy: number): number {
 
 function altitudeAt(gx: number, gy: number): number {
   return locations[gx]?.[gy]?.properties[ALTITUDE_PROPERTY] ?? MIN_ALTITUDE;
+}
+
+// What the top of a location is colored: its soil where things grow, its height where they do not.
+function floorColorAt(gx: number, gy: number): [number, number, number] {
+  return floorColor(
+    locations[gx]?.[gy]?.properties[FLOOR_PROPERTY] ?? 0,
+    altitudeAt(gx, gy),
+    colorVariationAt(gx, gy),
+  );
+}
+
+// Mountains are spread over a pair of colors, and where a location falls in that spread has to come
+// out the same every time it is drawn, or the map would shimmer whenever the floor is baked again.
+// So a location's own place on the map stands in for the die roll, scrambled past all resemblance
+// to its neighbours'.
+function colorVariationAt(gx: number, gy: number): number {
+  const scrambled = Math.sin(gx * 127.1 + gy * 311.7) * 43758.5453;
+  return scrambled - Math.floor(scrambled);
 }
 
 function rayAABB(

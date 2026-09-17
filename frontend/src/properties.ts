@@ -26,12 +26,46 @@ for (const line of source.split("\n")) {
 const FLOOR_PROPERTY = "soil";
 const FLOOR_LOW_COLOR = "#E3CA86";
 
-// Floors always show the soil property: the lowest value is sandy, the highest is
-// soil's own color, and values in between are the color in between.
-export function floorColor(soilValue: number): [number, number, number] {
+// The kinds of ground a floor can be, by how high it stands. Plains and elevated plains are ground
+// things grow on and are colored by their soil; from the low mountains up there is less and less
+// growing on the ground and it is colored more and more by the height it stands at.
+const LOW_MOUNTAIN_ALTITUDE = 2;
+const HIGH_MOUNTAIN_ALTITUDE = 3;
+const SNOWY_MOUNTAIN_ALTITUDE = 4;
+
+// Where a low mountain's soil color is pulled towards, and how far: enough of the blue of cold and
+// distance to tell a mountain from the plain below it, not so much that its soil stops showing.
+const LOW_MOUNTAIN_BLUE = "#6E8FB5";
+const LOW_MOUNTAIN_BLUE_SKEW = 0.45;
+
+// The two colors the bare stone of a high mountain lies between, and the two the snow of the
+// highest ground lies between. No two locations of such ground are quite the same shade.
+const HIGH_MOUNTAIN_COLORS: [string, string] = ["#b8d9d1", "#c3d4d1"];
+const SNOWY_MOUNTAIN_COLORS: [string, string] = ["#ffffff", "#ddf0ed"];
+
+// A floor is colored by the kind of ground it is. The two lowest kinds show the soil property: the
+// lowest value is sandy, the highest is soil's own color, and values in between are the color in
+// between. Higher ground takes its color from its height instead, the two highest kinds spreading
+// over a pair of colors so that a mountainside is not one flat sheet of the same shade. Where a
+// location falls in that spread is what colorVariation says, from 0 for the first color to 1 for
+// the second.
+export function floorColor(soilValue: number, altitude: number, colorVariation: number): [number, number, number] {
+  if (altitude >= SNOWY_MOUNTAIN_ALTITUDE) return spreadBetween(SNOWY_MOUNTAIN_COLORS, colorVariation);
+  if (altitude >= HIGH_MOUNTAIN_ALTITUDE) return spreadBetween(HIGH_MOUNTAIN_COLORS, colorVariation);
+  if (altitude >= LOW_MOUNTAIN_ALTITUDE) {
+    return interpolateColors(soilFloorColor(soilValue), parseHexColor(LOW_MOUNTAIN_BLUE), LOW_MOUNTAIN_BLUE_SKEW);
+  }
+  return soilFloorColor(soilValue);
+}
+
+function soilFloorColor(soilValue: number): [number, number, number] {
   const soil = propertyDefinitions.find(property => property.name === FLOOR_PROPERTY);
   if (!soil) return [128, 128, 128];
   return interpolateColors(parseHexColor(FLOOR_LOW_COLOR), parseHexColor(soil.color), valueFraction(soilValue));
+}
+
+function spreadBetween([fromColor, toColor]: [string, string], colorVariation: number): [number, number, number] {
+  return interpolateColors(parseHexColor(fromColor), parseHexColor(toColor), colorVariation);
 }
 
 // The lowest property value is black, the highest is the property's own color,

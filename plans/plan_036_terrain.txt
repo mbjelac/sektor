@@ -8,7 +8,7 @@
     - [done] altitude 2 = 3 times bigger, altitude 3 = 4 times bigger, etc.
 - [done] if a building is placed on a location with an altitude greater than 0, apply the altitude when drawing the building
 
-#2 Player can discern an altitude by floor color
+#2 [done] Player can discern an altitude by floor color
 - [done] color floors of higher altitudes differently
     - [done] 0: plains: default, apply soil value for color
     - [done] 1: elevated plains: default, apply soil value for color
