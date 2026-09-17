@@ -13,8 +13,5 @@ Higher altitudes have different floor color:
 - 3: high mountains (blue-gray hues)
 - 4: snowy mountains (white-gray hues)
 
-Squares with higher altitudes than 1 (2 and above) may have uneven terrain: also "buildings" which are already there and cannot be destroyed.
-These are unusable for building anything.
-Some may be cleared?
 
 Higher altitudes have more chance of ore resources? - sanity check!
