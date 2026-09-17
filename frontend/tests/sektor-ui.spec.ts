@@ -3,20 +3,9 @@ import { test, expect, setup, expectScreenshot } from "./test-utils";
 
 setup();
 
-// The largest sektor there is, which is what a test sektor is unless it asks for another size.
 test("renders empty grid of floors", async ({ page }) => {
   await expectScreenshot(page, "empty-grid");
 });
-
-// A sektor is as many tiles across as it was made, and is looked at from near enough that however
-// few of them there are, they fill the view.
-for (const { size, name } of [{ size: 4, name: "tiny" }, { size: 6, name: "small" }, { size: 8, name: "medium" }]) {
-  test(`renders a map of ${size} by ${size} floors for a ${name} sektor`, async ({ page }) => {
-    await page.goto(`/sektor.html?test=true&size=${size}`);
-    await page.waitForSelector("canvas");
-    await expectScreenshot(page, `${name}-map`);
-  });
-}
 
 test("highlights selected building in toolbar", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
@@ -101,7 +90,6 @@ test("names every stat beside the sektor name by the same tooltip the list names
 
   expect(stats).toEqual([
     { tooltip: "Difficulty", value: "1" },
-    { tooltip: "Map size", value: "Large" },
     { tooltip: "Status", value: "In progress" },
     { tooltip: "Buildings", value: "1" },
     { tooltip: "Imports", value: "4" },

@@ -712,7 +712,7 @@ body > main {
     width: 100%;
     justify-self: center;
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto;
     align-content: start;
     gap: 8px 12px;
     /* More sektors than the window holds are scrolled through on their own, so that the standings
@@ -792,22 +792,6 @@ body > main {
 .sektor-list-header .sektor-list-status {
     display: flex;
     align-items: center;
-}
-
-.sektor-list-size {
-    min-width: 48px;
-    text-align: left;
-    color: #ccc;
-    font-family: sans-serif;
-    font-size: 12px;
-}
-
-/* The header of the column carries the same washed out look as the other column headers, with its
-   icon where the names below it begin. */
-.sektor-list-header .sektor-list-size {
-    display: flex;
-    align-items: center;
-    color: inherit;
 }
 
 .sektor-list-owner {

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { createSektor } from "./createSektor";
 import { BuildingDefinition } from "../sektor/buildings/parseBuildingDefinitions";
 import { SektorData } from "../../../shared/sektorData";
+import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { Sektor } from "../sektor/Sektor";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { buildTheSolutionOn } from "./solutionPlan";
@@ -140,22 +141,6 @@ describe("createSektor", () => {
       .toEqual([1, 2, 3, 4]);
   });
 
-  // A sektor's map is not settled by its level, only bounded by it: the easiest levels are kept off
-  // the biggest maps, where a short chain would sit in a field of tiles nobody builds on, and from
-  // the sixth level on any size may come up.
-  it("gives a sektor one of the sizes its level allows", () => {
-    const levelsAndAllowedSizes: [number, number[]][] = [
-      [1, [4, 6]], [2, [4, 6]], [3, [4, 6, 8]], [5, [4, 6, 8]], [6, [4, 6, 8, 10]], [12, [4, 6, 8, 10]],
-    ];
-
-    expect(levelsAndAllowedSizes.map(([level]) => ({
-      level,
-      sizes: [...new Set(Array.from({ length: 80 }, () =>
-        createSektor(level, testDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, Math.random).size
-      ))].sort((size, otherSize) => size - otherSize),
-    }))).toEqual(levelsAndAllowedSizes.map(([level, sizes]) => ({ level, sizes })));
-  });
-
   // Every location of the sektor holds a value of every property, so a property covers the map and
   // no more of it: a matrix wider than the sektor describes ground which is not there.
   it("lays every location property out over the whole of the sektor's map and no further", () => {
@@ -166,10 +151,10 @@ describe("createSektor", () => {
       rows: matrix.length,
       rowLengths: [...new Set(matrix.map(row => row.length))],
     }))).toEqual([
-      { property: "soil", rows: sektorData.size, rowLengths: [sektorData.size] },
-      { property: "groundwater", rows: sektorData.size, rowLengths: [sektorData.size] },
-      { property: "rock", rows: sektorData.size, rowLengths: [sektorData.size] },
-      { property: "altitude", rows: sektorData.size, rowLengths: [sektorData.size] },
+      { property: "soil", rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] },
+      { property: "groundwater", rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] },
+      { property: "rock", rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] },
+      { property: "altitude", rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] },
     ]);
   });
 

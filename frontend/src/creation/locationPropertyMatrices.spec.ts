@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { createLocationPropertyMatrix, STRONGEST_WIND_ON_FLAT_GROUND } from "./locationPropertyMatrices";
 import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
+import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 
 const PATTERNED_PROPERTIES = ["metals", "minerals", "uranium", "wind", "groundwater", "soil"];
 const ALL_PROPERTIES = [...PATTERNED_PROPERTIES, "insolation", "somethingNobodyDescribed"];
 
-const MAP_SIZE = 10;
 const RUNS = 50;
 
 // The most of a property the ground alone ever holds. Wind is the one property flat ground is never
@@ -20,7 +20,7 @@ function isRich(propertyName: string, value: number): boolean {
 }
 
 function matrixOf(propertyName: string, minimumValue = MODIFIER_MIN): number[][] {
-  return createLocationPropertyMatrix(propertyName, MAP_SIZE, minimumValue, Math.random);
+  return createLocationPropertyMatrix(propertyName, minimumValue, Math.random);
 }
 
 function runsOf(propertyName: string, minimumValue = MODIFIER_MIN): number[][][] {
@@ -34,7 +34,7 @@ describe("createLocationPropertyMatrix", () => {
     expect(ALL_PROPERTIES.map(propertyName => {
       const matrix = matrixOf(propertyName);
       return { property: propertyName, rows: matrix.length, rowLengths: [...new Set(matrix.map(row => row.length))] };
-    })).toEqual(ALL_PROPERTIES.map(propertyName => ({ property: propertyName, rows: MAP_SIZE, rowLengths: [MAP_SIZE] })));
+    })).toEqual(ALL_PROPERTIES.map(propertyName => ({ property: propertyName, rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] })));
   });
 
   // A sektor solved with a property needs something of it everywhere, and nothing anywhere holds

@@ -1,6 +1,6 @@
 import { ResourceThroughput, SektorData } from "../../../shared/sektorData";
 import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
-import { SEKTOR_SIZES } from "../../../shared/sektorSizes";
+import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { BuildingDefinition, BuildingFunction } from "../sektor/buildings/parseBuildingDefinitions";
 import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
 import { ALTITUDE_PROPERTY } from "../../../shared/altitude";
@@ -20,13 +20,6 @@ const MOST_OF_THE_YIELD_REQUIRED = 0.9;
 // them leave the solution unable to deliver anything, the restrictions are what gives: they are
 // loosened a notch and the solution grown again, as many times as this allows.
 const MOST_RESTRICTION_LOOSENINGS = 6;
-// The largest map each of the first levels may be given, by its place in SEKTOR_SIZES. A level past
-// the end of this may be given any size there is.
-const LARGEST_SIZE_INDEX_BY_LEVEL = [1, 1, 2, 2, 2];
-// Whether the sizes a sektor may be given are bounded by the level it is made for, which is what
-// chooseSektorSize describes. Turn this off and every sektor is drawn from all the sizes whatever
-// its level, which is the way to get maps of every size to look at.
-const SIZE_SEKTORS_BY_LEVEL = true;
 
 // One way of making a resource: the building which makes it, and the one thing that building does
 // to make it, which is what says how much of the resource it makes and what it takes to do so.
@@ -83,9 +76,8 @@ export function createSektor(
   addDistractors(buildingDefinitions, level, randomNumber, paletteBuildingNames);
   addLocalResourceProducers(productionGraph, buildingDefinitions, localResources, randomNumber, paletteBuildingNames);
 
-  const size = chooseSektorSize(level, randomNumber);
   const allowedBuildings = [...paletteBuildingNames];
-  const locationProperties = createLocationProperties(buildingDefinitions, paletteBuildingNames, level, size, randomNumber);
+  const locationProperties = createLocationProperties(buildingDefinitions, paletteBuildingNames, level, randomNumber);
 
   // The restrictions can still be loosened by what follows, so they are read off afterwards.
   const exportRequirements = requirementsTheGroundCanMeet(
@@ -95,7 +87,6 @@ export function createSektor(
 
   return {
     level,
-    size,
     allowedBuildings,
     locationProperties,
     importRestrictions: [...restrictedResources].map(([name, value]) => ({ name, value })),
@@ -379,21 +370,6 @@ function findUnproducedLocalResource(
     .find(resource => localResources.includes(resource) && !producedResources.has(resource));
 }
 
-// The map is made before anything is asked of the player, so there is no solution to measure it
-// against. What a sektor's level settles is not which size it gets but which sizes it may get: the
-// easiest levels are kept off the biggest maps, where a short chain would sit in a field of tiles
-// nobody builds on, and from the sixth level on any size may come up. Within what the level allows
-// the size is simply drawn, so that two sektors of a level are not the same shape of problem — a
-// tight map, where the one location which suits two buildings can only be had by one of them, is a
-// harder thing than a roomy one whatever the level.
-function chooseSektorSize(level: number, randomNumber: RandomNumber): number {
-  const largestSizeIndex = SIZE_SEKTORS_BY_LEVEL
-    ? LARGEST_SIZE_INDEX_BY_LEVEL[Math.max(0, level - 1)] ?? SEKTOR_SIZES.length - 1
-    : SEKTOR_SIZES.length - 1;
-
-  return pickRandom(SEKTOR_SIZES.slice(0, largestSizeIndex + 1), randomNumber).tilesPerSide;
-}
-
 // A property the palette draws on is what the sektor is solved with, so its poorest location still
 // holds something: the higher the level the less that is, but never nothing. Every other property
 // is left to take any value it likes, having nothing to do with finishing the sektor.
@@ -401,11 +377,10 @@ function createLocationProperties(
   buildingDefinitions: BuildingDefinition[],
   paletteBuildingNames: Set<string>,
   level: number,
-  size: number,
   randomNumber: RandomNumber,
 ): { [key: string]: number[][] } {
   const neededProperties = neededLocationProperties(buildingDefinitions, paletteBuildingNames);
-  const altitudes = createAltitudeMatrix(size, level, randomNumber);
+  const altitudes = createAltitudeMatrix(level, randomNumber);
 
   // Every property is laid out over flat ground first and only then made to answer to the height it
   // lies at, so that what the ground is made of and how high it stands are two separate things.
@@ -414,7 +389,6 @@ function createLocationProperties(
       propertyName,
       createLocationPropertyMatrix(
         propertyName,
-        size,
         neededProperties.has(propertyName) ? propertyMinimum(level) : MODIFIER_MIN,
         randomNumber,
       ),

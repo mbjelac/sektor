@@ -15,6 +15,7 @@
 import { Sektor } from "../sektor/Sektor";
 import { BuildingDefinition } from "../sektor/buildings/parseBuildingDefinitions";
 import { ResourceThroughput } from "../../../shared/sektorData";
+import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 
 // The player needs more ground than the solution stands on: room to put a building up and take it
@@ -41,7 +42,6 @@ export function exportsOfThePlacedSolution(
   negativeScoringResources: string[],
 ): Map<string, number> {
   const locations = locationPropertiesToLocations(locationProperties);
-  const size = locations.length;
   const sektor = new Sektor(
     locations,
     buildingDefinitions,
@@ -67,9 +67,8 @@ export function buildTheSolutionOn(
   allowedBuildings: string[],
   localResources: string[],
 ) {
-  const size = locationPropertiesToLocations(locationProperties).length;
   const takenTiles = new Set<string>();
-  const tilesAllowed = Math.max(1, Math.floor(size * size / 2));
+  const tilesAllowed = Math.max(1, Math.floor(SEKTOR_SIZE * SEKTOR_SIZE / 2));
   // What putting a producer up has already been seen not to help with. A producer which does not
   // bring its resource down is set aside rather than tried again, so that the solution answers what
   // it can answer instead of burying the map in buildings which change nothing.
@@ -82,7 +81,7 @@ export function buildTheSolutionOn(
     // The sektor is buying something it was told to make for itself, so whatever makes that goes up.
     const overboughtResource = resourceBoughtBeyondItsRestriction(sektor, importRestrictions, overbuyingNoProducerAnswers);
     if (overboughtResource !== undefined) {
-      if (!placingAProducerLowersTheImport(sektor, overboughtResource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) {
+      if (!placingAProducerLowersTheImport(sektor, overboughtResource, locationProperties, takenTiles, buildingDefinitions, allowedBuildings)) {
         overbuyingNoProducerAnswers.add(overboughtResource);
       }
       continue;
@@ -91,7 +90,7 @@ export function buildTheSolutionOn(
     // Something here cannot get what it needs from anywhere but here, so more of that is made.
     const starvedResource = resourceSomethingIsStarvedOf(sektor, buildingDefinitions, localResources);
     if (starvedResource !== undefined) {
-      if (!placeProducerOf(sektor, starvedResource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) {
+      if (!placeProducerOf(sektor, starvedResource, locationProperties, takenTiles, buildingDefinitions, allowedBuildings)) {
         if (!removeNewestBuilding(sektor, takenTiles)) break;
       }
       // Feeding what was starving sets something running which was not running before, so a
@@ -106,7 +105,7 @@ export function buildTheSolutionOn(
     if (requiredResources.length === 0) break;
     const resource = requiredResources[nextResourceToGrow % requiredResources.length];
     nextResourceToGrow++;
-    if (!placeProducerOf(sektor, resource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) break;
+    if (!placeProducerOf(sektor, resource, locationProperties, takenTiles, buildingDefinitions, allowedBuildings)) break;
     overbuyingNoProducerAnswers.clear();
   }
 
@@ -138,13 +137,12 @@ function placingAProducerLowersTheImport(
   sektor: Sektor,
   resource: string,
   locationProperties: { [key: string]: number[][] },
-  size: number,
   takenTiles: Set<string>,
   buildingDefinitions: BuildingDefinition[],
   allowedBuildings: string[],
 ): boolean {
   const importedBefore = importedAmountOf(sektor, resource);
-  if (!placeProducerOf(sektor, resource, locationProperties, size, takenTiles, buildingDefinitions, allowedBuildings)) return false;
+  if (!placeProducerOf(sektor, resource, locationProperties, takenTiles, buildingDefinitions, allowedBuildings)) return false;
   if (importedAmountOf(sektor, resource) < importedBefore) return true;
 
   removeNewestBuilding(sektor, takenTiles);
@@ -196,14 +194,13 @@ function placeProducerOf(
   sektor: Sektor,
   resource: string,
   locationProperties: { [key: string]: number[][] },
-  size: number,
   takenTiles: Set<string>,
   buildingDefinitions: BuildingDefinition[],
   allowedBuildings: string[],
 ): boolean {
   const producer = bestProducerOf(buildingDefinitions, allowedBuildings, locationProperties, resource);
   if (producer === undefined) return false;
-  return placeOnBestFreeTile(sektor, producer, locationProperties, size, takenTiles);
+  return placeOnBestFreeTile(sektor, producer, locationProperties, takenTiles);
 }
 
 // Which building to put up and which of the things it does it was put up to do. A building does
@@ -253,12 +250,11 @@ function placeOnBestFreeTile(
   sektor: Sektor,
   producer: PlaceableProducer,
   locationProperties: { [key: string]: number[][] },
-  size: number,
   takenTiles: Set<string>,
 ): boolean {
   const freeTiles: { x: number; z: number }[] = [];
-  for (let x = 0; x < size; x++) {
-    for (let z = 0; z < size; z++) {
+  for (let x = 0; x < SEKTOR_SIZE; x++) {
+    for (let z = 0; z < SEKTOR_SIZE; z++) {
       if (!takenTiles.has(tileKey(x, z))) freeTiles.push({ x, z });
     }
   }

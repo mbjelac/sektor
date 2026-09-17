@@ -4,6 +4,7 @@
 // enough of the map is buried, and where two of them overlap the higher one stands.
 
 import { MIN_ALTITUDE } from "../../../shared/altitude";
+import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { RandomNumber } from "./randomNumber";
 
 // A tile of the sektor's map, by how far along and across it lies.
@@ -30,30 +31,29 @@ const ALL_FLAT = 1;
 const LEAST_FLAT_SHARE_BY_LEVEL = [0.7, 0.6, 0.5];
 const LEAST_FLAT_SHARE = 0.4;
 
-// A range needs room to run, so the smallest maps are given lone mountains only. A tiny sektor then
-// typically carries the one lone mountain, its peak on an edge or in a corner.
-const SMALLEST_MAP_WITH_RANGES = 6;
+// How long a range runs, in peaks, the length being drawn anew for every range so that no two run
+// the same distance across the map.
 const MOUNTAIN_RANGE_CHANCE = 0.4;
 const SHORTEST_MOUNTAIN_RANGE = 2;
+const LONGEST_MOUNTAIN_RANGE = 5;
 
 // How many mountains may be tried before the map is left as it stands. A mountain which falls
 // entirely on ground already raised buries nothing new, and one which would bury too much is turned
 // down, so the building of them has to be able to give up.
 const MOST_MOUNTAIN_ATTEMPTS = 40;
 
-export function createAltitudeMatrix(size: number, level: number, randomNumber: RandomNumber): number[][] {
+export function createAltitudeMatrix(level: number, randomNumber: RandomNumber): number[][] {
   const leastFlat = leastFlatShare(level);
   // How much of this sektor in particular is left flat is drawn from the whole of the range its
   // difficulty allows, so that two sektors of a level are not the same amount of mountain and one
-  // now and then is all plain. A bigger map takes more mountains to bury the same share of itself,
-  // which is how its size comes into how many it ends up carrying.
+  // now and then is all plain.
   const wantedFlatShare = leastFlat + randomNumber() * (ALL_FLAT - leastFlat);
-  let altitudes = flatGround(size);
+  let altitudes = flatGround();
 
   for (let attempt = 0; attempt < MOST_MOUNTAIN_ATTEMPTS; attempt++) {
     if (flatShare(altitudes) <= wantedFlatShare) break;
 
-    const raised = mountainRaisedOn(altitudes, size, randomNumber);
+    const raised = mountainRaisedOn(altitudes, randomNumber);
     // A mountain which would leave the sektor with less flat ground than its difficulty allows is
     // never built, and another is tried in its place.
     if (flatShare(raised) < leastFlat) continue;
@@ -68,8 +68,8 @@ function leastFlatShare(level: number): number {
   return LEAST_FLAT_SHARE_BY_LEVEL[Math.max(0, level - 1)] ?? LEAST_FLAT_SHARE;
 }
 
-function flatGround(size: number): number[][] {
-  return Array.from({ length: size }, () => Array.from({ length: size }, () => MIN_ALTITUDE));
+function flatGround(): number[][] {
+  return Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => MIN_ALTITUDE));
 }
 
 function flatShare(altitudes: number[][]): number {
@@ -80,9 +80,9 @@ function flatShare(altitudes: number[][]): number {
 // The map as it would stand with one more mountain on it. Ground already higher than the mountain
 // would make it keeps the height it has, so mountains grown into one another form one massif rather
 // than cutting each other down.
-function mountainRaisedOn(altitudes: number[][], size: number, randomNumber: RandomNumber): number[][] {
-  const isRange = size >= SMALLEST_MAP_WITH_RANGES && randomNumber() < MOUNTAIN_RANGE_CHANCE;
-  const peaks = isRange ? mountainRangePeaks(size, randomNumber) : [peakNearEdge(size, randomNumber)];
+function mountainRaisedOn(altitudes: number[][], randomNumber: RandomNumber): number[][] {
+  const isRange = randomNumber() < MOUNTAIN_RANGE_CHANCE;
+  const peaks = isRange ? mountainRangePeaks(randomNumber) : [peakNearEdge(randomNumber)];
   const falloff = isRange ? MOUNTAIN_RANGE_FALLOFF : LONE_MOUNTAIN_FALLOFF;
 
   return altitudes.map((row, x) => row.map((altitude, z) => {
@@ -95,15 +95,16 @@ function mountainRaisedOn(altitudes: number[][], size: number, randomNumber: Ran
 // A range runs in a line from a peak near the edge, in one of the four directions a line can run
 // across a matrix. Whatever runs off the map is simply not there, so a range which starts in a
 // corner and heads outwards is the one peak it started from.
-function mountainRangePeaks(size: number, randomNumber: RandomNumber): Tile[] {
-  const start = peakNearEdge(size, randomNumber);
+function mountainRangePeaks(randomNumber: RandomNumber): Tile[] {
+  const start = peakNearEdge(randomNumber);
   const direction = pickRandom(MOUNTAIN_RANGE_DIRECTIONS, randomNumber);
-  const length = SHORTEST_MOUNTAIN_RANGE + Math.floor(randomNumber() * (size / 3));
+  const length = SHORTEST_MOUNTAIN_RANGE
+    + Math.floor(randomNumber() * (LONGEST_MOUNTAIN_RANGE - SHORTEST_MOUNTAIN_RANGE + 1));
 
   const peaks: Tile[] = [];
   for (let step = 0; step < length; step++) {
     const peak = { x: start.x + direction.x * step, z: start.z + direction.z * step };
-    if (!isOnMap(peak, size)) break;
+    if (!isOnMap(peak)) break;
     peaks.push(peak);
   }
 
@@ -115,20 +116,20 @@ const MOUNTAIN_RANGE_DIRECTIONS: Tile[] = [{ x: 1, z: 0 }, { x: 0, z: 1 }, { x: 
 // A peak belongs near the edge of the map rather than in the middle of it, so two locations are
 // drawn and the one lying nearer an edge is the one built on. An edge tile itself is as good a peak
 // as any, and the middle of the map is still possible, just seldom.
-function peakNearEdge(size: number, randomNumber: RandomNumber): Tile {
-  const firstDraw = randomTile(size, randomNumber);
-  const secondDraw = randomTile(size, randomNumber);
-  return distanceToEdge(firstDraw, size) <= distanceToEdge(secondDraw, size) ? firstDraw : secondDraw;
+function peakNearEdge(randomNumber: RandomNumber): Tile {
+  const firstDraw = randomTile(randomNumber);
+  const secondDraw = randomTile(randomNumber);
+  return distanceToEdge(firstDraw) <= distanceToEdge(secondDraw) ? firstDraw : secondDraw;
 }
 
-function distanceToEdge(tile: Tile, size: number): number {
-  return Math.min(tile.x, tile.z, size - 1 - tile.x, size - 1 - tile.z);
+function distanceToEdge(tile: Tile): number {
+  return Math.min(tile.x, tile.z, SEKTOR_SIZE - 1 - tile.x, SEKTOR_SIZE - 1 - tile.z);
 }
 
-function randomTile(size: number, randomNumber: RandomNumber): Tile {
+function randomTile(randomNumber: RandomNumber): Tile {
   return {
-    x: Math.floor(randomNumber() * size),
-    z: Math.floor(randomNumber() * size),
+    x: Math.floor(randomNumber() * SEKTOR_SIZE),
+    z: Math.floor(randomNumber() * SEKTOR_SIZE),
   };
 }
 
@@ -141,8 +142,8 @@ function distanceToNearestPeak(x: number, z: number, peaks: Tile[]): number {
   );
 }
 
-function isOnMap(tile: Tile, size: number): boolean {
-  return tile.x >= 0 && tile.x < size && tile.z >= 0 && tile.z < size;
+function isOnMap(tile: Tile): boolean {
+  return tile.x >= 0 && tile.x < SEKTOR_SIZE && tile.z >= 0 && tile.z < SEKTOR_SIZE;
 }
 
 function pickRandom<Item>(items: Item[], randomNumber: RandomNumber): Item {

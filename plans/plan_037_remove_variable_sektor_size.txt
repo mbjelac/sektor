@@ -1,9 +1,9 @@
 Variable sektor size has not proven enough benefit.
 Moreover, pivot to global scoring and giving more freedom to the player makes it detrimental to gameplay.
 
-#1 Remove variable sektor size
-- all sektors should be of uniform size 10 x 10 squares
-- creation algorithm should be simplified to plan for fixed size 10x10
-    - applied to creating altitude & location property matrices as well
-- remove size column from sektor list
-- remove size stat from sektor map
+#1 [done] Remove variable sektor size
+- [done] all sektors should be of uniform size 10 x 10 squares
+- [done] creation algorithm should be simplified to plan for fixed size 10x10
+    - [done] applied to creating altitude & location property matrices as well
+- [done] remove size column from sektor list
+- [done] remove size stat from sektor map

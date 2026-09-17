@@ -15,12 +15,12 @@ import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, propertyValueColor } from "../properties";
 import { getLocalResources, getNegativeScoringResources } from "../resources";
-import { arrowDownTrayIcon, arrowLeftIcon, arrowsPointingOutIcon, arrowUpTrayIcon, buildingOfficeIcon, pencilSquareIcon, puzzlePieceIcon, sunIcon } from "../icons";
+import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, pencilSquareIcon, puzzlePieceIcon, sunIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { ALTITUDE_PROPERTY, MAX_ALTITUDE, MIN_ALTITUDE } from "../../../shared/altitude";
-import { LARGEST_SEKTOR_SIZE, sektorSizeName } from "../../../shared/sektorSizes";
+import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { displayedSektorStatus, sektorStatusColor, sektorStatusText } from "../sektorStatus";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -208,7 +208,7 @@ function testAltitude(x: number, z: number): number {
 
 function getLocations(): Location[][] {
   if (isTestMode) {
-    return createTestLocations(sektorSize);
+    return createTestLocations(SEKTOR_SIZE);
   }
   if (sektorId) {
     const sektorData = getSektorData(sektorId);
@@ -247,7 +247,6 @@ function getRestrictionsRequirements() {
 }
 
 const allowedBuildings = getAllowedBuildings();
-const sektorSize = getSektorSize();
 const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources(), allowedBuildings);
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
@@ -271,7 +270,6 @@ function saveState() {
   const { importRestrictions, exportRequirements } = sektor.getSektorState();
   saveSektorData(sektorId, {
     level: sektorLevel,
-    size: sektorSize,
     allowedBuildings,
     locationProperties: locationsToLocationProperties(locations),
     importRestrictions,
@@ -301,19 +299,6 @@ function getSektorLevel(): number {
     if (sektorData) return sektorData.level;
   }
   return LOWEST_LEVEL;
-}
-
-// A sektor is as big as it was made, for as long as it exists, so its size is read once and written
-// back on every save. The sektor of a test run is made up on the spot and is as big as the test asks
-// for. A sektor saved before sektors had sizes carries none, and was made back when every sektor was
-// of the one size there was, which is the largest.
-function getSektorSize(): number {
-  if (isTestMode) return Number(new URLSearchParams(window.location.search).get("size")) || LARGEST_SEKTOR_SIZE;
-  if (sektorId) {
-    const sektorData = getSektorData(sektorId);
-    if (sektorData) return sektorData.size ?? LARGEST_SEKTOR_SIZE;
-  }
-  return LARGEST_SEKTOR_SIZE;
 }
 
 let previousSektorStatus: SektorStatus | null = null;
@@ -359,7 +344,6 @@ function showSektorStats(sektorState: SektorState) {
   const stats = document.createElement("div");
   stats.id = "sektor-stats";
   stats.appendChild(createStat(puzzlePieceIcon, "Difficulty", `${sektorLevel}`));
-  stats.appendChild(createStat(arrowsPointingOutIcon, "Map size", sektorSizeName(sektorSize)));
   stats.appendChild(createStatusStat(displayedSektorStatus(getSektorOwnerName(), sektorState.status)));
   stats.appendChild(createStat(buildingOfficeIcon, "Buildings", formatNumber(sektor.getState().buildings.length)));
   stats.appendChild(createStat(arrowDownTrayIcon, "Imports", formatNumber(sumThroughputs(sektorState.imports))));
@@ -500,8 +484,8 @@ function selectBuildingProperty(buildingName: string | null) {
 }
 
 function drawPropertyOverlay(p: p5, propertyName: string) {
-  for (let x = 0; x < sektorSize; x++) {
-    for (let y = 0; y < sektorSize; y++) {
+  for (let x = 0; x < SEKTOR_SIZE; x++) {
+    for (let y = 0; y < SEKTOR_SIZE; y++) {
       const propertyValue = locations[x]?.[y]?.properties[propertyName] ?? 0;
       drawLocationHighlight(p, { x, y }, propertyValueColor(propertyName, propertyValue));
     }
@@ -580,8 +564,8 @@ function rebakeFloorGeometry(p: p5) {
     p.freeGeometry(floorGeometry);
   }
   floorGeometry = p.buildGeometry(() => {
-    for (let x = 0; x < sektorSize; x++) {
-      for (let z = 0; z < sektorSize; z++) {
+    for (let x = 0; x < SEKTOR_SIZE; x++) {
+      for (let z = 0; z < SEKTOR_SIZE; z++) {
         p.push();
         const { wx, wz } = gridToWorld(x, z);
         p.translate(wx, 0, wz);
@@ -632,19 +616,16 @@ function showNotification(message: string, textColor: string) {
   }, 5000);
 }
 
-// The view is set so that the map fills it whatever the map's size: a tiny sektor is looked at from
-// as near as a large one is looked at from far, rather than sitting as a speck in the middle of the
-// ground a large sektor would have covered.
-const ZOOM_FOR_LARGEST_SEKTOR = 1.2;
-const ZOOM = ZOOM_FOR_LARGEST_SEKTOR * sektorSize / LARGEST_SEKTOR_SIZE;
+// The view is set so that the map fills it.
+const ZOOM = 1.2;
 
 const HALF = BLOCK_SIZE / 2;
 const FLOOR_HEIGHT = BLOCK_SIZE * 0.15;
 
 function gridToWorld(gx: number, gy: number): { wx: number; wz: number } {
   return {
-    wx: (gx - sektorSize / 2 + 0.5) * BLOCK_SIZE,
-    wz: (gy - sektorSize / 2 + 0.5) * BLOCK_SIZE,
+    wx: (gx - SEKTOR_SIZE / 2 + 0.5) * BLOCK_SIZE,
+    wz: (gy - SEKTOR_SIZE / 2 + 0.5) * BLOCK_SIZE,
   };
 }
 
@@ -773,8 +754,8 @@ function findClickedTile(p: p5, currentZoom: number): { x: number; y: number } |
   let bestT = Infinity;
   let bestTile: { x: number; y: number } | null = null;
 
-  for (let gx = 0; gx < sektorSize; gx++) {
-    for (let gy = 0; gy < sektorSize; gy++) {
+  for (let gx = 0; gx < SEKTOR_SIZE; gx++) {
+    for (let gy = 0; gy < SEKTOR_SIZE; gy++) {
       const { wx, wz } = gridToWorld(gx, gy);
       const t = rayAABB(
         ox, oy, oz,
@@ -914,7 +895,7 @@ const sektorUi = (p: p5) => {
   function cornerSquaresOnScreen(): { screenX: number; screenY: number }[] {
     const right = screenRightAxis();
     const down = screenDownAxis();
-    const lastLocation = sektorSize - 1;
+    const lastLocation = SEKTOR_SIZE - 1;
     return [
       gridToWorld(0, 0),
       gridToWorld(lastLocation, 0),

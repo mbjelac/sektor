@@ -1,7 +1,7 @@
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, removeSektorOwner, SektorListItem, setSektorOwner } from "./sektorList.api";
-import { arrowDownTrayIcon, arrowRightIcon, arrowsPointingOutIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, sunIcon, userIcon } from "../icons";
+import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, sunIcon, userIcon } from "../icons";
 import { SektorStatus } from "../sektor/Sektor";
 import { showClaimDialog } from "../claimDialog.ui";
 import { createClaimButton } from "../claimButton.ui";
@@ -13,7 +13,6 @@ import { scoreColor } from "../score";
 import { formatNumber } from "../formatNumber";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 import { showPurgeButton } from "./purgeButton.ui";
-import { sektorSizeName } from "../../../shared/sektorSizes";
 import { sektorStatusColor, sektorStatusText } from "../sektorStatus";
 
 // A player may only work on so many sektors at a time, so that they finish the ones they have
@@ -59,12 +58,6 @@ function createHeader(): HTMLElement {
   level.title = "Difficulty";
   header.appendChild(level);
 
-  const size = document.createElement("span");
-  size.className = "sektor-list-size";
-  size.innerHTML = arrowsPointingOutIcon;
-  size.title = "Map size";
-  header.appendChild(size);
-
   const owner = document.createElement("span");
   owner.className = "sektor-list-owner";
   owner.innerHTML = userIcon;
@@ -102,7 +95,6 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
 
   item.appendChild(createName(sektorListItem));
   item.appendChild(createLevel(summary.level));
-  item.appendChild(createSize(summary.size));
   item.appendChild(createOwner(sektorListItem));
   item.appendChild(createStatus(summary.status));
   item.appendChild(createNumber(summary.buildingCount));
@@ -157,15 +149,6 @@ function createLevel(level: number): HTMLElement {
   const cell = document.createElement("span");
   cell.className = "sektor-list-level";
   cell.textContent = `${level}`;
-  return cell;
-}
-
-// A player picks a sektor by how big it is as much as by how hard it is, so the map is named
-// rather than measured: a Tiny sektor is a handful of tiles, a Large one the whole hundred.
-function createSize(size: number): HTMLElement {
-  const cell = document.createElement("span");
-  cell.className = "sektor-list-size";
-  cell.textContent = sektorSizeName(size);
   return cell;
 }
 
