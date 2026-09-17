@@ -238,10 +238,6 @@ WaterSewage 6
 
 Active: always
 
-## Properties
-
-maxAltitude=3
-
 HealthPhysical 3
 ->
 WorkUnqualified 6
