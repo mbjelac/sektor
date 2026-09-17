@@ -9,4 +9,10 @@ Unlock buildings as player advances:
 - player advancement is based on how much a player has played the game
   - could be how high score the player has reached by *their* actions
   - or simpler, how many times the player logged in, how many buildings they placed, etc.
+- note: the way in which a player advances levels is not important for this plan, will be covered elsewhere
 
+#1 Buildings unlocked with increasing player level
+- a building definition can contain property minLevel in Properties section
+- if minLevel property is set, that building is not available in the building toolbar of that player's sektors until player reaches that level
+- remove allowed buildings pallette from creation algorithm
+    - modify algorithm in as simple way as possible, impact on gameplay not important now
