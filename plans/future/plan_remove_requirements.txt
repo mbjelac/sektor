@@ -1,0 +1,20 @@
+Current problems:
+- requirements & restrictions seem arbitrary
+- restrictions force the player what to build instead of pushing them with import penalties
+- in each sektor, player first looks at requirements and then builds backwards from it
+    - repetitive, mundane
+
+#1 Remove requirements, restrictions & sektor status
+- remove from Sektor logic
+- remove status display from sektor map stats & sektor list
+- remove highlights of imports and exports in import/export panel dependent on meeting requirements and/or restrictions
+- remove requirements & restrictions column in sektor map import/export panel
+- remove creation algorithm calculations for requirements & restrictions
+    - remove solution paths, playtests, walks, etc.
+
+
+musings:
+
+- this makes the planet similar to a collaborative sandbox where each player's action affects everything else (like it is on the real planet we live on)
+- possible expansion of the game is to have more planets (would be cool that they have same buildings, but different floor color scheme, different location property algorithms, etc.)
+    - all planets in the game can swap each other's imports & exports!
