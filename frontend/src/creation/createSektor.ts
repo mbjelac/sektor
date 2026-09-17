@@ -380,7 +380,7 @@ function createLocationProperties(
   randomNumber: RandomNumber,
 ): { [key: string]: number[][] } {
   const neededProperties = neededLocationProperties(buildingDefinitions, paletteBuildingNames);
-  const altitudes = createAltitudeMatrix(level, randomNumber);
+  const altitudes = createAltitudeMatrix(randomNumber);
 
   // Every property is laid out over flat ground first and only then made to answer to the height it
   // lies at, so that what the ground is made of and how high it stands are two separate things.
