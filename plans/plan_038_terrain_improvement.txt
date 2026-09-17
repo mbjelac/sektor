@@ -12,7 +12,7 @@ The "blocks" (mountains) are too high and look artificial.
 #2 Cliffs should be possible but rare
 - [done] maximum altitude should be 9
 - [done] a cliff is formed when two neigbouring squares have altitude difference more than 1
-- when creating the altitude matrix, almost always set altitudes with a difference of 1
+- [done] when creating the altitude matrix, almost always set altitudes with a difference of 1
     - start creating mountains from a peak
         - a peak of 9 should be rare
         - choose peak altitude with falling likelihood, like
@@ -31,16 +31,27 @@ The "blocks" (mountains) are too high and look artificial.
     - on a lower likelihood (let's assume 20%) drop elevation by 2 instead of 1
     - on an even lower likelihood (let's assume 10%) drop elevation by 3 instead of 1
 
-#3 Drop colors
+#3 There can be multiple mountains
+- for each sektor choose number of mountains with these probabilities
+    - 0 40%
+    - 1 30%
+    - 2 15%
+    - 3 10%
+    - 4 5%
+- mountains should not be in the map center
+- mountains should be far apart from each other
+    - not necessarily in map corners, but near corners or edges
+
+#4 Drop colors
 - color all blocks with color derived from soil
 - keep sides of blocks higher than 0 of the soil color
     - exception: sides on the edge of the map have to be dark brown like altitude-0 floor blocks
         - so, if a high floor block is in the map corner, two of it's sides should be dark brown and the other two soil-colored
 
-#4 Drop all effects on location properties
+#5 Drop all effects on location properties
 - remove all effects on location properties
     - location properties matrices should be generated only with their functions, not modified by altitude
 
-#5 Drop construction altitude restriction
+#6 Drop construction altitude restriction
 - all buildings can be placed on all altitudes
 - remove maxAltitude property parsing and property declarations in buildings.md
