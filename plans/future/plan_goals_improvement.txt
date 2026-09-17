@@ -36,6 +36,7 @@ Solution sketch:
 - remove highlights of imports and exports in import/export panel dependent on meeting requirements and/or restrictions
 - remove requirements & restrictions column in sektor map import/export panel
 - remove creation algorithm calculations for requirements & restrictions
+    - remove solution paths, playtests, walks, etc.
 
 #2 Player can see planetary imports & exports
 - for each sektor collect all imports & exports and sum them in global imports & export per resource type
