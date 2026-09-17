@@ -42,16 +42,18 @@ The "blocks" (mountains) are too high and look artificial.
 - mountains should be far apart from each other
     - not necessarily in map corners, but near corners or edges
 
-#4 Drop colors
-- color all blocks with color derived from soil
-- keep sides of blocks higher than 0 of the soil color
+#4 Adjust colors to new altitude range
+- color all floor blocks with color derived from soil
+    - except altitude > 6; color those like:
+        - 7: random spread between #d9d8b8 and #d6d6c5
+        - 8: random spread between #d5e0e0 and #cae3e3
+        - 9: random spread between #dff5f5 and #ffffff
+- keep sides of blocks higher than 0 of the floor color
     - exception: sides on the edge of the map have to be dark brown like altitude-0 floor blocks
         - so, if a high floor block is in the map corner, two of it's sides should be dark brown and the other two soil-colored
 
-#5 Drop all effects on location properties
-- remove all effects on location properties
-    - location properties matrices should be generated only with their functions, not modified by altitude
-
-#6 Drop construction altitude restriction
-- all buildings can be placed on all altitudes
-- remove maxAltitude property parsing and property declarations in buildings.md
+#5 Higher altitude of terrain effects location properties
+- soil: -2 per altitude level (soil 12 is 10 on altitude 1, 8 on altitude 2, etc. minimum 0)
+- wind: +2 per altitude level
+- insolation: -2 for every direct neighboring location (north, west, east, south, not diagonal) with cliff
+- create Sektor tests to check this modification of location property matrices
