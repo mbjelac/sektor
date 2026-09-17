@@ -3,6 +3,7 @@ import { createSektor } from "./createSektor";
 import { BuildingDefinition } from "../sektor/buildings/parseBuildingDefinitions";
 import { SektorData } from "../../../shared/sektorData";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
+import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { Sektor } from "../sektor/Sektor";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { buildTheSolutionOn } from "./solutionPlan";
@@ -86,6 +87,14 @@ const EVERYTHING_BUT_BREAD = deepChainDefinitions
   .map(output => output.name)
   .filter(resource => resource !== "Bread");
 
+// Ground whose height is felt in what it holds: a farm wants soil, which thins the higher the
+// ground stands, and a windmill wants wind, which strengthens.
+const groundShapedDefinitions: BuildingDefinition[] = [
+  buildingDefinition("Farm", [], { name: "Grain", locationProperty: "soil" }),
+  buildingDefinition("Windmill", [], { name: "Power", locationProperty: "wind" }),
+  buildingDefinition("Bakery", ["Grain", "Power"], { name: "Bread", value: 3 }),
+];
+
 // Care is made in the sektor and used there, and can never be carried out of it.
 const LOCAL_RESOURCES = ["Care"];
 
@@ -155,6 +164,16 @@ describe("createSektor", () => {
       { property: "rock", rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] },
       { property: "altitude", rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] },
     ]);
+  });
+
+  // A sektor's properties are laid out over flat ground and only then made to answer to the height
+  // the ground stands at, so every location of a made sektor holds what its height leaves it: soil
+  // thinned by two for every step up, wind strengthened by two, neither passing the bounds a
+  // property is held between.
+  it("shapes the properties of a made sektor by the height of its ground", () => {
+    const sektorData = createSektor(3, groundShapedDefinitions, LOCAL_RESOURCES, NEGATIVE_SCORING_RESOURCES, middleOfTheRange);
+
+    expect(locationsHeightHasNotToldOn(sektorData)).toEqual([]);
   });
 
   // The whole point of building the ground before asking anything of it: what a sektor requires is
@@ -256,6 +275,26 @@ function statusOfTheSolvedSektor(sektorData: SektorData): string {
   );
   return sektor.getSektorState().status;
 }
+
+// Every location of a sektor whose properties do not answer to the height it stands at. Soil is
+// laid out no higher than the richest ground there is, so after thinning it stands no higher than
+// that less two for every step up; wind is laid out no lower than the poorest, so after
+// strengthening it stands no lower than two for every step up, and neither leaves its bounds.
+function locationsHeightHasNotToldOn(sektorData: SektorData): object[] {
+  const { soil, wind, altitude } = sektorData.locationProperties;
+
+  return altitude.flatMap((row, x) => row.flatMap((locationAltitude, z) => {
+    const soilAllowed = Math.max(MODIFIER_MIN, MODIFIER_MAX - SOIL_LOST_PER_ALTITUDE * locationAltitude);
+    const windAtLeast = Math.min(MODIFIER_MAX, WIND_GAINED_PER_ALTITUDE * locationAltitude);
+    const isAsItShouldBe = soil[x][z] <= soilAllowed && wind[x][z] >= windAtLeast;
+    return isAsItShouldBe ? [] : [{ x, z, altitude: locationAltitude, soil: soil[x][z], wind: wind[x][z] }];
+  }));
+}
+
+// What the height of the ground does to what it holds, which the properties of a made sektor have
+// to show.
+const SOIL_LOST_PER_ALTITUDE = 2;
+const WIND_GAINED_PER_ALTITUDE = 2;
 
 // What a property holds on the ground lying at the lowest altitude, which is the ground every
 // building can be put up on.

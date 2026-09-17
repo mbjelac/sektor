@@ -1,17 +1,17 @@
 // What the ground holds depends on how high it stands. Soil is thin on a mountainside and gone
-// near the top of one; wind has less and less to break it the higher it blows; and sunlight is cut
-// off by whatever stands over a location, so ground in the shadow of its neighbours sees less of
-// the day. Every other property is what it was: height says nothing about what lies under it.
+// near the top of one; wind has less and less to break it the higher it blows; and a location
+// hemmed in by cliffs lies in their shade for part of the day. Every other property is what it
+// was: height says nothing about what lies under it.
 
-import { MIN_ALTITUDE } from "../../../shared/altitude";
+import { CLIFF_ALTITUDE_DIFFERENCE } from "../../../shared/altitude";
 import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 
-const SOIL_LOST_PER_ALTITUDE = 4;
+const SOIL_LOST_PER_ALTITUDE = 2;
 const WIND_GAINED_PER_ALTITUDE = 2;
-const INSOLATION_LOST_PER_HIGHER_NEIGHBOUR = 2;
+const INSOLATION_LOST_PER_CLIFF = 2;
 
-// A location is shadowed by the ground to the north, south, east and west of it. Corners do not
-// count: ground lying away on the diagonal stands over nothing.
+// A location is walled in by the ground to the north, south, east and west of it. Corners do not
+// count: ground lying away on the diagonal walls in nothing.
 const NEIGHBOURS = [{ x: 1, z: 0 }, { x: -1, z: 0 }, { x: 0, z: 1 }, { x: 0, z: -1 }];
 
 export function propertiesShapedByAltitude(
@@ -39,7 +39,7 @@ type PropertyShaper = (value: number, x: number, z: number, altitudes: number[][
 const PROPERTY_SHAPERS: { [propertyName: string]: PropertyShaper } = {
   soil: thinnerTheHigherItLies,
   wind: strongerTheHigherItBlows,
-  insolation: dimmerInTheShadowOfNeighbours,
+  insolation: dimmerInTheShadeOfCliffs,
 };
 
 function thinnerTheHigherItLies(value: number, x: number, z: number, altitudes: number[][]): number {
@@ -50,16 +50,19 @@ function strongerTheHigherItBlows(value: number, x: number, z: number, altitudes
   return value + WIND_GAINED_PER_ALTITUDE * altitudes[x][z];
 }
 
-function dimmerInTheShadowOfNeighbours(value: number, x: number, z: number, altitudes: number[][]): number {
-  return value - INSOLATION_LOST_PER_HIGHER_NEIGHBOUR * higherNeighbourCount(x, z, altitudes);
+function dimmerInTheShadeOfCliffs(value: number, x: number, z: number, altitudes: number[][]): number {
+  return value - INSOLATION_LOST_PER_CLIFF * cliffCount(x, z, altitudes);
 }
 
-// Ground off the edge of the map stands over nothing, so a location on the edge is shadowed only by
-// the neighbours it actually has.
-function higherNeighbourCount(x: number, z: number, altitudes: number[][]): number {
-  return NEIGHBOURS.filter(
-    neighbour => (altitudes[x + neighbour.x]?.[z + neighbour.z] ?? MIN_ALTITUDE) > altitudes[x][z]
-  ).length;
+// How many of the four sides of a location drop or climb sharply enough to stand as a cliff. Ground
+// off the edge of the map is no cliff, so a location on the rim is counted only by the neighbours
+// it actually has.
+function cliffCount(x: number, z: number, altitudes: number[][]): number {
+  return NEIGHBOURS.filter(neighbour => {
+    const neighbourAltitude = altitudes[x + neighbour.x]?.[z + neighbour.z];
+    if (neighbourAltitude === undefined) return false;
+    return Math.abs(neighbourAltitude - altitudes[x][z]) > CLIFF_ALTITUDE_DIFFERENCE;
+  }).length;
 }
 
 // However much height gives or takes away, a location still holds no less of a property than the

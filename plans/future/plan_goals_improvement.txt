@@ -37,6 +37,12 @@ Solution sketch:
 - remove requirements & restrictions column in sektor map import/export panel
 - remove creation algorithm calculations for requirements & restrictions
 
+#2 Player can see planetary imports & exports
+- on list page display a panel with imports & exports of all sektors
+    - all sektors regardless of ownership, even of sektors without an owner
+    - display import/export panel similar to the one in sektor map
+        - without score column
+
 musings:
 
 - this makes the planet similar to a collaborative sandbox where each player's action affects everything else (like it is on the real planet we live on)
