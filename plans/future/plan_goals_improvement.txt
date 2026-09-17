@@ -38,6 +38,7 @@ Solution sketch:
 - remove creation algorithm calculations for requirements & restrictions
 
 #2 Player can see planetary imports & exports
+- for each sektor collect all imports & exports and sum them in global imports & export per resource type
 - on list page display a panel with imports & exports of all sektors
     - all sektors regardless of ownership, even of sektors without an owner
     - display import/export panel similar to the one in sektor map
