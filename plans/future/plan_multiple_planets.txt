@@ -1,0 +1,2 @@
+possible expansion of the game is to have more planets (would be cool that they have same buildings, but different floor color scheme, different location property algorithms, etc.)
+    - all planets in the game can swap each other's imports & exports!
