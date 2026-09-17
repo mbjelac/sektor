@@ -1,0 +1,12 @@
+Current terrain looks ridiculous.
+The "blocks" (mountains) are too high and look artificial.
+One altitude point difference should raise the floor just a bit, maybe 1/10th of the height of the floor block.
+
+The MAX_ALTITUDE should not be a constant at all - since almost all changes in elevation should be continuous (neighbouring floors lower or higher by just 1)
+maximum altitude is dependant on sektor size.
+Example: In a 6x6 sektor, maximum altitude is 5
+    - in the extreme on one edge there is a floor with altitude 0
+    - then continued elevation for 5 floors towards the other edge
+     - 1, 2, 3, 4, 5 to the highest peak in the sektor
+
+Cliffs (neigbour square altitude differences > 1) should be possible but rare.
