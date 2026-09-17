@@ -1,36 +1,27 @@
-import { ScoredThroughput, Sektor, SektorStatus } from "../sektor/Sektor";
+import { ScoredThroughput, Sektor } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
 import { buildingDefinitions } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { LOWEST_LEVEL } from "../playerLevel";
-import { getSektorOwner } from "./sektorList.api";
-import { displayedSektorStatus } from "../sektorStatus";
 
 export interface SektorSummary {
   level: number;
-  status: SektorStatus;
   buildingCount: number;
   importTotal: number;
   exportTotal: number;
   score: number;
 }
 
-// The stored sektor is played through again so that everything shown about it — how far along it
-// is, what it moves in and out, and what it scores — comes out of the same rules as in the sektor
-// itself.
+// The stored sektor is played through again so that everything shown about it — what it moves in
+// and out, and what it scores — comes out of the same rules as in the sektor itself.
 export function getSektorSummary(sektorId: string): SektorSummary {
-  const owner = getSektorOwner(sektorId);
   const sektorData = getSektorData(sektorId);
-  if (!sektorData) return { level: LOWEST_LEVEL, status: displayedSektorStatus(owner, "InProgress"), buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
+  if (!sektorData) return { level: LOWEST_LEVEL, buildingCount: 0, importTotal: 0, exportTotal: 0, score: 0 };
 
   const sektor = new Sektor(
     locationPropertiesToLocations(sektorData.locationProperties),
     buildingDefinitions,
-    {
-      importRestrictions: sektorData.importRestrictions,
-      exportRequirements: sektorData.exportRequirements,
-    },
     getNegativeScoringResources(),
     getLocalResources(),
   );
@@ -40,7 +31,6 @@ export function getSektorSummary(sektorId: string): SektorSummary {
 
   return {
     level: sektorData.level,
-    status: displayedSektorStatus(owner, sektorState.status),
     buildingCount: sektor.getState().buildings.length,
     importTotal: sumThroughputs(sektorState.imports),
     exportTotal: sumThroughputs(sektorState.exports),

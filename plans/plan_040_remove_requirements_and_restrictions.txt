@@ -4,10 +4,10 @@ Current problems:
 - in each sektor, player first looks at requirements and then builds backwards from it
     - repetitive, mundane
 
-#1 Remove requirements, restrictions & sektor status
-- remove from Sektor logic
-- remove status display from sektor map stats & sektor list
-- remove highlights of imports and exports in import/export panel dependent on meeting requirements and/or restrictions
-- remove requirements & restrictions column in sektor map import/export panel
-- remove creation algorithm calculations for requirements & restrictions
-    - remove solution paths, playtests, walks, etc.
+#1 [done] Remove requirements, restrictions & sektor status
+- [done] remove from Sektor logic
+- [done] remove status display from sektor map stats & sektor list
+- [done] remove highlights of imports and exports in import/export panel dependent on meeting requirements and/or restrictions
+- [done] remove requirements & restrictions column in sektor map import/export panel
+- [done] remove creation algorithm calculations for requirements & restrictions
+    - [done] remove solution paths, playtests, walks, etc.

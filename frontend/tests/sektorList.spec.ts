@@ -28,51 +28,6 @@ test("shows the owner of every sektor", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-owners.png", { maxDiffPixelRatio: 0 });
 });
 
-// A sektor nobody has claimed is nobody's work, so the list calls it idle instead of saying how far
-// along it is. Alpha and Beta are owned, Gamma is not.
-test("shows a sektor nobody has claimed as idle", async ({ page }) => {
-  const statuses = await page.locator(".sektor-list-item .sektor-list-status").allTextContents();
-
-  expect(statuses).toEqual(["In progress", "In progress", "Idle"]);
-});
-
-// Each of the four states a sektor can be in is said in a color of its own, so that a player picks
-// the ones needing them out of a long list without reading it: one nobody has claimed, one still
-// short of what it is asked for, one which has met it, and one taking in more than it is allowed.
-test("shows every state a sektor can be in", async ({ page }) => {
-  await storeSektorInEveryState(page);
-
-  await page.goto("/?test=true");
-
-  await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-statuses.png", { maxDiffPixelRatio: 0 });
-});
-
-// One mine on one piece of ore in every sektor, which takes in Energy 4 and puts out ore. What the
-// sektor is asked for, and what it is allowed to take in, is what tells the four apart — the
-// unclaimed one is asked for nothing and would be done, were it anybody's.
-async function storeSektorInEveryState(page: Page) {
-  await page.evaluate(currentPlayer => {
-    const sektorsByState = {
-      Unclaimed: { owner: null, importRestrictions: [], exportRequirements: [] },
-      BuiltOn: { owner: currentPlayer, importRestrictions: [], exportRequirements: [{ name: "Ore", value: 999 }] },
-      Finished: { owner: currentPlayer, importRestrictions: [], exportRequirements: [{ name: "Ore", value: 1 }] },
-      Overtaking: { owner: currentPlayer, importRestrictions: [{ name: "Energy", value: 1 }], exportRequirements: [] },
-    };
-    localStorage.setItem("sektors", JSON.stringify(
-      Object.entries(sektorsByState).map(([sektorName, sektor]) => ({ id: sektorName, name: sektorName, owner: sektor.owner }))
-    ));
-    for (const [sektorName, sektor] of Object.entries(sektorsByState)) {
-      localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
-        level: 1,
-        locationProperties: { ore: [[20]] },
-        importRestrictions: sektor.importRestrictions,
-        exportRequirements: sektor.exportRequirements,
-        buildings: [{ type: "TestMine", location: { x: 0, y: 0 } }],
-      }));
-    }
-  }, CURRENT_PLAYER);
-}
-
 test("makes the player the owner of a sektor they claim and opens it", async ({ page }) => {
   await nameStoredSektor(page, "Gamma", "quiet-harvest");
   await page.reload();
@@ -196,49 +151,38 @@ test("shows an abandoned sektor as owned by nobody", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-abandoned.png", { maxDiffPixelRatio: 0 });
 });
 
-test("stops the player from claiming more than five unfinished sektors", async ({ page }) => {
-  await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"], []);
+test("stops the player from claiming more than five sektors", async ({ page }) => {
+  await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"]);
 
   await page.goto("/");
 
   await expect(page.locator(".sektor-list-claim")).toBeDisabled();
 });
 
-test("shows the disabled claim button of a player with five unfinished sektors", async ({ page }) => {
-  await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"], []);
+test("shows the disabled claim button of a player holding five sektors", async ({ page }) => {
+  await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"]);
 
   await page.goto("/");
 
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-claiming-disabled.png", { maxDiffPixelRatio: 0 });
 });
 
-test("lets the player claim again once one of their five sektors is done", async ({ page }) => {
-  await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta"], ["Epsilon"]);
+test("lets the player claim while they hold fewer than five sektors", async ({ page }) => {
+  await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta"]);
 
   await page.goto("/");
 
   await expect(page.locator(".sektor-list-claim")).toBeEnabled();
 });
 
-// The player owns every sektor named here, plus an unclaimed "Free" one to claim. A sektor with
-// no requirements left to meet is done, one without any stored data is still in progress.
-async function storeSektors(page: Page, unfinishedSektorIds: string[], doneSektorIds: string[]) {
-  await page.evaluate(([currentPlayer, unfinishedSektorIds, doneSektorIds]) => {
-    const ownedSektorIds = [...unfinishedSektorIds as string[], ...doneSektorIds as string[]];
+// The player owns every sektor named here, plus an unclaimed "Free" one to claim.
+async function storeSektors(page: Page, ownedSektorIds: string[]) {
+  await page.evaluate(([currentPlayer, ownedSektorIds]) => {
     localStorage.setItem("sektors", JSON.stringify([
-      ...ownedSektorIds.map(sektorId => ({ id: sektorId, name: sektorId, owner: currentPlayer })),
+      ...(ownedSektorIds as string[]).map(sektorId => ({ id: sektorId, name: sektorId, owner: currentPlayer })),
       { id: "Free", name: null, owner: null },
     ]));
-    for (const doneSektorId of doneSektorIds as string[]) {
-      localStorage.setItem(`sektor_${doneSektorId}`, JSON.stringify({
-        level: 1,
-        locationProperties: {},
-        importRestrictions: [],
-        exportRequirements: [],
-        buildings: [],
-      }));
-    }
-  }, [CURRENT_PLAYER, unfinishedSektorIds, doneSektorIds]);
+  }, [CURRENT_PLAYER, ownedSektorIds]);
 }
 
 // More sektors than the window holds are scrolled through on their own: the standings beside them
@@ -314,8 +258,6 @@ async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: num
     localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
       level: 1,
       locationProperties: { ore: (oreAmounts as number[]).map(oreAmount => [oreAmount]) },
-      importRestrictions: [],
-      exportRequirements: [],
       buildings: (oreAmounts as number[]).map((oreAmount, oreIndex) => ({
         type: "TestMine",
         location: { x: oreIndex, y: 0 },
@@ -381,7 +323,7 @@ test("numbers every sektor it makes above the last one", async ({ page }) => {
   expect(sektors.map((sektor: { id: string }) => sektor.id)).toEqual(["Alpha", "Beta", "Gamma", "0", "1", "2"]);
 });
 
-test("gives every sektor it makes a level and something to deliver", async ({ page }) => {
+test("gives every sektor it makes a level and empty ground to build on", async ({ page }) => {
   await page.goto("/?test=true");
 
   await createSektorNow(page);
@@ -389,9 +331,9 @@ test("gives every sektor it makes a level and something to deliver", async ({ pa
   const sektorData = await page.evaluate(() => JSON.parse(localStorage.getItem("sektor_0")!));
   expect({
     hasLevel: Number.isInteger(sektorData.level),
-    requires: sektorData.exportRequirements.length > 0,
+    hasGround: Object.keys(sektorData.locationProperties).length > 0,
     buildings: sektorData.buildings,
-  }).toEqual({ hasLevel: true, requires: true, buildings: [] });
+  }).toEqual({ hasLevel: true, hasGround: true, buildings: [] });
 });
 
 test("stops making sektors while ten unclaimed empty ones are waiting", async ({ page }) => {

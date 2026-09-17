@@ -237,31 +237,6 @@ test("offers an unclaimed sektor for claiming", async ({ page }) => {
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-unclaimed.png", { maxDiffPixelRatio: 0 });
 });
 
-// A sektor nobody has claimed is nobody's work, so the map calls it idle instead of saying how far
-// along it is.
-test("calls a sektor nobody has claimed idle", async ({ page }) => {
-  await storeSektor(page, "Gamma", null);
-
-  await page.goto("/sektor.html?id=Gamma");
-
-  await expect(statusStat(page)).toHaveText("Idle");
-});
-
-// Claiming the sektor makes it the player's work, so what the sektor works out for itself takes
-// over from the moment it is claimed: the very sektor called idle above is asked for nothing and
-// is therefore done as it stands.
-test("shows a claimed sektor by what it works out for itself rather than as idle", async ({ page }) => {
-  await claimFromMap(page, "Gamma");
-
-  await expect(statusStat(page)).toHaveText("Done");
-});
-
-// The stats carry no word but the picture standing for them, so the state of the sektor is picked
-// out by the picture it stands beside.
-function statusStat(page: Page) {
-  return page.locator('#sektor-stats .sektor-stat:has([title="Status"]) .sektor-stat-value');
-}
-
 // A sektor already has a name when it is offered, so claiming it asks for nothing but a yes.
 test("asks the player to confirm claiming a sektor from the map", async ({ page }) => {
   await storeSektor(page, "Gamma", null);
@@ -343,37 +318,16 @@ test("shows a building of a sektor in view mode without the controls which would
   await expectScreenshot(page, "view-mode-building-panel", "#building-panel");
 });
 
-test("congratulates the player when the sektor becomes done", async ({ page }) => {
-  await placeTheBuildingWhichFinishesTheSektor(page);
-
-  await expectScreenshot(page, "done-notification");
-});
-
-// Habitats puts out Work, which is the whole assignment of this sektor, so placing one finishes it.
-async function placeTheBuildingWhichFinishesTheSektor(page: import("@playwright/test").Page) {
-  await storeSektor(page, "Alpha", CURRENT_PLAYER, [], [{ name: "Work", value: 0.5 }]);
-  await page.goto("/sektor.html?id=Alpha");
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-
-  await page.locator('.building-item[data-building-name="Habitats"]').click();
-  const canvas = page.locator("#canvas-container > canvas");
-  const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.locator("#notification").waitFor();
-}
-
-async function storeSektor(page: import("@playwright/test").Page, sektorId: string, owner: string | null, buildings: object[] = [], exportRequirements: object[] = []) {
-  await page.evaluate(([sektorId, owner, buildings, exportRequirements]) => {
+async function storeSektor(page: import("@playwright/test").Page, sektorId: string, owner: string | null, buildings: object[] = []) {
+  await page.evaluate(([sektorId, owner, buildings]) => {
     const emptyGrid = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0));
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
       level: 1,
       locationProperties: { soil: emptyGrid, groundwater: emptyGrid, ore: emptyGrid, insolation: emptyGrid, wind: emptyGrid },
-      importRestrictions: [],
-      exportRequirements,
       buildings,
     }));
     localStorage.setItem("sektors", JSON.stringify([{ id: sektorId, name: owner ? sektorId : null, owner }]));
-  }, [sektorId, owner, buildings, exportRequirements] as [string, string | null, object[], object[]]);
+  }, [sektorId, owner, buildings] as [string, string | null, object[]]);
 }
 
 // The name a player gave the sektor before the test begins, which it carries beside its id.

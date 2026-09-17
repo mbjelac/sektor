@@ -1,14 +1,9 @@
 
 import { BuildingDefinition, BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
-import { BuildingLocation, BuildingCreation, Building, RestrictionsRequirements, Location } from "../../../shared/sektorData";
+import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
 import { ALTITUDE_PROPERTY, MIN_ALTITUDE } from "../../../shared/altitude";
 
-export type { BuildingLocation, BuildingCreation, Building, RestrictionsRequirements, Location };
-
-// A sektor nobody has claimed is Idle: it is not being played, so what stands in it is not
-// weighed against its restrictions and requirements. The other three are worked out from what
-// the sektor moves in and out.
-export type SektorStatus = "Idle" | "InProgress" | "Done" | "Overrun";
+export type { BuildingLocation, BuildingCreation, Building, Location };
 
 export interface ScoredThroughput extends ResourceThroughput {
   score: number;
@@ -24,9 +19,6 @@ export interface BuildingFunctionLocation {
 export interface SektorState {
   imports: ScoredThroughput[];
   exports: ScoredThroughput[];
-  status: SektorStatus;
-  importRestrictions: ResourceThroughput[];
-  exportRequirements: ResourceThroughput[];
   starvedFunctions: BuildingFunctionLocation[];
 }
 
@@ -58,26 +50,22 @@ export interface CreateBuildingResult {
 }
 
 export const SCORE_PER_UNIT = 2;
-export const SCORE_PER_REQUIRED_UNIT = 3;
 
 export class Sektor {
   private buildings: Building[] = [];
   private readonly locations: Location[][];
   private readonly buildingDefinitions: BuildingDefinition[];
-  private readonly restrictionsRequirements: RestrictionsRequirements;
   private readonly negativeScoringResources: string[];
   private readonly localResources: string[];
 
   constructor(
     locations: Location[][],
     buildingDefinitions: BuildingDefinition[],
-    restrictionsRequirements: RestrictionsRequirements,
     negativeScoringResources: string[],
     localResources: string[],
   ) {
     this.locations = locations;
     this.buildingDefinitions = buildingDefinitions;
-    this.restrictionsRequirements = restrictionsRequirements;
     this.negativeScoringResources = negativeScoringResources;
     this.localResources = localResources;
   }
@@ -172,21 +160,7 @@ export class Sektor {
         return { name: output.name, value, score: this.scoreExport(output.name, value) };
       });
 
-    const { importRestrictions, exportRequirements } = this.restrictionsRequirements;
-
-    const restrictionsExceeded = importRestrictions.some(restriction => {
-      const importEntry = imports.find(entry => entry.name === restriction.name);
-      return importEntry !== undefined && importEntry.value > restriction.value;
-    });
-
-    const requirementsMet = exportRequirements.every(requirement => {
-      const exportEntry = exports.find(entry => entry.name === requirement.name);
-      return exportEntry !== undefined && exportEntry.value >= requirement.value;
-    });
-
-    const status = restrictionsExceeded ? "Overrun" : requirementsMet ? "Done" : "InProgress";
-
-    return { imports, exports, status, importRestrictions, exportRequirements, starvedFunctions };
+    return { imports, exports, starvedFunctions };
   }
 
   // A local resource cannot be imported, so buildings needing more of it than the sektor makes
@@ -280,17 +254,8 @@ export class Sektor {
     return roundToOneDecimal(this.applyNegativeScoring(resourceType, -value * SCORE_PER_UNIT));
   }
 
-  // Exported units which fulfill an export requirement are worth more than the units above it.
   private scoreExport(resourceType: string, value: number): number {
-    const requirement = this.restrictionsRequirements.exportRequirements.find(
-      requirement => requirement.name === resourceType
-    );
-    const requiredValue = requirement ? Math.min(value, requirement.value) : 0;
-    const valueAboveRequired = value - requiredValue;
-    return roundToOneDecimal(this.applyNegativeScoring(
-      resourceType,
-      requiredValue * SCORE_PER_REQUIRED_UNIT + valueAboveRequired * SCORE_PER_UNIT
-    ));
+    return roundToOneDecimal(this.applyNegativeScoring(resourceType, value * SCORE_PER_UNIT));
   }
 
   private applyNegativeScoring(resourceType: string, score: number): number {

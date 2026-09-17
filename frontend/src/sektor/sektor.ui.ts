@@ -4,7 +4,7 @@ import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
-import { BuildingLocation, Location, Sektor, SektorState, SektorStatus } from "./Sektor";
+import { BuildingLocation, Location, Sektor, SektorState } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
@@ -16,13 +16,12 @@ import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, propertyValueColor } from "../properties";
 import { getLocalResources, getNegativeScoringResources } from "../resources";
-import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, pencilSquareIcon, puzzlePieceIcon, sunIcon } from "../icons";
+import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { ALTITUDE_PROPERTY, MAX_ALTITUDE, MIN_ALTITUDE } from "../../../shared/altitude";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
-import { displayedSektorStatus, sektorStatusColor, sektorStatusText } from "../sektorStatus";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showClaimDialog } from "../claimDialog.ui";
@@ -220,35 +219,8 @@ function getLocations(): Location[][] {
   return [];
 }
 
-function getRestrictionsRequirements() {
-  if (isTestMode) {
-    return {
-      importRestrictions: [
-        { name: "Water", value: 4 },
-        { name: "Energy", value: 3 },
-        { name: "Ore", value: 5 },
-      ],
-      exportRequirements: [
-        { name: "Food", value: 4 },
-        { name: "Work", value: 5 },
-        { name: "Metal", value: 8 },
-      ],
-    };
-  }
-  if (sektorId) {
-    const sektorData = getSektorData(sektorId);
-    if (sektorData) {
-      return {
-        importRestrictions: sektorData.importRestrictions,
-        exportRequirements: sektorData.exportRequirements,
-      };
-    }
-  }
-  return { importRestrictions: [], exportRequirements: [] };
-}
-
 const builderLevel = getBuilderLevel();
-const sektor = new Sektor(getLocations(), buildingDefinitions, getRestrictionsRequirements(), getNegativeScoringResources(), getLocalResources());
+const sektor = new Sektor(getLocations(), buildingDefinitions, getNegativeScoringResources(), getLocalResources());
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
 const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
@@ -268,12 +240,9 @@ function locationsToLocationProperties(locationMatrix: Location[][]): { [key: st
 function saveState() {
   if (!sektorId) return;
   const state = sektor.getState();
-  const { importRestrictions, exportRequirements } = sektor.getSektorState();
   saveSektorData(sektorId, {
     level: sektorLevel,
     locationProperties: locationsToLocationProperties(locations),
-    importRestrictions,
-    exportRequirements,
     buildings: state.buildings,
   });
 }
@@ -296,13 +265,10 @@ function getSektorLevel(): number {
   return LOWEST_LEVEL;
 }
 
-let previousSektorStatus: SektorStatus | null = null;
 // A building whose function is starved is marked on the map, and what is starved only changes
 // with the sektor state, so the marked buildings are worked out there rather than every frame.
 let starvedBuildingLocations: BuildingLocation[] = [];
 
-// The player is congratulated the moment the sektor's assignment is met, but not again while it
-// stays met, nor on a sektor which was already done when opened.
 function updateSektorState() {
   const sektorState = sektor.getSektorState();
   updateSektorStatePanel(sektorState);
@@ -313,11 +279,6 @@ function updateSektorState() {
     );
   refreshOpenBuildingPanel();
   showSektorStats(sektorState);
-
-  const becameDone = previousSektorStatus !== null && previousSektorStatus !== "Done" && sektorState.status === "Done";
-  previousSektorStatus = sektorState.status;
-
-  if (becameDone) showNotification("congratulationsYouAreDone", "lime");
 }
 
 // What a building is starved of can change with anything built or switched elsewhere in the
@@ -339,7 +300,6 @@ function showSektorStats(sektorState: SektorState) {
   const stats = document.createElement("div");
   stats.id = "sektor-stats";
   stats.appendChild(createStat(puzzlePieceIcon, "Difficulty", `${sektorLevel}`));
-  stats.appendChild(createStatusStat(displayedSektorStatus(getSektorOwnerName(), sektorState.status)));
   stats.appendChild(createStat(buildingOfficeIcon, "Buildings", formatNumber(sektor.getState().buildings.length)));
   stats.appendChild(createStat(arrowDownTrayIcon, "Imports", formatNumber(sumThroughputs(sektorState.imports))));
   stats.appendChild(createStat(arrowUpTrayIcon, "Exports", formatNumber(sumThroughputs(sektorState.exports))));
@@ -362,16 +322,6 @@ function createStat(icon: string, tooltip: string, value: string): HTMLElement {
   valueElement.textContent = value;
   stat.appendChild(valueElement);
 
-  return stat;
-}
-
-// How far along the sektor is stands out from the rest of the stats, as it is the one of them the
-// player is playing towards.
-function createStatusStat(status: SektorStatus): HTMLElement {
-  const stat = createStat(sunIcon, "Status", sektorStatusText(status));
-  const value = stat.querySelector<HTMLElement>(".sektor-stat-value")!;
-  value.style.color = sektorStatusColor(status);
-  value.style.fontWeight = "bold";
   return stat;
 }
 

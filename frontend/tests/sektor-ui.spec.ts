@@ -103,7 +103,6 @@ test("names every stat beside the sektor name by the same tooltip the list names
 
   expect(stats).toEqual([
     { tooltip: "Difficulty", value: "1" },
-    { tooltip: "Status", value: "In progress" },
     { tooltip: "Buildings", value: "1" },
     { tooltip: "Imports", value: "4" },
     { tooltip: "Exports", value: "6" },
@@ -572,19 +571,11 @@ test("shows error when destroying an empty location", async ({ page }) => {
   await expectScreenshot(page, "destroy-empty-location-error", "body");
 });
 
-test("displays sektor state panel with restrictions and requirements", async ({ page }) => {
+// What the sektor moves, resource by resource: a resource only brought in, one only sent out, and
+// one which is both, so that each of the three reads right beside the others.
+test("displays what the sektor imports and exports", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
-  // Imports (restrictions: Water=4, Energy=3, Ore=5):
-  //   Food=2 — non-zero import without restriction
-  //   Ore=0 — zero import with restriction (max 5)
-  //   Water=4 — non-zero import equal to restriction (max 4)
-  //   Energy=5 — non-zero import greater than restriction (max 3)
-  // Exports (requirements: Food=4, Work=5, Metal=8):
-  //   Ore=3 — non-zero export without requirement
-  //   Metal=0 — zero export with requirement (min 8)
-  //   Work=3 — non-zero export below requirement (min 5)
-  //   Food=5 — non-zero export greater than requirement (min 4)
   await page.evaluate(() => {
     (window as any).updateSektorStatePanel({
       imports: [
@@ -593,52 +584,15 @@ test("displays sektor state panel with restrictions and requirements", async ({ 
         { name: "Food", value: 2, score: -4 },
       ],
       exports: [
-        { name: "Food", value: 5, score: 14 },
+        { name: "Food", value: 5, score: 10 },
         { name: "Ore", value: 3, score: 6 },
-        { name: "Work", value: 3, score: -9 },
+        { name: "Work", value: 3, score: -6 },
       ],
-      status: "Overrun",
-      importRestrictions: [
-        { name: "Water", value: 4 },
-        { name: "Energy", value: 3 },
-        { name: "Ore", value: 5 },
-      ],
-      exportRequirements: [
-        { name: "Food", value: 4 },
-        { name: "Work", value: 5 },
-        { name: "Metal", value: 8 },
-      ],
+      starvedFunctions: [],
     });
   });
 
   await expectScreenshot(page, "sektor-state-panel", "#sektor-state-panel");
-});
-
-test("displays sektor state panel with every restriction and requirement met", async ({ page }) => {
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-
-  await page.evaluate(() => {
-    (window as any).updateSektorStatePanel({
-      imports: [
-        { name: "Water", value: 2, score: -4 },
-        { name: "Energy", value: 3, score: -6 },
-      ],
-      exports: [
-        { name: "Food", value: 6, score: 16 },
-        { name: "Work", value: 5, score: -15 },
-      ],
-      status: "Done",
-      importRestrictions: [
-        { name: "Energy", value: 5 },
-      ],
-      exportRequirements: [
-        { name: "Food", value: 4 },
-        { name: "Work", value: 5 },
-      ],
-    });
-  });
-
-  await expectScreenshot(page, "sektor-state-panel-met", "#sektor-state-panel");
 });
 
 test("highlights buildings importing hovered resource", async ({ page }) => {

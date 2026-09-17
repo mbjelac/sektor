@@ -60,7 +60,6 @@ function emptySektor(): Sektor {
   return new Sektor(
     [[{ properties: {} }]],
     testDefinitions,
-    { importRestrictions: [], exportRequirements: [] },
     [],
     [],
   );

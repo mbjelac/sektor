@@ -17,11 +17,6 @@ export interface Building extends BuildingCreation {
   activeFunctions?: boolean[];
 }
 
-export interface RestrictionsRequirements {
-  importRestrictions: ResourceThroughput[];
-  exportRequirements: ResourceThroughput[];
-}
-
 export interface Location {
   properties: { [key: string]: number };
 }
@@ -31,7 +26,5 @@ export interface SektorData {
   // whether it was generated or made by hand.
   level: number;
   locationProperties: { [key: string]: number[][] };
-  importRestrictions: ResourceThroughput[];
-  exportRequirements: ResourceThroughput[];
   buildings: Building[];
 }

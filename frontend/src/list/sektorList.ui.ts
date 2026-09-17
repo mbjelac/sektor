@@ -1,8 +1,7 @@
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, removeSektorOwner, SektorListItem, setSektorOwner } from "./sektorList.api";
-import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, sunIcon, userIcon } from "../icons";
-import { SektorStatus } from "../sektor/Sektor";
+import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, userIcon } from "../icons";
 import { showClaimDialog } from "../claimDialog.ui";
 import { createClaimButton } from "../claimButton.ui";
 import { showAbandonDialog } from "./abandonDialog.ui";
@@ -13,11 +12,10 @@ import { scoreColor } from "../score";
 import { formatNumber } from "../formatNumber";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 import { showPurgeButton } from "./purgeButton.ui";
-import { sektorStatusColor, sektorStatusText } from "../sektorStatus";
 
-// A player may only work on so many sektors at a time, so that they finish the ones they have
+// A player may only hold so many sektors at a time, so that they build on the ones they have
 // claimed before claiming more.
-const MAXIMUM_UNFINISHED_SEKTORS = 5;
+const MAXIMUM_CLAIMED_SEKTORS = 5;
 
 function renderList() {
   const container = document.getElementById("sektor-list")!;
@@ -26,7 +24,7 @@ function renderList() {
   container.replaceChildren();
   const sektors = getSektorList();
   const summaries = sektors.map(sektor => getSektorSummary(sektor.id));
-  const claimingAllowed = countUnfinishedSektors(sektors, summaries) < MAXIMUM_UNFINISHED_SEKTORS;
+  const claimingAllowed = countClaimedSektors(sektors) < MAXIMUM_CLAIMED_SEKTORS;
 
   container.appendChild(createHeader());
 
@@ -35,12 +33,9 @@ function renderList() {
   }
 }
 
-// Every sektor of the player which is not done yet — in progress, exceeding its restrictions, or
-// in any other unfinished state — counts towards the limit.
-function countUnfinishedSektors(sektors: SektorListItem[], summaries: SektorSummary[]): number {
-  return sektors.filter((sektor, sektorIndex) =>
-    sektor.owner === getUsername() && summaries[sektorIndex].status !== "Done"
-  ).length;
+// Every sektor the player holds counts towards the limit.
+function countClaimedSektors(sektors: SektorListItem[]): number {
+  return sektors.filter(sektor => sektor.owner === getUsername()).length;
 }
 
 function createHeader(): HTMLElement {
@@ -63,12 +58,6 @@ function createHeader(): HTMLElement {
   owner.innerHTML = userIcon;
   owner.title = "Owned by";
   header.appendChild(owner);
-
-  const status = document.createElement("span");
-  status.className = "sektor-list-status";
-  status.innerHTML = sunIcon;
-  status.title = "Status";
-  header.appendChild(status);
 
   header.appendChild(createHeaderIcon(buildingOfficeIcon, "Buildings"));
   header.appendChild(createHeaderIcon(arrowDownTrayIcon, "Imports"));
@@ -96,7 +85,6 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
   item.appendChild(createName(sektorListItem));
   item.appendChild(createLevel(summary.level));
   item.appendChild(createOwner(sektorListItem));
-  item.appendChild(createStatus(summary.status));
   item.appendChild(createNumber(summary.buildingCount));
   item.appendChild(createNumber(summary.importTotal));
   item.appendChild(createNumber(summary.exportTotal));
@@ -210,18 +198,6 @@ function claimSektor(sektorListItem: SektorListItem) {
       window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
     },
   });
-}
-
-// A sektor which is finished, or which has gone past what it is allowed, is set in bold: those are
-// the two the player is looking down the list for. One waiting to be claimed or still being built
-// on is left as it is.
-function createStatus(status: SektorStatus): HTMLElement {
-  const element = document.createElement("span");
-  element.className = "sektor-list-status";
-  element.textContent = sektorStatusText(status);
-  element.style.color = sektorStatusColor(status);
-  if (status === "Done" || status === "Overrun") element.style.fontWeight = "bold";
-  return element;
 }
 
 function createNumber(value: number): HTMLElement {

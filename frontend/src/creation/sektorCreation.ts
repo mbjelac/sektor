@@ -1,8 +1,6 @@
 import { addSektorToList, getSektorList } from "../list/sektorList.api";
 import { getSektorSummary } from "../list/sektorSummary";
 import { saveSektorData } from "../sektor/sektor.api";
-import { buildingDefinitions } from "../sektor/buildings/buildings";
-import { getLocalResources, getNegativeScoringResources } from "../resources";
 import { getLocationPropertyNames } from "../properties";
 import { getPlayers } from "../players";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
@@ -39,9 +37,7 @@ export async function createSektorIfNeeded(): Promise<boolean> {
   // Whatever the ground turns out to hold, the sektor made on it is offered: what a player can do
   // with a sektor is theirs to work out, and no sektor is thrown away for being hard to get
   // anything out of with the buildings it happens to allow.
-  const sektorData = createSektor(
-    level, buildingDefinitions, getLocalResources(), getNegativeScoringResources(), getLocationPropertyNames()
-  );
+  const sektorData = createSektor(level, getLocationPropertyNames());
 
   // The name is waited for before the sektor is numbered, so that a sektor made while this one
   // waits is the one holding the number it was given, and neither of them takes the other's.

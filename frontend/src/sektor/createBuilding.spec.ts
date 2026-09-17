@@ -18,7 +18,7 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, { importRestrictions: [], exportRequirements: [] }, [], []);
+  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, [], []);
 }
 
 describe("createBuilding", () => {
@@ -100,7 +100,6 @@ function createSektorOnAHillside(): Sektor {
   return new Sektor(
     hillside,
     [...testDefinitions, chaletDefinition],
-    { importRestrictions: [], exportRequirements: [] },
     [],
     [],
   );

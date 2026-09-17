@@ -9,7 +9,6 @@ export function getPlayers(): Player[] {
     const summary = getSektorSummary(sektorListItem.id);
     return {
       owner: sektorListItem.owner,
-      status: summary.status,
       score: summary.score,
     };
   }));

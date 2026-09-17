@@ -1,14 +1,8 @@
 :root {
     /* Semantic colors, reused across CSS and TS (via var(...)), for how a single thing in a sektor
-       is doing: one building's output, one requirement, one restriction. */
-    --color-good: #00c000; /* good: boosted output, requirement met (green, halfway to lime) */
-    --color-bad: orange; /* bad: restriction exceeded, reduced output */
-    /* The state of the sektor as a whole is read off a color of its own, one for each of the four
-       states it can be in, so that the sektor is not taken for one of the things standing in it. */
-    --color-status-idle: lightgray; /* idle: a sektor nobody has claimed */
-    --color-status-in-progress: lightblue; /* in progress: a sektor being built on */
-    --color-status-done: lime; /* done: a sektor which has met everything asked of it */
-    --color-status-overrun: #ff7f7f; /* overrun: a sektor past what it is allowed (light red) */
+       is doing: one building's output. */
+    --color-good: #00c000; /* good: boosted output (green, halfway to lime) */
+    --color-bad: orange; /* bad: reduced output */
 }
 
 * {
@@ -604,7 +598,7 @@ body > main {
 
 .ss-list {
     display: grid;
-    grid-template-columns: 1fr auto auto auto auto;
+    grid-template-columns: 1fr auto auto auto;
     gap: 2px 8px;
 }
 
@@ -638,11 +632,6 @@ body > main {
     stroke: #999;
 }
 
-.ss-cell-limit {
-    text-align: left;
-    color: #999;
-}
-
 .ss-cell-score {
     min-width: 32px;
     text-align: right;
@@ -664,24 +653,6 @@ body > main {
     width: 32px;
     text-align: center;
     padding: 1px 4px;
-    border-radius: 3px;
-}
-
-.ss-exceeded {
-    background-color: var(--color-bad);
-    color: #000;
-}
-
-.ss-met {
-    background-color: var(--color-good);
-    color: #fff;
-}
-
-.ss-cell-value .icon {
-    width: 14px;
-    height: 14px;
-    stroke: #fff;
-    vertical-align: middle;
 }
 
 /* The sektors a player can work on take the left half of the screen, the standing of all the
@@ -712,7 +683,7 @@ body > main {
     width: 100%;
     justify-self: center;
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto auto auto;
     align-content: start;
     gap: 8px 12px;
     /* More sektors than the window holds are scrolled through on their own, so that the standings
@@ -788,12 +759,6 @@ body > main {
     align-items: center;
 }
 
-/* The status column is named by a picture, which stands where the words below it begin. */
-.sektor-list-header .sektor-list-status {
-    display: flex;
-    align-items: center;
-}
-
 .sektor-list-owner {
     min-width: 72px;
     color: #ccc;
@@ -844,13 +809,6 @@ body > main {
     background: #3c4757;
     color: #8a8a8a;
     cursor: default;
-}
-
-.sektor-list-status {
-    width: 140px;
-    text-align: left;
-    font-family: sans-serif;
-    font-size: 12px;
 }
 
 .sektor-list-number {
