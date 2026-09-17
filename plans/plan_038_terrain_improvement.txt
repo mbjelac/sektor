@@ -1,8 +1,8 @@
 Current terrain looks ridiculous.
 The "blocks" (mountains) are too high and look artificial.
 
-#1 Lower floor block height
-- floor blocks with altitude > 0 should be just a bit higher than floor blocks with altitude 0
+#1 [done] Lower floor block height
+- [done] floor blocks with altitude > 0 should be just a bit higher than floor blocks with altitude 0
     - floor block with altitude 1 should be 10% higher than floor block with altitude 0
         - so, 110% of altitude 0 block height
     - floor block with altitude 2 should be 20% higher than floor block with altitude 0

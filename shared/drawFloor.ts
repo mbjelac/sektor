@@ -108,9 +108,10 @@ function drawSideOutline(
   p.endShape(p.CLOSE);
 }
 
-// Every step of altitude adds another block's worth of height to the ground.
+// Every step of altitude adds a tenth of a block's height to the ground, so that high ground
+// stands out without towering over the rest of the map.
 export function floorBlockHeight(size: number, altitude: number): number {
-  return size * FLOOR_HEIGHT_FRACTION * (altitude + 1);
+  return size * FLOOR_HEIGHT_FRACTION * (1 + ALTITUDE_HEIGHT_FRACTION * altitude);
 }
 
 // Where the underside of every floor block sits, whatever the location's altitude.
@@ -120,3 +121,6 @@ export function floorBlockBottom(size: number): number {
 
 // How tall a block of ground at the lowest altitude stands, as a part of a location's width.
 const FLOOR_HEIGHT_FRACTION = 0.15;
+
+// How much taller each step of altitude makes a floor block, as a part of the lowest block's height.
+const ALTITUDE_HEIGHT_FRACTION = 0.1;

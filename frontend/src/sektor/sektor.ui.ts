@@ -1,5 +1,5 @@
 import p5 from "p5";
-import {drawFloor, drawFloorWireframe} from "../../../shared/drawFloor";
+import {drawFloor, drawFloorWireframe, floorBlockHeight} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
@@ -633,7 +633,7 @@ function gridToWorld(gx: number, gy: number): { wx: number; wz: number } {
 // location — the building on it, its highlight, the warning over it — is lifted by this much.
 // Screen up is negative, so higher ground has a smaller y.
 function groundHeight(gx: number, gy: number): number {
-  return -altitudeAt(gx, gy) * FLOOR_HEIGHT;
+  return -(floorBlockHeight(BLOCK_SIZE, altitudeAt(gx, gy)) - floorBlockHeight(BLOCK_SIZE, MIN_ALTITUDE));
 }
 
 function altitudeAt(gx: number, gy: number): number {
