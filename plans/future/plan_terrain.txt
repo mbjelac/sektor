@@ -6,16 +6,6 @@ Altitude 2 = 3 times bigger. Altitude 3 = 4 times bigger, etc.
 If a building is placed on a location with an altitude greater than 0, apply the altitude when drawing the building.
 
 
-
-Waterfalls (only when rivers are already implemented!):
-"Buildings" which are already there when the sektor is loaded.
-They cannot be destroyed.
-Has to be placed on a square with a river, which neighbors a river square with higher altitude.
-Maybe a possibility to build dams on them for hydroelectricity:
-    - can be built only on the river square with higher altitude
-    - "turns" into an accumulation lake and a dam on the edge
-Animated.
-
 Higher altitudes have different floor color:
 - 0: greenland (default)
 - 1: hilly greenland (although soil fertility is lower, so more yellow/brown)
