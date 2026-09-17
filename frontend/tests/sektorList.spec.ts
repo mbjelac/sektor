@@ -443,7 +443,10 @@ test("purges every sektor there is when PURGE is clicked", async ({ page }) => {
   await page.goto("/?test=true");
   await createSektorNow(page);
 
-  await page.locator("#purge-button").click();
+  await Promise.all([
+    page.waitForEvent("load"),
+    page.locator("#purge-button").click(),
+  ]);
 
   const storage = await page.evaluate(() => ({
     sektors: localStorage.getItem("sektors"),

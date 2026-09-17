@@ -263,7 +263,7 @@ showUser();
 const areSektorsMadeByHand = (window as unknown as { makeSektorsByHand?: boolean }).makeSektorsByHand === true;
 
 renderList();
-showPurgeButton(refreshPage);
+showPurgeButton();
 if (areSektorsMadeByHand) {
   (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded = createSektorIfNeeded;
 } else {

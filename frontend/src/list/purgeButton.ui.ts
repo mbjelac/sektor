@@ -2,14 +2,15 @@ import { clearSektorList } from "./sektorList.api";
 import { deleteAllSektorData } from "../sektor/sektor.api";
 import { stopCreatingSektors } from "../creation/sektorCreation";
 
-// Wipes every sektor there is, for when the ones lying about are of no more use.
-export function showPurgeButton(onPurged: () => void): void {
+// Wipes every sektor there is, for when the ones lying about are of no more use. The page is loaded
+// anew afterwards, so that nothing left over from the sektors which were is still to be seen.
+export function showPurgeButton(): void {
   const purgeButton = document.createElement("button");
   purgeButton.id = "purge-button";
   purgeButton.textContent = "PURGE";
   purgeButton.addEventListener("click", () => {
     purgeSektors();
-    onPurged();
+    window.location.reload();
   });
 
   document.body.appendChild(purgeButton);
