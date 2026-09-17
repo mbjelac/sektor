@@ -64,7 +64,7 @@ Name: Purified
 
 EnergyElectric 3
 WorkTechnical 1
-=
+->
 WaterPottable groundwater
 
 ## Function
@@ -73,7 +73,7 @@ Name: Unpurified
 
 EnergyElectric 2
 WorkTechnical 1
-=
+->
 WaterTechnical groundwater
 
 ## Properties
@@ -230,7 +230,7 @@ WaterPottable 2
 FoodRaw 5
 FoodProcessed 3
 EnergyElectric 4
-=
+->
 WorkUnqualified 16
 WaterSewage 6
 
@@ -243,7 +243,7 @@ Active: always
 maxAltitude=3
 
 HealthPhysical 3
-=
+->
 WorkUnqualified 6
 
 ## Function
@@ -251,7 +251,7 @@ WorkUnqualified 6
 Active: always
 
 HealthMental 3
-=
+->
 WorkUnqualified 6
 
 ## Function
@@ -259,7 +259,7 @@ WorkUnqualified 6
 Active: always
 
 HealthSocial 3
-=
+->
 WorkUnqualified 6
 
 ## Function
@@ -267,7 +267,7 @@ WorkUnqualified 6
 Active: always
 
 Childcare 2
-=
+->
 WorkUnqualified 4
 
 # Library
@@ -334,7 +334,7 @@ sph s(4,4,7) t(33,-40,6) c(#1a650b)
 
 EnergyElectric 1
 WorkEducational 1
-=
+->
 HealthMental 6
 
 # Agriplot
@@ -406,7 +406,7 @@ WaterPottable 4
 Fertilizer 2
 EnergyElectric 1
 WorkTechnical 2
-=
+->
 FoodRaw soil
 
 # Extractor
@@ -483,7 +483,7 @@ Name: Metals
 EnergyElectric 5
 WorkTechnical 5
 WorkEngineering 1
-=
+->
 OreMetal metals
 
 ## Function
@@ -493,7 +493,7 @@ Name: Minerals
 EnergyElectric 3
 WorkTechnical 3
 WorkEngineering 1
-=
+->
 OreMineral minerals
 
 ## Function
@@ -504,7 +504,7 @@ EnergyElectric 4
 WaterTechnical 3
 WorkTechnical 2
 WorkEngineering 1
-=
+->
 OreUranium uranium
 
 ## Properties
@@ -542,7 +542,7 @@ sph c(#8fdaff00) s(1,100,1) t(-8,0,32) acg(#8fdaff80, 1000)
 ## Function
 
 WorkTechnical 1
-=
+->
 EnergyElectric wind
 
 
@@ -573,7 +573,7 @@ sph s(6,6,6) t(0,0,18) c(#9a9589) r(0,0,0)
 ## Function
 
 WorkTechnical 1
-=
+->
 EnergyElectric insolation
 
 # Arena
@@ -608,7 +608,7 @@ pri4 s(4,10,1) t(0,23,20) r(0,90,0) c(#fbff00)
 
 EnergyElectric 10
 WorkAdministrative 2
-=
+->
 HealthSocial 20
 
 # Polytechnic
@@ -691,7 +691,7 @@ WorkEducational 4
 WorkTechnical 1
 EnergyElectric 4
 WorkUnqualified 8
-=
+->
 WorkMaintenance 16
 
 ## Function
@@ -702,7 +702,7 @@ WorkEducational 4
 WorkTechnical 1
 EnergyElectric 4
 WorkMaintenance 8
-=
+->
 WorkTechnical 16
 
 # Refinery
@@ -782,7 +782,7 @@ WorkTechnical 3
 EnergyElectric 10
 WaterTechnical 5
 OreMetal 5
-=
+->
 Metals 10
 
 ## Function
@@ -793,7 +793,7 @@ WorkTechnical 2
 EnergyElectric 3
 WaterTechnical 2
 OreMineral 5
-=
+->
 Minerals 20
 
 ## Function
@@ -804,7 +804,7 @@ WorkTechnical 6
 EnergyElectric 5
 WaterTechnical 15
 OreUranium 5
-=
+->
 Uranium 6
 
 # TownSquare
@@ -899,7 +899,7 @@ sph c(#2c6d2d) s(4,4,10) t(43,-4,6)
 WorkMaintenance 2
 EnergyElectric 1
 WaterPottable 2
-=
+->
 HealthSocial 8
 
 # Park
@@ -1012,7 +1012,7 @@ sph s(4,4,5) t(-39,40,8) c(#2aea2a)
 EnergyElectric 1
 WaterPottable 2
 WorkMaintenance 2
-=
+->
 HealthPhysical 2
 HealthMental 2
 HealthSocial 4
@@ -1064,7 +1064,7 @@ Chemicals 4
 EnergyElectric 2
 WorkTechnical 2
 WorkEngineering 1
-=
+->
 Fertilizer 12
 
 # ChildKeep
@@ -1122,7 +1122,7 @@ FoodProcessed 3
 EnergyElectric 4
 WorkEducational 4
 WorkMaintenance 1
-=
+->
 Childcare 10
 WaterSewage 6
 
@@ -1271,7 +1271,7 @@ Name: Basic
 WaterSewage 5
 EnergyElectric 4
 WorkTechnical 3
-=
+->
 WaterTechnical 8
 
 ## Function
@@ -1280,7 +1280,7 @@ Name: Advanced
 
 WaterTechnical 5
 EnergyElectric 6
-=
+->
 WaterPottable 8
 
 # Fission Plant
@@ -1394,6 +1394,6 @@ Uranium 5
 WorkTechnical 4
 WorkEngineering 2
 WaterTechnical 2
-=
+->
 EnergyElectric 20
 WasteNuclear 2

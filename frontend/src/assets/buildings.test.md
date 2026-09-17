@@ -19,7 +19,7 @@ pri4 s(30,30,30) t(0,0,0) c(#4488cc)
 
 Water 3
 Energy 1
-=
+->
 Food soil
 
 # TestMine
@@ -33,7 +33,7 @@ cyl s(20,20,20) t(0,0,0) c(#cc8844)
 ## Function
 
 Energy 4
-=
+->
 Ore ore
 
 ## Properties
@@ -54,7 +54,7 @@ pri4 s(15,15,15) t(0,0,10) r(90,45,90) c(#eedd88)
 Name: Living
 Food 2
 Water 1
-=
+->
 Work 3
 
 # TestProcessor
@@ -68,7 +68,7 @@ pri4 s(22,22,22) t(0,0,0) c(#66cc66)
 ## Function
 
 Food 2
-=
+->
 Wood 3
 
 # TestRefinery
@@ -86,7 +86,7 @@ Water 4
 Energy 3
 Wood 2
 Stone 1
-=
+->
 Metal 6
 Fuel 3
 
@@ -102,14 +102,14 @@ pri4 s(24,24,18) t(0,0,0) c(#9977cc)
 
 Name: Tool making
 Ore 4
-=
+->
 Metal ore
 
 ## Function
 
 Name: Cart making
 Wood 3
-=
+->
 Fuel wind
 
 # TestClinic
@@ -123,7 +123,7 @@ pri4 s(26,26,16) t(0,0,0) c(#dd6688)
 ## Function
 
 Care 2
-=
+->
 Work 4
 
 # TestCarer
@@ -137,7 +137,7 @@ pri4 s(22,22,20) t(0,0,0) c(#66aacc)
 ## Function
 
 Food 1
-=
+->
 Care 4
 
 # TestReactor
@@ -152,7 +152,7 @@ pri4 s(24,24,22) t(0,0,0) c(#55bb88)
 
 Name: Power making
 Water 2
-=
+->
 Energy 5
 
 ## Function
@@ -160,5 +160,5 @@ Energy 5
 Name: Cooling
 Active: always
 Energy 1
-=
+->
 Water 1

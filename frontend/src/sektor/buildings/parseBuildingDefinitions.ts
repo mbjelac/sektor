@@ -19,6 +19,9 @@ export interface BuildingFunction {
 
 const ALWAYS_ACTIVE_VALUE = "always";
 
+// The line separating a function's inputs from its outputs.
+const OUTPUT_SEPARATOR = "->";
+
 export interface BuildingProperties {
   showFloor?: boolean;
   // The highest ground the building may stand on. A building whose definition names none may be
@@ -126,13 +129,13 @@ function parseBuildingFunction(lines: string[]): BuildingFunction {
   const outputs: BuildingFunctionOutput[] = [];
   let functionName: string | undefined = undefined;
   let alwaysActive = false;
-  let seenEquals = false;
+  let seenOutputSeparator = false;
 
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
-    if (trimmed === "=") {
-      seenEquals = true;
+    if (trimmed === OUTPUT_SEPARATOR) {
+      seenOutputSeparator = true;
       continue;
     }
     const nameMatch = trimmed.match(/^Name:\s*(.+)$/);
@@ -149,7 +152,7 @@ function parseBuildingFunction(lines: string[]): BuildingFunction {
     if (!match) continue;
     const resourceName = match[1];
     const amountOrProperty = match[2];
-    if (seenEquals) {
+    if (seenOutputSeparator) {
       outputs.push(parseOutput(resourceName, amountOrProperty));
     } else if (isAmount(amountOrProperty)) {
       inputs.push({ name: resourceName, value: parseInt(amountOrProperty) });

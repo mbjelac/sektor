@@ -54,7 +54,7 @@ describe("parseBuildingDefinitions", () => {
       "## Function",
       "Iron 3",
       "Coal 2",
-      "=",
+      "->",
       "Steel 5",
     ]);
 
@@ -79,7 +79,7 @@ describe("parseBuildingDefinitions", () => {
       "## Function",
       "Name: Steel making",
       "Iron 3",
-      "=",
+      "->",
       "Steel 5",
     ]);
 
@@ -104,11 +104,11 @@ describe("parseBuildingDefinitions", () => {
       "## Function",
       "Name: Steel making",
       "Iron 3",
-      "=",
+      "->",
       "Steel 5",
       "## Function",
       "Coal 2",
-      "=",
+      "->",
       "Heat 1",
     ]);
 
@@ -150,7 +150,7 @@ describe("parseBuildingDefinitions", () => {
       "box s(10,10,10)",
       "```",
       "## Function",
-      "=",
+      "->",
       "Energy 10",
     ]);
 
@@ -186,7 +186,7 @@ describe("parseBuildingDefinitions", () => {
       "",
       "Iron 3",
       "",
-      "=",
+      "->",
       "",
       "Steel 5",
       "",
@@ -208,7 +208,7 @@ describe("parseBuildingDefinitions", () => {
       "## Function",
       "some random text",
       "Iron 3",
-      "=",
+      "->",
       "Steel 5",
     ]);
 
@@ -227,7 +227,7 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Iron 3",
-      "=",
+      "->",
       "Ore 5",
       "## Properties",
       "showFloor=false",
@@ -287,7 +287,7 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Water 2",
-      "=",
+      "->",
       "Steam 1",
       "# BuildingB",
       "## Render",
@@ -296,7 +296,7 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Iron 4",
-      "=",
+      "->",
       "Steel 3",
     ]);
 
@@ -354,7 +354,7 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Water 3",
-      "=",
+      "->",
       "Food soil",
       "Grain groundwater",
     ]);
@@ -374,7 +374,7 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Iron 3",
-      "=",
+      "->",
       "Steel 5",
     ]);
 
@@ -392,7 +392,7 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Energy 2",
-      "=",
+      "->",
       "Heat 3",
       "Crop soil",
     ]);
@@ -412,11 +412,11 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Ore 4",
-      "=",
+      "->",
       "Tools ore",
       "## Function",
       "Wood 3",
-      "=",
+      "->",
       "Tools wind",
     ]);
 
@@ -435,12 +435,12 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Water 2",
-      "=",
+      "->",
       "Energy 5",
       "## Function",
       "Active: always",
       "Energy 1",
-      "=",
+      "->",
       "Water 1",
     ]);
 
@@ -458,7 +458,7 @@ describe("parseBuildingDefinitions", () => {
       "## Function",
       "Active: sometimes",
       "Water 2",
-      "=",
+      "->",
       "Energy 5",
     ]);
 
@@ -474,11 +474,11 @@ describe("parseBuildingDefinitions", () => {
       "```",
       "## Function",
       "Ore 4",
-      "=",
+      "->",
       "Tools 2",
       "## Function",
       "Wood 3",
-      "=",
+      "->",
       "Tools 3",
     ]);
 
@@ -502,7 +502,7 @@ describe("parseBuildingDefinitions", () => {
       "box s(10,10,10)",
       "```",
       "Iron 3",
-      "=",
+      "->",
       "Steel 5",
     ]);
 
