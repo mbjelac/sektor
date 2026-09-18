@@ -60,5 +60,5 @@ The "blocks" (mountains) are too high and look artificial.
     - insolation: random 6-12, then -2 for every direct neighboring location (north, west, east, south, not diagonal) with higher altitude
     - create Sektor tests to check this modification of location property matrices
 
-#6 Remove altitude restriction
-- remove building specification property maxAltitude parsing & appliance
+#6 [done] Remove altitude restriction
+- [done] remove building specification property maxAltitude parsing & appliance

@@ -1,7 +1,6 @@
 
 import { BuildingDefinition, BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
-import { ALTITUDE_PROPERTY, MIN_ALTITUDE } from "../../../shared/altitude";
 
 export type { BuildingLocation, BuildingCreation, Building, Location };
 
@@ -339,27 +338,10 @@ export class Sektor {
       return { error: "locationOccupied", addedBuildings: [] };
     }
 
-    // A building which cannot be put up this high is one the ground will not carry, so the player
-    // is told the location is too high rather than being given the building somewhere it does not
-    // belong.
-    if (this.standsTooHigh(building)) {
-      return { error: "altitudeTooHigh", addedBuildings: [] };
-    }
-
     const createdBuilding = { ...building };
     this.buildings.push(createdBuilding);
 
     return { error: undefined, addedBuildings: [createdBuilding] };
-  }
-
-  private standsTooHigh(building: BuildingCreation): boolean {
-    const maxAltitude = this.findBuildingDefinition(building.type)?.properties.maxAltitude;
-    if (maxAltitude === undefined) return false;
-    return this.altitudeAt(building.location) > maxAltitude;
-  }
-
-  private altitudeAt(location: BuildingLocation): number {
-    return this.locations[location.x]?.[location.y]?.properties[ALTITUDE_PROPERTY] ?? MIN_ALTITUDE;
   }
 
   destroyBuilding(location: BuildingLocation): DestroyBuildingResult {

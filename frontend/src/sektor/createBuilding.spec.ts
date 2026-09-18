@@ -39,41 +39,6 @@ describe("createBuilding", () => {
     });
   });
 
-  // A building definition which names the highest ground it may stand on: the Chalet goes no
-  // higher than the second step up, and the Well says nothing, so the Well goes anywhere.
-  it("creates a building on ground no higher than the building allows", () => {
-    const sektor = createSektorOnAHillside();
-
-    const result = sektor.createBuilding({ type: "Chalet", location: { x: 0, y: 2 } });
-
-    expect({ result, buildings: sektor.getState().buildings }).toEqual({
-      result: { error: undefined, addedBuildings: [{ type: "Chalet", location: { x: 0, y: 2 } }] },
-      buildings: [{ type: "Chalet", location: { x: 0, y: 2 } }],
-    });
-  });
-
-  it("does not create a building on ground higher than the building allows", () => {
-    const sektor = createSektorOnAHillside();
-
-    const result = sektor.createBuilding({ type: "Chalet", location: { x: 0, y: 3 } });
-
-    expect({ result, buildings: sektor.getState().buildings }).toEqual({
-      result: { error: "altitudeTooHigh", addedBuildings: [] },
-      buildings: [],
-    });
-  });
-
-  it("creates a building which names no highest ground on the highest ground there is", () => {
-    const sektor = createSektorOnAHillside();
-
-    const result = sektor.createBuilding({ type: "Well", location: { x: 0, y: 4 } });
-
-    expect({ result, buildings: sektor.getState().buildings }).toEqual({
-      result: { error: undefined, addedBuildings: [{ type: "Well", location: { x: 0, y: 4 } }] },
-      buildings: [{ type: "Well", location: { x: 0, y: 4 } }],
-    });
-  });
-
   it("does not create building on occupied location", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "Mill", location: { x: 8, y: 6 } });
@@ -92,23 +57,6 @@ describe("createBuilding", () => {
     });
   });
 });
-
-// One row of ground climbing from the flat into the hills, so that a location of every altitude
-// can be built on.
-function createSektorOnAHillside(): Sektor {
-  const hillside = [[0, 1, 2, 3, 4].map(altitude => ({ properties: { soil: 1.0, altitude } }))];
-  return new Sektor(
-    hillside,
-    [...testDefinitions, chaletDefinition],
-    [],
-    [],
-  );
-}
-
-const chaletDefinition: BuildingDefinition = {
-  ...buildingDefinition("Chalet", [], [{ name: "Rest", value: 1 }]),
-  properties: { maxAltitude: 2 },
-};
 
 describe("createBuilding imports and exports", () => {
   it("adds the created building's inputs to imports and outputs to exports", () => {
