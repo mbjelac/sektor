@@ -832,3 +832,24 @@ function getGlobalDialogRows(page: Page) {
     })
   );
 }
+
+// The planet's list over the map is asked for its order the same way as the one beside the sektors:
+// by clicking the column the player is looking down.
+test("puts the most brought in first when the imported column of the planet's list is clicked", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+  await page.locator("#global-state-button").click();
+
+  await page.locator('#global-state-dialog .global-state-sort[data-sort-order="imported"]').click();
+
+  expect(await getGlobalDialogResourceNames(page))
+    .toEqual(["Food 🥕", "Ore 🪨", "Water 💧", "Energy ⚡", "Stone 🧱", "Fuel 🛢️", "Work 🛠️", "Wood 🪵", "Metal ⚙️"]);
+});
+
+// The resources of the planet's list, in the order they stand in while it is over the map.
+function getGlobalDialogResourceNames(page: Page) {
+  return page.locator("#global-state-dialog .global-state-item .global-state-resource")
+    .evaluateAll(cells => cells.map(cell => cell.textContent));
+}

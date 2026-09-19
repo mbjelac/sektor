@@ -1135,6 +1135,20 @@ body > main {
     font-size: 12px;
 }
 
+/* Every column is asked for by clicking its name, so each name is a button — drawn as the word or
+   picture naming the column rather than as a button. */
+.global-state-sort {
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+.global-state-sort:hover {
+    color: #fff;
+}
+
 /* The headers name the columns without taking on the colours of what stands under them, each icon
    at the end of its column, above the amounts it names. */
 .global-state-header .global-state-resource {

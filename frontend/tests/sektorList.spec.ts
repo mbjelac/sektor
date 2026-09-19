@@ -394,6 +394,54 @@ test("shows what a building put up in a sektor does to what the planet moves", a
   ]);
 });
 
+// A player looking for what the planet is shortest of, or has most of over, asks for it by clicking
+// the column it stands in. The resources stand in the order of their names until they do.
+test("puts the planet's resources in the order of their names to begin with", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
+
+  await page.goto("/?test=true");
+
+  expect(await getGlobalResourceNames(page))
+    .toEqual(["Energy ⚡", "Food 🥕", "Fuel 🛢️", "Metal ⚙️", "Ore 🪨", "Stone 🧱", "Water 💧", "Wood 🪵", "Work 🛠️"]);
+});
+
+test("puts the most brought in first when the imported column is clicked", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
+  await page.goto("/?test=true");
+
+  await page.locator('#global-state-panel .global-state-sort[data-sort-order="imported"]').click();
+
+  expect(await getGlobalResourceNames(page))
+    .toEqual(["Ore 🪨", "Water 💧", "Food 🥕", "Energy ⚡", "Stone 🧱", "Wood 🪵", "Fuel 🛢️", "Work 🛠️", "Metal ⚙️"]);
+});
+
+test("puts the most sent out first when the exported column is clicked", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
+  await page.goto("/?test=true");
+
+  await page.locator('#global-state-panel .global-state-sort[data-sort-order="exported"]').click();
+
+  expect(await getGlobalResourceNames(page))
+    .toEqual(["Metal ⚙️", "Fuel 🛢️", "Work 🛠️", "Wood 🪵", "Stone 🧱", "Energy ⚡", "Food 🥕", "Ore 🪨", "Water 💧"]);
+});
+
+test("puts the planet's resources back in the order of their names when the resource column is clicked", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
+  await page.goto("/?test=true");
+  await page.locator('#global-state-panel .global-state-sort[data-sort-order="exported"]').click();
+
+  await page.locator('#global-state-panel .global-state-sort[data-sort-order="resource"]').click();
+
+  expect(await getGlobalResourceNames(page))
+    .toEqual(["Energy ⚡", "Food 🥕", "Fuel 🛢️", "Metal ⚙️", "Ore 🪨", "Stone 🧱", "Water 💧", "Wood 🪵", "Work 🛠️"]);
+});
+
+// The resources of the planet's list, in the order they stand in.
+function getGlobalResourceNames(page: Page) {
+  return page.locator("#global-state-panel .global-state-item .global-state-resource")
+    .evaluateAll(cells => cells.map(cell => cell.textContent));
+}
+
 // A sektor of buildings standing in a row, one to a location, with the same ore under every one of
 // them for whatever mines stand there to dig up.
 async function storeSektorWithBuildings(page: Page, sektorId: string, buildingTypes: string[], orePerLocation = 0) {

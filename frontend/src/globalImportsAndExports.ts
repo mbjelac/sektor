@@ -39,6 +39,36 @@ export function listedResourceNames(importsAndExports: ImportsAndExports): strin
   return Array.from(resourceNames).sort((first, second) => first.localeCompare(second));
 }
 
+// Which column of a list of imports and exports its resources are put in order by.
+export type ResourceSortOrder = "resource" | "imported" | "exported";
+
+// A player looking for what is most brought in or most sent out puts the largest amounts at the
+// top. The other column breaks the ties the other way about: of two resources equally brought in,
+// the one less sent out is the one the planet is shorter of, and so stands higher. Resources tied
+// in both columns keep the order their names put them in.
+export function sortedResourceNames(
+  importsAndExports: ImportsAndExports,
+  sortOrder: ResourceSortOrder,
+): string[] {
+  const resourceNames = listedResourceNames(importsAndExports);
+
+  if (sortOrder === "imported") {
+    return resourceNames.sort((first, second) =>
+      movedDifference(importsAndExports.imports, second, first) || movedDifference(importsAndExports.exports, first, second));
+  }
+
+  if (sortOrder === "exported") {
+    return resourceNames.sort((first, second) =>
+      movedDifference(importsAndExports.exports, second, first) || movedDifference(importsAndExports.imports, first, second));
+  }
+
+  return resourceNames;
+}
+
+function movedDifference(throughputs: ResourceThroughput[], resourceName: string, otherResourceName: string): number {
+  return findThroughputValue(throughputs, resourceName) - findThroughputValue(throughputs, otherResourceName);
+}
+
 export function findThroughputValue(throughputs: ResourceThroughput[], resourceName: string): number {
   return throughputs.find(throughput => throughput.name === resourceName)?.value ?? 0;
 }

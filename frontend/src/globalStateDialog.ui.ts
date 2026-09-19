@@ -1,5 +1,5 @@
 import { ImportsAndExports } from "./globalImportsAndExports";
-import { createGlobalStateRows } from "./globalStatePanel.ui";
+import { fillGlobalStateList } from "./globalStatePanel.ui";
 import { xMarkIcon } from "./icons";
 
 const DIALOG_ID = "global-state-dialog";
@@ -26,7 +26,7 @@ export function showGlobalStateDialog(globalImportsAndExports: ImportsAndExports
 
   const list = document.createElement("div");
   list.className = "global-state-list";
-  list.append(...createGlobalStateRows(globalImportsAndExports, "Global Imports/Exports"));
+  fillGlobalStateList(list, globalImportsAndExports, "Global Imports/Exports");
   dialog.appendChild(list);
 
   document.body.appendChild(overlay);
