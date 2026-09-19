@@ -75,7 +75,7 @@ Global player scoring:
     - [done] panel title "Global Imports/Exports"
     - [done] x in top right corner for hiding the list
     - [done] list also scrollable if too long for height
-        - do not show toolbar
+        - do not show scrollbar
     - [done] fixed height - 70% screen height
 
 #4 Player can see which resources are most imported or exported
