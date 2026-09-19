@@ -55,6 +55,7 @@ Global player scoring:
             - sektor is exporting Water which is globally exported (1)
             - sektor is importing Food which is globally imported (-2)
             - resulting current score: -2
+        - if a resource is marked as "negative" in resources.md (resources.test.md for tests) then the scores in the scoring table are§¡¡ inverted
 - display current scores of each resource in sektor map import/export panel
     - already implemented in UI, apply to current score for each resource
 - display total current score in sektor map import/export panel
