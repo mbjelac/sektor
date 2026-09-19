@@ -14,8 +14,8 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
         - background color #ffe187
         - text color black
         - text left-aligned
-- message text in this case: "Exports: What we need now are <most needed resources list>"
+- message text in this case: "Export <most needed resources list>"
     - the list contains the 3 (or less) resources by specified criteria, on the order of most imported (or least exported, exported is always after all imported)
     - each resource in list is displayed as <name> <icon>
     - items in list delimted by comma + space
-- if there is already a message when the event occurs, replace it with this one
+- if there is already an "Export ..." message when the event occurs, replace it with this one
