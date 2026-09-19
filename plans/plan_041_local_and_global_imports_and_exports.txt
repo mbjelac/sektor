@@ -25,19 +25,23 @@ Global player scoring:
 
 #1 Player can see planetary imports & exports
 - [done] for each sektor collect all imports & exports and sum them in global imports & export per resource type
-- on list page display a panel with imports & exports of all sektors
+- [done] on list page display a panel with imports & exports of all sektors
     - all sektors regardless of ownership, even of sektors without an owner
     - display import/export panel similar to the one in sektor map
         - without score column
-        - located in the bottom right corner of the list screen
-- list of imports & exports contains only resources that are imported or exported
+        - located as the third column in the list page (sektors, leaderboard, imports/exports), full page height
+        - same style as the other two lists
+            - no background
+            - each item in it's bordered panel
+            - header floating above, especially when scrolling
+            - list scrolls, not the page
+            - do not show scrollbar
+- [done] list of imports & exports contains only resources that are imported or exported
     - resources with 0 import/export are not shown
     - with 0 sektors, or all sektors having no imports or exports, this list is empty
-- panel title: Imports & Exports, Global
+- [done] panel title: Imports & Exports, Global
     - in front of title, heroicon globe-alt
-- panel size: fixed height & width
-- list in panel scrolls if it gets too long
-    - do not display scrollbar in that case
+- [done] panel size: fixed height & width
 
 #2 Sektor's imports & exports represent a "current score"
 - previous calculations of score based on imports & exports are to be completely overriden by this new one
