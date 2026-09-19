@@ -80,5 +80,6 @@ Global player scoring:
 #4 Player can see which resources are most imported or exported
 - both in list & map, global import/export lists have clickable headers:
     - Resource: sort map by resource name, alphabetically
+        - this is the initial sort
     - Import amount: sort map by descending import amount, then ascending export amount
     - Export amount: sort map by descending export amount, then ascending import amount
