@@ -1,0 +1,4 @@
+Instead of each floor having an altitude, there is no altitude, just mountain/hill squares which cannot be built upon.
+They serve only as interesting visual features and obstacles for the player to build stuff.
+
+Creation produces a matrix of mountains and hills. Each mountain/hill square is a "building" which cannot be destroyed.
