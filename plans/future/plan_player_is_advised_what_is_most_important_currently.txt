@@ -1,11 +1,11 @@
 In any point in time there is a thing to do in a sektor map which can mostly benefit the player (and the whole planet).
 
-#1 Least exported or most imported resource
+#1 Least exported or most imported resources
 - when sektor map is opened and every time a global import or export amount changes
-    - Sektor must find out what resource is either
+    - Sektor must find out what 3 resources are either
         - most imported
         - or, if there are no imports, least exported
-    - then display a "message" to the player so they know which resource this sektor should produce
+    - then display a "message" to the player so they know which resources this sektor should produce
 - display message in the bottom of the screen
     - center
     - fixed width 800px, same for all messages
@@ -14,5 +14,8 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
         - background color #ffe187
         - text color black
         - text left-aligned
-- message text in this case: "Great planetary need for <resource name> <resource icon>"
+- message text in this case: "Exports: What we need now are <most needed resources list>"
+    - the list contains the 3 (or less) resources by specified criteria, on the order of most imported (or least exported, exported is always after all imported)
+    - each resource in list is displayed as <name> <icon>
+    - items in list delimted by comma + space
 - if there is already a message when the event occurs, replace it with this one
