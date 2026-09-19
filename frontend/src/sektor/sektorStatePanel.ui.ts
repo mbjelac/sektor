@@ -1,9 +1,8 @@
 import { type ScoredThroughput, type SektorState } from "./Sektor";
-import { getResourceIcon } from "../resources";
 import { scoreColor } from "../score";
-import { ResourceThroughput } from "../../../shared/sektorData";
 import { arrowDownTrayIcon, arrowUpTrayIcon, starIcon } from "../icons";
 import { formatNumber } from "../formatNumber";
+import { findThroughputValue, listedResourceNames, resourceNameText, throughputText } from "../throughputDisplay.ui";
 
 let panelEl: HTMLElement | null = null;
 let importHoverCallback: ((resourceType: string | null) => void) | null = null;
@@ -84,8 +83,7 @@ function createResourceRow(resourceName: string, sektorState: SektorState): HTML
 
   const nameCell = document.createElement("span");
   nameCell.className = "ss-cell-resource";
-  const icon = getResourceIcon(resourceName);
-  nameCell.textContent = `${resourceName} ${icon ?? ""}`;
+  nameCell.textContent = resourceNameText(resourceName);
   row.appendChild(nameCell);
 
   row.appendChild(createValueCell(importValue));
@@ -132,24 +130,9 @@ function totalScore(sektorState: SektorState): number {
     .reduce((total, throughput) => total + throughput.score, 0);
 }
 
-// A resource which is neither brought in nor sent out leaves its cell empty, so that what the
-// sektor actually moves stands out from what it merely touches.
 function createValueCell(value: number): HTMLElement {
   const cell = document.createElement("span");
   cell.className = "ss-cell-value";
-  cell.textContent = value !== 0 ? formatNumber(value) : "";
+  cell.textContent = throughputText(value);
   return cell;
-}
-
-// Only a resource the sektor actually moves is listed, as nothing else has anything to say.
-function listedResourceNames(sektorState: SektorState): string[] {
-  const resourceNames = new Set<string>();
-  for (const throughput of [...sektorState.imports, ...sektorState.exports]) {
-    if (throughput.value !== 0) resourceNames.add(throughput.name);
-  }
-  return Array.from(resourceNames).sort((first, second) => first.localeCompare(second));
-}
-
-function findThroughputValue(throughputs: ResourceThroughput[], resourceName: string): number {
-  return throughputs.find(throughput => throughput.name === resourceName)?.value ?? 0;
 }

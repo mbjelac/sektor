@@ -2,6 +2,7 @@ import { playerLevel, pointsToNextLevel } from "../playerLevel";
 import { formatNumber } from "../formatNumber";
 import { getPlayers, Player } from "../players";
 import { arrowUpIcon, starIcon, trophyIcon, userIcon } from "../icons";
+import { createListTitle } from "../listTitle.ui";
 
 // Next to the sektors stands the standing of everyone playing, so that a player sees at a glance
 // where the sektors they are working on put them among the others.
@@ -20,6 +21,8 @@ export function renderLeaderboard() {
 function createLeaderboardHeader(): HTMLElement {
   const header = document.createElement("div");
   header.className = "leaderboard-header";
+
+  header.appendChild(createListTitle("Leaderboard"));
 
   header.appendChild(createHeaderIcon("leaderboard-name", userIcon, "Player"));
   header.appendChild(createHeaderIcon("leaderboard-score", starIcon, "Score"));

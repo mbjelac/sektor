@@ -266,6 +266,150 @@ async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: num
   }, [sektorName, oreAmounts] as [string, number[]]);
 }
 
+// What every sektor brings in and sends out, added up into what the whole planet moves, stands in
+// the corner of the list of sektors.
+test("shows what the whole planet brings in and sends out", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestMine"], 6);
+  await storeSektorWithBuildings(page, "Beta", ["TestProcessor"]);
+  await storeSektorWithBuildings(page, "Gamma", ["TestHouse"]);
+
+  await page.goto("/?test=true");
+
+  await expect(page.locator("#global-state-panel"))
+    .toHaveScreenshot("global-imports-and-exports.png", { maxDiffPixelRatio: 0 });
+});
+
+// A sektor counts towards what the planet moves whoever owns it: Alpha is the player's own, Beta is
+// somebody else's, and Gamma is nobody's, and the Food the house on Gamma eats is short on the
+// planet all the same.
+test("counts every sektor into what the planet moves, whoever owns it", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestMine"], 6);
+  await storeSektorWithBuildings(page, "Beta", ["TestProcessor"]);
+  await storeSektorWithBuildings(page, "Gamma", ["TestHouse"]);
+
+  await page.goto("/?test=true");
+
+  expect(await getGlobalThroughputRows(page)).toEqual([
+    { resource: "Energy ⚡", imported: "4", exported: "" },
+    { resource: "Food 🥕", imported: "4", exported: "" },
+    { resource: "Ore 🪨", imported: "", exported: "6" },
+    { resource: "Water 💧", imported: "1", exported: "" },
+    { resource: "Wood 🪵", imported: "", exported: "3" },
+    { resource: "Work 🛠️", imported: "", exported: "3" },
+  ]);
+});
+
+// What one sektor sends out covers what another brings in, leaving the planet the difference. A
+// resource covered exactly is left out of both columns: the reactor on Beta sends out the four
+// Energy the mine on Alpha brings in, so the planet is neither short of Energy nor has any over.
+test("sets what one sektor sends out against what another brings in", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestMine"], 6);
+  await storeSektorWithBuildings(page, "Beta", ["TestReactor"]);
+
+  await page.goto("/?test=true");
+
+  expect(await getGlobalThroughputRows(page)).toEqual([
+    { resource: "Ore 🪨", imported: "", exported: "6" },
+    { resource: "Water 💧", imported: "1", exported: "" },
+  ]);
+});
+
+test("lists nothing while the sektors move nothing", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  expect(await getGlobalThroughputRows(page)).toEqual([]);
+});
+
+// The panel stands in the corner at the size it has whatever it holds, so that the corner it stands
+// in never moves.
+test("stands at the same size whatever it holds", async ({ page }) => {
+  await page.goto("/?test=true");
+  const sizeWhileMovingNothing = await getGlobalPanelSize(page);
+  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
+
+  await page.goto("/?test=true");
+
+  expect(await getGlobalPanelSize(page)).toEqual(sizeWhileMovingNothing);
+});
+
+// More resources than the page holds are scrolled through in the list itself, so that the page and
+// the two lists beside it stay where the player last saw them. The bar for doing it is left
+// undrawn: the amounts are what the player is looking at, and a bar down the side of them is not.
+test("scrolls the resources on its own, without a bar and without moving the standings", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
+  await page.setViewportSize({ width: 1280, height: 400 });
+
+  await page.goto("/?test=true");
+
+  const standingsBeforeScrolling = await page.locator("#leaderboard").boundingBox();
+  const scrolling = await page.locator("#global-state-panel").evaluate(globalStatePanel => {
+    globalStatePanel.scrollTop = globalStatePanel.scrollHeight;
+    return {
+      taller: globalStatePanel.scrollHeight > globalStatePanel.clientHeight,
+      scrolledPast: globalStatePanel.scrollTop > 0,
+      barWidth: globalStatePanel.offsetWidth - globalStatePanel.clientWidth,
+    };
+  });
+  const standingsAfterScrolling = await page.locator("#leaderboard").boundingBox();
+
+  expect({ ...scrolling, standingsMoved: standingsBeforeScrolling!.y !== standingsAfterScrolling!.y })
+    .toEqual({ taller: true, scrolledPast: true, barWidth: 0, standingsMoved: false });
+});
+
+// The header names the list and its columns, so it stays at the top of the resources while they are
+// scrolled past it rather than going out of sight with the first of them.
+test("keeps the header of the planet's resources in sight while they are scrolled past it", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
+  await page.setViewportSize({ width: 1280, height: 400 });
+
+  await page.goto("/?test=true");
+
+  const listTop = (await page.locator("#global-state-panel").boundingBox())!.y;
+  const headerTopBeforeScrolling = (await page.locator(".global-state-header").boundingBox())!.y;
+  await page.locator("#global-state-panel").evaluate(globalStatePanel => {
+    globalStatePanel.scrollTop = globalStatePanel.scrollHeight;
+  });
+  const headerTopAfterScrolling = (await page.locator(".global-state-header").boundingBox())!.y;
+
+  expect({ headerTopBeforeScrolling, headerTopAfterScrolling })
+    .toEqual({ headerTopBeforeScrolling: listTop, headerTopAfterScrolling: listTop });
+});
+
+// A sektor of buildings standing in a row, one to a location, with the same ore under every one of
+// them for whatever mines stand there to dig up.
+async function storeSektorWithBuildings(page: Page, sektorId: string, buildingTypes: string[], orePerLocation = 0) {
+  await page.evaluate(([sektorId, buildingTypes, orePerLocation]) => {
+    localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
+      level: 1,
+      locationProperties: { ore: (buildingTypes as string[]).map(() => [orePerLocation]) },
+      buildings: (buildingTypes as string[]).map((buildingType, buildingIndex) => ({
+        type: buildingType,
+        location: { x: buildingIndex, y: 0 },
+      })),
+    }));
+  }, [sektorId, buildingTypes, orePerLocation] as [string, string[], number]);
+}
+
+// What every resource row of the global panel says: the resource, what the planet brings in of it,
+// and what it sends out. A column a resource says nothing in stands empty.
+function getGlobalThroughputRows(page: Page) {
+  return page.locator(".global-state-item").evaluateAll(items => items.map(item => {
+    const cells = item.querySelectorAll("span");
+    return {
+      resource: cells[0].textContent,
+      imported: cells[1].textContent,
+      exported: cells[2].textContent,
+    };
+  }));
+}
+
+function getGlobalPanelSize(page: Page) {
+  return page.locator("#global-state-panel").evaluate(panel => ({
+    width: panel.offsetWidth,
+    height: panel.offsetHeight,
+  }));
+}
+
 // The sektors of a player's own level are made in the background as they are claimed. A test calls
 // the making of them itself, rather than sitting out the ten seconds between one round and the next.
 function createSektorNow(page: Page) {

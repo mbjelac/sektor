@@ -12,6 +12,9 @@ import { scoreColor } from "../score";
 import { formatNumber } from "../formatNumber";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 import { showPurgeButton } from "./purgeButton.ui";
+import { globalImportsAndExports } from "../globalImportsAndExports";
+import { updateGlobalStatePanel } from "../globalStatePanel.ui";
+import { createListTitle } from "../listTitle.ui";
 
 // A player may only hold so many sektors at a time, so that they build on the ones they have
 // claimed before claiming more.
@@ -31,6 +34,10 @@ function renderList() {
   for (const [sektorIndex, sektor] of sektors.entries()) {
     container.appendChild(createListItem(sektor, summaries[sektorIndex], claimingAllowed));
   }
+
+  // Every sektor there is adds to what the planet brings in and sends out, whoever owns it and
+  // whether anybody owns it at all.
+  updateGlobalStatePanel(globalImportsAndExports(summaries));
 }
 
 // Every sektor the player holds counts towards the limit.
@@ -42,9 +49,11 @@ function createHeader(): HTMLElement {
   const header = document.createElement("div");
   header.className = "sektor-list-header";
 
+  header.appendChild(createListTitle("Sektors"));
+
   const name = document.createElement("span");
   name.className = "sektor-list-name";
-  name.textContent = "Sektor";
+  name.textContent = "Name";
   header.appendChild(name);
 
   const level = document.createElement("span");

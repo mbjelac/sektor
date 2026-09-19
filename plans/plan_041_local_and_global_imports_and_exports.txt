@@ -23,7 +23,7 @@ Global player scoring:
     - playing the game is not limited by score advancement
     - score advancement is incentivised by the leaderboard (fame!) but nothing else
 
-#1 Player can see planetary imports & exports
+#1 [done] Player can see planetary imports & exports
 - [done] for each sektor collect all imports & exports and sum them in global imports & export per resource type
 - [done] on list page display a panel with imports & exports of all sektors
     - all sektors regardless of ownership, even of sektors without an owner
@@ -39,8 +39,6 @@ Global player scoring:
 - [done] list of imports & exports contains only resources that are imported or exported
     - resources with 0 import/export are not shown
     - with 0 sektors, or all sektors having no imports or exports, this list is empty
-- [done] panel title: Imports & Exports, Global
-    - in front of title, heroicon globe-alt
 - [done] panel size: fixed height & width
 
 #2 Sektor's imports & exports represent a "current score"
