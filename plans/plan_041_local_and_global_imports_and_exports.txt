@@ -67,7 +67,7 @@ Global player scoring:
     - left-aligned
 
 #3 Player can see global imports & exports without leaving map view
-- import/export panel has title "Imports/Exports"
+- import/export panel has title "Global Imports/Exports"
     - left-aligned
 - in same row as title, right-aligned is a heroicon globe-alt
 - when clicked, display global import/export panel as a dialog
