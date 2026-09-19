@@ -724,3 +724,111 @@ function getLocalThroughputRows(page: Page) {
     })
   );
 }
+
+// What the whole planet brings in and sends out is what anything a sektor moves is worth measured
+// against, so the player can call it up over the map without leaving what they are building.
+test("shows what the whole planet moves when the globe beside the panel title is clicked", async ({ page }) => {
+  await storeSektorSendingOutFood(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+
+  await page.locator("#global-state-button").click();
+
+  expect(await getGlobalDialogRows(page)).toEqual([
+    { resource: "Energy ⚡", imported: "1", exported: "" },
+    { resource: "Food 🥕", imported: "", exported: "8" },
+    { resource: "Water 💧", imported: "3", exported: "" },
+    { resource: "Wood 🪵", imported: "", exported: "3" },
+  ]);
+});
+
+test("shows the planet's imports and exports over the map", async ({ page }) => {
+  await storeSektorSendingOutFood(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+
+  await page.locator("#global-state-button").click();
+
+  await expectScreenshot(page, "global-state-dialog", "#global-state-dialog");
+});
+
+// The dialog stands at the size of the sektor's own panel, so that the one reads as the other seen
+// for the whole planet rather than as something else again.
+test("stands the planet's list at the size of the sektor's own panel", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+  const panelWidth = await page.locator("#sektor-state-panel").evaluate(panel => panel.offsetWidth);
+
+  await page.locator("#global-state-button").click();
+
+  expect(await page.locator("#global-state-dialog").evaluate(dialog => dialog.offsetWidth))
+    .toEqual(panelWidth);
+});
+
+test("puts the planet's list away when the x in its corner is clicked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+  await page.locator("#global-state-button").click();
+
+  await page.locator("#global-state-close-button").click();
+
+  await expect(page.locator("#global-state-dialog")).toHaveCount(0);
+});
+
+// More resources than the dialog holds are scrolled through inside it, leaving the dialog the size
+// it has, and no bar is drawn down the side of them.
+test("scrolls the planet's resources without a bar when there are more than the dialog holds", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+
+  await page.locator("#global-state-button").click();
+
+  const scrolling = await page.locator("#global-state-dialog .global-state-list").evaluate(list => {
+    list.scrollTop = list.scrollHeight;
+    return {
+      taller: list.scrollHeight > list.clientHeight,
+      scrolledPast: list.scrollTop > 0,
+      barWidth: list.offsetWidth - list.clientWidth,
+    };
+  });
+
+  expect(scrolling).toEqual({ taller: true, scrolledPast: true, barWidth: 0 });
+});
+
+// A sektor of a refinery, a house and a processor, which between them move more resources than any
+// dialog shows at once.
+async function storeSektorMovingManyResources(page: Page, sektorId: string) {
+  await page.evaluate(sektorId => {
+    localStorage.setItem("sektors", JSON.stringify([
+      { id: "Alpha", name: "Alpha", owner: "Tester" },
+      { id: sektorId, name: sektorId, owner: "Tester" },
+    ]));
+    localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
+      level: 1,
+      locationProperties: { ore: [[6], [6], [6]] },
+      buildings: [
+        { type: "TestRefinery", location: { x: 0, y: 0 } },
+        { type: "TestHouse", location: { x: 1, y: 0 } },
+        { type: "TestProcessor", location: { x: 2, y: 0 } },
+      ],
+    }));
+  }, sektorId);
+}
+
+// What every resource row of the planet's list says while it stands over the map.
+function getGlobalDialogRows(page: Page) {
+  return page.locator("#global-state-dialog .global-state-item").evaluateAll(items =>
+    items.map(item => {
+      const cells = item.querySelectorAll("span");
+      return {
+        resource: cells[0].textContent,
+        imported: cells[1].textContent,
+        exported: cells[2].textContent,
+      };
+    })
+  );
+}

@@ -66,17 +66,17 @@ Global player scoring:
 - [done] import/export panel title: Imports & Exports, Local
     - left-aligned
 
-#3 Player can see global imports & exports without leaving map view
-- import/export panel has title "Imports/Exports"
+#3 [done] Player can see global imports & exports without leaving map view
+- [done] import/export panel has title "Imports/Exports"
     - left-aligned
-- in same row as title, right-aligned is a heroicon globe-alt
-- when clicked, display global import/export panel as a dialog
-    - width same, height same, centered on screen
-    - panel title "Global Imports/Exports"
-    - x in top right corner for hiding the list
-    - list also scrollable if too long for height
+- [done] in same row as title, right-aligned is a heroicon globe-alt
+- [done] when clicked, display global import/export panel as a dialog
+    - [done] width same, height same, centered on screen
+    - [done] panel title "Global Imports/Exports"
+    - [done] x in top right corner for hiding the list
+    - [done] list also scrollable if too long for height
         - do not show toolbar
-    - fixed height - 70% screen height
+    - [done] fixed height - 70% screen height
 
 #4 Player can see which resources are most imported or exported
 - both in list & map, global import/export lists have clickable headers:

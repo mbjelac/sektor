@@ -3,7 +3,8 @@ import { scoreColor } from "../score";
 import { findThroughputValue, ImportsAndExports, listedResourceNames } from "../globalImportsAndExports";
 import { currentResourceScore, currentScore } from "../currentScore";
 import { getNegativeScoringResources } from "../resources";
-import { arrowDownTrayIcon, arrowUpTrayIcon, starIcon } from "../icons";
+import { arrowDownTrayIcon, arrowUpTrayIcon, globeAltIcon, starIcon } from "../icons";
+import { showGlobalStateDialog } from "../globalStateDialog.ui";
 import { formatNumber } from "../formatNumber";
 import { resourceNameText, throughputText } from "../throughputDisplay.ui";
 
@@ -22,17 +23,33 @@ export function updateSektorStatePanel(sektorState: SektorState, planetImportsAn
 
   panelEl!.innerHTML = "";
 
-  panelEl!.appendChild(createTitle());
+  panelEl!.appendChild(createTitle(planetImportsAndExports));
   panelEl!.appendChild(createResourceList(sektorState, planetImportsAndExports));
 }
 
-// Named for the sektor it belongs to, against the planet's own imports and exports which the
-// player can call up beside it.
-function createTitle(): HTMLElement {
+// What this sektor moves stands under the name of the panel, and the globe at the end of the same
+// row calls up what the whole planet moves, which is what any of it is worth measured against.
+function createTitle(planetImportsAndExports: ImportsAndExports): HTMLElement {
   const title = document.createElement("div");
-  title.className = "panel-title";
-  title.textContent = "Imports & Exports, Local";
+  title.className = "panel-title sektor-state-title";
+
+  const titleText = document.createElement("span");
+  titleText.textContent = "Imports/Exports";
+  title.appendChild(titleText);
+
+  title.appendChild(createGlobeButton(planetImportsAndExports));
+
   return title;
+}
+
+function createGlobeButton(planetImportsAndExports: ImportsAndExports): HTMLElement {
+  const globeButton = document.createElement("button");
+  globeButton.id = "global-state-button";
+  globeButton.className = "sektor-state-globe";
+  globeButton.title = "Imports & exports of the whole planet";
+  globeButton.innerHTML = globeAltIcon;
+  globeButton.addEventListener("click", () => showGlobalStateDialog(planetImportsAndExports));
+  return globeButton;
 }
 
 function ensurePanel() {

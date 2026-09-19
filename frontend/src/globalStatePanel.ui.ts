@@ -4,27 +4,34 @@ import { resourceNameText, throughputText } from "./throughputDisplay.ui";
 import { createListTitle } from "./listTitle.ui";
 
 // What the whole planet brings in and sends out, standing beside the sektors and the standings as
-// the third of the three lists on the page. It carries no score: what the planet is short of and
-// what it has over is the same for everybody playing, and a score is a thing of a single sektor.
+// the third of the three lists on the page.
 export function updateGlobalStatePanel(globalImportsAndExports: ImportsAndExports) {
   const panel = document.getElementById("global-state-panel")!;
   // Drawn again whenever the sektors change, so what stands there is cleared away first.
-  panel.replaceChildren();
+  panel.replaceChildren(...createGlobalStateRows(globalImportsAndExports, "Imports/Exports"));
+}
 
-  panel.appendChild(createHeader());
-
-  for (const resourceName of listedResourceNames(globalImportsAndExports)) {
-    panel.appendChild(createResourceItem(resourceName, globalImportsAndExports));
-  }
+// The header and every resource under it, for whoever is putting the list on the page: the list of
+// the page itself, or the dialog which calls the same list up over a sektor's map. Each names the
+// list as its own page has room to: beside the sektors it stands among lists which are all of the
+// planet, and over a map it has to say which of the two lists there it is. The list carries no
+// score: what the planet is short of and what it has over is the same for everybody playing, and a
+// score is a thing of a single sektor.
+export function createGlobalStateRows(globalImportsAndExports: ImportsAndExports, title: string): HTMLElement[] {
+  return [
+    createHeader(title),
+    ...listedResourceNames(globalImportsAndExports)
+      .map(resourceName => createResourceItem(resourceName, globalImportsAndExports)),
+  ];
 }
 
 // The name of the list and the names of its columns are one header, which stays at the top of the
 // resources while they are scrolled past it.
-function createHeader(): HTMLElement {
+function createHeader(title: string): HTMLElement {
   const header = document.createElement("div");
   header.className = "global-state-header";
 
-  header.appendChild(createListTitle("Imports/Exports"));
+  header.appendChild(createListTitle(title));
   header.appendChild(createResourceCell("Resource"));
   header.appendChild(createHeaderIcon(arrowDownTrayIcon, "Imported"));
   header.appendChild(createHeaderIcon(arrowUpTrayIcon, "Exported"));
