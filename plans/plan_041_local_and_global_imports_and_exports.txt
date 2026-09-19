@@ -71,12 +71,12 @@ Global player scoring:
     - left-aligned
 - in same row as title, right-aligned is a heroicon globe-alt
 - when clicked, display global import/export panel as a dialog
-- width same, height same, centered on screen
-- panel title "Global Imports/Exports"
-- x in top right corner for hiding the list
-- list also scrollable if too long for height
-    - do not show toolbar
-- fixed height - 70% screen height
+    - width same, height same, centered on screen
+    - panel title "Global Imports/Exports"
+    - x in top right corner for hiding the list
+    - list also scrollable if too long for height
+        - do not show toolbar
+    - fixed height - 70% screen height
 
 #4 Player can see which resources are most imported or exported
 - both in list & map, global import/export lists have clickable headers:
