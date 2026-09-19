@@ -76,3 +76,9 @@ Global player scoring:
 - list also scrollable if too long for height
     - do not show toolbar
 - fixed height - 50% screen height
+
+#4 Player can see which resources are most imported or exported
+- both in list & map, global import/export lists have clickable headers:
+    - Resource: sort map by resource name, alphabetically
+    - Import amount: sort map by descending import amount, then ascending export amount
+    - Export amount: sort map by descending export amount, then ascending import amount
