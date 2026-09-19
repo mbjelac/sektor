@@ -1,0 +1,4 @@
+Every day, a player's current score is added to their actual score.
+Only if it is positive.
+Exception: If player hasn't played that day, this does not happen.
+
