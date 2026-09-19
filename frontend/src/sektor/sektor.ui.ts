@@ -9,13 +9,14 @@ import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
+import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
 import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, propertyValueColor } from "../properties";
-import { getLocalResources, getNegativeScoringResources } from "../resources";
+import { getLocalResources } from "../resources";
 import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
@@ -220,7 +221,7 @@ function getLocations(): Location[][] {
 }
 
 const builderLevel = getBuilderLevel();
-const sektor = new Sektor(getLocations(), buildingDefinitions, getNegativeScoringResources(), getLocalResources());
+const sektor = new Sektor(getLocations(), buildingDefinitions, getLocalResources());
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
 const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
@@ -271,7 +272,9 @@ let starvedBuildingLocations: BuildingLocation[] = [];
 
 function updateSektorState() {
   const sektorState = sektor.getSektorState();
-  updateSektorStatePanel(sektorState);
+  // What this sektor moves is worth what it does for the planet, so the planet is worked out anew
+  // with this sektor as it now stands every time anything here changes.
+  updateSektorStatePanel(sektorState, getPlanetImportsAndExportsWhileBuilding(sektorId, sektorState));
   starvedBuildingLocations = sektorState.starvedFunctions
     .map(starvedFunction => starvedFunction.buildingLocation)
     .filter((location, index, locations) =>

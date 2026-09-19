@@ -4,10 +4,6 @@ import { BuildingLocation, BuildingCreation, Building, Location } from "../../..
 
 export type { BuildingLocation, BuildingCreation, Building, Location };
 
-export interface ScoredThroughput extends ResourceThroughput {
-  score: number;
-}
-
 // Names one function of one building. The plan calls this a BuildingFunction, but that name is
 // already taken by the function of a building definition, which carries no location.
 export interface BuildingFunctionLocation {
@@ -16,8 +12,8 @@ export interface BuildingFunctionLocation {
 }
 
 export interface SektorState {
-  imports: ScoredThroughput[];
-  exports: ScoredThroughput[];
+  imports: ResourceThroughput[];
+  exports: ResourceThroughput[];
   starvedFunctions: BuildingFunctionLocation[];
 }
 
@@ -48,24 +44,19 @@ export interface CreateBuildingResult {
   addedBuildings: Building[];
 }
 
-export const SCORE_PER_UNIT = 2;
-
 export class Sektor {
   private buildings: Building[] = [];
   private readonly locations: Location[][];
   private readonly buildingDefinitions: BuildingDefinition[];
-  private readonly negativeScoringResources: string[];
   private readonly localResources: string[];
 
   constructor(
     locations: Location[][],
     buildingDefinitions: BuildingDefinition[],
-    negativeScoringResources: string[],
     localResources: string[],
   ) {
     this.locations = locations;
     this.buildingDefinitions = buildingDefinitions;
-    this.negativeScoringResources = negativeScoringResources;
     this.localResources = localResources;
   }
 
@@ -148,7 +139,7 @@ export class Sektor {
 
     const imports = totalInputs.map(input => {
       const value = roundToOneDecimal(Math.max(0, input.value - this.findThroughputValue(totalOutputs, input.name)));
-      return { name: input.name, value, score: this.scoreImport(input.name, value) };
+      return { name: input.name, value };
     });
     // A local resource cannot leave the sektor, so whatever is produced above what is consumed
     // is not an export of it, it is simply not made.
@@ -156,7 +147,7 @@ export class Sektor {
       .filter(output => !this.localResources.includes(output.name))
       .map(output => {
         const value = roundToOneDecimal(Math.max(0, output.value - this.findThroughputValue(totalInputs, output.name)));
-        return { name: output.name, value, score: this.scoreExport(output.name, value) };
+        return { name: output.name, value };
       });
 
     return { imports, exports, starvedFunctions };
@@ -247,19 +238,6 @@ export class Sektor {
       amountsByResource.set(throughput.name, (amountsByResource.get(throughput.name) ?? 0) + throughput.value);
     }
     return Array.from(amountsByResource.entries()).map(([name, value]) => ({ name, value: roundToOneDecimal(value) }));
-  }
-
-  private scoreImport(resourceType: string, value: number): number {
-    return roundToOneDecimal(this.applyNegativeScoring(resourceType, -value * SCORE_PER_UNIT));
-  }
-
-  private scoreExport(resourceType: string, value: number): number {
-    return roundToOneDecimal(this.applyNegativeScoring(resourceType, value * SCORE_PER_UNIT));
-  }
-
-  private applyNegativeScoring(resourceType: string, score: number): number {
-    const signedScore = this.negativeScoringResources.includes(resourceType) ? -score : score;
-    return signedScore === 0 ? 0 : signedScore;
   }
 
   doesBuildingNeedInput(location: BuildingLocation, resourceType: string): boolean {

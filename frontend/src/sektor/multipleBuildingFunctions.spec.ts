@@ -27,7 +27,6 @@ function createSektor(): Sektor {
     [[{ properties: {} }]],
     testDefinitions,
     [],
-    [],
   );
 }
 

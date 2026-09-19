@@ -24,7 +24,7 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, [], []);
+  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
 }
 
 describe("destroyBuilding", () => {
@@ -71,10 +71,10 @@ describe("destroyBuilding", () => {
 
     expect(sektor.getSektorState()).toEqual({
       imports: [
-        { name: "Water", value: 2, score: -4 },
+        { name: "Water", value: 2 },
       ],
       exports: [
-        { name: "Wheat", value: 5, score: 10 },
+        { name: "Wheat", value: 5 },
       ],
       starvedFunctions: [],
     });

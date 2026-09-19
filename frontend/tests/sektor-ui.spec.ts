@@ -571,25 +571,31 @@ test("shows error when destroying an empty location", async ({ page }) => {
   await expectScreenshot(page, "destroy-empty-location-error", "body");
 });
 
-// What the sektor moves, resource by resource: a resource only brought in, one only sent out, and
-// one which is both, so that each of the three reads right beside the others.
+// What the sektor moves, resource by resource, and what each of those is worth as things stand on
+// the planet: a resource brought in which the planet has over and one it is short of, a resource
+// sent out of each, and Work, which does the planet harm and so turns the table around.
 test("displays what the sektor imports and exports", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await page.evaluate(() => {
-    (window as any).updateSektorStatePanel({
-      imports: [
-        { name: "Water", value: 4, score: -8 },
-        { name: "Energy", value: 5, score: -10 },
-        { name: "Food", value: 2, score: -4 },
-      ],
-      exports: [
-        { name: "Food", value: 5, score: 10 },
-        { name: "Ore", value: 3, score: 6 },
-        { name: "Work", value: 3, score: -6 },
-      ],
-      starvedFunctions: [],
-    });
+    (window as any).updateSektorStatePanel(
+      {
+        imports: [
+          { name: "Water", value: 4 },
+          { name: "Energy", value: 5 },
+        ],
+        exports: [
+          { name: "Food", value: 5 },
+          { name: "Ore", value: 3 },
+          { name: "Work", value: 3 },
+        ],
+        starvedFunctions: [],
+      },
+      {
+        imports: [{ name: "Energy", value: 20 }, { name: "Food", value: 8 }, { name: "Work", value: 6 }],
+        exports: [{ name: "Water", value: 12 }, { name: "Ore", value: 9 }],
+      },
+    );
   });
 
   await expectScreenshot(page, "sektor-state-panel", "#sektor-state-panel");
@@ -648,3 +654,73 @@ test("shows error when placing building on occupied location", async ({ page }) 
   await page.waitForTimeout(200);
   await expectScreenshot(page, "building-error", "body");
 });
+
+// A sektor is worth what it does for the planet, so the same Food brought in is worth different
+// things on different planets: two points off where the planet is short of Food, and only one where
+// another sektor already sends out more than enough of it.
+test("scores what the sektor moves against what the rest of the planet moves", async ({ page }) => {
+  await storeSektorSendingOutFood(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestProcessor");
+
+  expect(await getLocalThroughputRows(page)).toEqual([
+    { resource: "Food 🥕", imported: "2", exported: "", score: "-1" },
+    { resource: "Wood 🪵", imported: "", exported: "3", score: "1" },
+  ]);
+});
+
+// The same sektor on a planet with nothing else on it: the Food it brings in is Food the planet is
+// short of, which costs it twice as much.
+test("scores what the sektor moves against itself while it is the whole planet", async ({ page }) => {
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestProcessor");
+
+  expect(await getLocalThroughputRows(page)).toEqual([
+    { resource: "Food 🥕", imported: "2", exported: "", score: "-2" },
+    { resource: "Wood 🪵", imported: "", exported: "3", score: "1" },
+  ]);
+});
+
+// A sektor of one factory, which turns Water and Energy into as much Food as the ground it stands
+// on is worth.
+async function storeSektorSendingOutFood(page: Page, sektorId: string) {
+  await page.evaluate(sektorId => {
+    localStorage.setItem("sektors", JSON.stringify([
+      { id: "Alpha", name: "Alpha", owner: "Tester" },
+      { id: sektorId, name: sektorId, owner: "Tester" },
+    ]));
+    localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
+      level: 1,
+      locationProperties: { soil: [[10]] },
+      buildings: [{ type: "TestFactory", location: { x: 0, y: 0 } }],
+    }));
+  }, sektorId);
+}
+
+async function placeBuilding(page: Page, buildingName: string) {
+  await page.locator(`.building-item[data-building-name="${buildingName}"]`).click();
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await canvas.click({ position: { x: canvasBox!.width / 2, y: canvasBox!.height / 2 } });
+  await page.waitForTimeout(200);
+}
+
+// What every resource row of the sektor's own panel says, leaving out the header and the row which
+// adds the scores up.
+function getLocalThroughputRows(page: Page) {
+  return page.locator("#sektor-state-panel .ss-row:not(.ss-header):not(.ss-total)").evaluateAll(rows =>
+    rows.map(row => {
+      const cells = row.querySelectorAll("span");
+      return {
+        resource: cells[0].textContent,
+        imported: cells[1].textContent,
+        exported: cells[2].textContent,
+        score: cells[3].textContent,
+      };
+    })
+  );
+}

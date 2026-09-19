@@ -41,10 +41,10 @@ Global player scoring:
     - with 0 sektors, or all sektors having no imports or exports, this list is empty
 - [done] panel size: fixed height & width
 
-#2 Sektor's imports & exports represent a "current score"
-- previous calculations of score based on imports & exports are to be completely overriden by this new one
-- current sektor's imports & exports represent a "current score" of the sektor
-- current score is calculated based on current planet's imports and exports as follows:
+#2 [done] Sektor's imports & exports represent a "current score"
+- [done] previous calculations of score based on imports & exports are to be completely overriden by this new one
+- [done] current sektor's imports & exports represent a "current score" of the sektor
+- [done] current score is calculated based on current planet's imports and exports as follows:
     - for each resource which is imported or exported to/from the sektor:
         - look up the global import/export status of that resource
         - the current score for that resource is:
@@ -58,12 +58,12 @@ Global player scoring:
             - sektor is importing Food which is globally imported (-2)
             - resulting current score: -2
         - if a resource is marked as "negative" in resources.md (resources.test.md for tests) then the scores in the scoring table are§¡¡ inverted
-- display current scores of each resource in sektor map import/export panel
+- [done] display current scores of each resource in sektor map import/export panel
     - already implemented in UI, apply to current score for each resource
-- display total current score in sektor map import/export panel
+- [done] display total current score in sektor map import/export panel
     - already implemented in UI, apply to total current score
-- changing amount of imports or exports here changes amount of global imports or exports shown on the list import/export panel
-- import/export panel title: Imports & Exports, Local
+- [done] changing amount of imports or exports here changes amount of global imports or exports shown on the list import/export panel
+- [done] import/export panel title: Imports & Exports, Local
     - left-aligned
 
 #3 Player can see global imports & exports without leaving map view

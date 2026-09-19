@@ -30,6 +30,19 @@ export function globalImportsAndExports(sektorImportsAndExports: ImportsAndExpor
   };
 }
 
+// Only a resource which is actually moved is listed, as nothing else has anything to say.
+export function listedResourceNames(importsAndExports: ImportsAndExports): string[] {
+  const resourceNames = new Set<string>();
+  for (const throughput of [...importsAndExports.imports, ...importsAndExports.exports]) {
+    if (throughput.value !== 0) resourceNames.add(throughput.name);
+  }
+  return Array.from(resourceNames).sort((first, second) => first.localeCompare(second));
+}
+
+export function findThroughputValue(throughputs: ResourceThroughput[], resourceName: string): number {
+  return throughputs.find(throughput => throughput.name === resourceName)?.value ?? 0;
+}
+
 function addToResource(broughtInByResourceName: Map<string, number>, resourceName: string, broughtIn: number) {
   broughtInByResourceName.set(resourceName, (broughtInByResourceName.get(resourceName) ?? 0) + broughtIn);
 }

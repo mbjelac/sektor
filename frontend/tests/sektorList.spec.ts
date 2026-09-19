@@ -375,6 +375,25 @@ test("keeps the header of the planet's resources in sight while they are scrolle
     .toEqual({ headerTopBeforeScrolling: listTop, headerTopAfterScrolling: listTop });
 });
 
+// What a sektor moves is what the planet moves, so a building put up on the map is felt on the list
+// the player goes back to: the processor eats Food the planet has none of and makes Wood nobody was
+// making.
+test("shows what a building put up in a sektor does to what the planet moves", async ({ page }) => {
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestProcessor"]').click();
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await canvas.click({ position: { x: canvasBox!.width / 2, y: canvasBox!.height / 2 } });
+
+  await page.goto("/?test=true");
+
+  expect(await getGlobalThroughputRows(page)).toEqual([
+    { resource: "Food 🥕", imported: "2", exported: "" },
+    { resource: "Wood 🪵", imported: "", exported: "3" },
+  ]);
+});
+
 // A sektor of buildings standing in a row, one to a location, with the same ore under every one of
 // them for whatever mines stand there to dig up.
 async function storeSektorWithBuildings(page: Page, sektorId: string, buildingTypes: string[], orePerLocation = 0) {

@@ -15,6 +15,9 @@ import { showPurgeButton } from "./purgeButton.ui";
 import { globalImportsAndExports } from "../globalImportsAndExports";
 import { updateGlobalStatePanel } from "../globalStatePanel.ui";
 import { createListTitle } from "../listTitle.ui";
+import { currentScore } from "../currentScore";
+import { getNegativeScoringResources } from "../resources";
+import { ImportsAndExports } from "../globalImportsAndExports";
 
 // A player may only hold so many sektors at a time, so that they build on the ones they have
 // claimed before claiming more.
@@ -28,16 +31,18 @@ function renderList() {
   const sektors = getSektorList();
   const summaries = sektors.map(sektor => getSektorSummary(sektor.id));
   const claimingAllowed = countClaimedSektors(sektors) < MAXIMUM_CLAIMED_SEKTORS;
+  // Every sektor there is adds to what the planet brings in and sends out, whoever owns it and
+  // whether anybody owns it at all. A sektor is then worth what it does for the planet, so this is
+  // worked out before any sektor is scored against it.
+  const planetImportsAndExports = globalImportsAndExports(summaries);
 
   container.appendChild(createHeader());
 
   for (const [sektorIndex, sektor] of sektors.entries()) {
-    container.appendChild(createListItem(sektor, summaries[sektorIndex], claimingAllowed));
+    container.appendChild(createListItem(sektor, summaries[sektorIndex], planetImportsAndExports, claimingAllowed));
   }
 
-  // Every sektor there is adds to what the planet brings in and sends out, whoever owns it and
-  // whether anybody owns it at all.
-  updateGlobalStatePanel(globalImportsAndExports(summaries));
+  updateGlobalStatePanel(planetImportsAndExports);
 }
 
 // Every sektor the player holds counts towards the limit.
@@ -87,7 +92,12 @@ function createHeaderIcon(icon: string, tooltip?: string): HTMLElement {
   return cell;
 }
 
-function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, claimingAllowed: boolean): HTMLElement {
+function createListItem(
+  sektorListItem: SektorListItem,
+  summary: SektorSummary,
+  planetImportsAndExports: ImportsAndExports,
+  claimingAllowed: boolean,
+): HTMLElement {
   const item = document.createElement("div");
   item.className = "sektor-list-item";
 
@@ -97,7 +107,7 @@ function createListItem(sektorListItem: SektorListItem, summary: SektorSummary, 
   item.appendChild(createNumber(summary.buildingCount));
   item.appendChild(createNumber(summary.importTotal));
   item.appendChild(createNumber(summary.exportTotal));
-  item.appendChild(createScore(summary.score));
+  item.appendChild(createScore(currentScore(summary, planetImportsAndExports, getNegativeScoringResources())));
   item.appendChild(createClaimOrAbandonButton(sektorListItem, claimingAllowed));
 
   return item;

@@ -18,7 +18,7 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, [], []);
+  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
 }
 
 describe("createBuilding", () => {
@@ -68,8 +68,8 @@ describe("createBuilding imports and exports", () => {
       imports: sektor.getSektorState().imports,
       exports: sektor.getSektorState().exports,
     }).toEqual({
-      imports: [{ name: "Wheat", value: 4, score: -8 }],
-      exports: [{ name: "Flour", value: 3, score: 6 }],
+      imports: [{ name: "Wheat", value: 4 }],
+      exports: [{ name: "Flour", value: 3 }],
     });
   });
 
@@ -84,12 +84,12 @@ describe("createBuilding imports and exports", () => {
       exports: sektor.getSektorState().exports,
     }).toEqual({
       imports: [
-        { name: "Wheat", value: 0, score: 0 },
-        { name: "Water", value: 1, score: -2 },
+        { name: "Wheat", value: 0 },
+        { name: "Water", value: 1 },
       ],
       exports: [
-        { name: "Flour", value: 3, score: 6 },
-        { name: "Wheat", value: 2, score: 4 },
+        { name: "Flour", value: 3 },
+        { name: "Wheat", value: 2 },
       ],
     });
   });
@@ -104,10 +104,10 @@ describe("createBuilding imports and exports", () => {
       imports: sektor.getSektorState().imports,
       exports: sektor.getSektorState().exports,
     }).toEqual({
-      imports: [{ name: "Water", value: 0, score: 0 }],
+      imports: [{ name: "Water", value: 0 }],
       exports: [
-        { name: "Wheat", value: 6, score: 12 },
-        { name: "Water", value: 0, score: 0 },
+        { name: "Wheat", value: 6 },
+        { name: "Water", value: 0 },
       ],
     });
   });

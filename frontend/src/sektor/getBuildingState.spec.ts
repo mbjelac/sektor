@@ -29,7 +29,7 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { soil: 2 } }]], testDefinitions, [], []);
+  return new Sektor([[{ properties: { soil: 2 } }]], testDefinitions, []);
 }
 
 describe("getBuildingState", () => {

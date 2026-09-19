@@ -69,7 +69,6 @@ function sektorWithBuildings(buildings: Building[]): Sektor {
   const sektor = new Sektor(
     Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => ({ properties: {} }))),
     testDefinitions,
-    [],
     LOCAL_RESOURCES,
   );
   sektor.loadState({ buildings });

@@ -61,7 +61,6 @@ function emptySektor(): Sektor {
     [[{ properties: {} }]],
     testDefinitions,
     [],
-    [],
   );
 }
 

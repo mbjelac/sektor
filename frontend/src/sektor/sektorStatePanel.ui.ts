@@ -1,8 +1,11 @@
-import { type ScoredThroughput, type SektorState } from "./Sektor";
+import { type SektorState } from "./Sektor";
 import { scoreColor } from "../score";
+import { findThroughputValue, ImportsAndExports, listedResourceNames } from "../globalImportsAndExports";
+import { currentResourceScore, currentScore } from "../currentScore";
+import { getNegativeScoringResources } from "../resources";
 import { arrowDownTrayIcon, arrowUpTrayIcon, starIcon } from "../icons";
 import { formatNumber } from "../formatNumber";
-import { findThroughputValue, listedResourceNames, resourceNameText, throughputText } from "../throughputDisplay.ui";
+import { resourceNameText, throughputText } from "../throughputDisplay.ui";
 
 let panelEl: HTMLElement | null = null;
 let importHoverCallback: ((resourceType: string | null) => void) | null = null;
@@ -11,12 +14,25 @@ export function onImportHover(callback: (resourceType: string | null) => void) {
   importHoverCallback = callback;
 }
 
-export function updateSektorStatePanel(sektorState: SektorState) {
+// What this sektor brings in and sends out, and what each of those is worth as things stand on the
+// planet. Nothing here is worth anything in itself: a resource is worth what moving it does for the
+// planet, which is why what the planet brings in and sends out is shown alongside.
+export function updateSektorStatePanel(sektorState: SektorState, planetImportsAndExports: ImportsAndExports) {
   ensurePanel();
 
   panelEl!.innerHTML = "";
 
-  panelEl!.appendChild(createResourceList(sektorState));
+  panelEl!.appendChild(createTitle());
+  panelEl!.appendChild(createResourceList(sektorState, planetImportsAndExports));
+}
+
+// Named for the sektor it belongs to, against the planet's own imports and exports which the
+// player can call up beside it.
+function createTitle(): HTMLElement {
+  const title = document.createElement("div");
+  title.className = "panel-title";
+  title.textContent = "Imports & Exports, Local";
+  return title;
 }
 
 function ensurePanel() {
@@ -27,17 +43,17 @@ function ensurePanel() {
   document.getElementById("right-panels")!.appendChild(panelEl);
 }
 
-function createResourceList(sektorState: SektorState): HTMLElement {
+function createResourceList(sektorState: SektorState, planetImportsAndExports: ImportsAndExports): HTMLElement {
   const list = document.createElement("div");
   list.className = "ss-list";
 
   list.appendChild(createHeaderRow());
 
   for (const resourceName of listedResourceNames(sektorState)) {
-    list.appendChild(createResourceRow(resourceName, sektorState));
+    list.appendChild(createResourceRow(resourceName, sektorState, planetImportsAndExports));
   }
 
-  list.appendChild(createTotalScoreRow(sektorState));
+  list.appendChild(createTotalScoreRow(sektorState, planetImportsAndExports));
 
   return list;
 }
@@ -72,10 +88,11 @@ function createHeaderRow(): HTMLElement {
   return headerRow;
 }
 
-function createResourceRow(resourceName: string, sektorState: SektorState): HTMLElement {
-  const importValue = findThroughputValue(sektorState.imports, resourceName);
-  const exportValue = findThroughputValue(sektorState.exports, resourceName);
-
+function createResourceRow(
+  resourceName: string,
+  sektorState: SektorState,
+  planetImportsAndExports: ImportsAndExports,
+): HTMLElement {
   const row = document.createElement("div");
   row.className = "ss-row";
   row.addEventListener("mouseenter", () => importHoverCallback?.(resourceName));
@@ -86,48 +103,37 @@ function createResourceRow(resourceName: string, sektorState: SektorState): HTML
   nameCell.textContent = resourceNameText(resourceName);
   row.appendChild(nameCell);
 
-  row.appendChild(createValueCell(importValue));
-  row.appendChild(createValueCell(exportValue));
-
-  const score = resourceScore(resourceName, sektorState);
-  const scoreCell = document.createElement("span");
-  scoreCell.className = "ss-cell-score";
-  scoreCell.textContent = formatNumber(score);
-  scoreCell.style.color = scoreColor(score);
-  row.appendChild(scoreCell);
+  row.appendChild(createValueCell(findThroughputValue(sektorState.imports, resourceName)));
+  row.appendChild(createValueCell(findThroughputValue(sektorState.exports, resourceName)));
+  row.appendChild(createScoreCell(
+    currentResourceScore(resourceName, sektorState, planetImportsAndExports, getNegativeScoringResources()),
+    "ss-cell-score",
+  ));
 
   return row;
 }
 
-function resourceScore(resourceName: string, sektorState: SektorState): number {
-  return findThroughputScore(sektorState.imports, resourceName) + findThroughputScore(sektorState.exports, resourceName);
-}
-
-function findThroughputScore(throughputs: ScoredThroughput[], resourceName: string): number {
-  return throughputs.find(throughput => throughput.name === resourceName)?.score ?? 0;
-}
-
-function createTotalScoreRow(sektorState: SektorState): HTMLElement {
+function createTotalScoreRow(sektorState: SektorState, planetImportsAndExports: ImportsAndExports): HTMLElement {
   const row = document.createElement("div");
   row.className = "ss-row ss-total";
 
   row.appendChild(document.createElement("span"));
   row.appendChild(document.createElement("span"));
   row.appendChild(document.createElement("span"));
-
-  const score = totalScore(sektorState);
-  const totalScoreCell = document.createElement("span");
-  totalScoreCell.className = "ss-cell-score ss-total-score";
-  totalScoreCell.textContent = formatNumber(score);
-  totalScoreCell.style.color = scoreColor(score);
-  row.appendChild(totalScoreCell);
+  row.appendChild(createScoreCell(
+    currentScore(sektorState, planetImportsAndExports, getNegativeScoringResources()),
+    "ss-cell-score ss-total-score",
+  ));
 
   return row;
 }
 
-function totalScore(sektorState: SektorState): number {
-  return [...sektorState.imports, ...sektorState.exports]
-    .reduce((total, throughput) => total + throughput.score, 0);
+function createScoreCell(score: number, className: string): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = className;
+  cell.textContent = formatNumber(score);
+  cell.style.color = scoreColor(score);
+  return cell;
 }
 
 function createValueCell(value: number): HTMLElement {

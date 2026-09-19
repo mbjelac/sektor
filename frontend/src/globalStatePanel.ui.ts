@@ -1,6 +1,6 @@
-import { ImportsAndExports } from "./globalImportsAndExports";
+import { findThroughputValue, ImportsAndExports, listedResourceNames } from "./globalImportsAndExports";
 import { arrowDownTrayIcon, arrowUpTrayIcon } from "./icons";
-import { findThroughputValue, listedResourceNames, resourceNameText, throughputText } from "./throughputDisplay.ui";
+import { resourceNameText, throughputText } from "./throughputDisplay.ui";
 import { createListTitle } from "./listTitle.ui";
 
 // What the whole planet brings in and sends out, standing beside the sektors and the standings as
