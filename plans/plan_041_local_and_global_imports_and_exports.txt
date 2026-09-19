@@ -1,0 +1,73 @@
+Global player scoring:
+- the planet has global imports & exports which are just total sums of all existing sektor imports & exports
+    - same as sektor with sum of building inputs & outputs
+    - example:
+        - sektor A exports water 10 and imports food 15
+        - sektor B exports food 8 and imports water 9
+        - planet has
+            - water export of 1
+            - food import of 7
+- each player's contribution to exports & imports are scored, taken from every player's sektor
+- sektor status is not needed
+    - all sektors are active in global imports & exports as soon as the first building is built!
+- player scores are dynamic
+    - changing all the time
+    - each sektor's imports & exports are contributing with positive and negative points to player's score
+    - each resource is evaluated for all cases and score applied:
+        - importing exported 0 (no damage done)
+        - importing imported -1 * global import (worsening the planet's situation)
+        - exporting exported +1 * global export (contributing to planet's exports)
+        - exporting imported +2 * global import (helping the planet's situation)
+    - as a building is built, sektor's imports & exports change, changing global imports & exports & changing all the players' scores
+- this empowers the player to build in each sektor towards one, more or none of the current planet's goals!
+    - playing the game is not limited by score advancement
+    - score advancement is incentivised by the leaderboard (fame!) but nothing else
+
+#1 Player can see planetary imports & exports
+- [done] for each sektor collect all imports & exports and sum them in global imports & export per resource type
+- on list page display a panel with imports & exports of all sektors
+    - all sektors regardless of ownership, even of sektors without an owner
+    - display import/export panel similar to the one in sektor map
+        - without score column
+        - located in the bottom right corner of the list screen
+- list of imports & exports contains only resources that are imported or exported
+    - resources with 0 import/export are not shown
+    - with 0 sektors, or all sektors having no imports or exports, this list is empty
+- panel title: Imports & Exports, Global
+    - in front of title, heroicon globe-alt
+- panel size: fixed height & width
+- list in panel scrolls if it gets too long
+    - do not display scrollbar in that case
+
+#2 Sektor's imports & exports represent a "current score"
+- previous calculations of score based on imports & exports are to be completely overriden by this new one
+- current sektor's imports & exports represent a "current score" of the sektor
+- current score is calculated based on current planet's imports and exports as follows:
+    - for each resource which is imported or exported to/from the sektor:
+        - look up the global import/export status of that resource
+        - the current score for that resource is:
+            - importing globally exported: -1
+            - importing globally imported: -2
+            - exporting globally exported: +1
+            - exporting globally imported: +2
+        - example:
+            - sektor is importing Wheat which is globally exported (-1)
+            - sektor is exporting Water which is globally exported (1)
+            - sektor is importing Food which is globally imported (-2)
+            - resulting current score: -2
+- display current scores of each resource in sektor map import/export panel
+    - already implemented in UI, apply to current score for each resource
+- display total current score in sektor map import/export panel
+    - already implemented in UI, apply to total current score
+- changing amount of imports or exports here changes amount of global imports or exports shown on the list import/export panel
+- import/export panel title: Imports & Exports, Local
+    - left-aligned
+
+#3 Player can see global imports & exports without leaving map view
+- in import/export panel, same row with title
+- heroicon globe-alt
+- when clicked, display global import/export panel as a dialog
+- width same, height same, centered on screen
+- x in top right corner for hiding the list
+- list also scrollable if too long for height
+    - do not show toolbar
