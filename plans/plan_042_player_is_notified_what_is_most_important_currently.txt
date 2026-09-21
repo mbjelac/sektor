@@ -19,7 +19,7 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
     - items in list delimited by comma + space
 - [done] if this message is already shown (with different resources), replace it with this one
 
-#2 Notify player about local imports which are also global imports
+#2 [done] Notify player about local imports which are also global imports
 - [done] when sektor map is opened and every time a global or local import or export amount changes
     - find at most 3 local imports with highest import amounts
         - which are also imported globally
