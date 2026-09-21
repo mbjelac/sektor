@@ -1,7 +1,7 @@
 In any point in time there is a thing to do in a sektor map which can mostly benefit the player (and the whole planet).
 
 #1 Notify player about most imported resources
-- when sektor map is opened and every time a global import or export amount changes
+- when sektor map is opened and every time a global or local import or export amount changes
     - find at most 3 global imports with highest import amounts
         - their global import amount is highest
     - then display a "message" to the player
@@ -20,7 +20,7 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
 - if this message is already shown (with different resources), replace it with this one
 
 #2 Notify player about local imports which are also global imports
-- when sektor map is opened and every time a global import or export amount changes
+- when sektor map is opened and every time a global or local import or export amount changes
     - find at most 3 local imports with highest import amounts
         - which are also imported globally
     - then display a message to the player
