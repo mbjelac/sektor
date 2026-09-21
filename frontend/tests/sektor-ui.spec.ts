@@ -853,3 +853,42 @@ function getGlobalDialogResourceNames(page: Page) {
   return page.locator("#global-state-dialog .global-state-item .global-state-resource")
     .evaluateAll(cells => cells.map(cell => cell.textContent));
 }
+
+// Whatever the planet is shortest of is what a player can do most good by sending out, so they are
+// told it as the map opens, before they have built anything at all.
+test("tells the player what the planet is shortest of as the map opens", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+
+  await page.goto("/sektor.html?id=Alpha&test=true");
+
+  await expect(page.locator("#most-imported-message")).toHaveText("This planet needs: Ore 🪨, Water 💧, Food 🥕");
+});
+
+test("shows what the planet is shortest of over the map", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+
+  await page.locator("#most-imported-message").waitFor();
+
+  await expectScreenshot(page, "most-imported-message", "body");
+});
+
+// A building put up changes what the planet is short of, so the advice on the screen is written
+// over rather than stood beside: the player is never told two of the same thing at once.
+test("writes over what the player is told when what the planet is shortest of changes", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+
+  expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
+    .toEqual(["This planet needs: Food 🥕, Ore 🪨, Water 💧"]);
+});
+
+// A planet short of nothing has nothing to advise, so nothing is said.
+test("tells the player nothing while the planet is short of nothing", async ({ page }) => {
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await expect(page.locator("#most-imported-message")).toHaveCount(0);
+});

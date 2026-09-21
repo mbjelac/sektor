@@ -1221,6 +1221,33 @@ body > main {
     color: #fff;
 }
 
+/* What would most help the planet is told to the player along the bottom of the map, in the middle
+   of it where it is read at a glance without standing in the way of what they are building. One
+   message stands under the last, so that several are read as a list rather than laid over another. */
+#messages {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Every message is the same width whatever it says, so that the ones after the first do not shift
+   about under the eye of somebody reading down them. */
+.message {
+    width: 800px;
+    background: #ffe187;
+    color: #000;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: sans-serif;
+    font-size: 14px;
+    text-align: left;
+}
+
 .dialog-overlay {
     position: fixed;
     inset: 0;

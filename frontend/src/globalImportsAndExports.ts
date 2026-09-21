@@ -39,6 +39,16 @@ export function listedResourceNames(importsAndExports: ImportsAndExports): strin
   return Array.from(resourceNames).sort((first, second) => first.localeCompare(second));
 }
 
+// The resources the planet is shortest of, the one it is shortest of first, and no more of them
+// than asked for. Resources it is equally short of keep the order their names put them in.
+export function mostImportedResourceNames(importsAndExports: ImportsAndExports, atMost: number): string[] {
+  return importsAndExports.imports
+    .filter(throughput => throughput.value > 0)
+    .sort((throughput, otherThroughput) => otherThroughput.value - throughput.value)
+    .slice(0, atMost)
+    .map(throughput => throughput.name);
+}
+
 // Which column of a list of imports and exports its resources are put in order by.
 export type ResourceSortOrder = "resource" | "imported" | "exported";
 

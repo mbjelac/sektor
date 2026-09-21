@@ -10,6 +10,7 @@ import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui
 import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
+import { showMostImportedMessage } from "../messages.ui";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
 import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
@@ -274,7 +275,9 @@ function updateSektorState() {
   const sektorState = sektor.getSektorState();
   // What this sektor moves is worth what it does for the planet, so the planet is worked out anew
   // with this sektor as it now stands every time anything here changes.
-  updateSektorStatePanel(sektorState, getPlanetImportsAndExportsWhileBuilding(sektorId, sektorState));
+  const planetImportsAndExports = getPlanetImportsAndExportsWhileBuilding(sektorId, sektorState);
+  updateSektorStatePanel(sektorState, planetImportsAndExports);
+  showMostImportedMessage(planetImportsAndExports);
   starvedBuildingLocations = sektorState.starvedFunctions
     .map(starvedFunction => starvedFunction.buildingLocation)
     .filter((location, index, locations) =>
@@ -1062,6 +1065,9 @@ onImportHover(resourceType => { hoveredImportResource = resourceType; });
 if (!isTestMode) {
   loadSavedState();
 }
+// A player is told what would most help the planet from the moment the map is open, before they
+// have built anything at all: what the planet is short of is the doing of every sektor there is.
+showMostImportedMessage(getPlanetImportsAndExportsWhileBuilding(sektorId, sektor.getSektorState()));
 if (isTestMode) {
   (window as any).updateSektorStatePanel = updateSektorStatePanel;
   (window as any).showBuildingPanel = showBuildingPanel;
