@@ -49,6 +49,20 @@ export function mostImportedResourceNames(importsAndExports: ImportsAndExports, 
     .map(throughput => throughput.name);
 }
 
+// The resources this sektor brings in which the planet is short of too. Taking a share of what the
+// planet has too little of is the most a sektor can do against it, so these are the ones worth
+// leaving off first, the most brought in here first whatever order the planet puts them in.
+export function mostImportedScarceResourceNames(
+  sektorImportsAndExports: ImportsAndExports,
+  planetImportsAndExports: ImportsAndExports,
+  atMost: number,
+): string[] {
+  const scarceImports = sektorImportsAndExports.imports
+    .filter(throughput => findThroughputValue(planetImportsAndExports.imports, throughput.name) > 0);
+
+  return mostImportedResourceNames({ imports: scarceImports, exports: [] }, atMost);
+}
+
 // Which column of a list of imports and exports its resources are put in order by.
 export type ResourceSortOrder = "resource" | "imported" | "exported";
 

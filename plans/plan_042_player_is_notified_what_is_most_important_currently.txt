@@ -20,12 +20,12 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
 - [done] if this message is already shown (with different resources), replace it with this one
 
 #2 Notify player about local imports which are also global imports
-- when sektor map is opened and every time a global or local import or export amount changes
+- [done] when sektor map is opened and every time a global or local import or export amount changes
     - find at most 3 local imports with highest import amounts
         - which are also imported globally
     - then display a message to the player
         - same UI as in #1
         - text "Avoid importing scarse resources <resource list>"
-- display message in the bottom of the screen
-- in case of multiple messages, stack them one beneath the other with a small space between
-- if this message is already shown (with different resources), replace it with this one
+- [done] display message in the bottom of the screen
+- [done] in case of multiple messages, stack them one beneath the other with a small space between
+- [done] if this message is already shown (with different resources), replace it with this one

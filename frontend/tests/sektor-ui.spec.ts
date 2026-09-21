@@ -882,7 +882,10 @@ test("writes over what the player is told when what the planet is shortest of ch
   await placeBuilding(page, "TestProcessor");
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
-    .toEqual(["This planet needs: Food 🥕, Ore 🪨, Water 💧"]);
+    .toEqual([
+      "This planet needs: Food 🥕, Ore 🪨, Water 💧",
+      "Avoid importing scarse resources Food 🥕",
+    ]);
 });
 
 // A planet short of nothing has nothing to advise, so nothing is said.
@@ -891,4 +894,39 @@ test("tells the player nothing while the planet is short of nothing", async ({ p
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await expect(page.locator("#most-imported-message")).toHaveCount(0);
+});
+
+// Bringing in what the planet is short of takes it from everybody else, so a sektor doing it is
+// told which of its own imports those are, under what the planet is asking for of anybody.
+test("tells the player which of the sektor's imports the planet is short of", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestHouse");
+
+  expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
+    .toEqual([
+      "This planet needs: Food 🥕, Water 💧, Ore 🪨",
+      "Avoid importing scarse resources Food 🥕, Water 💧",
+    ]);
+});
+
+test("stacks what the player is told one message beneath the other", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestHouse");
+
+  await expectScreenshot(page, "stacked-messages", "body");
+});
+
+// A sektor bringing in nothing the planet is short of is doing it no harm, so it is told nothing.
+test("tells the player nothing about its imports while the planet is short of none of them", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await expect(page.locator("#most-imported-scarce-message")).toHaveCount(0);
 });
