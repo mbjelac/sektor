@@ -1,11 +1,11 @@
 In any point in time there is a thing to do in a sektor map which can mostly benefit the player (and the whole planet).
 
 #1 Notify player about most imported resources
-- when sektor map is opened and every time a global or local import or export amount changes
+- [done] when sektor map is opened and every time a global or local import or export amount changes
     - find at most 3 global imports with highest import amounts
         - their global import amount is highest
     - then display a "message" to the player
-- display message in the bottom of the screen
+- [done] display message in the bottom of the screen
     - center
     - fixed width 800px, same for all messages
     - message is in panel
@@ -13,11 +13,11 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
         - background color #ffe187
         - text color black
         - text left-aligned
-- message text in this case: "Export <resource list>"
+- [done] message text in this case: "This planet needs: <resource list>"
     - the list contains the 3 (or less) resources by specified criteria, by descending global import amount
     - each resource in list is displayed as <name> <icon>
     - items in list delimited by comma + space
-- if this message is already shown (with different resources), replace it with this one
+- [done] if this message is already shown (with different resources), replace it with this one
 
 #2 Notify player about local imports which are also global imports
 - when sektor map is opened and every time a global or local import or export amount changes
