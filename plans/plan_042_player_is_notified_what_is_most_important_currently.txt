@@ -47,6 +47,7 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
     - same as resources in import/export panel:
         - highlight buildings which have those resources as inputs in orange
 - change import-highlight color: orange -> red
+- resource in message has white background while mouseover
 
 #6 Player can see buildings which output a resource
 - either mouseover on resource in import/export panel, or resource in message
