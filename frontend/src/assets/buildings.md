@@ -237,7 +237,7 @@ Active: always
 HealthPhysical 3
 ->
 WorkUnqualified 6
-Hapiness 3
+Hapiness 1
 
 ## Function
 
@@ -246,7 +246,7 @@ Active: always
 HealthMental 3
 ->
 WorkUnqualified 6
-Hapiness 3
+Hapiness 1
 
 ## Function
 
@@ -255,7 +255,7 @@ Active: always
 HealthSocial 3
 ->
 WorkUnqualified 6
-Hapiness 3
+Hapiness 1
 
 ## Function
 
@@ -264,7 +264,7 @@ Active: always
 Childcare 2
 ->
 WorkUnqualified 4
-Hapiness 3
+Hapiness 1
 
 # Library
 
