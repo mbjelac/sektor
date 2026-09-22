@@ -34,3 +34,10 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
 - [done] for messages described ni #1 & #2 negative resoureces should not be notified as "needed" globally, nor locally
     - if a sektor imports a negative resource, this is good, the sektor shouldn't avoid importing this resource
     - if globally a negative resource is imported, this is good, the planet does not need this resource
+
+#4 Added or updated message is very visible
+- when a message is added or it's contents is updated
+    - move it to the top of the message stack
+    - flash it
+        - background turns to white, then fades to message background color during 1 second
+            - repeat 2 times
