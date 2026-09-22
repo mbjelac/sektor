@@ -42,7 +42,7 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
         - background turns to white, then fades to message background color during 1 second
             - repeat 2 times
 
-#5 Player can easily find out whic building is importing resources mentioned in messages
+#5 Player can easily find out which building is importing resources mentioned in messages
 - resources mentioned in messages can handle mouseover events:
     - same as resources in import/export panel:
         - highlight buildings which have those resources as inputs in orange
