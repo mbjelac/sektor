@@ -77,6 +77,7 @@ describe("destroyBuilding", () => {
         { name: "Wheat", value: 5 },
       ],
       hapiness: 0,
+      habitatShortages: [],
       starvedFunctions: [],
     });
   });

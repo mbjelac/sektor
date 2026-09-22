@@ -18,6 +18,9 @@ export interface SektorState {
   // none of it leaves the sektor and none of it stands among the exports, but making it is what a
   // sektor's people are there for and so it counts all the same.
   hapiness: number;
+  // What the sektor's habitats are going without, which is why their people are not as happy as
+  // they could be.
+  habitatShortages: string[];
   starvedFunctions: BuildingFunctionLocation[];
 }
 
@@ -162,8 +165,29 @@ export class Sektor {
       imports,
       exports,
       hapiness: this.findThroughputValue(totalOutputs, HAPINESS_RESOURCE),
+      habitatShortages: this.findHabitatShortages(starvedFunctions),
       starvedFunctions,
     };
+  }
+
+  // What the sektor's habitats are going without: every local resource asked for by a function of a
+  // habitat which has been left starved. Only a local resource can leave anything starved, as
+  // anything else short is simply brought in from outside.
+  private findHabitatShortages(starvedFunctions: BuildingFunctionLocation[]): string[] {
+    const shortages = new Set<string>();
+
+    for (const starvedFunction of starvedFunctions) {
+      const building = this.findBuildingAt(starvedFunction.buildingLocation);
+      const buildingDefinition = building && this.findBuildingDefinition(building.type);
+      if (!buildingDefinition || !isHabitat(buildingDefinition)) continue;
+
+      const starvedInputs = buildingDefinition.buildingFunctions[starvedFunction.functionIndex].inputs;
+      for (const input of starvedInputs) {
+        if (this.localResources.includes(input.name)) shortages.add(input.name);
+      }
+    }
+
+    return Array.from(shortages).sort((first, second) => first.localeCompare(second));
   }
 
   // A local resource cannot be imported, so buildings needing more of it than the sektor makes
@@ -369,6 +393,13 @@ function isFunctionStarved(starvedFunctions: BuildingFunctionLocation[], locatio
     && starvedFunction.buildingLocation.y === location.y
     && starvedFunction.functionIndex === functionIndex
   );
+}
+
+// A habitat is any building made to give off Hapiness, whatever it is called and whether or not it
+// is giving off any at the moment.
+function isHabitat(buildingDefinition: BuildingDefinition): boolean {
+  return buildingDefinition.buildingFunctions.some(buildingFunction =>
+    buildingFunction.outputs.some(output => output.name === HAPINESS_RESOURCE));
 }
 
 // Amounts are written with a single decimal place, so rounding to it keeps the floating point

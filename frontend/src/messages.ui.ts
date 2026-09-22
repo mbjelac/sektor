@@ -12,6 +12,8 @@ const MOST_TOLD_RESOURCE_COUNT = 3;
 
 const MOST_IMPORTED_MESSAGE_ID = "most-imported-message";
 const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
+// One complaint to a resource, each named after the resource it complains of.
+const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
 
 // What a player could do here which would help the planet most, told to them as the map opens and
 // whenever anything changes what this sektor or the planet moves. What the planet wants of anybody
@@ -19,9 +21,28 @@ const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 export function updateMessages(
   sektorImportsAndExports: ImportsAndExports,
   planetImportsAndExports: ImportsAndExports,
+  habitatShortages: string[],
 ) {
   showMostImportedMessage(planetImportsAndExports);
   showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
+  showHabitatShortageMessages(habitatShortages);
+}
+
+// The people of a sektor complain of each thing their habitats are going without, one complaint to
+// a resource, so that a player reads what to see to rather than that something somewhere is amiss.
+// A shortage seen to is no longer complained of.
+function showHabitatShortageMessages(habitatShortages: string[]) {
+  for (const shownComplaint of document.querySelectorAll(`[id^="${HABITAT_SHORTAGE_MESSAGE_ID}"]`)) {
+    if (!habitatShortages.includes(shortageMessageResource(shownComplaint.id))) shownComplaint.remove();
+  }
+
+  for (const resourceName of habitatShortages) {
+    showMessage(`${HABITAT_SHORTAGE_MESSAGE_ID}${resourceName}`, "Citizens are complaining about shortage of", [resourceName]);
+  }
+}
+
+function shortageMessageResource(messageId: string): string {
+  return messageId.slice(HABITAT_SHORTAGE_MESSAGE_ID.length);
 }
 
 // Whatever the planet is shortest of is what a player can do most good by sending out. A planet

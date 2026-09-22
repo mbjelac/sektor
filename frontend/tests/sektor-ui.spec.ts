@@ -1079,3 +1079,47 @@ test("shows the hapiness of a sektor in its header", async ({ page }) => {
 
   await expectScreenshot(page, "sektor-hapiness-stat", "#sektor-title");
 });
+
+// A habitat left without what its people need makes them complain, and they complain of the thing
+// itself rather than of something being amiss, so the player knows what to see to.
+test("complains of what the sektor's habitats are going without", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestHabitat");
+
+  await expect(page.locator('[id^="habitat-shortage-message-"]'))
+    .toHaveText("Citizens are complaining about shortage of Care 🩺");
+});
+
+// The resource complained of is a thing to point at like any other named in a message: pointing at
+// it marks the habitat going without it.
+test("marks the habitat going without the resource complained of", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestHabitat");
+  await deselectEverything(page);
+
+  await page.locator('[id^="habitat-shortage-message-"] .message-resource').hover();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "habitat-shortage-message", "body");
+});
+
+// A shortage seen to is no longer complained of.
+test("stops complaining once the habitat is given what it was going without", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 + 60, y: canvasBox!.height / 2 - 20 });
+
+  await placeBuildingAt(page, "TestCarer", { x: canvasBox!.width / 2 - 60, y: canvasBox!.height / 2 - 20 });
+
+  await expect(page.locator('[id^="habitat-shortage-message-"]')).toHaveCount(0);
+});
+
+test("complains of nothing in a sektor with no habitat", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestProcessor");
+
+  await expect(page.locator('[id^="habitat-shortage-message-"]')).toHaveCount(0);
+});

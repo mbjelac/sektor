@@ -44,6 +44,7 @@ describe("getSektorState", () => {
       imports: [],
       exports: [],
       hapiness: 0,
+      habitatShortages: [],
       starvedFunctions: [],
     });
   });
@@ -63,6 +64,7 @@ describe("getSektorState", () => {
         { name: "Water", value: 4 },
       ],
       hapiness: 0,
+      habitatShortages: [],
       starvedFunctions: [],
     });
   });
@@ -89,6 +91,7 @@ describe("getSektorState", () => {
         { name: "Food", value: 5 },
       ],
       hapiness: 0,
+      habitatShortages: [],
       starvedFunctions: [],
     });
   });
@@ -295,6 +298,7 @@ describe("outputs named after a location property", () => {
         { name: "Ore", value: 5 },
       ],
       hapiness: 0,
+      habitatShortages: [],
       starvedFunctions: [],
     });
   });

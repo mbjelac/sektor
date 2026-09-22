@@ -5,7 +5,7 @@ import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 // The local resources of these tests, neither of which can be brought in or sent out: a habitat has
 // to be given its Cheer by something standing in the same sektor, and the Hapiness it makes of it
 // stays there too.
-const LOCAL_RESOURCES = ["Cheer", "Hapiness"];
+const LOCAL_RESOURCES = ["Cheer", "Bread", "Hapiness"];
 
 const testDefinitions: BuildingDefinition[] = [
   {
@@ -32,6 +32,24 @@ const testDefinitions: BuildingDefinition[] = [
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Cheer", value: 2 }],
+    }],
+    properties: {},
+  },
+  {
+    name: "Almshouse",
+    renderingCode: "box s(1,1,1)",
+    buildingFunctions: [{
+      inputs: [{ name: "Bread", value: 1 }],
+      outputs: [{ name: "Hapiness", value: 2 }],
+    }],
+    properties: {},
+  },
+  {
+    name: "CheerWorkshop",
+    renderingCode: "box s(1,1,1)",
+    buildingFunctions: [{
+      inputs: [{ name: "Cheer", value: 3 }],
+      outputs: [{ name: "Work", value: 1 }],
     }],
     properties: {},
   },
@@ -112,5 +130,50 @@ describe("hapiness", () => {
 
     expect({ hapiness: sektorState.hapiness, exports: sektorState.exports.map(throughput => throughput.name) })
       .toEqual({ hapiness: 5, exports: [] });
+  });
+});
+
+describe("habitat shortages", () => {
+  it("names what a habitat left without its Cheer is going without", () => {
+    const sektor = sektorWithBuildings([{ type: "Habitat", location: { x: 0, y: 0 } }]);
+
+    expect(sektor.getSektorState().habitatShortages).toEqual(["Cheer"]);
+  });
+
+  it("names nothing while every habitat is given all it asks for", () => {
+    const sektor = sektorWithBuildings([
+      { type: "CheerWorks", location: { x: 0, y: 0 } },
+      { type: "Habitat", location: { x: 1, y: 0 } },
+    ]);
+
+    expect(sektor.getSektorState().habitatShortages).toEqual([]);
+  });
+
+  // Only the habitats are complained of: a workshop going without says nothing of how happy
+  // anybody is.
+  it("names nothing of what a building which is no habitat goes without", () => {
+    const sektor = sektorWithBuildings([{ type: "CheerWorkshop", location: { x: 0, y: 0 } }]);
+
+    expect(sektor.getSektorState().habitatShortages).toEqual([]);
+  });
+
+  // Each thing the habitats are short of is named once, however many of them are going without it.
+  it("names a resource once however many habitats are going without it", () => {
+    const sektor = sektorWithBuildings([
+      { type: "Habitat", location: { x: 0, y: 0 } },
+      { type: "Habitat", location: { x: 1, y: 0 } },
+      { type: "Habitat", location: { x: 2, y: 0 } },
+    ]);
+
+    expect(sektor.getSektorState().habitatShortages).toEqual(["Cheer"]);
+  });
+
+  it("names everything the habitats are going without, in the order of their names", () => {
+    const sektor = sektorWithBuildings([
+      { type: "Habitat", location: { x: 0, y: 0 } },
+      { type: "Almshouse", location: { x: 1, y: 0 } },
+    ]);
+
+    expect(sektor.getSektorState().habitatShortages).toEqual(["Bread", "Cheer"]);
   });
 });

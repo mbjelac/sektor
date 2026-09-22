@@ -278,7 +278,7 @@ function updateSektorState() {
   // with this sektor as it now stands every time anything here changes.
   const planetImportsAndExports = getPlanetImportsAndExportsWhileBuilding(sektorId, sektorState);
   updateSektorStatePanel(sektorState, planetImportsAndExports);
-  updateMessages(sektorState, planetImportsAndExports);
+  updateMessages(sektorState, planetImportsAndExports, sektorState.habitatShortages);
   starvedBuildingLocations = sektorState.starvedFunctions
     .map(starvedFunction => starvedFunction.buildingLocation)
     .filter((location, index, locations) =>
@@ -1088,7 +1088,11 @@ if (!isTestMode) {
 // A player is told what would most help the planet from the moment the map is open, before they
 // have built anything at all: what the planet is short of is the doing of every sektor there is.
 const openedSektorState = sektor.getSektorState();
-updateMessages(openedSektorState, getPlanetImportsAndExportsWhileBuilding(sektorId, openedSektorState));
+updateMessages(
+  openedSektorState,
+  getPlanetImportsAndExportsWhileBuilding(sektorId, openedSektorState),
+  openedSektorState.habitatShortages,
+);
 if (isTestMode) {
   (window as any).updateSektorStatePanel = updateSektorStatePanel;
   (window as any).showBuildingPanel = showBuildingPanel;

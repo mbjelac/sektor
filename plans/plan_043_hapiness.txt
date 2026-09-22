@@ -17,7 +17,7 @@ Sektors which contain Habitats can "produce" Hapiness resource. This is local so
     - tooltip: hapiness
     - hide this stat if no Habitat buildings exist in sektor
 
-#2 Player is notified of unhappy Habitats
+#2 [done] Player is notified of unhappy Habitats
 - [done] when some functions of some Habitats are not activated because of missing input resources
     - add message (see plan 42) saying "Citizens are complaining about shortage of <resource>"
     - add one such message for each missing input resource
