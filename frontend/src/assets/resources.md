@@ -4,6 +4,7 @@ WorkTechnical 🛠️ #b5aba1
 WorkEducational 📚 #3EB01C
 WorkMaintenance 🪜 #ffb638
 WorkEngineering 🧮 #82baff
+WorkAdministrative 📝 #ededed
 WaterPottable 💧 #55aaff
 WaterTechnical 🚱 #6c87ba
 WaterSewage 🟤 #a17d4c negative
