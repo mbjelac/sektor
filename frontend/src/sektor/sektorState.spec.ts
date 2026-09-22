@@ -43,6 +43,7 @@ describe("getSektorState", () => {
     expect(result).toEqual({
       imports: [],
       exports: [],
+      hapiness: 0,
       starvedFunctions: [],
     });
   });
@@ -61,6 +62,7 @@ describe("getSektorState", () => {
       exports: [
         { name: "Water", value: 4 },
       ],
+      hapiness: 0,
       starvedFunctions: [],
     });
   });
@@ -86,6 +88,7 @@ describe("getSektorState", () => {
         { name: "Water", value: 1 },
         { name: "Food", value: 5 },
       ],
+      hapiness: 0,
       starvedFunctions: [],
     });
   });
@@ -291,6 +294,7 @@ describe("outputs named after a location property", () => {
         { name: "Energy", value: 1 },
         { name: "Ore", value: 5 },
       ],
+      hapiness: 0,
       starvedFunctions: [],
     });
   });

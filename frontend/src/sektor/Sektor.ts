@@ -14,8 +14,16 @@ export interface BuildingFunctionLocation {
 export interface SektorState {
   imports: ResourceThroughput[];
   exports: ResourceThroughput[];
+  // How happy the sektor's people are: every unit of it the sektor makes. Hapiness is local, so
+  // none of it leaves the sektor and none of it stands among the exports, but making it is what a
+  // sektor's people are there for and so it counts all the same.
+  hapiness: number;
   starvedFunctions: BuildingFunctionLocation[];
 }
+
+// The resource a sektor's people give off while they are content, which no other resource is
+// treated like.
+export const HAPINESS_RESOURCE = "Hapiness";
 
 interface StarvationCandidate {
   buildingFunctionLocation: BuildingFunctionLocation;
@@ -150,7 +158,12 @@ export class Sektor {
         return { name: output.name, value };
       });
 
-    return { imports, exports, starvedFunctions };
+    return {
+      imports,
+      exports,
+      hapiness: this.findThroughputValue(totalOutputs, HAPINESS_RESOURCE),
+      starvedFunctions,
+    };
   }
 
   // A local resource cannot be imported, so buildings needing more of it than the sektor makes

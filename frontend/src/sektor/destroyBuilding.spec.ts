@@ -76,6 +76,7 @@ describe("destroyBuilding", () => {
       exports: [
         { name: "Wheat", value: 5 },
       ],
+      hapiness: 0,
       starvedFunctions: [],
     });
   });

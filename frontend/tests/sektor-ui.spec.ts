@@ -1027,3 +1027,55 @@ async function placeBuildingAt(page: Page, buildingName: string, position: { x: 
   await page.locator("#canvas-container > canvas").click({ position });
   await page.waitForTimeout(200);
 }
+
+// A sektor's people are as happy as the habitats they live in can make them, which the header says
+// beside everything else known about the sektor.
+test("says how happy the sektor's people are", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await placeBuildingAt(page, "TestCarer", { x: canvasBox!.width / 2 - 60, y: canvasBox!.height / 2 - 20 });
+
+  await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 + 60, y: canvasBox!.height / 2 - 20 });
+
+  expect(await page.locator("#sektor-stats .sektor-stat").evaluateAll(stats => stats.map(stat => ({
+    tooltip: stat.querySelector(".sektor-stat-icon")!.getAttribute("title"),
+    value: stat.querySelector(".sektor-stat-value")!.textContent,
+  })))).toEqual([
+    { tooltip: "Difficulty", value: "1" },
+    { tooltip: "Buildings", value: "2" },
+    { tooltip: "Imports", value: "1" },
+    { tooltip: "Exports", value: "0" },
+    { tooltip: "Hapiness", value: "5" },
+  ]);
+});
+
+// A habitat whose people are going without is still somewhere people live, so how happy they are is
+// still said — it is simply nothing.
+test("says the people of a sektor whose habitat goes without are happy at nothing", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestHabitat");
+
+  await expect(page.locator('#sektor-stats .sektor-stat-icon[title="Hapiness"]')).toHaveCount(1);
+});
+
+// A sektor nobody lives in has no people to be happy or unhappy, so nothing is said of them.
+test("says nothing of happiness in a sektor with no habitat", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestProcessor");
+
+  await expect(page.locator('#sektor-stats .sektor-stat-icon[title="Hapiness"]')).toHaveCount(0);
+});
+
+test("shows the hapiness of a sektor in its header", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await placeBuildingAt(page, "TestCarer", { x: canvasBox!.width / 2 - 60, y: canvasBox!.height / 2 - 20 });
+
+  await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 + 60, y: canvasBox!.height / 2 - 20 });
+
+  await expectScreenshot(page, "sektor-hapiness-stat", "#sektor-title");
+});

@@ -180,3 +180,20 @@ Work 1
 ## Properties
 
 minLevel=5
+
+# TestHabitat
+
+## Render
+
+```
+pri4 s(24,24,28) t(0,0,0) c(#ffd1f4)
+pri4 s(18,18,14) t(0,0,14) r(90,45,90) c(#e8a9d5)
+```
+
+## Function
+
+Name: Living well
+
+Care 2
+->
+Hapiness 5

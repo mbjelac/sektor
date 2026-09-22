@@ -4,7 +4,7 @@ import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
-import { BuildingLocation, Location, Sektor, SektorState } from "./Sektor";
+import { BuildingLocation, HAPINESS_RESOURCE, Location, Sektor, SektorState } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import { updateSektorStatePanel } from "./sektorStatePanel.ui";
@@ -19,7 +19,7 @@ import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, propertyValueColor } from "../properties";
 import { getLocalResources } from "../resources";
-import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
+import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, faceSmileIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
@@ -310,8 +310,22 @@ function showSektorStats(sektorState: SektorState) {
   stats.appendChild(createStat(buildingOfficeIcon, "Buildings", formatNumber(sektor.getState().buildings.length)));
   stats.appendChild(createStat(arrowDownTrayIcon, "Imports", formatNumber(sumThroughputs(sektorState.imports))));
   stats.appendChild(createStat(arrowUpTrayIcon, "Exports", formatNumber(sumThroughputs(sektorState.exports))));
+  // A sektor nobody lives in has no people to be happy or unhappy, so it is not said how happy they
+  // are. A sektor with habitats standing empty of what they need says so by standing at nothing.
+  if (hasHabitats()) {
+    stats.appendChild(createStat(faceSmileIcon, "Hapiness", formatNumber(sektorState.hapiness)));
+  }
 
   document.getElementById("sektor-title")!.appendChild(stats);
+}
+
+// A habitat is any building made to give off Hapiness, whether or not it is giving off any at the
+// moment: a habitat whose people are going without is still somewhere people live.
+function hasHabitats(): boolean {
+  return placedBuildings.some(building => buildingDefinitions
+    .find(definition => definition.name === building.type)
+    ?.buildingFunctions.some(buildingFunction =>
+      buildingFunction.outputs.some(output => output.name === HAPINESS_RESOURCE)));
 }
 
 function createStat(icon: string, tooltip: string, value: string): HTMLElement {
