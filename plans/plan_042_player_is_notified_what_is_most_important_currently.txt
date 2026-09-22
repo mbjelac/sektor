@@ -41,3 +41,14 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
     - flash it
         - background turns to white, then fades to message background color during 1 second
             - repeat 2 times
+
+#5 Player can easily find out whic building is importing resources mentioned in messages
+- resources mentioned in messages can handle mouseover events:
+    - same as resources in import/export panel:
+        - highlight buildings which have those resources as inputs in orange
+- change import-highlight color: orange -> red
+
+#6 Player can see buildings which output a resource
+- either mouseover on resource in import/export panel, or resource in message
+    - highlight buildings which have that resource as *output*
+        - in green
