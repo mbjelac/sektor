@@ -861,7 +861,7 @@ test("tells the player what the planet is shortest of as the map opens", async (
 
   await page.goto("/sektor.html?id=Alpha&test=true");
 
-  await expect(page.locator("#most-imported-message")).toHaveText("This planet needs: Ore 🪨, Water 💧, Food 🥕");
+  await expect(page.locator("#most-imported-message")).toHaveText("ℹ️ This planet needs: Ore 🪨, Water 💧, Food 🥕");
 });
 
 test("shows what the planet is shortest of over the map", async ({ page }) => {
@@ -883,8 +883,8 @@ test("writes over what the player is told when what the planet is shortest of ch
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
     .toEqual([
-      "Avoid importing scarse resources Food 🥕",
-      "This planet needs: Food 🥕, Ore 🪨, Water 💧",
+      "⚠️ Avoid importing scarse resources Food 🥕",
+      "ℹ️ This planet needs: Food 🥕, Ore 🪨, Water 💧",
     ]);
 });
 
@@ -907,8 +907,8 @@ test("tells the player which of the sektor's imports the planet is short of", as
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
     .toEqual([
-      "Avoid importing scarse resources Food 🥕, Water 💧",
-      "This planet needs: Food 🥕, Water 💧, Ore 🪨",
+      "⚠️ Avoid importing scarse resources Food 🥕, Water 💧",
+      "ℹ️ This planet needs: Food 🥕, Water 💧, Ore 🪨",
     ]);
 });
 
@@ -1088,7 +1088,7 @@ test("complains of what the sektor's habitats are going without", async ({ page 
   await placeBuilding(page, "TestHabitat");
 
   await expect(page.locator('[id^="habitat-shortage-message-"]'))
-    .toHaveText("Citizens are complaining about shortage of Care 🩺");
+    .toHaveText("ℹ️ Citizens are complaining about shortage of Care 🩺");
 });
 
 // The resource complained of is a thing to point at like any other named in a message: pointing at
@@ -1123,3 +1123,47 @@ test("complains of nothing in a sektor with no habitat", async ({ page }) => {
 
   await expect(page.locator('[id^="habitat-shortage-message-"]')).toHaveCount(0);
 });
+
+// A message says which kind it is before it says anything else: what is worth knowing is told, what
+// the player is doing against the planet is warned of.
+test("tells what is worth knowing apart from what the player is warned of", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuildingAtOffset(page, "TestProcessor", -60);
+
+  await placeBuildingAtOffset(page, "TestHabitat", 60);
+
+  expect(await page.locator(".message").evaluateAll(messages => messages.map(message => ({
+    id: message.id,
+    kind: message.className.replace("message ", "").replace(" message-flashing", ""),
+    saidFirst: message.textContent!.slice(0, 2).trim(),
+  })))).toEqual([
+    { id: "habitat-shortage-message-Care", kind: "message-information", saidFirst: "ℹ️" },
+    { id: "most-imported-scarce-message", kind: "message-warning", saidFirst: "⚠️" },
+    { id: "most-imported-message", kind: "message-information", saidFirst: "ℹ️" },
+  ]);
+});
+
+test("shows what the player is told and what they are warned of", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuildingAtOffset(page, "TestProcessor", -60);
+
+  await placeBuildingAtOffset(page, "TestHabitat", 60);
+
+  await expectScreenshot(page, "information-and-warning-messages", "body");
+});
+
+// A building put up a little to one side of the middle of the map, so that several stand on ground
+// of their own.
+async function placeBuildingAtOffset(page: Page, buildingName: string, offsetFromMiddle: number) {
+  const canvasBox = await page.locator("#canvas-container > canvas").boundingBox();
+  await placeBuildingAt(page, buildingName, {
+    x: canvasBox!.width / 2 + offsetFromMiddle,
+    y: canvasBox!.height / 2 - 20,
+  });
+}

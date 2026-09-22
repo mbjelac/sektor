@@ -1236,16 +1236,25 @@ body > main {
 }
 
 /* Every message is the same width whatever it says, so that the ones after the first do not shift
-   about under the eye of somebody reading down them. */
+   about under the eye of somebody reading down them. Its colour says which kind it is before a word
+   of it is read: something worth knowing, or something the player is doing. */
 .message {
     width: 800px;
-    background: #ffe187;
+    background: var(--message-background);
     color: #000;
     border-radius: 6px;
     padding: 12px 16px;
     font-family: sans-serif;
     font-size: 14px;
     text-align: left;
+}
+
+.message-information {
+    --message-background: #c9e6ff;
+}
+
+.message-warning {
+    --message-background: #ffe187;
 }
 
 /* A resource a message names marks the buildings taking it in when it is pointed at, and turns white
@@ -1266,7 +1275,7 @@ body > main {
         background: #fff;
     }
     to {
-        background: #ffe187;
+        background: var(--message-background);
     }
 }
 

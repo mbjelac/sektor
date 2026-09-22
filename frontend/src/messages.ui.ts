@@ -10,6 +10,15 @@ import { pointAtResourceWhileHovered } from "./resourceHover.ui";
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
 
+// A message either tells the player something worth knowing or warns them of something they are
+// doing, and says which it is before it says anything else.
+type MessageKind = "information" | "warning";
+
+const MESSAGE_EMOJI: Record<MessageKind, string> = {
+  information: "\u2139\ufe0f",
+  warning: "\u26a0\ufe0f",
+};
+
 const MOST_IMPORTED_MESSAGE_ID = "most-imported-message";
 const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 // One complaint to a resource, each named after the resource it complains of.
@@ -37,7 +46,12 @@ function showHabitatShortageMessages(habitatShortages: string[]) {
   }
 
   for (const resourceName of habitatShortages) {
-    showMessage(`${HABITAT_SHORTAGE_MESSAGE_ID}${resourceName}`, "Citizens are complaining about shortage of", [resourceName]);
+    showMessage(
+      `${HABITAT_SHORTAGE_MESSAGE_ID}${resourceName}`,
+      "information",
+      "Citizens are complaining about shortage of",
+      [resourceName],
+    );
   }
 }
 
@@ -50,6 +64,7 @@ function shortageMessageResource(messageId: string): string {
 function showMostImportedMessage(planetImportsAndExports: ImportsAndExports) {
   showOrHideMessage(
     MOST_IMPORTED_MESSAGE_ID,
+    "information",
     "This planet needs:",
     mostImportedResourceNames(planetImportsAndExports, getNegativeScoringResources(), MOST_TOLD_RESOURCE_COUNT),
   );
@@ -63,6 +78,7 @@ function showMostImportedScarceMessage(
 ) {
   showOrHideMessage(
     MOST_IMPORTED_SCARCE_MESSAGE_ID,
+    "warning",
     "Avoid importing scarse resources",
     mostImportedScarceResourceNames(
       sektorImportsAndExports,
@@ -75,26 +91,27 @@ function showMostImportedScarceMessage(
 
 // Advice with no resources left to name has nothing to say, so it is taken off the screen rather
 // than left standing empty.
-function showOrHideMessage(messageId: string, advice: string, resourceNames: string[]) {
+function showOrHideMessage(messageId: string, kind: MessageKind, advice: string, resourceNames: string[]) {
   if (resourceNames.length === 0) {
     hideMessage(messageId);
     return;
   }
 
-  showMessage(messageId, advice, resourceNames);
+  showMessage(messageId, kind, advice, resourceNames);
 }
 
 // A message of a kind the player is already being told is written over rather than stood beside, so
 // that the same advice is never on the screen twice over. Advice which has not changed is left
 // exactly as it stands: a player who has read it is not made to read it again.
-function showMessage(messageId: string, advice: string, resourceNames: string[]) {
+function showMessage(messageId: string, kind: MessageKind, advice: string, resourceNames: string[]) {
   const shownMessage = document.getElementById(messageId);
-  const text = `${advice} ${resourceNames.map(resourceNameText).join(", ")}`;
+  const said = `${MESSAGE_EMOJI[kind]} ${advice} `;
+  const text = `${said}${resourceNames.map(resourceNameText).join(", ")}`;
 
   if (shownMessage?.textContent === text) return;
 
-  const message = shownMessage ?? createMessage(messageId);
-  message.replaceChildren(document.createTextNode(`${advice} `), ...resourceElements(resourceNames));
+  const message = shownMessage ?? createMessage(messageId, kind);
+  message.replaceChildren(document.createTextNode(said), ...resourceElements(resourceNames));
 
   // Something new to say goes to the top of the stack and flashes, so that a player looking at the
   // map rather than at the messages still catches that the advice has changed.
@@ -116,10 +133,10 @@ function resourceElements(resourceNames: string[]): Node[] {
   });
 }
 
-function createMessage(messageId: string): HTMLElement {
+function createMessage(messageId: string, kind: MessageKind): HTMLElement {
   const message = document.createElement("div");
   message.id = messageId;
-  message.className = "message";
+  message.className = `message message-${kind}`;
   return message;
 }
 
