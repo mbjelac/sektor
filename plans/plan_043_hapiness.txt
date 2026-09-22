@@ -1,7 +1,7 @@
 Sektors which contain Habitats can "produce" Hapiness resource. This is local so it doesn't export, but is counting towards player's point.
 
 #1 Hapiness is special
-- each Sektor has a "hapiness" score which is the sum of all output Hapiness resources
+- [done] each Sektor has a "hapiness" score which is the sum of all output Hapiness resources
     - Hapiness is local, so it is not exported but *is* counted towards the Sektor's hapiness score
     - SektorState has hapiness:number
     - write Sektor tests which verify total Sektor hapiness is the sum of all Hapiness exports
@@ -12,6 +12,10 @@ Sektors which contain Habitats can "produce" Hapiness resource. This is local so
             - 0 Hapiness-producing buildings = 0 Hapiness
             - some Hapiness-producing buildings, all input satisfied = some Hapiness
             - some Hapiness-producing buildings, not all input satisfied = less Hapiness
+- hapiness is displayed as a sektor stat in the top of the map screen
+    - icon: heroicon face-smile
+    - tooltip: hapiness
+    - hide this stat if no Habitat buildings exist in sektor
 
 #2 Player is notified of unhappy Habitats
 - when some functions of some Habitats are not activated because of missing input resources
