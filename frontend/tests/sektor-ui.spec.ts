@@ -883,8 +883,8 @@ test("writes over what the player is told when what the planet is shortest of ch
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
     .toEqual([
-      "This planet needs: Food 🥕, Ore 🪨, Water 💧",
       "Avoid importing scarse resources Food 🥕",
+      "This planet needs: Food 🥕, Ore 🪨, Water 💧",
     ]);
 });
 
@@ -907,8 +907,8 @@ test("tells the player which of the sektor's imports the planet is short of", as
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
     .toEqual([
-      "This planet needs: Food 🥕, Water 💧, Ore 🪨",
       "Avoid importing scarse resources Food 🥕, Water 💧",
+      "This planet needs: Food 🥕, Water 💧, Ore 🪨",
     ]);
 });
 
@@ -929,4 +929,38 @@ test("tells the player nothing about its imports while the planet is short of no
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await expect(page.locator("#most-imported-scarce-message")).toHaveCount(0);
+});
+
+// Advice a player has already read is left exactly where it is, and advice with something new to
+// say goes to the top of the stack, so that the newest is always the one read first.
+test("puts the message it has just changed at the top of the stack", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator("#most-imported-message").waitFor();
+
+  await placeBuilding(page, "TestHouse");
+
+  expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.id)))
+    .toEqual(["most-imported-scarce-message", "most-imported-message"]);
+});
+
+// A player looking at the map rather than at the messages still catches that the advice changed,
+// because the message which changed flashes.
+test("flashes a message with something new to say", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestHouse");
+
+  expect(await page.locator(".message").evaluateAll(messages => messages.map(message => ({
+    flashing: message.classList.contains("message-flashing"),
+    animation: getComputedStyle(message).animationName,
+    seconds: getComputedStyle(message).animationDuration,
+    times: getComputedStyle(message).animationIterationCount,
+  })))).toEqual([
+    { flashing: true, animation: "message-flash", seconds: "1s", times: "2" },
+    { flashing: true, animation: "message-flash", seconds: "1s", times: "2" },
+  ]);
 });

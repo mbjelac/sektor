@@ -1248,6 +1248,21 @@ body > main {
     text-align: left;
 }
 
+/* A message with something new to say turns white and fades back to its own colour, twice over, so
+   that a player watching the map rather than the messages still catches that the advice changed. */
+@keyframes message-flash {
+    from {
+        background: #fff;
+    }
+    to {
+        background: #ffe187;
+    }
+}
+
+.message-flashing {
+    animation: message-flash 1s ease-out 2;
+}
+
 .dialog-overlay {
     position: fixed;
     inset: 0;

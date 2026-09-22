@@ -63,20 +63,36 @@ function showOrHideMessage(messageId: string, advice: string, resourceNames: str
 }
 
 // A message of a kind the player is already being told is written over rather than stood beside, so
-// that the same advice is never on the screen twice over.
+// that the same advice is never on the screen twice over. Advice which has not changed is left
+// exactly as it stands: a player who has read it is not made to read it again.
 function showMessage(messageId: string, text: string) {
   const shownMessage = document.getElementById(messageId);
 
-  if (shownMessage) {
-    shownMessage.textContent = text;
-    return;
-  }
+  if (shownMessage?.textContent === text) return;
 
+  const message = shownMessage ?? createMessage(messageId);
+  message.textContent = text;
+
+  // Something new to say goes to the top of the stack and flashes, so that a player looking at the
+  // map rather than at the messages still catches that the advice has changed.
+  document.getElementById("messages")!.prepend(message);
+  flash(message);
+}
+
+function createMessage(messageId: string): HTMLElement {
   const message = document.createElement("div");
   message.id = messageId;
   message.className = "message";
-  message.textContent = text;
-  document.getElementById("messages")!.appendChild(message);
+  return message;
+}
+
+function flash(message: HTMLElement) {
+  message.classList.remove("message-flashing");
+  // Reading back a measurement of the message makes the browser take the class off before it goes
+  // on again, so that a message flashing already starts its flash afresh rather than carrying on
+  // with the one it was in the middle of.
+  void message.offsetWidth;
+  message.classList.add("message-flashing");
 }
 
 function hideMessage(messageId: string) {
