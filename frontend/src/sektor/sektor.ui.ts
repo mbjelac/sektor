@@ -7,7 +7,8 @@ import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, 
 import { BuildingLocation, Location, Sektor, SektorState } from "./Sektor";
 import { buildingDefinitions } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
-import {updateSektorStatePanel, onImportHover} from "./sektorStatePanel.ui";
+import { updateSektorStatePanel } from "./sektorStatePanel.ui";
+import { onResourceHover } from "../resourceHover.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
 import { updateMessages } from "../messages.ui";
@@ -351,6 +352,10 @@ function loadSavedState() {
 }
 
 let selectedBuildingLocation: BuildingLocation | null = null;
+// The buildings taking in the resource the player is pointing at are marked in red, which nothing
+// else on the map is drawn in.
+const IMPORT_HIGHLIGHT_COLOR: [number, number, number] = [255, 0, 0];
+
 let hoveredImportResource: string | null = null;
 function openBuildingPanel(placed: { type: string; location: BuildingLocation; code: string }) {
   const buildingState = sektor.getBuildingState(placed.location);
@@ -1028,13 +1033,13 @@ const sektorUi = (p: p5) => {
 
     if (hoveredImportResource) {
       for (const building of placedBuildings) {
-        const def = buildingDefinitions.find(d => d.name === building.type);
-        const needsResource = def?.buildingFunctions.some(
+        const buildingDefinition = buildingDefinitions.find(definition => definition.name === building.type);
+        const needsResource = buildingDefinition?.buildingFunctions.some(
           buildingFunction => buildingFunction.inputs.some(input => input.name === hoveredImportResource)
         );
         if (!needsResource) continue;
         if (!sektor.doesBuildingNeedInput(building.location, hoveredImportResource)) continue;
-        drawLocationHighlight(p, building.location, [255, 165, 0]);
+        drawLocationHighlight(p, building.location, IMPORT_HIGHLIGHT_COLOR);
       }
     }
 
@@ -1061,7 +1066,7 @@ showSektorOwner();
 initToolbar(builderLevel, isViewMode);
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);
-onImportHover(resourceType => { hoveredImportResource = resourceType; });
+onResourceHover(resourceName => { hoveredImportResource = resourceName; });
 if (!isTestMode) {
   loadSavedState();
 }

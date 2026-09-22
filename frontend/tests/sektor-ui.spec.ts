@@ -964,3 +964,41 @@ test("flashes a message with something new to say", async ({ page }) => {
     { flashing: true, animation: "message-flash", seconds: "1s", times: "2" },
   ]);
 });
+
+// A resource named in a message marks the buildings taking it in, exactly as a row of the sektor's
+// own imports and exports does, so a player told to stop importing something can see at once which
+// buildings are doing it.
+test("highlights buildings importing a resource pointed at in a message", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestHouse");
+  await deselectEverything(page);
+
+  await page.locator("#most-imported-scarce-message .message-resource", { hasText: "Food" }).hover();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "message-resource-hover-highlight", "body");
+});
+
+// Every resource a message names is a thing to point at, not a word of the sentence.
+test("names every resource of a message as a thing of its own", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestHouse");
+
+  expect(await page.locator("#most-imported-scarce-message .message-resource")
+    .evaluateAll(resources => resources.map(resource => resource.textContent)))
+    .toEqual(["Food 🥕", "Water 💧"]);
+});
+
+// The tool is put down and the panel of the building just put up closed, so that what is on the map
+// is only what the pointing marks.
+async function deselectEverything(page: Page) {
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await canvas.click({ position: { x: canvasBox!.width / 2 + 200, y: canvasBox!.height / 2 + 120 } });
+  await page.waitForTimeout(200);
+}

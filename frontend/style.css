@@ -1248,6 +1248,17 @@ body > main {
     text-align: left;
 }
 
+/* A resource a message names marks the buildings taking it in when it is pointed at, and turns white
+   under the pointer so that the player sees it is a thing to point at. */
+.message-resource {
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+.message-resource:hover {
+    background: #fff;
+}
+
 /* A message with something new to say turns white and fades back to its own colour, twice over, so
    that a player watching the map rather than the messages still catches that the advice changed. */
 @keyframes message-flash {

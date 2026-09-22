@@ -7,13 +7,9 @@ import { arrowDownTrayIcon, arrowUpTrayIcon, globeAltIcon, starIcon } from "../i
 import { showGlobalStateDialog } from "../globalStateDialog.ui";
 import { formatNumber } from "../formatNumber";
 import { resourceNameText, throughputText } from "../throughputDisplay.ui";
+import { pointAtResourceWhileHovered } from "../resourceHover.ui";
 
 let panelEl: HTMLElement | null = null;
-let importHoverCallback: ((resourceType: string | null) => void) | null = null;
-
-export function onImportHover(callback: (resourceType: string | null) => void) {
-  importHoverCallback = callback;
-}
 
 // What this sektor brings in and sends out, and what each of those is worth as things stand on the
 // planet. Nothing here is worth anything in itself: a resource is worth what moving it does for the
@@ -112,8 +108,7 @@ function createResourceRow(
 ): HTMLElement {
   const row = document.createElement("div");
   row.className = "ss-row";
-  row.addEventListener("mouseenter", () => importHoverCallback?.(resourceName));
-  row.addEventListener("mouseleave", () => importHoverCallback?.(null));
+  pointAtResourceWhileHovered(row, resourceName);
 
   const nameCell = document.createElement("span");
   nameCell.className = "ss-cell-resource";

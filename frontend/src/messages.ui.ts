@@ -5,6 +5,7 @@ import {
 } from "./globalImportsAndExports";
 import { resourceNameText } from "./throughputDisplay.ui";
 import { getNegativeScoringResources } from "./resources";
+import { pointAtResourceWhileHovered } from "./resourceHover.ui";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -59,24 +60,39 @@ function showOrHideMessage(messageId: string, advice: string, resourceNames: str
     return;
   }
 
-  showMessage(messageId, `${advice} ${resourceNames.map(resourceNameText).join(", ")}`);
+  showMessage(messageId, advice, resourceNames);
 }
 
 // A message of a kind the player is already being told is written over rather than stood beside, so
 // that the same advice is never on the screen twice over. Advice which has not changed is left
 // exactly as it stands: a player who has read it is not made to read it again.
-function showMessage(messageId: string, text: string) {
+function showMessage(messageId: string, advice: string, resourceNames: string[]) {
   const shownMessage = document.getElementById(messageId);
+  const text = `${advice} ${resourceNames.map(resourceNameText).join(", ")}`;
 
   if (shownMessage?.textContent === text) return;
 
   const message = shownMessage ?? createMessage(messageId);
-  message.textContent = text;
+  message.replaceChildren(document.createTextNode(`${advice} `), ...resourceElements(resourceNames));
 
   // Something new to say goes to the top of the stack and flashes, so that a player looking at the
   // map rather than at the messages still catches that the advice has changed.
   document.getElementById("messages")!.prepend(message);
   flash(message);
+}
+
+// Every resource a message names is a thing of its own rather than a word of the sentence, so that
+// pointing at it marks the buildings taking it in, exactly as pointing at a row of the sektor's own
+// imports and exports does.
+function resourceElements(resourceNames: string[]): Node[] {
+  return resourceNames.flatMap((resourceName, resourceIndex) => {
+    const resource = document.createElement("span");
+    resource.className = "message-resource";
+    resource.textContent = resourceNameText(resourceName);
+    pointAtResourceWhileHovered(resource, resourceName);
+
+    return resourceIndex === 0 ? [resource] : [document.createTextNode(", "), resource];
+  });
 }
 
 function createMessage(messageId: string): HTMLElement {
