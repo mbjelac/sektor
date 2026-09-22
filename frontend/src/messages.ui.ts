@@ -4,6 +4,7 @@ import {
   mostImportedScarceResourceNames,
 } from "./globalImportsAndExports";
 import { resourceNameText } from "./throughputDisplay.ui";
+import { getNegativeScoringResources } from "./resources";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -28,7 +29,7 @@ function showMostImportedMessage(planetImportsAndExports: ImportsAndExports) {
   showOrHideMessage(
     MOST_IMPORTED_MESSAGE_ID,
     "This planet needs:",
-    mostImportedResourceNames(planetImportsAndExports, MOST_TOLD_RESOURCE_COUNT),
+    mostImportedResourceNames(planetImportsAndExports, getNegativeScoringResources(), MOST_TOLD_RESOURCE_COUNT),
   );
 }
 
@@ -41,7 +42,12 @@ function showMostImportedScarceMessage(
   showOrHideMessage(
     MOST_IMPORTED_SCARCE_MESSAGE_ID,
     "Avoid importing scarse resources",
-    mostImportedScarceResourceNames(sektorImportsAndExports, planetImportsAndExports, MOST_TOLD_RESOURCE_COUNT),
+    mostImportedScarceResourceNames(
+      sektorImportsAndExports,
+      planetImportsAndExports,
+      getNegativeScoringResources(),
+      MOST_TOLD_RESOURCE_COUNT,
+    ),
   );
 }
 

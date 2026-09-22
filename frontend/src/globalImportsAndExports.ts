@@ -41,9 +41,16 @@ export function listedResourceNames(importsAndExports: ImportsAndExports): strin
 
 // The resources the planet is shortest of, the one it is shortest of first, and no more of them
 // than asked for. Resources it is equally short of keep the order their names put them in.
-export function mostImportedResourceNames(importsAndExports: ImportsAndExports, atMost: number): string[] {
+//
+// A resource which does harm is left out of the counting altogether: taking in more of it than is
+// given off is not a shortage but a job being done, and nobody is to be told to make more of it.
+export function mostImportedResourceNames(
+  importsAndExports: ImportsAndExports,
+  negativeScoringResources: string[],
+  atMost: number,
+): string[] {
   return importsAndExports.imports
-    .filter(throughput => throughput.value > 0)
+    .filter(throughput => throughput.value > 0 && !negativeScoringResources.includes(throughput.name))
     .sort((throughput, otherThroughput) => otherThroughput.value - throughput.value)
     .slice(0, atMost)
     .map(throughput => throughput.name);
@@ -51,16 +58,18 @@ export function mostImportedResourceNames(importsAndExports: ImportsAndExports, 
 
 // The resources this sektor brings in which the planet is short of too. Taking a share of what the
 // planet has too little of is the most a sektor can do against it, so these are the ones worth
-// leaving off first, the most brought in here first whatever order the planet puts them in.
+// leaving off first, the most brought in here first whatever order the planet puts them in. A
+// resource which does harm is none of them: taking that in is a service, not a share taken.
 export function mostImportedScarceResourceNames(
   sektorImportsAndExports: ImportsAndExports,
   planetImportsAndExports: ImportsAndExports,
+  negativeScoringResources: string[],
   atMost: number,
 ): string[] {
   const scarceImports = sektorImportsAndExports.imports
     .filter(throughput => findThroughputValue(planetImportsAndExports.imports, throughput.name) > 0);
 
-  return mostImportedResourceNames({ imports: scarceImports, exports: [] }, atMost);
+  return mostImportedResourceNames({ imports: scarceImports, exports: [] }, negativeScoringResources, atMost);
 }
 
 // Which column of a list of imports and exports its resources are put in order by.

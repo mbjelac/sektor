@@ -30,7 +30,7 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
 - [done] in case of multiple messages, stack them one beneath the other with a small space between
 - [done] if this message is already shown (with different resources), replace it with this one
 
-#3 Make an exception for negative resources
-- for messages described ni #1 & #2 negative resoureces should not be notified as "needed" globally, nor locally
+#3 [done] Make an exception for negative resources
+- [done] for messages described ni #1 & #2 negative resoureces should not be notified as "needed" globally, nor locally
     - if a sektor imports a negative resource, this is good, the sektor shouldn't avoid importing this resource
     - if globally a negative resource is imported, this is good, the planet does not need this resource
