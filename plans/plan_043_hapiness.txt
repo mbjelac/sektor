@@ -17,3 +17,14 @@ Sektors which contain Habitats can "produce" Hapiness resource. This is local so
 - when some functions of some Habitats are not activated because of missing input resources
     - add message (see plan 42) saying "Citizens are complaining about the <resource> shortage!"
     - add one such message for each missing input resource
+    - message resource is displayed as <name> <icon>
+    - message resource handles onmouseover events in the same way as resources in existing messages
+
+#3 Messages are separated on Information & Warning
+- existing messages are either an information message or a warning message
+- information messages should be displayed with a light blue background and have the ℹ️ emoji infront of the message
+- warning messages should be displayed with a light yellow background (like now) and have the ⚠️ emoji infront of the message
+- existing messages are:
+    - Notify player about most imported resourcesNotify player about most imported resources -> Information
+    - Notify player about local imports which are also global imports -> Warning
+    - Hapiness (in this plan) -> Information
