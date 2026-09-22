@@ -684,7 +684,6 @@ pri4 s(9,12,6) t(-31,8,11) r(90,90,0) c(#00ffbfa0)
 Name: Level 1
 
 WorkEducational 4
-WorkTechnical 1
 EnergyElectric 4
 WorkUnqualified 8
 ->
@@ -695,7 +694,6 @@ WorkMaintenance 16
 Name: Level 2
 
 WorkEducational 4
-WorkTechnical 1
 EnergyElectric 4
 WorkMaintenance 8
 ->
@@ -1058,7 +1056,7 @@ cyl s(8,8,1) t(-28,29,7) c(#c0c0c0)
 
 Chemicals 4
 EnergyElectric 2
-WorkTechnical 2
+WorkTechnical 1
 WorkEngineering 1
 ->
 Fertilizer 12
@@ -1266,7 +1264,7 @@ Name: Basic
 
 WaterSewage 5
 EnergyElectric 4
-WorkTechnical 3
+WorkTechnical 2
 ->
 WaterTechnical 8
 
@@ -2088,3 +2086,50 @@ WorkMaintenance 5
 WorkTechnical 1
 EnergyElectric 1
 ->
+
+# Gymnasium
+
+## Render
+
+```
+cyl s(100,100,1) t(0,0,7)
+cyl s(80,80,7) t(0,0,8) h(75) c(#05fbff50)
+cyl s(90,90,1) t(0,0,15) h(60) c(#f0f0f0)
+cyl s(70,70,1) t(0,0,17) c(#05fbff50)
+cyl s(50,50,1) t(0,0,8) c(#f7da6e)
+cyl s(1,1,4) t(10,0,8) r(0,0,20) c(#ff0000)
+cyl s(1,1,4) t(-5,8,10) r(0,0,-20) c(#ff0000)
+cyl s(1,1,4) t(-15,12,9) r(0,0,20) c(#ff0000)
+cyl s(1,1,4) t(0,-8,8) r(0,0,-20) c(#ff0000)
+pri3 s(20,20,1) t(10,10,9) c(#517ec8)
+pri3 s(20,20,1) t(-9,-3,9) c(#35925d) r(84,0,0)
+sph s(2,2,1) t(0,16,9) c(#ae00ff)
+sph s(2,2,1) t(5,-17,9) r(0,0,45) c(#ae00ff)
+sph s(4,4,6) t(40,40,7) c(#074b02)
+
+sph s(4,4,5) t(35,43,7) c(#074b02)
+sph s(3,3,4) t(33,48,7) c(#074b02)
+sph s(3,3,4) t(45,34,7) c(#074b02)
+sph s(4,4,5) t(39,33,7) c(#074b02)
+
+sph s(3,3,5) t(-44,41,7) c(#074b02)
+sph s(4,4,5) t(-44,35,7) c(#074b02)
+
+sph s(3,3,4) t(41,-43,7) c(#074b02)
+sph s(3,3,4) t(38,-37,7) c(#074b02)
+sph s(4,4,5) t(34,-47,7) c(#074b02)
+sph s(3,3,5) t(45,-38,7) c(#074b02)
+
+sph s(3,3,5) t(-35,-37,7) c(#074b02)
+sph s(4,4,5) t(-37,-41,7) c(#074b02)
+```
+
+## Function
+
+EnergyElectric 3
+WaterPottable 6
+WorkMaintenance 4
+->
+HealthSocial 4
+HealthPhysical 8
+
