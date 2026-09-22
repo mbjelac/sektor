@@ -1,11 +1,7 @@
 Various visual styles for empty squares:
 - temperate (started with this; european-style hills, mountains, forests, lakes, sparse simple rivers)
 - tropical (jungles, lots of water & complex river systems, jungle-covered mountains)
-- polar/subpolar (snow, ice, evergeen forests, icy rocky gray mountains)
+- polar/subpolar (snow, ice, evergeen forests, icy rocky gray mountains, snow animation!)
 - desert (sand, no water, sparse bushes & cactuses, rocky mountains & stone features)
 
-Location properties very much depend on biome:
-- temperate
-- tropical - soil max
-- polar/subpolar - insolation low, wind high, soil low
-- desert - soil 0, insolation max
+Some location properties very much depend on biome. See biomes.md.
