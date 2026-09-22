@@ -11,7 +11,7 @@ own — that is what this replaces.
 ## The user confirmed a section
 
 ```
-.claude/skills/mark-done/mark-done.sh
+"$(git rev-parse --show-toplevel)/.claude/skills/mark-done/mark-done.sh"
 ```
 
 Marks the first section still without `[done]` in the newest plan file, which is the section
@@ -23,10 +23,12 @@ than letting it pass.
 ## A step is finished
 
 ```
-.claude/skills/mark-done/mark-done.sh --step "<the step's text, without the leading '- '>"
+"$(git rev-parse --show-toplevel)/.claude/skills/mark-done/mark-done.sh" --step "<the step's text, without the leading '- '>"
 ```
 
 The text has to match the step's whole line exactly, so copy it from the plan.
+
+The working directory wanders, so the script is called by its full path rather than a relative one.
 
 ## Another plan
 
