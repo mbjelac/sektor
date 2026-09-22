@@ -237,6 +237,7 @@ Active: always
 HealthPhysical 3
 ->
 WorkUnqualified 6
+Hapiness 3
 
 ## Function
 
@@ -245,6 +246,7 @@ Active: always
 HealthMental 3
 ->
 WorkUnqualified 6
+Hapiness 3
 
 ## Function
 
@@ -253,6 +255,7 @@ Active: always
 HealthSocial 3
 ->
 WorkUnqualified 6
+Hapiness 3
 
 ## Function
 
@@ -261,6 +264,7 @@ Active: always
 Childcare 2
 ->
 WorkUnqualified 4
+Hapiness 3
 
 # Library
 
@@ -1109,8 +1113,8 @@ con s(4,4,1) t(22,-33,37) r(0,180,0) c(#ffffff)
 ## Function
 
 WaterPottable 5
-FoodRaw 2
-FoodProcessed 3
+FoodRaw 3
+FoodProcessed 2
 EnergyElectric 4
 WorkEducational 4
 WorkMaintenance 1

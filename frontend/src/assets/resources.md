@@ -1,5 +1,5 @@
 EnergyElectric ⚡ #ffee44
-WorkUnqualified 🖐 #FFC800 negative local
+WorkUnqualified 🖐 #FFC800 negative
 WorkTechnical 🛠️ #b5aba1
 WorkEducational 📚 #3EB01C
 WorkMaintenance 🪜 #ffb638
@@ -25,3 +25,4 @@ Minerals 🪨 #d6713e
 WasteBio 🌿 #267530 negative
 Childcare 🧸 #ffa6e9 local
 WasteNuclear 🛢 #96230c negative
+Hapiness ☺️ #ffd1f4 local

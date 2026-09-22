@@ -1002,3 +1002,28 @@ async function deselectEverything(page: Page) {
   await canvas.click({ position: { x: canvasBox!.width / 2 + 200, y: canvasBox!.height / 2 + 120 } });
   await page.waitForTimeout(200);
 }
+
+// Pointing at a resource says what the whole sektor does with it: the processor making Wood stands
+// out in green and the refinery taking it in in red.
+test("highlights buildings making a resource in green and buildings taking it in in red", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  const centerX = canvasBox!.width / 2;
+  const centerY = canvasBox!.height / 2;
+  await placeBuildingAt(page, "TestProcessor", { x: centerX - 60, y: centerY - 20 });
+  await placeBuildingAt(page, "TestRefinery", { x: centerX + 60, y: centerY - 20 });
+  await deselectEverything(page);
+
+  await page.locator(".ss-row", { hasText: "Wood" }).first().hover();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "output-hover-highlight", "body");
+});
+
+async function placeBuildingAt(page: Page, buildingName: string, position: { x: number; y: number }) {
+  await page.locator(`.building-item[data-building-name="${buildingName}"]`).click();
+  await page.waitForTimeout(100);
+  await page.locator("#canvas-container > canvas").click({ position });
+  await page.waitForTimeout(200);
+}
