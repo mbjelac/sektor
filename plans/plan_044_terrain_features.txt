@@ -35,7 +35,7 @@ Terrain features also includes water, e.g.:
             - same error functionalities as all other errors
 
 #3 Elevation
-- when creating a sektor, some floors are "elevation" (i.e. rocks)
+- [done] when creating a sektor, some floors are "elevation" (i.e. rocks)
     - a sektor terrain matrix has a value 2 (elevation)
     - for now, amount of a sektor elevation is determined by randomly selecting from this list of options:
         - 0
@@ -43,7 +43,7 @@ Terrain features also includes water, e.g.:
         - 1/5
 - elevation is rendered with a special "building"
     - floor is render same as for ground squares
-    - render a "buiding" on that square same as it would be if a player
+    - render a "buiding" on that square same as it would be if a player constructed a building
         - the building render code does not come from buildings.md
         - it comes from terrain.md
         - for now, always render "Grassy rocky outcrop"
