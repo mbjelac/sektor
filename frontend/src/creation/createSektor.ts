@@ -1,8 +1,5 @@
 import { SektorData } from "../../../shared/sektorData";
 import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
-import { ALTITUDE_PROPERTY } from "../../../shared/altitude";
-import { createAltitudeMatrix } from "./altitudeMatrix";
-import { propertiesShapedByAltitude } from "./altitudeEffects";
 import { RandomNumber } from "./randomNumber";
 
 export type { RandomNumber };
@@ -23,26 +20,16 @@ export function createSektor(
 }
 
 // The ground of a sektor is made of every property there is, whether or not a building in this
-// sektor draws on it. What each of them holds is whatever its own shape and the height of the
-// ground make it: the sektor is built out of the ground it was given rather than the ground being
-// bent to suit the sektor.
+// sektor draws on it. What each of them holds is whatever its own shape makes it: the sektor is
+// built out of the ground it was given rather than the ground being bent to suit the sektor.
 function createLocationProperties(
   locationPropertyNames: string[],
   randomNumber: RandomNumber,
 ): { [key: string]: number[][] } {
-  const altitudes = createAltitudeMatrix(randomNumber);
-
-  // Every property is laid out over flat ground first and only then made to answer to the height it
-  // lies at, so that what the ground is made of and how high it stands are two separate things.
-  const propertyMatrices = Object.fromEntries(
+  return Object.fromEntries(
     locationPropertyNames.map(propertyName => [
       propertyName,
       createLocationPropertyMatrix(propertyName, randomNumber),
     ])
   );
-
-  return {
-    ...propertiesShapedByAltitude(propertyMatrices, altitudes),
-    [ALTITUDE_PROPERTY]: altitudes,
-  };
 }

@@ -1,5 +1,5 @@
 import p5 from "p5";
-import {drawFloor, drawFloorWireframe, drawWaterBed, drawWaterSurface, floorBlockHeight, SidesOnMapEdge} from "../../../shared/drawFloor";
+import {drawFloor, drawFloorWireframe, drawWaterBed, drawWaterSurface} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {withoutDepthWrites} from "../../../shared/applyCommands";
@@ -24,7 +24,6 @@ import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, 
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
-import { ALTITUDE_PROPERTY, MAX_ALTITUDE, MIN_ALTITUDE } from "../../../shared/altitude";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -193,21 +192,9 @@ function createTestLocations(gridSize: number): Location[][] {
         ore: ((x * 7 + z * 41) % propertyValueCount) + MODIFIER_MIN,
         insolation: ((x * 29 + z * 11) % propertyValueCount) + MODIFIER_MIN,
         wind: ((x * 37 + z * 19) % propertyValueCount) + MODIFIER_MIN,
-        // Half the test map is flat ground and the rest rises, the same way every time, so that
-        // the tests see hills without seeing different ones on every run.
-        altitude: testAltitude(x, z),
       },
     }))
   );
-}
-
-// Ground which the pattern leaves in its lower half lies flat, and the rest of it stands anywhere
-// up to the highest there is.
-function testAltitude(x: number, z: number): number {
-  const altitudeSteps = MAX_ALTITUDE - MIN_ALTITUDE;
-  const pattern = (x * 17 + z * 19) % (2 * altitudeSteps + 2);
-  if (pattern < altitudeSteps + 1) return MIN_ALTITUDE;
-  return MIN_ALTITUDE + 1 + (pattern % altitudeSteps);
 }
 
 function getLocations(): Location[][] {
@@ -482,7 +469,7 @@ function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number
     p.noStroke();
     p.noLights();
     p.fill(color[0], color[1], color[2]);
-    p.translate(side.x, groundHeight(location.x, location.y) - FLOOR_HEIGHT / 2 - heightAboveFloor - thickness / 2, side.z);
+    p.translate(side.x, -FLOOR_HEIGHT / 2 - heightAboveFloor - thickness / 2, side.z);
     p.box(side.w, thickness, side.d);
     p.pop();
   }
@@ -500,7 +487,7 @@ function drawStarvationWarning(p: p5, location: BuildingLocation, cameraAngleY: 
   p.push();
   p.noStroke();
   p.noLights();
-  p.translate(wx, groundHeight(location.x, location.y) - STARVATION_WARNING_HEIGHT, wz);
+  p.translate(wx, -STARVATION_WARNING_HEIGHT, wz);
   p.rotateY(cameraAngleY);
 
   p.fill(255, 221, 0);
@@ -548,10 +535,9 @@ function drawOceanWaves(p: p5, elapsedMilliseconds: number) {
   p.pop();
 }
 
-// Every square of the sea carries its own grid of glints, lying on that square's own floor: the
-// ground under the water need not be all of a height. A glint is numbered by where it falls in
-// the grid the whole sea is covered with rather than in its own square's, so that no two squares
-// shimmer alike and the sea does not show its tiling.
+// Every square of the sea carries its own grid of glints, lying on the floor of the map. A glint
+// is numbered by where it falls in the grid the whole sea is covered with rather than in its own
+// square's, so that no two squares shimmer alike and the sea does not show its tiling.
 function addWavesOnWater(p: p5, gx: number, gy: number, elapsedMilliseconds: number) {
   const { wx, wz } = gridToWorld(gx, gy);
   // The glints lie a little under the surface of the water rather than on it, as light caught in
@@ -560,7 +546,7 @@ function addWavesOnWater(p: p5, gx: number, gy: number, elapsedMilliseconds: num
   const water: WaterSurface = {
     centerX: wx,
     centerZ: wz,
-    height: groundHeight(gx, gy) - FLOOR_HEIGHT / 2 + WAVE_DEPTH_UNDER_SURFACE,
+    height: -FLOOR_HEIGHT / 2 + WAVE_DEPTH_UNDER_SURFACE,
   };
   for (let glintX = 0; glintX < WAVE_GRID_SIZE; glintX++) {
     for (let glintZ = 0; glintZ < WAVE_GRID_SIZE; glintZ++) {
@@ -680,11 +666,11 @@ function rebakeFloorGeometry(p: p5) {
 function bakeOpaqueFloors(p: p5) {
   forEachLocation(p, (x, z) => {
     if (!isFloorSolid(x, z)) {
-      drawFloorWireframe(p, BLOCK_SIZE, altitudeAt(x, z));
+      drawFloorWireframe(p, BLOCK_SIZE);
     } else if (isOceanLocation(x, z)) {
       drawWaterBed(p, BLOCK_SIZE, OCEAN_COLOR);
     } else {
-      drawFloor(p, BLOCK_SIZE, floorColorAt(x, z), altitudeAt(x, z), sidesOnMapEdgeAt(x, z));
+      drawFloor(p, BLOCK_SIZE, floorColorAt(x, z));
     }
   });
 }
@@ -692,7 +678,7 @@ function bakeOpaqueFloors(p: p5) {
 function bakeWaterSurfaces(p: p5) {
   forEachLocation(p, (x, z) => {
     if (!isOceanLocation(x, z) || !isFloorSolid(x, z)) return;
-    drawWaterSurface(p, BLOCK_SIZE, OCEAN_COLOR, altitudeAt(x, z));
+    drawWaterSurface(p, BLOCK_SIZE, OCEAN_COLOR);
   });
 }
 
@@ -708,18 +694,6 @@ function forEachLocation(p: p5, bakeLocation: (x: number, z: number) => void) {
       p.pop();
     }
   }
-}
-
-// A location on the rim of the map looks out over nothing on that side, and what shows there is
-// the earth the map is cut out of rather than the ground standing on it. A location in a corner
-// looks out on two sides, one anywhere else on the rim on one, and one inside the map on none.
-function sidesOnMapEdgeAt(x: number, z: number): SidesOnMapEdge {
-  return {
-    left: x === 0,
-    right: x === SEKTOR_SIZE - 1,
-    back: z === 0,
-    front: z === SEKTOR_SIZE - 1,
-  };
 }
 
 function isFloorSolid(x: number, z: number): boolean {
@@ -770,26 +744,10 @@ function gridToWorld(gx: number, gy: number): { wx: number; wz: number } {
   };
 }
 
-// How far above the lowest ground the top of a location stands. Everything which sits on a
-// location — the building on it, its highlight, the warning over it — is lifted by this much.
-// Screen up is negative, so higher ground has a smaller y.
-function groundHeight(gx: number, gy: number): number {
-  return -(floorBlockHeight(BLOCK_SIZE, altitudeAt(gx, gy)) - floorBlockHeight(BLOCK_SIZE, MIN_ALTITUDE));
-}
-
-function altitudeAt(gx: number, gy: number): number {
-  return locations[gx]?.[gy]?.properties[ALTITUDE_PROPERTY] ?? MIN_ALTITUDE;
-}
-
-// What the top of a location is colored: the sea where the map is open water, otherwise its soil
-// where things grow and its height where they do not.
+// What the top of a location is colored: the sea where the map is open water, otherwise its soil.
 function floorColorAt(gx: number, gy: number): [number, number, number] {
   if (isOceanLocation(gx, gy)) return OCEAN_COLOR;
-  return floorColor(
-    locations[gx]?.[gy]?.properties[FLOOR_PROPERTY] ?? 0,
-    altitudeAt(gx, gy),
-    colorVariationAt(gx, gy),
-  );
+  return floorColor(locations[gx]?.[gy]?.properties[FLOOR_PROPERTY] ?? 0);
 }
 
 // Most of a map is open water and only a handful of its squares are land, so that the sea can be
@@ -826,15 +784,6 @@ function pickLandLocations(): boolean[][] {
 
 function landVariationAt(gx: number, gy: number): number {
   const scrambled = Math.sin(gx * 419.2 + gy * 371.9) * 43758.5453;
-  return scrambled - Math.floor(scrambled);
-}
-
-// Mountains are spread over a pair of colors, and where a location falls in that spread has to come
-// out the same every time it is drawn, or the map would shimmer whenever the floor is baked again.
-// So a location's own place on the map stands in for the die roll, scrambled past all resemblance
-// to its neighbours'.
-function colorVariationAt(gx: number, gy: number): number {
-  const scrambled = Math.sin(gx * 127.1 + gy * 311.7) * 43758.5453;
   return scrambled - Math.floor(scrambled);
 }
 
@@ -940,7 +889,7 @@ function findClickedTile(p: p5, currentZoom: number): { x: number; y: number } |
       const t = rayAABB(
         ox, oy, oz,
         fwdX, fwdY, fwdZ,
-        wx - HALF, groundHeight(gx, gy) - FLOOR_HEIGHT / 2, wz - HALF,
+        wx - HALF, -FLOOR_HEIGHT / 2, wz - HALF,
         wx + HALF, FLOOR_HEIGHT / 2, wz + HALF,
       );
       if (t !== null && t < bestT) {
@@ -1287,7 +1236,7 @@ const sektorUi = (p: p5) => {
     for (const building of placedBuildings) {
       p.push();
       const { wx, wz } = gridToWorld(building.location.x, building.location.y);
-      p.translate(wx, groundHeight(building.location.x, building.location.y), wz);
+      p.translate(wx, 0, wz);
       drawBakedBodies(p, bakedBuildingBodies(p, building.type, building.code), p.millis());
       p.pop();
     }

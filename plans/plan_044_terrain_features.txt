@@ -9,9 +9,9 @@ Terrain features also includes water, e.g.:
 - river
 - pond
 
-#1 Remove all existing terrain features
-- remove all features which use the concept of "altitude" to draw & work with higher floor blocks
-- remove all modifications of location properties depending on altitude
+#1 [done] Remove all existing terrain features
+- [done] remove all features which use the concept of "altitude" to draw & work with higher floor blocks
+- [done] remove all modifications of location properties depending on altitude
 
 #2 Sea
 - when creating a sektor, some floors are sea
