@@ -25,6 +25,9 @@ export interface SektorData {
   // How hard the sektor is, the lowest being the first level of levels.md. Every sektor has one,
   // whether it was generated or made by hand.
   level: number;
+  // What every square of the sektor's map is made of, being ground or sea. A sektor made before
+  // there was any sea carries none, and is dry land the whole way across.
+  terrain?: number[][];
   locationProperties: { [key: string]: number[][] };
   buildings: Building[];
 }

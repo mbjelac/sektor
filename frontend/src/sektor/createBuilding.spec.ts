@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Sektor } from "./Sektor";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
+import { GROUND, SEA } from "../../../shared/terrain";
 
 function buildingDefinition(name: string, inputs: { name: string, value: number }[], outputs: { name: string, value: number }[]): BuildingDefinition {
   return {
@@ -21,6 +22,20 @@ function createSektor(): Sektor {
   return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
 }
 
+// A sektor whose map is dry land but for the one square of sea, so that a test can build on the
+// water and on the ground beside it.
+const SEA_LOCATION = { x: 1, y: 0 };
+const GROUND_LOCATION = { x: 0, y: 0 };
+
+function createSektorWithSea(): Sektor {
+  return new Sektor(
+    [[{ properties: { soil: 1.0 } }]],
+    testDefinitions,
+    [],
+    [[GROUND], [SEA]],
+  );
+}
+
 describe("createBuilding", () => {
   it("creates building on free location", () => {
     const sektor = createSektor();
@@ -36,6 +51,40 @@ describe("createBuilding", () => {
         addedBuildings: [{ type: "Mill", location: { x: 8, y: 6 } }],
       },
       buildings: [{ type: "Mill", location: { x: 8, y: 6 } }],
+    });
+  });
+
+  it("does not create a building on a square of sea", () => {
+    const sektor = createSektorWithSea();
+
+    const result = sektor.createBuilding({ type: "Mill", location: SEA_LOCATION });
+
+    expect({
+      result,
+      buildings: sektor.getState().buildings,
+    }).toEqual({
+      result: {
+        error: "notDryEnough",
+        addedBuildings: [],
+      },
+      buildings: [],
+    });
+  });
+
+  it("creates a building on dry land of a sektor which has sea in it", () => {
+    const sektor = createSektorWithSea();
+
+    const result = sektor.createBuilding({ type: "Mill", location: GROUND_LOCATION });
+
+    expect({
+      result,
+      buildings: sektor.getState().buildings,
+    }).toEqual({
+      result: {
+        error: undefined,
+        addedBuildings: [{ type: "Mill", location: GROUND_LOCATION }],
+      },
+      buildings: [{ type: "Mill", location: GROUND_LOCATION }],
     });
   });
 

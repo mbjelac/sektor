@@ -96,7 +96,14 @@ export function drawWaterBed(p: p5, size: number, color: [number, number, number
 // The surface is the top of the water, standing at the height the ground of that location would.
 // It is half seen through, so it is drawn after everything opaque and writes no depth of its own.
 export function drawWaterSurface(p: p5, size: number, color: [number, number, number]) {
-  drawWaterSheet(p, size, color, floorBlockBottom(size) - floorBlockHeight(size), HALF_SEEN_THROUGH);
+  drawWaterSheet(p, size, color, waterSurfaceHeight(size), HALF_SEEN_THROUGH);
+}
+
+// Where the top of the water of a location stands, which is where the ground of that location
+// would have stood. Whatever is laid on the water — the glints shimmering over it — is placed
+// against this rather than against a height of its own.
+export function waterSurfaceHeight(size: number): number {
+  return floorBlockBottom(size) - floorBlockHeight(size);
 }
 
 // Both sheets face upwards, the bed as much as the surface. The bed is the one underside anybody

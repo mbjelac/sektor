@@ -1,5 +1,6 @@
 import { SektorData } from "../../../shared/sektorData";
 import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
+import { createTerrainMatrix } from "./terrainMatrix";
 import { RandomNumber } from "./randomNumber";
 
 export type { RandomNumber };
@@ -14,6 +15,7 @@ export function createSektor(
 ): SektorData {
   return {
     level,
+    terrain: createTerrainMatrix(randomNumber),
     locationProperties: createLocationProperties(locationPropertyNames, randomNumber),
     buildings: [],
   };

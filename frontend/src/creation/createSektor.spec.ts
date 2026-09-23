@@ -27,6 +27,17 @@ describe("createSektor", () => {
     )));
   });
 
+  // A sektor is made with the terrain it stands on, so that what is dry land and what is sea is
+  // settled once and is the same every time the sektor is opened.
+  it("lays the terrain out over the whole of the sektor's map and no further", () => {
+    const sektorData = createSektor(3, LOCATION_PROPERTIES, middleOfTheRange);
+
+    expect({
+      rows: sektorData.terrain?.length,
+      rowLengths: [...new Set(sektorData.terrain?.map(row => row.length))],
+    }).toEqual({ rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] });
+  });
+
   it("makes a sektor which has no buildings in it yet", () => {
     const sektorData = createSektor(2, LOCATION_PROPERTIES, middleOfTheRange);
 

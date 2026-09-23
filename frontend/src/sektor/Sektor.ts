@@ -1,6 +1,7 @@
 
 import { BuildingDefinition, BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
+import { SEA } from "../../../shared/terrain";
 
 export type { BuildingLocation, BuildingCreation, Building, Location };
 
@@ -60,15 +61,20 @@ export class Sektor {
   private readonly locations: Location[][];
   private readonly buildingDefinitions: BuildingDefinition[];
   private readonly localResources: string[];
+  private readonly terrain: number[][];
 
+  // A sektor handed no terrain is dry land the whole way across, which is what a sektor made
+  // before there was any sea is.
   constructor(
     locations: Location[][],
     buildingDefinitions: BuildingDefinition[],
     localResources: string[],
+    terrain: number[][] = [],
   ) {
     this.locations = locations;
     this.buildingDefinitions = buildingDefinitions;
     this.localResources = localResources;
+    this.terrain = terrain;
   }
 
   getLocations(): Location[][] {
@@ -349,6 +355,10 @@ export class Sektor {
   }
 
   createBuilding(building: BuildingCreation): CreateBuildingResult {
+    if (this.isSea(building.location)) {
+      return { error: "notDryEnough", addedBuildings: [] };
+    }
+
     if (this.findBuildingAt(building.location)) {
       return { error: "locationOccupied", addedBuildings: [] };
     }
@@ -368,6 +378,11 @@ export class Sektor {
     );
 
     return { success: true };
+  }
+
+  // Nothing stands in open water, so a square of sea is not a square to build on.
+  private isSea(location: BuildingLocation): boolean {
+    return this.terrain[location.x]?.[location.y] === SEA;
   }
 
   private findBuildingDefinition(type: string): BuildingDefinition | undefined {

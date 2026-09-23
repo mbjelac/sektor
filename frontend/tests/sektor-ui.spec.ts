@@ -655,6 +655,21 @@ test("shows error when placing building on occupied location", async ({ page }) 
   await expectScreenshot(page, "building-error", "body");
 });
 
+// The sea is not dry land and nothing is put up on it: a click on the water leaves the map as it
+// was and says why.
+test("shows error when placing building on the sea", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  // The test sektor has its bay in the corner of the map standing at the top of the screen, well
+  // above the middle the other tests build on.
+  await canvas.click({ position: { x: box!.width / 2 - 50, y: box!.height / 2 - 240 } });
+  await page.waitForTimeout(200);
+  await expectScreenshot(page, "sea-building-error", "body");
+});
+
 // A sektor is worth what it does for the planet, so the same Food brought in is worth different
 // things on different planets: two points off where the planet is short of Food, and only one where
 // another sektor already sends out more than enough of it.
