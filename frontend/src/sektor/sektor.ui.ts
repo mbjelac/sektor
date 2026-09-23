@@ -1,7 +1,8 @@
 import p5 from "p5";
-import {drawFloor, drawFloorWireframe, floorBlockHeight, SidesOnMapEdge} from "../../../shared/drawFloor";
+import {drawFloor, drawFloorWireframe, drawWaterBed, drawWaterSurface, floorBlockHeight, SidesOnMapEdge} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
+import {withoutDepthWrites} from "../../../shared/applyCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
 import { BuildingLocation, HAPINESS_RESOURCE, Location, Sektor, SektorState } from "./Sektor";
@@ -523,33 +524,188 @@ function drawStarvationWarning(p: p5, location: BuildingLocation, cameraAngleY: 
   p.pop();
 }
 
+// The sea is never still. White glints shimmer over the water, each fading in and out where it
+// lies. No two glints keep the same count, so the sea is never all bright or all bare at once.
+//
+// There are thousands of them, and drawing each as a line of its own would cost p5 a geometry
+// rebuild and a GPU upload per glint per frame — the same price the floors and the buildings are
+// baked to get out of paying, at several times the scale. The whole sea goes into one shape
+// instead: a single upload and a single draw call, however much water the map carries.
+function drawOceanWaves(p: p5, elapsedMilliseconds: number) {
+  p.push();
+  p.noFill();
+  p.noLights();
+  p.strokeWeight(WAVE_LINE_WEIGHT);
+  p.beginShape(p.LINES);
+  for (let gx = 0; gx < SEKTOR_SIZE; gx++) {
+    for (let gy = 0; gy < SEKTOR_SIZE; gy++) {
+      if (isOceanLocation(gx, gy)) {
+        addWavesOnWater(p, gx, gy, elapsedMilliseconds);
+      }
+    }
+  }
+  p.endShape();
+  p.pop();
+}
+
+// Every square of the sea carries its own grid of glints, lying on that square's own floor: the
+// ground under the water need not be all of a height. A glint is numbered by where it falls in
+// the grid the whole sea is covered with rather than in its own square's, so that no two squares
+// shimmer alike and the sea does not show its tiling.
+function addWavesOnWater(p: p5, gx: number, gy: number, elapsedMilliseconds: number) {
+  const { wx, wz } = gridToWorld(gx, gy);
+  const water: WaterSurface = {
+    centerX: wx,
+    centerZ: wz,
+    height: groundHeight(gx, gy) - FLOOR_HEIGHT / 2 - WAVE_HEIGHT_ABOVE_WATER,
+  };
+  for (let glintX = 0; glintX < WAVE_GRID_SIZE; glintX++) {
+    for (let glintZ = 0; glintZ < WAVE_GRID_SIZE; glintZ++) {
+      addWave(p, gx * WAVE_GRID_SIZE + glintX, gy * WAVE_GRID_SIZE + glintZ, water, elapsedMilliseconds);
+    }
+  }
+}
+
+// Where the water of one square lies. The glints of the whole sea go into a single shape, which
+// no transform can be applied in the middle of, so each glint is placed against its own square's
+// water rather than drawn with the square translated under it.
+interface WaterSurface {
+  centerX: number;
+  centerZ: number;
+  height: number;
+}
+
+// A glint is a very short line lying flat on the water, running along the square it lies on rather
+// than across it; every glint on the sea runs the same way. Over its cycle it swells from nothing
+// to full white and back down to nothing, holding still the whole while; it moves only between
+// cycles, landing somewhere new while there is nothing of it to see. Squaring the swell keeps it
+// faint for most of the cycle and bright only briefly, which is what makes the water glitter
+// rather than pulse.
+function addWave(p: p5, glintX: number, glintZ: number, water: WaterSurface, elapsedMilliseconds: number) {
+  const cyclesElapsed = elapsedMilliseconds / WAVE_CYCLE_MILLISECONDS + waveVariation(glintX, glintZ, 1);
+  const cycleNumber = Math.floor(cyclesElapsed);
+  const swell = Math.sin((cyclesElapsed - cycleNumber) * Math.PI);
+  if (swell <= 0) return;
+
+  // Counting the cycle into the seed is what moves the glint: the roll comes out differently on
+  // every cycle, so the glint comes back somewhere new each time. Two seeds go to a cycle, one
+  // for each side it is measured along.
+  const offsetAlongXSeed = 2 + cycleNumber * 2;
+  const offsetAlongZSeed = 3 + cycleNumber * 2;
+  const centerX = water.centerX + glintPosition(glintX, waveVariation(glintX, glintZ, offsetAlongXSeed));
+  const centerZ = water.centerZ + glintPosition(glintZ, waveVariation(glintX, glintZ, offsetAlongZSeed));
+  const halfLength = WAVE_LINE_LENGTH / 2;
+
+  // A stroke color set between vertices is carried by the vertices after it, so every glint keeps
+  // its own brightness although the whole sea is one shape.
+  p.stroke(255, 255, 255, WAVE_MAX_ALPHA * swell * swell);
+  p.vertex(centerX - halfLength, water.height, centerZ);
+  p.vertex(centerX + halfLength, water.height, centerZ);
+}
+
+// The glints are anchored to an even grid over the water, each in the middle of its own share of
+// its square, so that the shimmer is spread across the whole sea rather than clumping anywhere on
+// it. The square is shared out whole, which is what puts a glint half a spacing from the edge it
+// lies against: any less than the whole and the rims of the squares would show as bare water, any
+// more and the glints of neighbouring squares would crowd over their shared edge. Each glint is
+// then nudged off its anchor by a fraction of the distance to the next one, which takes the ruled
+// look off the grid while leaving the spread of it alone. A glint is numbered across the whole sea
+// while it is drawn within its own square, so what places it is what is left of its number once
+// the squares before it are taken off.
+function glintPosition(glintIndex: number, offsetVariation: number): number {
+  const spacing = BLOCK_SIZE / WAVE_GRID_SIZE;
+  const placeInGrid = (glintIndex % WAVE_GRID_SIZE + 0.5) * spacing - BLOCK_SIZE / 2;
+  return placeInGrid + (offsetVariation - 0.5) * 2 * WAVE_GLINT_OFFSET * spacing;
+}
+
+// When a glint swells, and where it comes back each time it does, have to come out the same every
+// frame, or the sea would jump about instead of shimmering. So a glint's own place in the grid
+// stands in for the die roll, scrambled past all resemblance to its neighbours' — an even grid of
+// dots all swelling together would read as a grid, which is the one thing the sea must not look
+// like. The seed tells a glint's rolls apart: when it swells, and where it lands on each cycle.
+function waveVariation(glintX: number, glintZ: number, seed: number): number {
+  const scrambled = Math.sin(glintX * 127.1 + glintZ * 311.7 + seed * 74.7) * 43758.5453;
+  return scrambled - Math.floor(scrambled);
+}
+
+// How many glints stand along each side of a square of water; every square carries the square of
+// this many.
+const WAVE_GRID_SIZE = 5;
+
+// How long a glint takes to swell and fade away again.
+const WAVE_CYCLE_MILLISECONDS = 1730;
+
+// How far off its anchor a glint may land, as a part of the distance between one glint and the
+// next. It is given a fresh place under this every time it fades out and comes back.
+const WAVE_GLINT_OFFSET = 0.5;
+
+// How long a glint is. A wave crest seen from this far up is a scratch of light, not a stroke.
+const WAVE_LINE_LENGTH = BLOCK_SIZE * 0.03;
+
+const WAVE_MAX_ALPHA = 230;
+
+const WAVE_LINE_WEIGHT = BLOCK_SIZE * 0.005;
+
+// The glints sit clear of the water rather than on it, so that the two do not fight over the same
+// depth, which shows up as the glints stippling in and out as the map is turned.
+const WAVE_HEIGHT_ABOVE_WATER = BLOCK_SIZE * 0.012;
+
 // Drawing the hundred floors one by one costs p5 a geometry rebuild and a GPU upload per
 // floor per frame, which dwarfs everything else on the canvas. The grid only changes when a
 // building that hides its floor is built or destroyed, so it is baked into a single geometry
 // and rebaked only then.
-let floorGeometry: p5.Geometry | null = null;
+let opaqueFloorGeometry: p5.Geometry | null = null;
+let waterSurfaceGeometry: p5.Geometry | null = null;
 let floorGeometryNeedsRebaking = true;
 
+// The map is baked in two parts because it has to be drawn in two passes. Everything solid goes
+// into the first — the land, and the beds of the sea, which are as solid as the land is — and
+// fills the depth buffer, so that nothing buried under the map shows through it. Only the surfaces
+// of the water go into the second, which is laid over the first writing no depth of its own,
+// because a surface half seen through must not hide the bed and the buildings standing behind it.
 function rebakeFloorGeometry(p: p5) {
-  if (floorGeometry) {
-    p.freeGeometry(floorGeometry);
+  if (opaqueFloorGeometry) {
+    p.freeGeometry(opaqueFloorGeometry);
   }
-  floorGeometry = p.buildGeometry(() => {
-    for (let x = 0; x < SEKTOR_SIZE; x++) {
-      for (let z = 0; z < SEKTOR_SIZE; z++) {
-        p.push();
-        const { wx, wz } = gridToWorld(x, z);
-        p.translate(wx, 0, wz);
-        if (isFloorSolid(x, z)) {
-          drawFloor(p, BLOCK_SIZE, floorColorAt(x, z), altitudeAt(x, z), sidesOnMapEdgeAt(x, z));
-        } else {
-          drawFloorWireframe(p, BLOCK_SIZE, altitudeAt(x, z));
-        }
-        p.pop();
-      }
+  if (waterSurfaceGeometry) {
+    p.freeGeometry(waterSurfaceGeometry);
+  }
+  opaqueFloorGeometry = p.buildGeometry(() => bakeOpaqueFloors(p));
+  waterSurfaceGeometry = p.buildGeometry(() => bakeWaterSurfaces(p));
+  floorGeometryNeedsRebaking = false;
+}
+
+function bakeOpaqueFloors(p: p5) {
+  forEachLocation(p, (x, z) => {
+    if (!isFloorSolid(x, z)) {
+      drawFloorWireframe(p, BLOCK_SIZE, altitudeAt(x, z));
+    } else if (isOceanLocation(x, z)) {
+      drawWaterBed(p, BLOCK_SIZE, OCEAN_COLOR);
+    } else {
+      drawFloor(p, BLOCK_SIZE, floorColorAt(x, z), altitudeAt(x, z), sidesOnMapEdgeAt(x, z));
     }
   });
-  floorGeometryNeedsRebaking = false;
+}
+
+function bakeWaterSurfaces(p: p5) {
+  forEachLocation(p, (x, z) => {
+    if (!isOceanLocation(x, z) || !isFloorSolid(x, z)) return;
+    drawWaterSurface(p, BLOCK_SIZE, OCEAN_COLOR, altitudeAt(x, z));
+  });
+}
+
+// Every location is baked where it stands on the map, so that the whole grid comes out as one
+// geometry however many passes it takes to draw it.
+function forEachLocation(p: p5, bakeLocation: (x: number, z: number) => void) {
+  for (let x = 0; x < SEKTOR_SIZE; x++) {
+    for (let z = 0; z < SEKTOR_SIZE; z++) {
+      p.push();
+      const { wx, wz } = gridToWorld(x, z);
+      p.translate(wx, 0, wz);
+      bakeLocation(x, z);
+      p.pop();
+    }
+  }
 }
 
 // A location on the rim of the map looks out over nothing on that side, and what shows there is
@@ -623,13 +779,52 @@ function altitudeAt(gx: number, gy: number): number {
   return locations[gx]?.[gy]?.properties[ALTITUDE_PROPERTY] ?? MIN_ALTITUDE;
 }
 
-// What the top of a location is colored: its soil where things grow, its height where they do not.
+// What the top of a location is colored: the sea where the map is open water, otherwise its soil
+// where things grow and its height where they do not.
 function floorColorAt(gx: number, gy: number): [number, number, number] {
+  if (isOceanLocation(gx, gy)) return OCEAN_COLOR;
   return floorColor(
     locations[gx]?.[gy]?.properties[FLOOR_PROPERTY] ?? 0,
     altitudeAt(gx, gy),
     colorVariationAt(gx, gy),
   );
+}
+
+// Most of a map is open water and only a handful of its squares are land, so that the sea can be
+// watched at work over the whole of it.
+const LAND_LOCATION_COUNT = 8;
+
+const OCEAN_COLOR: [number, number, number] = [66, 183, 255];
+
+const landLocations = pickLandLocations();
+
+function isOceanLocation(gx: number, gy: number): boolean {
+  return !landLocations[gx][gy];
+}
+
+// Which squares are left as land is settled once, when the map is opened: every location's own
+// place on the map is scrambled, and the locations coming out lowest are the land. Drawing lots
+// would put the land somewhere new on every frame the floor is baked on; this way the same sektor
+// comes up the same every time it is opened, and the floor can be baked once and left alone.
+function pickLandLocations(): boolean[][] {
+  const scrambledLocations: { gx: number, gy: number, variation: number }[] = [];
+  for (let gx = 0; gx < SEKTOR_SIZE; gx++) {
+    for (let gy = 0; gy < SEKTOR_SIZE; gy++) {
+      scrambledLocations.push({ gx, gy, variation: landVariationAt(gx, gy) });
+    }
+  }
+  scrambledLocations.sort((one, other) => one.variation - other.variation);
+
+  const isLand = Array.from({ length: SEKTOR_SIZE }, () => new Array<boolean>(SEKTOR_SIZE).fill(false));
+  for (const location of scrambledLocations.slice(0, LAND_LOCATION_COUNT)) {
+    isLand[location.gx][location.gy] = true;
+  }
+  return isLand;
+}
+
+function landVariationAt(gx: number, gy: number): number {
+  const scrambled = Math.sin(gx * 419.2 + gy * 371.9) * 43758.5453;
+  return scrambled - Math.floor(scrambled);
 }
 
 // Mountains are spread over a pair of colors, and where a location falls in that spread has to come
@@ -787,9 +982,22 @@ const sektorUi = (p: p5) => {
   let lastPanPressY = 0;
   let zoom = ZOOM;
 
-  function updateOrtho(container: HTMLElement) {
-    const hw = container.offsetWidth * zoom / 2;
-    const hh = container.offsetHeight * zoom / 2;
+  // Asking the page how big the canvas is makes the browser lay the whole page out there and then,
+  // before it can answer. The wheel fires many times over a single frame, so reading the size on
+  // every turn of it laid the page out over and over for one frame of zooming — which is why
+  // zooming dragged while turning the map, which reads nothing, never did. The size is read only
+  // when it can have changed, and zooming works off what was read.
+  let containerWidth = 0;
+  let containerHeight = 0;
+
+  function readContainerSize(container: HTMLElement) {
+    containerWidth = container.offsetWidth;
+    containerHeight = container.offsetHeight;
+  }
+
+  function updateOrtho() {
+    const hw = containerWidth * zoom / 2;
+    const hh = containerHeight * zoom / 2;
     p.ortho(-hw, hw, -hh, hh);
   }
 
@@ -797,7 +1005,15 @@ const sektorUi = (p: p5) => {
     const container = document.getElementById("canvas-container")!;
     const canvas = p.createCanvas(container.offsetWidth, container.offsetHeight, p.WEBGL);
     canvas.parent(container);
-    updateOrtho(container);
+    readContainerSize(container);
+    updateOrtho();
+
+    // The canvas keeps the size it was made at, but the view it carries is cut to the size of the
+    // page, so a resized window has to be read afresh rather than left to the next zoom to notice.
+    window.addEventListener("resize", () => {
+      readContainerSize(container);
+      updateOrtho();
+    });
 
     updateCamera(p);
 
@@ -851,7 +1067,7 @@ const sektorUi = (p: p5) => {
       e.preventDefault();
       zoom *= e.deltaY > 0 ? 1.05 : 0.95;
       zoom = Math.max(0.3, Math.min(3, zoom));
-      updateOrtho(container);
+      updateOrtho();
       keepMapWithinReach();
       updateCamera(p);
     }, { passive: false });
@@ -1033,9 +1249,16 @@ const sektorUi = (p: p5) => {
     if (floorGeometryNeedsRebaking) {
       rebakeFloorGeometry(p);
     }
-    if (floorGeometry) {
-      p.model(floorGeometry);
+    const bakedOpaqueFloors = opaqueFloorGeometry;
+    const bakedWaterSurfaces = waterSurfaceGeometry;
+    if (bakedOpaqueFloors) {
+      p.model(bakedOpaqueFloors);
     }
+    if (bakedWaterSurfaces) {
+      withoutDepthWrites(p, () => p.model(bakedWaterSurfaces));
+    }
+
+    drawOceanWaves(p, p.millis());
 
     const overlayProperty = getOverlayProperty();
     if (overlayProperty) {
