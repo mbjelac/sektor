@@ -554,10 +554,13 @@ function drawOceanWaves(p: p5, elapsedMilliseconds: number) {
 // shimmer alike and the sea does not show its tiling.
 function addWavesOnWater(p: p5, gx: number, gy: number, elapsedMilliseconds: number) {
   const { wx, wz } = gridToWorld(gx, gy);
+  // The glints lie a little under the surface of the water rather than on it, as light caught in
+  // the sea rather than laid over it. They can sit this close because the surface writes no depth
+  // for them to fight over: what they are held against is the bed, well below them.
   const water: WaterSurface = {
     centerX: wx,
     centerZ: wz,
-    height: groundHeight(gx, gy) - FLOOR_HEIGHT / 2 - WAVE_HEIGHT_ABOVE_WATER,
+    height: groundHeight(gx, gy) - FLOOR_HEIGHT / 2 + WAVE_DEPTH_UNDER_SURFACE,
   };
   for (let glintX = 0; glintX < WAVE_GRID_SIZE; glintX++) {
     for (let glintZ = 0; glintZ < WAVE_GRID_SIZE; glintZ++) {
@@ -646,9 +649,8 @@ const WAVE_MAX_ALPHA = 230;
 
 const WAVE_LINE_WEIGHT = BLOCK_SIZE * 0.005;
 
-// The glints sit clear of the water rather than on it, so that the two do not fight over the same
-// depth, which shows up as the glints stippling in and out as the map is turned.
-const WAVE_HEIGHT_ABOVE_WATER = BLOCK_SIZE * 0.012;
+// How far under the surface the glints hang. Screen up is negative, so this is added to sink them.
+const WAVE_DEPTH_UNDER_SURFACE = BLOCK_SIZE * 0.015;
 
 // Drawing the hundred floors one by one costs p5 a geometry rebuild and a GPU upload per
 // floor per frame, which dwarfs everything else on the canvas. The grid only changes when a
