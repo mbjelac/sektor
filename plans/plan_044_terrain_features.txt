@@ -1,0 +1,32 @@
+Instead of each floor having an altitude, there is no altitude, just mountain/hill squares which cannot be built upon.
+They serve only as interesting visual features and obstacles for the player to build stuff.
+
+Creation produces a matrix of mountains and hills. Each mountain/hill square is a "building" which cannot be destroyed.
+
+Terrain features also includes water, e.g.:
+- sea
+- lake
+- river
+- pond
+
+#1 Remove all existing terrain features
+- remove all features which use the concept of "altitude" to draw & work with higher floor blocks
+- remove all modifications of location properties depending on altitude
+
+#2 Sea
+- when creating a sektor, some floors are sea
+    - a sektor has a "terrain" matrix which elements represent map squares an their values are:
+        - 0 (ground)
+        - 1 (sea)
+    - for now, a random number between 0 and half of the floors are sea
+    - sea blocks in the terrain matrix neccessarily have these properties:
+        - they are all connected to each other
+            - diagonal neighbours don't count
+        - at least one of them is on the edge of the matrix (1st or last row, or 1st or last column)
+- a sea floor is rendered as sea
+    - the current prototype rendering of "water floors" needs to be extracted and used to render sea floors
+- nothing can be built on sea
+    - if a player selectes a square to construct a building and it is a sea square
+        - do not construct building
+        - display error "notDryEnough"
+            - same error functionalities as all other errors
