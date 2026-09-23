@@ -14,16 +14,19 @@ Terrain features also includes water, e.g.:
 - [done] remove all modifications of location properties depending on altitude
 
 #2 Sea
-- when creating a sektor, some floors are sea
+- [done] when creating a sektor, some floors are sea
     - a sektor has a "terrain" matrix which elements represent map squares an their values are:
         - 0 (ground)
         - 1 (sea)
-    - for now, a random number between 0 and half of the floors are sea
+    - for now, amount of sea floors is determined by randomly selecting from this list of options:
+        - 0 sea floors
+        - 1/4
+        - half
     - sea blocks in the terrain matrix neccessarily have these properties:
         - they are all connected to each other
             - diagonal neighbours don't count
         - at least one of them is on the edge of the matrix (1st or last row, or 1st or last column)
-- a sea floor is rendered as sea
+- [done] a sea floor is rendered as sea
     - the current prototype rendering of "water floors" needs to be extracted and used to render sea floors
 - nothing can be built on sea
     - if a player selectes a square to construct a building and it is a sea square
