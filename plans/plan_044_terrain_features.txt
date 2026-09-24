@@ -60,3 +60,13 @@ Terrain features also includes water, e.g.:
     - if the player tries to apply the Destroy tool on elevation
         - do not destroy elevation
         - display error message "canNotDestroyElevations"
+
+#4 Elevations differ from each other
+- for each elevation pick a number between 0 and 19
+    - use the square's location for this, using this function:
+        function combine(first: number, second: number): number {
+            const index = first * 10 + second;          // 0..99
+            const scrambled = (index * 37 + 11) % 100;   // permutation, since gcd(37,100)=1
+            return scrambled % 20;                       // still exactly 5 hits per output
+        }
+    - when you got the number between 0 & 19, useit to pick the Render section from terrain.md, first is 0, etc.
