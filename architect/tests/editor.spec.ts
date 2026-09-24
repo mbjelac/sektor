@@ -10,6 +10,9 @@ async function addShape(page) {
 }
 
 async function expectEditorScreenshot(page, name: string) {
+  // See expectScreenshot in test-utils: the caret in the editor outlines a body in white, which
+  // these tests of the editor's own widgets are not about.
+  await page.locator(textarea).blur();
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 2000 });
   await page.waitForTimeout(50);
   await expect(page).toHaveScreenshot(`${name}.png`, {

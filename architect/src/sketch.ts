@@ -5,6 +5,7 @@ import {parseCommands} from "../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies, freeBakedBodies} from "../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../shared/constants";
 import {initEditorPanel} from "./editor/editorPanel";
+import {drawCursorBodyOutline} from "./highlightCursorBody";
 
 const sketch = (p: p5) => {
   let wireframeOn = false;
@@ -57,7 +58,11 @@ const sketch = (p: p5) => {
       drawFloor(p, BLOCK_SIZE);
     }
 
-    drawBakedBodies(p, bakedBodies(p, wireframeOn), p.millis());
+    // Both drawings of the shape are of the same moment, so that the outline of an animated body
+    // stands where the body itself does.
+    const elapsedMilliseconds = p.millis();
+    drawBakedBodies(p, bakedBodies(p, wireframeOn), elapsedMilliseconds);
+    drawCursorBodyOutline(p, elapsedMilliseconds);
 
     document.getElementById("canvas-container")!.dataset.rendered = "true";
   };
