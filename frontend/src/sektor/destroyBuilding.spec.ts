@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Sektor } from "./Sektor";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
+import { ELEVATION, GROUND } from "../../../shared/terrain";
 
 const testDefinitions: BuildingDefinition[] = [
   {
@@ -27,6 +28,13 @@ function createSektor(): Sektor {
   return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
 }
 
+// A sektor of two squares, the second of them rock.
+const ELEVATION_LOCATION = { x: 1, y: 0 };
+
+function createSektorWithElevation(): Sektor {
+  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, [], [[GROUND], [ELEVATION]]);
+}
+
 describe("destroyBuilding", () => {
   it("fails when no building at location", () => {
     const sektor = createSektor();
@@ -34,6 +42,14 @@ describe("destroyBuilding", () => {
     const result = sektor.destroyBuilding({ x: 0, y: 0 });
 
     expect(result).toEqual({ success: false, error: "locationEmpty" });
+  });
+
+  it("does not destroy a square of rock", () => {
+    const sektor = createSektorWithElevation();
+
+    const result = sektor.destroyBuilding(ELEVATION_LOCATION);
+
+    expect(result).toEqual({ success: false, error: "canNotDestroyElevations" });
   });
 
   it("removes the building", () => {

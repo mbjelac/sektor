@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { createTerrainMatrix, SEA_SQUARE_COUNTS } from "./terrainMatrix";
+import { createTerrainMatrix, ELEVATION_SQUARE_COUNTS, SEA_SQUARE_COUNTS } from "./terrainMatrix";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
-import { GROUND, SEA } from "../../../shared/terrain";
+import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
 
 // How many maps are drawn when what is looked at is what every map has to hold, however the draws
 // happen to fall.
@@ -36,6 +36,16 @@ describe("createTerrainMatrix", () => {
   it("gives every map one of the helpings of sea there are", () => {
     expect(mapsWithSeaOfNoHelping()).toEqual([]);
   });
+
+  // Rock stands on dry land, so the helping of elevation a map is given is counted out of the
+  // squares the sea has left rather than out of the map as a whole.
+  it("gives every map one of the helpings of elevation there are", () => {
+    expect(mapsWithElevationOfNoHelping()).toEqual([]);
+  });
+
+  it("raises no rock out of the sea", () => {
+    expect(mapsWithRockStandingInTheSea()).toEqual([]);
+  });
 });
 
 // Every map drawn whose sea is in more than one piece, or which has sea nowhere on its rim. A map
@@ -61,13 +71,38 @@ function mapsWithSeaOfNoHelping(): object[] {
     .map(seaSquareCount => ({ seaSquareCount }));
 }
 
+function mapsWithElevationOfNoHelping(): object[] {
+  return mapsDrawn()
+    .map(terrain => squaresOf(terrain, ELEVATION).length)
+    .filter(elevationSquareCount => !ELEVATION_SQUARE_COUNTS.includes(elevationSquareCount))
+    .map(elevationSquareCount => ({ elevationSquareCount }));
+}
+
+// Every map drawn which has a square counted as both sea and rock, which no square can be. A
+// square is one thing or the other, so a map whose squares add up to more than the map holds has
+// let the rock stand in the water.
+function mapsWithRockStandingInTheSea(): object[] {
+  return mapsDrawn().flatMap(terrain => {
+    const squareCount = SEKTOR_SIZE * SEKTOR_SIZE;
+    const counted = squaresOf(terrain, GROUND).length
+      + squaresOf(terrain, SEA).length
+      + squaresOf(terrain, ELEVATION).length;
+
+    return counted === squareCount ? [] : [{ counted, squareCount }];
+  });
+}
+
 function mapsDrawn(): number[][][] {
   return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(Math.random));
 }
 
 function squaresOfSea(terrain: number[][]): [number, number][] {
+  return squaresOf(terrain, SEA);
+}
+
+function squaresOf(terrain: number[][], madeOf: number): [number, number][] {
   return terrain.flatMap((row, x) =>
-    row.flatMap((square, z): [number, number][] => square === SEA ? [[x, z]] : [])
+    row.flatMap((square, z): [number, number][] => square === madeOf ? [[x, z]] : [])
   );
 }
 

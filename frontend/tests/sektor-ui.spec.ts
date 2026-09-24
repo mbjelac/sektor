@@ -670,6 +670,44 @@ test("shows error when placing building on the sea", async ({ page }) => {
   await expectScreenshot(page, "sea-building-error", "body");
 });
 
+// Rock is no ground to build on: a click on an outcrop leaves the map as it was and says why.
+test("shows error when placing building on elevation", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  // The test sektor has rock standing out along the right-hand edge of the map, well clear of the
+  // middle the other tests build on.
+  await canvas.click({ position: { x: box!.width / 2 + 423, y: box!.height / 2 - 30 } });
+  await page.waitForTimeout(200);
+  await expectScreenshot(page, "elevation-building-error", "body");
+});
+
+// Rock is shown the way a building is, under its own name and with what the ground beneath it
+// holds — but with no button for taking it down, as it is not the player's to remove.
+test("shows the panel of an elevation without the control which would destroy it", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2 + 423, y: box!.height / 2 - 30 } });
+  await page.waitForTimeout(200);
+  await expectScreenshot(page, "elevation-panel", "body");
+});
+
+// Rock was there before the player and stays after them, so the destruction tool leaves it
+// standing and says why.
+test("shows error when destroying an elevation", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="Destroy"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2 + 423, y: box!.height / 2 - 30 } });
+  await page.waitForTimeout(200);
+  await expectScreenshot(page, "elevation-destroy-error", "body");
+});
+
 // A sektor is worth what it does for the planet, so the same Food brought in is worth different
 // things on different planets: two points off where the planet is short of Food, and only one where
 // another sektor already sends out more than enough of it.

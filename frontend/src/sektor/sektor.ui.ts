@@ -25,7 +25,8 @@ import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
-import { GROUND, SEA } from "../../../shared/terrain";
+import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
+import { elevationRenderingCode, ELEVATION_NAME } from "./terrainFeatures";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR } from "./sea.ui";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -225,24 +226,28 @@ function getTerrain(): number[][] {
   return Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => GROUND));
 }
 
-// The test sektor has a bay in one corner and dry land everywhere else, so that the tests see
-// water, land and the coast between them, in the same place every time. The middle of the map is
-// left dry, as that is where a test puts its buildings.
+// The test sektor has a bay in one corner, rock standing about the rim, and dry land everywhere
+// else, so that the tests see water, rock, land and the coast between them, in the same place
+// every time. The middle of the map is left plain ground, as that is where a test puts its
+// buildings, and so are the four corners, one of which a test builds on to see the sides of a
+// floor.
 const TEST_TERRAIN_ROWS = [
-  "~~~~......",
-  "~~~.......",
+  "~~~~....^.",
+  "~~~......^",
   "~~........",
   "~.........",
   "..........",
+  ".........^",
   "..........",
   "..........",
-  "..........",
-  "..........",
-  "..........",
+  "^.........",
+  ".^........",
 ];
 
+const TEST_TERRAIN_SQUARES: { [drawn: string]: number } = { "~": SEA, "^": ELEVATION, ".": GROUND };
+
 function createTestTerrain(): number[][] {
-  return TEST_TERRAIN_ROWS.map(row => [...row].map(square => square === "~" ? SEA : GROUND));
+  return TEST_TERRAIN_ROWS.map(row => [...row].map(square => TEST_TERRAIN_SQUARES[square]));
 }
 
 const builderLevel = getBuilderLevel();
@@ -449,6 +454,21 @@ function destroyBuilding(location: BuildingLocation) {
   selectedBuildingLocation = null;
   updateSektorState();
   saveState();
+}
+
+// Rock is shown the way a building is, so that a player clicking on it is told what is in their
+// way and what the ground under it holds. It is not theirs to take down, so the panel comes
+// without the button which would.
+function openElevationPanel(location: BuildingLocation) {
+  selectedBuildingLocation = location;
+  showBuildingPanel({
+    name: ELEVATION_NAME,
+    code: elevationRenderingCode(),
+    buildingFunctions: [],
+    locationProperties: locations[location.x]?.[location.y]?.properties,
+    floorColor: floorColorAt(location.x, location.y),
+    location: location,
+  });
 }
 
 function openEmptyLocationPanel(location: BuildingLocation) {
@@ -664,6 +684,24 @@ function floorColorAt(gx: number, gy: number): [number, number, number] {
 
 function isSeaLocation(gx: number, gy: number): boolean {
   return terrain[gx]?.[gy] === SEA;
+}
+
+function isElevationLocation(gx: number, gy: number): boolean {
+  return terrain[gx]?.[gy] === ELEVATION;
+}
+
+// Every square of rock on the map. Rock is not built and never taken down, so the list is made
+// once and stands for as long as the sektor is open.
+const elevationLocations: BuildingLocation[] = everyElevationLocation();
+
+function everyElevationLocation(): BuildingLocation[] {
+  const locationsOfRock: BuildingLocation[] = [];
+  for (let gx = 0; gx < SEKTOR_SIZE; gx++) {
+    for (let gy = 0; gy < SEKTOR_SIZE; gy++) {
+      if (isElevationLocation(gx, gy)) locationsOfRock.push({ x: gx, y: gy });
+    }
+  }
+  return locationsOfRock;
 }
 
 // Every square of the sea, ready to be shimmered over: where it lies on the map, and where the
@@ -1040,6 +1078,8 @@ const sektorUi = (p: p5) => {
       const placed = placedBuildings.find(b => b.location.x === grid.x && b.location.y === grid.y);
       if (placed) {
         openBuildingPanel(placed);
+      } else if (isElevationLocation(grid.x, grid.y)) {
+        openElevationPanel({ x: grid.x, y: grid.y });
       } else {
         openEmptyLocationPanel({ x: grid.x, y: grid.y });
       }
@@ -1128,6 +1168,16 @@ const sektorUi = (p: p5) => {
     }
 
     p.noStroke();
+    // Rock stands on the map the way a building does, on a floor drawn like any other ground, so
+    // it is drawn the way a building is — baked once per kind and stamped wherever it stands.
+    for (const location of elevationLocations) {
+      p.push();
+      const { wx, wz } = gridToWorld(location.x, location.y);
+      p.translate(wx, 0, wz);
+      drawBakedBodies(p, bakedBuildingBodies(p, ELEVATION_NAME, elevationRenderingCode()), p.millis());
+      p.pop();
+    }
+
     for (const building of placedBuildings) {
       p.push();
       const { wx, wz } = gridToWorld(building.location.x, building.location.y);

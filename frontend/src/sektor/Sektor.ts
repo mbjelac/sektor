@@ -1,7 +1,7 @@
 
 import { BuildingDefinition, BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
-import { SEA } from "../../../shared/terrain";
+import { ELEVATION, SEA } from "../../../shared/terrain";
 
 export type { BuildingLocation, BuildingCreation, Building, Location };
 
@@ -359,6 +359,10 @@ export class Sektor {
       return { error: "notDryEnough", addedBuildings: [] };
     }
 
+    if (this.isElevation(building.location)) {
+      return { error: "notFlatEnough", addedBuildings: [] };
+    }
+
     if (this.findBuildingAt(building.location)) {
       return { error: "locationOccupied", addedBuildings: [] };
     }
@@ -370,6 +374,10 @@ export class Sektor {
   }
 
   destroyBuilding(location: BuildingLocation): DestroyBuildingResult {
+    // Rock was there before the player and stays after them: the destruction tool has nothing to
+    // say to it.
+    if (this.isElevation(location)) return { success: false, error: "canNotDestroyElevations" };
+
     const building = this.findBuildingAt(location);
     if (!building) return { success: false, error: "locationEmpty" };
 
@@ -383,6 +391,12 @@ export class Sektor {
   // Nothing stands in open water, so a square of sea is not a square to build on.
   private isSea(location: BuildingLocation): boolean {
     return this.terrain[location.x]?.[location.y] === SEA;
+  }
+
+  // Rock is no ground to build on either, and unlike the sea it is not going anywhere: a square of
+  // it is a square the player builds around for good.
+  private isElevation(location: BuildingLocation): boolean {
+    return this.terrain[location.x]?.[location.y] === ELEVATION;
   }
 
   private findBuildingDefinition(type: string): BuildingDefinition | undefined {

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Sektor } from "./Sektor";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
-import { GROUND, SEA } from "../../../shared/terrain";
+import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
 
 function buildingDefinition(name: string, inputs: { name: string, value: number }[], outputs: { name: string, value: number }[]): BuildingDefinition {
   return {
@@ -22,17 +22,17 @@ function createSektor(): Sektor {
   return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
 }
 
-// A sektor whose map is dry land but for the one square of sea, so that a test can build on the
-// water and on the ground beside it.
-const SEA_LOCATION = { x: 1, y: 0 };
+// A sektor of three squares: dry ground, sea and rock, so that a test can build on each of them.
 const GROUND_LOCATION = { x: 0, y: 0 };
+const SEA_LOCATION = { x: 1, y: 0 };
+const ELEVATION_LOCATION = { x: 2, y: 0 };
 
-function createSektorWithSea(): Sektor {
+function createSektorWithSeaAndElevation(): Sektor {
   return new Sektor(
     [[{ properties: { soil: 1.0 } }]],
     testDefinitions,
     [],
-    [[GROUND], [SEA]],
+    [[GROUND], [SEA], [ELEVATION]],
   );
 }
 
@@ -55,7 +55,7 @@ describe("createBuilding", () => {
   });
 
   it("does not create a building on a square of sea", () => {
-    const sektor = createSektorWithSea();
+    const sektor = createSektorWithSeaAndElevation();
 
     const result = sektor.createBuilding({ type: "Mill", location: SEA_LOCATION });
 
@@ -71,8 +71,25 @@ describe("createBuilding", () => {
     });
   });
 
+  it("does not create a building on a square of rock", () => {
+    const sektor = createSektorWithSeaAndElevation();
+
+    const result = sektor.createBuilding({ type: "Mill", location: ELEVATION_LOCATION });
+
+    expect({
+      result,
+      buildings: sektor.getState().buildings,
+    }).toEqual({
+      result: {
+        error: "notFlatEnough",
+        addedBuildings: [],
+      },
+      buildings: [],
+    });
+  });
+
   it("creates a building on dry land of a sektor which has sea in it", () => {
-    const sektor = createSektorWithSea();
+    const sektor = createSektorWithSeaAndElevation();
 
     const result = sektor.createBuilding({ type: "Mill", location: GROUND_LOCATION });
 

@@ -34,29 +34,29 @@ Terrain features also includes water, e.g.:
         - display error "notDryEnough"
             - same error functionalities as all other errors
 
-#3 Elevation
+#3 [done] Elevation
 - [done] when creating a sektor, some floors are "elevation" (i.e. rocks)
     - a sektor terrain matrix has a value 2 (elevation)
     - for now, amount of a sektor elevation is determined by randomly selecting from this list of options:
         - 0
         - 1/10
         - 1/5
-- elevation is rendered with a special "building"
+- [done] elevation is rendered with a special "building"
     - floor is render same as for ground squares
     - render a "buiding" on that square same as it would be if a player constructed a building
         - the building render code does not come from buildings.md
         - it comes from terrain.md
         - for now, always render "Grassy rocky outcrop"
-- nothing can be built on elevation
+- [done] nothing can be built on elevation
     - if a player selectes a square to construct a building and it is an elevation square
         - do not construct building
         - display error "notFlatEnough"
             - same error functionalities as all other errors
-- adjust building panel
+- [done] adjust building panel
     - when this square is clicked, the building panel opens
     - building name label reads: "Elevation"
     - delete button is not displayed
-- elevations cannot be destroyed
+- [done] elevations cannot be destroyed
     - if the player tries to apply the Destroy tool on elevation
         - do not destroy elevation
         - display error message "canNotDestroyElevations"

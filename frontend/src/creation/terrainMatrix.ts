@@ -2,9 +2,12 @@
 // scattering of puddles, and it runs in from an edge of the map rather than sitting in the middle
 // of it, so that the water a sektor has reads as a coast. How much of the map it takes is drawn
 // anew for every sektor, out of the few helpings there are.
+//
+// What is left over is not all flat either: rock stands out of the dry land here and there, which
+// a player builds around as they do the sea.
 
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
-import { GROUND, SEA } from "../../../shared/terrain";
+import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
 import { RandomNumber } from "./randomNumber";
 
 // A square of the sektor's map, by how far along and across it lies.
@@ -21,10 +24,24 @@ export const SEA_SQUARE_COUNTS = [
   Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 2),
 ];
 
+// How much of the map stands up as rock, each helping as likely as the next: none of it, a tenth
+// of it, or a fifth.
+export const ELEVATION_SQUARE_COUNTS = [
+  0,
+  Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 10),
+  Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 5),
+];
+
 export function createTerrainMatrix(randomNumber: RandomNumber): number[][] {
   const terrain = allGround();
+  floodWithSea(terrain, randomNumber);
+  raiseElevations(terrain, randomNumber);
+  return terrain;
+}
+
+function floodWithSea(terrain: number[][], randomNumber: RandomNumber) {
   const seaSquareCount = randomSeaSquareCount(randomNumber);
-  if (seaSquareCount === 0) return terrain;
+  if (seaSquareCount === 0) return;
 
   // The sea starts on an edge of the map and spreads a square at a time into the ground touching
   // it, so however far it reaches it stays one body of water with a coastline on the rim.
@@ -37,8 +54,22 @@ export function createTerrainMatrix(randomNumber: RandomNumber): number[][] {
     terrain[flooded.x][flooded.z] = SEA;
     sea.push(flooded);
   }
+}
 
-  return terrain;
+// Rock stands where it stands: elevation has no shape of its own and is scattered over whatever
+// dry land the sea has left, never twice on the same square.
+function raiseElevations(terrain: number[][], randomNumber: RandomNumber) {
+  const elevationSquareCount = randomElevationSquareCount(randomNumber);
+  const dryLand = squaresOfDryLand(terrain);
+
+  for (let raised = 0; raised < elevationSquareCount && dryLand.length > 0; raised++) {
+    const [square] = dryLand.splice(Math.floor(randomNumber() * dryLand.length), 1);
+    terrain[square.x][square.z] = ELEVATION;
+  }
+}
+
+function squaresOfDryLand(terrain: number[][]): Square[] {
+  return terrain.flatMap((row, x) => row.flatMap((square, z) => square === GROUND ? [{ x, z }] : []));
 }
 
 function allGround(): number[][] {
@@ -47,6 +78,10 @@ function allGround(): number[][] {
 
 function randomSeaSquareCount(randomNumber: RandomNumber): number {
   return SEA_SQUARE_COUNTS[Math.floor(randomNumber() * SEA_SQUARE_COUNTS.length)];
+}
+
+function randomElevationSquareCount(randomNumber: RandomNumber): number {
+  return ELEVATION_SQUARE_COUNTS[Math.floor(randomNumber() * ELEVATION_SQUARE_COUNTS.length)];
 }
 
 function randomSquareOnEdge(randomNumber: RandomNumber): Square {
