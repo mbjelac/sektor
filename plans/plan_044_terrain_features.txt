@@ -61,8 +61,8 @@ Terrain features also includes water, e.g.:
         - do not destroy elevation
         - display error message "canNotDestroyElevations"
 
-#4 Elevations differ from each other
-- for each elevation pick a number between 0 and 19
+#4 [done] Elevations differ from each other
+- [done] for each elevation pick a number between 0 and 19
     - use the square's location for this, using this function:
         function combine(first: number, second: number): number {
             const index = first * 10 + second;          // 0..99

@@ -26,7 +26,7 @@ import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
-import { elevationRenderingCode, ELEVATION_NAME } from "./terrainFeatures";
+import { elevationRenderingCode, elevationVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR } from "./sea.ui";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -463,7 +463,7 @@ function openElevationPanel(location: BuildingLocation) {
   selectedBuildingLocation = location;
   showBuildingPanel({
     name: ELEVATION_NAME,
-    code: elevationRenderingCode(),
+    code: elevationRenderingCode(elevationVariation(location.x, location.y)),
     buildingFunctions: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
     floorColor: floorColorAt(location.x, location.y),
@@ -633,6 +633,14 @@ function isFloorSolid(x: number, z: number): boolean {
   if (!placedBuilding) return true;
   const buildingDefinition = buildingDefinitions.find(definition => definition.name === placedBuilding.type);
   return buildingDefinition?.properties.showFloor !== false;
+}
+
+// Outcrops standing in the same shape draw the same bodies, so one bake serves every square of
+// that shape however many of them a map has. They are baked under the shape they stand in rather
+// than under their own name, which every one of them shares.
+function bakedElevationBodies(p: p5, location: BuildingLocation): BakedBodies {
+  const variation = elevationVariation(location.x, location.y);
+  return bakedBuildingBodies(p, `${ELEVATION_NAME} ${variation}`, elevationRenderingCode(variation));
 }
 
 // Every building of a type draws the same bodies, so one bake serves all of its locations.
@@ -1174,7 +1182,7 @@ const sektorUi = (p: p5) => {
       p.push();
       const { wx, wz } = gridToWorld(location.x, location.y);
       p.translate(wx, 0, wz);
-      drawBakedBodies(p, bakedBuildingBodies(p, ELEVATION_NAME, elevationRenderingCode()), p.millis());
+      drawBakedBodies(p, bakedElevationBodies(p, location), p.millis());
       p.pop();
     }
 
