@@ -1,3 +1,21 @@
 It is hard to find buildings in building toolbar.
 If the player knows their looking for a power plant it would be good that they can select an "energy" filter and just see a list of power-producing buildings.
 
+#1 Player can filter out unwanted buildings in building toolbar
+- building toolbar displays icons on top beneath title
+    - one icon per tag in building-tags.md
+    - display icon from icons.ts with name "buildingTag<TagName>"
+        - use camel casing, so for tag "energy" use icon "buildingTagEnergy"
+        - use light-gray color
+- when an icon clicked
+    - display icon as selected (in white)
+- when an icon clicked again
+    - display icon as deselected (in light-gray again)
+- display only buildings having at least one selected tag in their tags property in Properties section
+    - tags property is a list of tags separated by comma
+        - example:
+            ## Properties
+            tags: food,water
+- as the last icon display xMarkIcon
+    - when clicked, unselect all selected tags
+    - when no tags selected, display all buildings
