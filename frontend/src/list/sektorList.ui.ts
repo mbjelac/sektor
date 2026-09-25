@@ -19,10 +19,6 @@ import { currentScore } from "../currentScore";
 import { getNegativeScoringResources } from "../resources";
 import { ImportsAndExports } from "../globalImportsAndExports";
 
-// A player may only hold so many sektors at a time, so that they build on the ones they have
-// claimed before claiming more.
-const MAXIMUM_CLAIMED_SEKTORS = 5;
-
 function renderList() {
   const container = document.getElementById("sektor-list")!;
   // The list is drawn again whenever a sektor appears, so whatever stands there is cleared away
@@ -30,7 +26,6 @@ function renderList() {
   container.replaceChildren();
   const sektors = getSektorList();
   const summaries = sektors.map(sektor => getSektorSummary(sektor.id));
-  const claimingAllowed = countClaimedSektors(sektors) < MAXIMUM_CLAIMED_SEKTORS;
   // Every sektor there is adds to what the planet brings in and sends out, whoever owns it and
   // whether anybody owns it at all. A sektor is then worth what it does for the planet, so this is
   // worked out before any sektor is scored against it.
@@ -39,15 +34,10 @@ function renderList() {
   container.appendChild(createHeader());
 
   for (const [sektorIndex, sektor] of sektors.entries()) {
-    container.appendChild(createListItem(sektor, summaries[sektorIndex], planetImportsAndExports, claimingAllowed));
+    container.appendChild(createListItem(sektor, summaries[sektorIndex], planetImportsAndExports));
   }
 
   updateGlobalStatePanel(planetImportsAndExports);
-}
-
-// Every sektor the player holds counts towards the limit.
-function countClaimedSektors(sektors: SektorListItem[]): number {
-  return sektors.filter(sektor => sektor.owner === getUsername()).length;
 }
 
 function createHeader(): HTMLElement {
@@ -96,7 +86,6 @@ function createListItem(
   sektorListItem: SektorListItem,
   summary: SektorSummary,
   planetImportsAndExports: ImportsAndExports,
-  claimingAllowed: boolean,
 ): HTMLElement {
   const item = document.createElement("div");
   item.className = "sektor-list-item";
@@ -108,7 +97,7 @@ function createListItem(
   item.appendChild(createNumber(summary.importTotal));
   item.appendChild(createNumber(summary.exportTotal));
   item.appendChild(createScore(currentScore(summary, planetImportsAndExports, getNegativeScoringResources())));
-  item.appendChild(createClaimOrAbandonButton(sektorListItem, claimingAllowed));
+  item.appendChild(createClaimOrAbandonButton(sektorListItem));
 
   return item;
 }
@@ -146,8 +135,8 @@ function createGoButton(sektorListItem: SektorListItem): HTMLElement {
 // Taking a sektor up and giving it up are the one thing a player does to a whole sektor rather than
 // to anything in it, so whichever of them is open to them stands in the same place at the end of
 // the row. A sektor somebody else holds offers neither.
-function createClaimOrAbandonButton(sektorListItem: SektorListItem, claimingAllowed: boolean): HTMLElement {
-  if (!sektorListItem.owner) return createListClaimButton(sektorListItem, claimingAllowed);
+function createClaimOrAbandonButton(sektorListItem: SektorListItem): HTMLElement {
+  if (!sektorListItem.owner) return createListClaimButton(sektorListItem);
   if (sektorListItem.owner === getUsername()) return createAbandonButton(sektorListItem);
   return document.createElement("span");
 }
@@ -200,10 +189,9 @@ function createOwner(sektorListItem: SektorListItem): HTMLElement {
   return cell;
 }
 
-function createListClaimButton(sektorListItem: SektorListItem, claimingAllowed: boolean): HTMLElement {
+function createListClaimButton(sektorListItem: SektorListItem): HTMLElement {
   const claimButton = createClaimButton(() => claimSektor(sektorListItem));
   claimButton.classList.add("sektor-list-claim");
-  claimButton.disabled = !claimingAllowed;
   return claimButton;
 }
 

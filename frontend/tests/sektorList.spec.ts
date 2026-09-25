@@ -151,24 +151,9 @@ test("shows an abandoned sektor as owned by nobody", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-abandoned.png", { maxDiffPixelRatio: 0 });
 });
 
-test("stops the player from claiming more than five sektors", async ({ page }) => {
+// A player may hold any number of sektors and still claim another.
+test("lets the player claim however many sektors they hold", async ({ page }) => {
   await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"]);
-
-  await page.goto("/");
-
-  await expect(page.locator(".sektor-list-claim")).toBeDisabled();
-});
-
-test("shows the disabled claim button of a player holding five sektors", async ({ page }) => {
-  await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"]);
-
-  await page.goto("/");
-
-  await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-claiming-disabled.png", { maxDiffPixelRatio: 0 });
-});
-
-test("lets the player claim while they hold fewer than five sektors", async ({ page }) => {
-  await storeSektors(page, ["Alpha", "Beta", "Gamma", "Delta"]);
 
   await page.goto("/");
 

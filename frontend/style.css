@@ -847,12 +847,6 @@ body > main {
     align-items: center;
 }
 
-.claim-button:disabled {
-    background: #3c4757;
-    color: #8a8a8a;
-    cursor: default;
-}
-
 .sektor-list-number {
     min-width: 28px;
     text-align: right;
