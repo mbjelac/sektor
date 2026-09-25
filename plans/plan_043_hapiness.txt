@@ -42,7 +42,7 @@ Sektors which contain Habitats can "produce" Hapiness resource. This is local so
 - [done] percentage rounded to integer
 - [done] total possible hapiness = total possible hapiness of one habitat (all hapiness outputs) * number of habitats
 
-#5 Hapiness is displayed even without people
-- this overrides earlier spec "hide this stat if no Habitat buildings exist in sektor"
-- hapiness stat is *always* shown
-- if number of habitats is 0, show 0 percentage (do not calculate)
+#5 [done] Hapiness is displayed even without people
+- [done] this overrides earlier spec "hide this stat if no Habitat buildings exist in sektor"
+- [done] hapiness stat is *always* shown
+- [done] if number of habitats is 0, show 0 percentage (do not calculate)

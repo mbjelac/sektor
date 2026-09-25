@@ -106,6 +106,7 @@ test("names every stat beside the sektor name by the same tooltip the list names
     { tooltip: "Buildings", value: "1" },
     { tooltip: "Imports", value: "4" },
     { tooltip: "Exports", value: "6" },
+    { tooltip: "Hapiness", value: "0 / 0 (0 %)" },
   ]);
 });
 
@@ -1124,13 +1125,14 @@ test("says the people of a sektor whose habitat goes without are happy at nothin
   await expect(page.locator('#sektor-stats .sektor-stat-icon[title="Hapiness"]')).toHaveCount(1);
 });
 
-// A sektor nobody lives in has no people to be happy or unhappy, so nothing is said of them.
-test("says nothing of happiness in a sektor with no habitat", async ({ page }) => {
+// How happy a sektor's people are is always said, even of a sektor nobody lives in yet.
+test("says how happy the people of a sektor with no habitat are", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await placeBuilding(page, "TestProcessor");
 
-  await expect(page.locator('#sektor-stats .sektor-stat-icon[title="Hapiness"]')).toHaveCount(0);
+  await expect(page.locator('#sektor-stats .sektor-stat:has(.sektor-stat-icon[title="Hapiness"]) .sektor-stat-value'))
+    .toHaveText("0 / 0 (0 %)");
 });
 
 test("shows the hapiness of a sektor in its header", async ({ page }) => {
