@@ -76,6 +76,10 @@ WorkTechnical 1
 ->
 WaterTechnical groundwater
 
+## Properties
+
+tags=food,water
+
 # Habitats
 
 ## Render
@@ -266,6 +270,10 @@ Childcare 2
 WorkUnqualified 4
 Hapiness 1
 
+## Properties
+
+tags=people
+
 # Library
 
 ## Render
@@ -333,6 +341,10 @@ WorkEducational 1
 WorkAdministrative 1
 ->
 HealthMental 6
+
+## Properties
+
+tags=people
 
 # Agriplot
 
@@ -405,6 +417,10 @@ EnergyElectric 1
 WorkTechnical 2
 ->
 FoodRaw soil
+
+## Properties
+
+tags=food,water
 
 # Extractor
 
@@ -507,6 +523,7 @@ OreUranium uranium
 ## Properties
 
 showFloor=false
+tags=industry
 
 # WindLoop
 
@@ -542,6 +559,9 @@ WorkTechnical 1
 ->
 EnergyElectric wind
 
+## Properties
+
+tags=energy
 
 # SunCatcher
 
@@ -572,6 +592,10 @@ sph s(6,6,6) t(0,0,18) c(#9a9589) r(0,0,0)
 WorkTechnical 1
 ->
 EnergyElectric insolation
+
+## Properties
+
+tags=energy
 
 # Arena
 
@@ -607,6 +631,11 @@ EnergyElectric 10
 WorkAdministrative 2
 ->
 HealthSocial 20
+
+## Properties
+
+tags=people
+
 
 # Polytechnic
 
@@ -699,6 +728,11 @@ EnergyElectric 4
 WorkMaintenance 8
 ->
 WorkTechnical 16
+
+## Properties
+
+tags=people
+
 
 # Refinery
 
@@ -802,6 +836,10 @@ OreUranium 5
 ->
 Uranium 6
 
+## Properties
+
+tags=industry
+
 # TownSquare
 
 ## Render
@@ -896,6 +934,11 @@ EnergyElectric 1
 WaterPottable 2
 ->
 HealthSocial 8
+
+## Properties
+
+tags=people
+
 
 # Park
 
@@ -1012,6 +1055,11 @@ HealthPhysical 2
 HealthMental 2
 HealthSocial 4
 
+## Properties
+
+tags=people
+
+
 # Fertilizatron
 
 ## Render
@@ -1061,6 +1109,10 @@ WorkTechnical 1
 WorkEngineering 1
 ->
 Fertilizer 12
+
+## Properties
+
+tags=food,industry
 
 # ChildKeep
 
@@ -1120,6 +1172,10 @@ WorkMaintenance 1
 ->
 Childcare 10
 WaterSewage 6
+
+## Properties
+
+tags=people
 
 # WaterTreatment
 
@@ -1278,6 +1334,10 @@ EnergyElectric 6
 ->
 WaterPottable 8
 
+## Properties
+
+tags=water
+
 # Fission Plant
 
 ## Render
@@ -1392,6 +1452,10 @@ WaterTechnical 2
 ->
 EnergyElectric 20
 WasteNuclear 2
+
+## Properties
+
+tags=energy
 
 # Nuclear Waste Depot
 
@@ -2088,6 +2152,10 @@ WorkTechnical 1
 EnergyElectric 1
 ->
 
+## Properties
+
+tags=energy
+
 # Gymnasium
 
 ## Render
@@ -2134,6 +2202,10 @@ WorkAdministrative 1
 ->
 HealthSocial 4
 HealthPhysical 8
+
+## Properties
+
+tags=people
 
 # FoodProcessor
 
@@ -2280,3 +2352,7 @@ FoodRaw 18
 ->
 FoodProcessed 12
 WasteBio 8
+
+## Properties
+
+tags=food

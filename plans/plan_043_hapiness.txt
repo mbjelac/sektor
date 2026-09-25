@@ -33,11 +33,16 @@ Sektors which contain Habitats can "produce" Hapiness resource. This is local so
     - Notify player about local imports which are also global imports -> Warning
     - Hapiness (in this plan) -> Information
 
-#4 Player can see hapiness percentage
-- hapiness stat shows:
+#4 [done] Player can see hapiness percentage
+- [done] hapiness stat shows:
     - current hapiness score
     - total possible hapiness score
     - percentage of hapiness = (current / total) * 100
     - displayed in top-of-screen stat like: "current / total (percentage %)"
-- percentage rounded to integer
-- total possible hapiness = total possible hapiness of one habitat (all hapiness outputs) * number of habitats
+- [done] percentage rounded to integer
+- [done] total possible hapiness = total possible hapiness of one habitat (all hapiness outputs) * number of habitats
+
+#5 Hapiness is displayed even without people
+- this overrides earlier spec "hide this stat if no Habitat buildings exist in sektor"
+- hapiness stat is *always* shown
+- if number of habitats is 0, show 0 percentage (do not calculate)

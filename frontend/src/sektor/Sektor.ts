@@ -19,6 +19,9 @@ export interface SektorState {
   // none of it leaves the sektor and none of it stands among the exports, but making it is what a
   // sektor's people are there for and so it counts all the same.
   hapiness: number;
+  // How happy the sektor's people would be were every habitat given all it asks for: every unit of
+  // Hapiness every function of every habitat could make.
+  possibleHapiness: number;
   // What the sektor's habitats are going without, which is why their people are not as happy as
   // they could be.
   habitatShortages: string[];
@@ -171,9 +174,22 @@ export class Sektor {
       imports,
       exports,
       hapiness: this.findThroughputValue(totalOutputs, HAPINESS_RESOURCE),
+      possibleHapiness: this.findPossibleHapiness(),
       habitatShortages: this.findHabitatShortages(starvedFunctions),
       starvedFunctions,
     };
+  }
+
+  // Every habitat is counted as making all the Hapiness it is made to, whether it is given what it
+  // asks for or not, so this is how happy the sektor's people would be with nothing going short.
+  private findPossibleHapiness(): number {
+    const possibleHapiness = this.buildings
+      .map(building => this.findBuildingDefinition(building.type))
+      .flatMap(buildingDefinition => buildingDefinition?.buildingFunctions ?? [])
+      .flatMap(buildingFunction => buildingFunction.outputs)
+      .filter(output => output.name === HAPINESS_RESOURCE)
+      .reduce((total, output) => total + (output.value ?? 0), 0);
+    return roundToOneDecimal(possibleHapiness);
   }
 
   // What the sektor's habitats are going without: every local resource asked for by a function of a

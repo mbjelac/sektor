@@ -133,6 +133,25 @@ describe("hapiness", () => {
   });
 });
 
+describe("possible hapiness", () => {
+  it("stands at nothing in a sektor with no habitat", () => {
+    const sektor = sektorWithBuildings([{ type: "Well", location: { x: 0, y: 0 } }]);
+
+    expect(sektor.getSektorState().possibleHapiness).toEqual(0);
+  });
+
+  it("adds up what every habitat would make, given all it asks for or not", () => {
+    const sektor = sektorWithBuildings([
+      { type: "SmallCheerWorks", location: { x: 0, y: 0 } },
+      { type: "Habitat", location: { x: 1, y: 0 } },
+      { type: "Habitat", location: { x: 2, y: 0 } },
+      { type: "Almshouse", location: { x: 3, y: 0 } },
+    ]);
+
+    expect(sektor.getSektorState().possibleHapiness).toEqual(12);
+  });
+});
+
 describe("habitat shortages", () => {
   it("names what a habitat left without its Cheer is going without", () => {
     const sektor = sektorWithBuildings([{ type: "Habitat", location: { x: 0, y: 0 } }]);

@@ -1110,7 +1110,7 @@ test("says how happy the sektor's people are", async ({ page }) => {
     { tooltip: "Buildings", value: "2" },
     { tooltip: "Imports", value: "1" },
     { tooltip: "Exports", value: "0" },
-    { tooltip: "Hapiness", value: "5" },
+    { tooltip: "Hapiness", value: "5 / 5 (100 %)" },
   ]);
 });
 

@@ -345,10 +345,17 @@ function showSektorStats(sektorState: SektorState) {
   // A sektor nobody lives in has no people to be happy or unhappy, so it is not said how happy they
   // are. A sektor with habitats standing empty of what they need says so by standing at nothing.
   if (hasHabitats()) {
-    stats.appendChild(createStat(faceSmileIcon, "Hapiness", formatNumber(sektorState.hapiness)));
+    stats.appendChild(createStat(faceSmileIcon, "Hapiness", formatHapiness(sektorState)));
   }
 
   document.getElementById("sektor-title")!.appendChild(stats);
+}
+
+// How happy the sektor's people are is told against how happy they could be, so the player sees
+// how far their habitats are from being given all they ask for.
+function formatHapiness(sektorState: SektorState): string {
+  const percentage = Math.round(sektorState.hapiness / sektorState.possibleHapiness * 100);
+  return `${formatNumber(sektorState.hapiness)} / ${formatNumber(sektorState.possibleHapiness)} (${percentage} %)`;
 }
 
 // A habitat is any building made to give off Hapiness, whether or not it is giving off any at the
