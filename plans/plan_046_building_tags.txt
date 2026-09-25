@@ -19,3 +19,5 @@ If the player knows their looking for a power plant it would be good that they c
 - as the last icon display xMarkIcon
     - when clicked, unselect all selected tags
     - when no tags selected, display all buildings
+- Destroy is *never* filtered out
+    - it is always displayed
