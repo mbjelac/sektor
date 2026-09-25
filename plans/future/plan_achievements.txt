@@ -7,3 +7,4 @@ Ideas for achievements:
 - 80% happiness (then 90%, 100%)
 - 80-20 export-import ratio
 - reducing a global import by 10% (20%, 30%, ...)
+- reaching a certain number of exports (or imports, or hapiness) with a very few buildings constructed
