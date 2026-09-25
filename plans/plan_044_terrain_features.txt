@@ -72,3 +72,5 @@ Terrain features also includes water, e.g.:
             return scrambled % 20;                       // still exactly 5 hits per output
         }
     - when you got the number between 0 & 19, useit to pick the Render section from terrain.md, first is 0, etc.
+
+#5 Neighbouring elevations are rendered as part of single elevation
