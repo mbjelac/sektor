@@ -153,6 +153,11 @@ body > main {
     flex-direction: column;
 }
 
+/* The construction panel is left out for a player who does not own the sektor. */
+#construction-panel[hidden] {
+    display: none;
+}
+
 #building-tag-filter {
     display: flex;
     justify-content: center;

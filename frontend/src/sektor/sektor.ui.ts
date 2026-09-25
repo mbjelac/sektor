@@ -128,7 +128,16 @@ function claimSektor() {
 
 function enterEditMode() {
   isViewMode = false;
-  initToolbar(builderLevel);
+  showToolbarToOwner();
+}
+
+// Only the owner of a sektor builds on it, so nobody else is shown what could be built there.
+// The owner keeps the toolbar also when asking for view mode, only without the tools for changing
+// the sektor.
+function showToolbarToOwner() {
+  const constructionPanel = document.getElementById("construction-panel")!;
+  constructionPanel.hidden = !isSektorOwnedByCurrentPlayer();
+  if (!constructionPanel.hidden) initToolbar(builderLevel, isViewMode);
 }
 
 // A sektor claimed by another player carries their name, so that the player knows whose sektor
@@ -1212,7 +1221,7 @@ const sektorUi = (p: p5) => {
 new p5(sektorUi);
 showSektorName();
 showSektorOwner();
-initToolbar(builderLevel, isViewMode);
+showToolbarToOwner();
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);
 onResourceHover(resourceName => { hoveredResource = resourceName; });

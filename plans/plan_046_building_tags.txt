@@ -21,5 +21,5 @@ If the player knows their looking for a power plant it would be good that they c
 - [done] Destroy is *never* filtered out
     - it is always displayed
 
-#2 No building toolbar when viewing unclaimed or other player's sektor
-- show building toolbar only when current player owner of the sektor
+#2 [done] No building toolbar when viewing unclaimed or other player's sektor
+- [done] show building toolbar only when current player owner of the sektor

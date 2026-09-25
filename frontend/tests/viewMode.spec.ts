@@ -202,15 +202,15 @@ test("opens a sektor claimed by the current player for building", async ({ page 
 
   await page.goto("/sektor.html?id=Alpha");
 
-  await expect(page.locator("#construction-panel")).toHaveCount(1);
+  await expect(page.locator("#construction-panel")).toBeVisible();
 });
 
-test("shows the buildings of a sektor claimed by another player", async ({ page }) => {
+test("shows no building toolbar on a sektor claimed by another player", async ({ page }) => {
   await storeSektor(page, "Beta", OTHER_PLAYER);
 
   await page.goto("/sektor.html?id=Beta");
 
-  await expect(page.locator("#construction-panel")).toBeVisible();
+  await expect(page.locator("#construction-panel")).toBeHidden();
 });
 
 test("names no owner on a sektor of the current player", async ({ page }) => {
@@ -221,12 +221,12 @@ test("names no owner on a sektor of the current player", async ({ page }) => {
   await expect(page.locator("#sektor-owner")).toHaveCount(0);
 });
 
-test("shows the buildings of a sektor claimed by nobody", async ({ page }) => {
+test("shows no building toolbar on a sektor claimed by nobody", async ({ page }) => {
   await storeSektor(page, "Gamma", null);
 
   await page.goto("/sektor.html?id=Gamma");
 
-  await expect(page.locator("#construction-panel")).toBeVisible();
+  await expect(page.locator("#construction-panel")).toBeHidden();
 });
 
 test("offers an unclaimed sektor for claiming", async ({ page }) => {
@@ -276,6 +276,12 @@ test("offers the whole toolbar for building once the sektor is claimed", async (
   }));
 
   expect(toolbar).toEqual({ destructionTools: 1, toolsWhichCannotBeSelected: 0 });
+});
+
+test("shows the building toolbar once the sektor is claimed", async ({ page }) => {
+  await claimFromMap(page, "Gamma");
+
+  await expect(page.locator("#construction-panel")).toBeVisible();
 });
 
 test("shows the claimed sektor under the name it carries, with nothing left to claim", async ({ page }) => {
