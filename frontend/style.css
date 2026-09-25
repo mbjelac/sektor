@@ -153,6 +153,46 @@ body > main {
     flex-direction: column;
 }
 
+#building-tag-filter {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: 8px;
+}
+
+.building-tag {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    background: none;
+    border: none;
+    color: lightgray;
+    cursor: pointer;
+}
+
+.building-tag.selected {
+    color: white;
+}
+
+.building-tag svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* A selected tag is drawn in bolder lines. An icon drawn as filled shapes rather than lines is
+   thickened by an outline, which is kept thin so the details of the shape are not filled in. */
+.building-tag.selected svg path,
+.building-tag.selected svg circle {
+    stroke: currentColor;
+    stroke-width: 0.6px;
+    vector-effect: non-scaling-stroke;
+}
+
+.building-tag.selected svg[fill="none"] path,
+.building-tag.selected svg[fill="none"] circle {
+    stroke-width: 1.8px;
+}
+
 #toolbar {
     flex: 1 1 auto;
     min-height: 0;
@@ -175,6 +215,11 @@ body > main {
     cursor: pointer;
     padding: 4px;
     border: 2px solid transparent;
+}
+
+/* A building left out by the tags the player picked is taken out of the toolbar. */
+.building-item[hidden] {
+    display: none;
 }
 
 .building-item.selected {

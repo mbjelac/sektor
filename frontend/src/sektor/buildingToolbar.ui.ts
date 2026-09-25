@@ -6,6 +6,9 @@ import { applyCommands } from "../../../shared/applyCommands";
 import { drawFloor, drawFloorWireframe } from "../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../shared/constants";
 import { BuildingDefinition, BuildingFunction } from "./buildings/parseBuildingDefinitions";
+import { buildingTags } from "./buildings/buildingTags";
+import { isShownByBuildingTag } from "./buildings/buildingTagFilter";
+import * as icons from "../icons";
 
 const TOOLBAR_FUNCTION_PANEL_MARGIN = 8;
 const THUMBNAIL_WIDTH = 100;
@@ -19,6 +22,7 @@ let selectedBuilding: string | null = null;
 // The code of a building is needed to draw it on the map, also when the map is shown without the
 // toolbar, so it is looked up straight from the definitions.
 const buildingCodeMap = new Map(buildingDefinitions.map(building => [building.name, building.renderingCode]));
+let selectedBuildingTag: string | null = null;
 let selectionCallback: ((buildingName: string | null) => void) | null = null;
 
 export function getSelectedBuilding(): string | null {
@@ -80,6 +84,7 @@ export function initToolbar(playerLevel: number, isViewMode = false) {
   toolbar.innerHTML = "";
   selectedBuilding = null;
   hideToolbarFunctionPanel();
+  showBuildingTagFilter();
   const thumbnails: Thumbnail[] = [];
 
   for (const building of offeredBuildings(playerLevel)) {
@@ -128,6 +133,57 @@ export function initToolbar(playerLevel: number, isViewMode = false) {
   }
 
   showBuildingThumbnails(thumbnails);
+}
+
+function showBuildingTagFilter() {
+  const buildingTagFilter = document.getElementById("building-tag-filter")!;
+  buildingTagFilter.innerHTML = "";
+  selectedBuildingTag = null;
+
+  for (const buildingTag of buildingTags) {
+    const tagButton = document.createElement("button");
+    tagButton.className = "building-tag";
+    tagButton.dataset.buildingTag = buildingTag;
+    tagButton.title = buildingTag;
+    tagButton.innerHTML = buildingTagIcon(buildingTag);
+    // The player looks for one kind of building at a time, so picking a tag lets go of the one
+    // picked before.
+    tagButton.addEventListener("click", () => {
+      buildingTagFilter.querySelectorAll(".building-tag").forEach(otherTagButton => otherTagButton.classList.remove("selected"));
+      selectedBuildingTag = buildingTag;
+      tagButton.classList.add("selected");
+      showBuildingsHavingSelectedTag();
+    });
+    buildingTagFilter.appendChild(tagButton);
+  }
+
+  const clearTagsButton = document.createElement("button");
+  clearTagsButton.className = "building-tag clear-building-tags";
+  clearTagsButton.innerHTML = icons.xMarkIcon;
+  clearTagsButton.addEventListener("click", () => {
+    selectedBuildingTag = null;
+    buildingTagFilter.querySelectorAll(".building-tag").forEach(tagButton => tagButton.classList.remove("selected"));
+    showBuildingsHavingSelectedTag();
+  });
+  buildingTagFilter.appendChild(clearTagsButton);
+}
+
+function showBuildingsHavingSelectedTag() {
+  document.querySelectorAll<HTMLElement>(".building-item").forEach(buildingItem => {
+    const building = buildingDefinitions.find(buildingDefinition => buildingDefinition.name === buildingItem.dataset.buildingName)!;
+    // The destruction tool is no building and has no tags, but the player needs it whatever
+    // buildings they are looking for.
+    buildingItem.hidden = building.name !== DESTRUCTION_TOOL && !isShownByBuildingTag(building, selectedBuildingTag);
+  });
+}
+
+// The icon of a tag is named after the tag, so that a tag written into building-tags.md needs
+// nothing more than an icon of the same name. The icons are drawn in black, which is replaced by
+// the color of the button they sit in, so they can be colored like the rest of the toolbar.
+function buildingTagIcon(buildingTag: string): string {
+  const iconName = `buildingTag${buildingTag.charAt(0).toUpperCase()}${buildingTag.slice(1)}`;
+  const iconMarkup = (icons as Record<string, string>)[iconName];
+  return iconMarkup.replaceAll("#000000", "currentColor");
 }
 
 // Every building the player has unlocked is theirs to place in any sektor. The destruction tool is

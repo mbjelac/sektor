@@ -27,6 +27,8 @@ export interface BuildingProperties {
   // The level a player has to have reached before the building is offered to them. A building
   // whose definition names none is offered to every player from the start.
   minLevel?: number;
+  // What the building is about, so the player can find it among the others in the toolbar.
+  tags?: string[];
 }
 
 export interface BuildingDefinition {
@@ -119,6 +121,9 @@ function parseProperties(lines: string[]): BuildingProperties {
     }
     if (match[1] === "minLevel" && isAmount(match[2])) {
       props.minLevel = parseInt(match[2]);
+    }
+    if (match[1] === "tags") {
+      props.tags = match[2].split(",").map(tag => tag.trim()).filter(tag => tag.length > 0);
     }
   }
   return props;

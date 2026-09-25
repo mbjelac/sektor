@@ -43,6 +43,48 @@ test("removes highlight when selected building is clicked again", async ({ page 
   await expectScreenshot(page, "building-deselected", "#toolbar");
 });
 
+test("displays an icon for every building tag above the buildings in the toolbar", async ({ page }) => {
+  await expectScreenshot(page, "building-tags", "#construction-panel");
+});
+
+test("displays a clicked building tag as selected", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="water"]').click();
+  await expectScreenshot(page, "building-tag-selected", "#building-tag-filter");
+});
+
+test("deselects the other building tag when a building tag is clicked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await page.locator('.building-tag[data-building-tag="water"]').click();
+  await expectScreenshot(page, "building-tag-reselected", "#building-tag-filter");
+});
+
+test("displays only buildings having the selected building tag", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await page.locator('.building-tag[data-building-tag="water"]').click();
+
+  const shownBuildingNames = await page.locator('.building-item:not([hidden])').evaluateAll(
+    buildingItems => buildingItems.map(buildingItem => (buildingItem as HTMLElement).dataset.buildingName),
+  );
+
+  expect(shownBuildingNames).toEqual(["Destroy", "TestFactory"]);
+});
+
+test("displays the destruction tool above the buildings having a selected building tag", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await expectScreenshot(page, "building-tag-filtered", "#construction-panel");
+});
+
+test("deselects the building tag and displays all buildings when the clear icon is clicked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await page.locator('.clear-building-tags').click();
+  await expectScreenshot(page, "building-tags-cleared", "#construction-panel");
+});
+
 test("renders building on floor after placement", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();

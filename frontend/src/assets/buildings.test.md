@@ -22,6 +22,10 @@ Energy 1
 ->
 Food soil
 
+## Properties
+
+tags=food,water
+
 # TestMine
 
 ## Render
@@ -39,6 +43,7 @@ Ore ore
 ## Properties
 
 showFloor=false
+tags=industry
 
 # TestHouse
 

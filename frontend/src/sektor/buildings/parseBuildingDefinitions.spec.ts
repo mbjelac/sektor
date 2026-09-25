@@ -250,6 +250,20 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].properties).toEqual({ minLevel: 4 });
   });
 
+  it("parses tags property as a list of tags", () => {
+    const result = parseBuildingDefinitions([
+      "# Mine",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Properties",
+      "tags=fruit,metal",
+    ]);
+
+    expect(result[0].properties).toEqual({ tags: ["fruit", "metal"] });
+  });
+
   it("returns empty properties when no Properties section exists", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
