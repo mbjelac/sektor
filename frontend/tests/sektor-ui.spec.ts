@@ -1231,3 +1231,68 @@ async function placeBuildingAtOffset(page: Page, buildingName: string, offsetFro
     y: canvasBox!.height / 2 - 20,
   });
 }
+
+// Several messages stand over a good part of the map, so the top-most one carries a button to put
+// them away; a single message carries none.
+test("puts a collapse button on the top-most of several messages", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator("#most-imported-message").waitFor();
+  const collapseButtonsBeforeBuilding = await getMessageIdsWithCollapseButton(page);
+
+  await placeBuilding(page, "TestHouse");
+
+  expect({
+    beforeBuilding: collapseButtonsBeforeBuilding,
+    afterBuilding: await getMessageIdsWithCollapseButton(page),
+  }).toEqual({
+    beforeBuilding: [],
+    afterBuilding: ["most-imported-scarce-message"],
+  });
+});
+
+test("shows the collapse button on the top-most message", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeBuilding(page, "TestHouse");
+
+  await expectScreenshot(page, "messages-collapse-button", "body");
+});
+
+// A player who wants the map rather than the advice puts all of it away.
+test("hides the messages when the collapse button is clicked", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestHouse");
+
+  await page.locator("#messages-collapse-button").click();
+
+  expect(await page.locator(".message").evaluateAll(messages => messages.map(message => ({
+    id: message.id,
+    shown: getComputedStyle(message).display !== "none",
+  })))).toEqual([
+    { id: "most-imported-scarce-message", shown: false },
+    { id: "most-imported-message", shown: false },
+  ]);
+});
+
+test("shows the map without messages once they are collapsed", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestHouse");
+
+  await page.locator("#messages-collapse-button").click();
+
+  await expectScreenshot(page, "messages-collapsed", "body");
+});
+
+// The messages which carry a collapse button, top-most first.
+function getMessageIdsWithCollapseButton(page: Page) {
+  return page.locator(".message:has(#messages-collapse-button)")
+    .evaluateAll(messages => messages.map(message => message.id));
+}

@@ -1,12 +1,12 @@
-#1 Player can remove messages in order to see the map
-- if there is more than one message
+#1 [done] Player can remove messages in order to see the map
+- [done] if there is more than one message
     - top-most message has a collapse button on it
         - right aligned
         - icon heroicon chevron-down
         - white text
         - dark gray background
     - when clicked, collapse messages
-- when messages collapsed, they are not shown
+- [done] when messages collapsed, they are not shown
 
 #2 Player can see the last message
 - when messages collapsed, show only the top-most (last) message

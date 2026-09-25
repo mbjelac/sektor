@@ -6,6 +6,7 @@ import {
 import { resourceNameText } from "./throughputDisplay.ui";
 import { getNegativeScoringResources } from "./resources";
 import { pointAtResourceWhileHovered } from "./resourceHover.ui";
+import { chevronDownIcon } from "./icons";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -23,6 +24,7 @@ const MOST_IMPORTED_MESSAGE_ID = "most-imported-message";
 const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 // One complaint to a resource, each named after the resource it complains of.
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
+const COLLAPSE_BUTTON_ID = "messages-collapse-button";
 
 // What a player could do here which would help the planet most, told to them as the map opens and
 // whenever anything changes what this sektor or the planet moves. What the planet wants of anybody
@@ -35,6 +37,7 @@ export function updateMessages(
   showMostImportedMessage(planetImportsAndExports);
   showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
   showHabitatShortageMessages(habitatShortages);
+  showCollapseButton();
 }
 
 // The people of a sektor complain of each thing their habitats are going without, one complaint to
@@ -151,4 +154,29 @@ function flash(message: HTMLElement) {
 
 function hideMessage(messageId: string) {
   document.getElementById(messageId)?.remove();
+}
+
+// Several messages stand over a good part of the map, so the one on top carries a button which
+// puts them all away and lets the player see what they are building. A single message is left as
+// it is: there is little of the map behind it to get back.
+function showCollapseButton() {
+  document.getElementById(COLLAPSE_BUTTON_ID)?.remove();
+
+  const messages = document.getElementById("messages")!;
+  if (messages.children.length <= 1) return;
+
+  messages.firstElementChild!.prepend(createCollapseButton());
+}
+
+function createCollapseButton(): HTMLElement {
+  const collapseButton = document.createElement("button");
+  collapseButton.id = COLLAPSE_BUTTON_ID;
+  collapseButton.className = "messages-toggle-button";
+  collapseButton.innerHTML = chevronDownIcon;
+  collapseButton.addEventListener("click", collapseMessages);
+  return collapseButton;
+}
+
+function collapseMessages() {
+  document.getElementById("messages")!.classList.add("messages-collapsed");
 }
