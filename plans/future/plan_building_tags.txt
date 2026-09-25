@@ -1,0 +1,3 @@
+It is hard to find buildings in building toolbar.
+If the player knows their looking for a power plant it would be good that they can select an "energy" filter and just see a list of power-producing buildings.
+
