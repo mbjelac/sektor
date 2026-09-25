@@ -32,3 +32,12 @@ Sektors which contain Habitats can "produce" Hapiness resource. This is local so
     - Notify player about most imported resourcesNotify player about most imported resources -> Information
     - Notify player about local imports which are also global imports -> Warning
     - Hapiness (in this plan) -> Information
+
+#4 Player can see hapiness percentage
+- hapiness stat shows:
+    - current hapiness score
+    - total possible hapiness score
+    - percentage of hapiness = (current / total) * 100
+    - displayed in top-of-screen stat like: "current / total (percentage %)"
+    - percentage rounded to integer
+    - total possible hapiness = total possible hapiness of one habitat (all hapiness outputs) * number of habitats
