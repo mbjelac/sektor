@@ -33,7 +33,7 @@ Terrain features also includes water, e.g.:
         - do not construct building
         - display error "notDryEnough"
             - same error functionalities as all other errors
-- update building panel label
+- [done] update building panel label
     - when a sea floor is selected, the building panel name label says "Sea"
 
 #3 [done] Elevation

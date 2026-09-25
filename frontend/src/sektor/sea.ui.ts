@@ -8,6 +8,9 @@ import { withoutDepthWrites } from "../../../shared/applyCommands";
 
 export const SEA_COLOR: [number, number, number] = [66, 183, 255];
 
+// What the panel calls a square of water the player has clicked on.
+export const SEA_NAME = "Sea";
+
 // The bed of the sea is as solid as the land is and belongs in the pass which writes depth; the
 // surface over it is half seen through and belongs in the pass laid over that one.
 export function drawSeaBed(p: p5) {

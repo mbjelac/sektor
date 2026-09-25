@@ -27,7 +27,7 @@ import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
 import { elevationRenderingCode, elevationVariation, ELEVATION_NAME } from "./terrainFeatures";
-import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR } from "./sea.ui";
+import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showClaimDialog } from "../claimDialog.ui";
@@ -456,14 +456,15 @@ function destroyBuilding(location: BuildingLocation) {
   saveState();
 }
 
-// Rock is shown the way a building is, so that a player clicking on it is told what is in their
-// way and what the ground under it holds. It is not theirs to take down, so the panel comes
-// without the button which would.
-function openElevationPanel(location: BuildingLocation) {
+// A square with no building on it is shown the way a building is, so that a player clicking on it
+// is told what the square is and what the ground there holds. It names whatever the square is made
+// of, and it comes without the button which would take a building down: there is nothing there to
+// destroy, and the sea and the rock are not the player's to remove.
+function openTerrainPanel(location: BuildingLocation) {
   selectedBuildingLocation = location;
   showBuildingPanel({
-    name: ELEVATION_NAME,
-    code: elevationRenderingCode(elevationVariation(location.x, location.y)),
+    name: terrainNameAt(location.x, location.y),
+    code: terrainRenderingCodeAt(location.x, location.y),
     buildingFunctions: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
     floorColor: floorColorAt(location.x, location.y),
@@ -471,17 +472,19 @@ function openElevationPanel(location: BuildingLocation) {
   });
 }
 
-function openEmptyLocationPanel(location: BuildingLocation) {
-  const selectedFloorColor = floorColorAt(location.x, location.y);
-  selectedBuildingLocation = location;
-  showBuildingPanel({
-    name: "Empty",
-    code: "",
-    buildingFunctions: [],
-    locationProperties: locations[location.x]?.[location.y]?.properties,
-    floorColor: selectedFloorColor,
-    location: location,
-  });
+function terrainNameAt(gx: number, gy: number): string {
+  if (isSeaLocation(gx, gy)) return SEA_NAME;
+  if (isElevationLocation(gx, gy)) return ELEVATION_NAME;
+  return EMPTY_NAME;
+}
+
+// What the panel calls a square of plain ground with nothing built on it.
+const EMPTY_NAME = "Empty";
+
+// Only rock stands on a square of its own: the sea and the bare ground are the floor and nothing
+// more, so the panel shows them with no bodies over the floor.
+function terrainRenderingCodeAt(gx: number, gy: number): string {
+  return isElevationLocation(gx, gy) ? elevationRenderingCode(elevationVariation(gx, gy)) : "";
 }
 
 // The property selected in the geography panel is shown on every floor, whose edges are
@@ -1086,10 +1089,8 @@ const sektorUi = (p: p5) => {
       const placed = placedBuildings.find(b => b.location.x === grid.x && b.location.y === grid.y);
       if (placed) {
         openBuildingPanel(placed);
-      } else if (isElevationLocation(grid.x, grid.y)) {
-        openElevationPanel({ x: grid.x, y: grid.y });
       } else {
-        openEmptyLocationPanel({ x: grid.x, y: grid.y });
+        openTerrainPanel({ x: grid.x, y: grid.y });
       }
       return;
     }
@@ -1152,7 +1153,12 @@ const sektorUi = (p: p5) => {
       withoutDepthWrites(p, () => p.model(bakedWaterSurfaces));
     }
 
-    drawSeaGlints(p, seaSquares, p.millis());
+    // The glints swell and fade by the clock, so a test run would catch the sea at a different
+    // moment every time and no two screenshots of the same map would come out alike. A test is
+    // shown the water standing still instead.
+    if (!isTestMode) {
+      drawSeaGlints(p, seaSquares, p.millis());
+    }
 
     const overlayProperty = getOverlayProperty();
     if (overlayProperty) {

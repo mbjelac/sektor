@@ -684,6 +684,17 @@ test("shows error when placing building on elevation", async ({ page }) => {
   await expectScreenshot(page, "elevation-building-error", "body");
 });
 
+// Water is shown the way a building is, under its own name and with what lies under it, so that a
+// player clicking on the sea is told what the square is rather than that it is empty.
+test("shows the panel of a sea square under the name of the sea", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2 - 50, y: box!.height / 2 - 240 } });
+  await page.waitForTimeout(200);
+  await expectScreenshot(page, "sea-panel", "body");
+});
+
 // Rock is shown the way a building is, under its own name and with what the ground beneath it
 // holds — but with no button for taking it down, as it is not the player's to remove.
 test("shows the panel of an elevation without the control which would destroy it", async ({ page }) => {
