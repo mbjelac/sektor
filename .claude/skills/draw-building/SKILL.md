@@ -1,6 +1,6 @@
 ---
 name: draw-building
-description: Load the Sektor shape DSL (bodies, height, placement, colors, animation) into context for drawing in the scratch file. Use when asked to draw, add, move, recolor or animate 3D objects — buildings, pyramids, rings of spheres, grids of cubes — in the scratch_sektor.txt DSL.
+description: Load SGL (Sektor Graphics Language), the Sektor shape DSL (bodies, height, placement, colors, animation) into context for drawing in the scratch file. Use when asked to draw, add, move, recolor or animate 3D objects — buildings, pyramids, rings of spheres, grids of cubes — in the scratch_sektor.txt DSL.
 ---
 
 # draw-building
@@ -8,6 +8,13 @@ description: Load the Sektor shape DSL (bodies, height, placement, colors, anima
 Knowledge only. Invoking this skill loads the DSL below into context and **changes nothing** —
 it does not read, write or otherwise touch the scratch file. Wait for the user's actual drawing
 instruction.
+
+## SGL — Sektor Graphics Language
+
+The DSL described here is called **SGL**, short for **Sektor Graphics Language**. Wherever "SGL"
+appears — the `.sgl` files under `frontend/src/assets/` (e.g. the terrain elevation pieces), or the
+code blocks under the `## Render` headings in `frontend/src/assets/terrain.md` — it means this
+language, and everything below applies to it.
 
 ## The working file
 
