@@ -1,4 +1,0 @@
-Squares with higher altitudes than 1 (2 and above) may have uneven terrain.
-These are also "buildings" which are already there and cannot be destroyed.
-These are unusable for building anything.
-Some may be cleared?
