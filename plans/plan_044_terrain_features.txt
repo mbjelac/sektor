@@ -73,13 +73,13 @@ Terrain features also includes water, e.g.:
         }
     - when you got the number between 0 & 19, useit to pick the Render section from terrain.md, first is 0, etc.
 
-#5 Neighbouring elevations are rendered as part of single elevation
-- modify existing implementation of rendering elevations:
+#5 [done] Neighbouring elevations are rendered as part of single elevation
+- [done] modify existing implementation of rendering elevations:
     - do not use terrain.md
     - for each elevation square, render it from 4 sections
     - the sections are specified in frontend/src/assets/terrain/grassland/elevations/edge
     - files e0.sgl, n0.sgl, s0.sgl, w0.sgl (east, north, south, west)
-- elevation rendered differently when next to other elevations
+- [done] elevation rendered differently when next to other elevations
     - if an elevation square has elevation neighbours, use file from frontend/src/assets/terrain/grassland/elevations/middle for that side
     - sektor map orientation
         - location 0,0 is the most north-west point
@@ -91,7 +91,7 @@ Terrain features also includes water, e.g.:
         - if there is an elevation at 4,4 this is directly north of 4,5
         - to render, use /middle/n0.sgl instead of /edge/n0.sgl
     - for squares on the edges of the map, assume it's neighbour outside of the map is not an elevation
-- elevations again need to differ from each other
+- [done] elevations again need to differ from each other
     - both /edge & /middle folders have files for all orientations in 10 variants
     - use similar function as in #4 to choose a variant but limit it to 0-9
     - when variant chosen, use files with that variant suffix

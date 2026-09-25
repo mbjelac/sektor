@@ -26,7 +26,7 @@ import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
-import { elevationRenderingCode, elevationVariation, ELEVATION_NAME } from "./terrainFeatures";
+import { elevationRenderingCode, elevationSides, elevationVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -484,7 +484,9 @@ const EMPTY_NAME = "Empty";
 // Only rock stands on a square of its own: the sea and the bare ground are the floor and nothing
 // more, so the panel shows them with no bodies over the floor.
 function terrainRenderingCodeAt(gx: number, gy: number): string {
-  return isElevationLocation(gx, gy) ? elevationRenderingCode(elevationVariation(gx, gy)) : "";
+  return isElevationLocation(gx, gy)
+    ? elevationRenderingCode(elevationVariation(gx, gy), elevationSides(terrain, gx, gy))
+    : "";
 }
 
 // The property selected in the geography panel is shown on every floor, whose edges are
@@ -638,12 +640,14 @@ function isFloorSolid(x: number, z: number): boolean {
   return buildingDefinition?.properties.showFloor !== false;
 }
 
-// Outcrops standing in the same shape draw the same bodies, so one bake serves every square of
-// that shape however many of them a map has. They are baked under the shape they stand in rather
-// than under their own name, which every one of them shares.
+// Outcrops standing in the same shape, with the same sides running into neighbouring rock, draw
+// the same bodies, so one bake serves every such square however many of them a map has. They are
+// baked under their shape and sides rather than under their own name, which every one of them shares.
 function bakedElevationBodies(p: p5, location: BuildingLocation): BakedBodies {
   const variation = elevationVariation(location.x, location.y);
-  return bakedBuildingBodies(p, `${ELEVATION_NAME} ${variation}`, elevationRenderingCode(variation));
+  const sides = elevationSides(terrain, location.x, location.y);
+  const bakeName = `${ELEVATION_NAME} ${variation} ${sides.north} ${sides.east} ${sides.south} ${sides.west}`;
+  return bakedBuildingBodies(p, bakeName, elevationRenderingCode(variation, sides));
 }
 
 // Every building of a type draws the same bodies, so one bake serves all of its locations.
