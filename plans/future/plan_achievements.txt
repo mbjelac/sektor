@@ -1,0 +1,9 @@
+To give the player a sense of progress, they can reach achievements which then unlock additional game content.
+Content:
+- building types
+- biomes
+
+Ideas for achievements:
+- 80% happiness (then 90%, 100%)
+- 80-20 export-import ratio
+- reducing a global import by 10% (20%, 30%, ...)
