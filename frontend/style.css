@@ -1156,6 +1156,12 @@ body > main {
     justify-content: flex-end;
 }
 
+/* The column the resources stand in the order of, told apart from the others by being as bright as
+   a column name ever gets. */
+.global-state-header .global-state-sort-selected {
+    color: #fff;
+}
+
 /* Sits in the bottom corner of the page, where it is out of the way of everything but plain to see,
    looking as dangerous as it is. The top corner is the player's own, and the lists of the page now
    reach into it. */

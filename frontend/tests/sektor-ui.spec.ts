@@ -801,11 +801,25 @@ test("shows what the whole planet moves when the globe beside the panel title is
   await page.locator("#global-state-button").click();
 
   expect(await getGlobalDialogRows(page)).toEqual([
-    { resource: "Energy ⚡", imported: "1", exported: "" },
-    { resource: "Food 🥕", imported: "", exported: "8" },
     { resource: "Water 💧", imported: "3", exported: "" },
+    { resource: "Energy ⚡", imported: "1", exported: "" },
     { resource: "Wood 🪵", imported: "", exported: "3" },
+    { resource: "Food 🥕", imported: "", exported: "8" },
   ]);
+});
+
+// Over a map the planet's list begins with what the planet brings in most of, which is what a player
+// building there can do the most for.
+test("puts the most brought in first when the planet's list is called up over the map", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+
+  await page.locator("#global-state-button").click();
+
+  expect(await getGlobalDialogResourceNames(page))
+    .toEqual(["Food 🥕", "Ore 🪨", "Water 💧", "Energy ⚡", "Stone 🧱", "Fuel 🛢️", "Work 🛠️", "Wood 🪵", "Metal ⚙️"]);
 });
 
 test("shows the planet's imports and exports over the map", async ({ page }) => {
@@ -898,19 +912,45 @@ function getGlobalDialogRows(page: Page) {
   );
 }
 
+// The column the resources stand in the order of is named in white, so the player sees what order
+// they are looking at.
+test("names the column the planet's list over the map is in the order of in white", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestProcessor");
+  await page.locator("#global-state-button").click();
+
+  await page.locator('#global-state-dialog .global-state-sort[data-sort-order="exported"]').click();
+
+  expect(await getGlobalDialogSortColors(page)).toEqual({
+    resource: "rgb(153, 153, 153)",
+    imported: "rgb(153, 153, 153)",
+    exported: "rgb(255, 255, 255)",
+  });
+});
+
+// The colour each column of the planet's list over the map is named in, with the mouse away from
+// all of them.
+async function getGlobalDialogSortColors(page: Page) {
+  await page.mouse.move(0, 0);
+  return page.locator("#global-state-dialog .global-state-sort").evaluateAll(sortButtons =>
+    Object.fromEntries(sortButtons.map(sortButton =>
+      [(sortButton as HTMLElement).dataset.sortOrder, getComputedStyle(sortButton).color]))
+  );
+}
+
 // The planet's list over the map is asked for its order the same way as the one beside the sektors:
 // by clicking the column the player is looking down.
-test("puts the most brought in first when the imported column of the planet's list is clicked", async ({ page }) => {
+test("puts the planet's resources in the order of their names when the resource column of the planet's list is clicked", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeBuilding(page, "TestProcessor");
   await page.locator("#global-state-button").click();
 
-  await page.locator('#global-state-dialog .global-state-sort[data-sort-order="imported"]').click();
+  await page.locator('#global-state-dialog .global-state-sort[data-sort-order="resource"]').click();
 
   expect(await getGlobalDialogResourceNames(page))
-    .toEqual(["Food 🥕", "Ore 🪨", "Water 💧", "Energy ⚡", "Stone 🧱", "Fuel 🛢️", "Work 🛠️", "Wood 🪵", "Metal ⚙️"]);
+    .toEqual(["Energy ⚡", "Food 🥕", "Fuel 🛢️", "Metal ⚙️", "Ore 🪨", "Stone 🧱", "Water 💧", "Wood 🪵", "Work 🛠️"]);
 });
 
 // The resources of the planet's list, in the order they stand in while it is over the map.

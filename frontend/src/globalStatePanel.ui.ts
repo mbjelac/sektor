@@ -10,9 +10,10 @@ import { createListTitle } from "./listTitle.ui";
 
 // Which column the resources are put in order by. A player looking for what the planet is shortest
 // of asks for it by the column it stands in, and the list stays in that order until they ask for
-// another, whatever happens to the sektors under it. Only one list of the planet is ever on a page
-// — the one beside the sektors, or the one called up over a map — so the two never disagree.
-let sortOrder: ResourceSortOrder = "resource";
+// another, whatever happens to the sektors under it. It begins with what the planet brings in most
+// of, which is what a player can do the most for. Only one list of the planet is ever on a page —
+// the one beside the sektors, or the one called up over a map — so the two never disagree.
+let sortOrder: ResourceSortOrder = "imported";
 
 // What the whole planet brings in and sends out, standing beside the sektors and the standings as
 // the third of the three lists on the page.
@@ -38,7 +39,8 @@ export function fillGlobalStateList(list: HTMLElement, globalImportsAndExports: 
 
 // The name of the list and the names of its columns are one header, which stays at the top of the
 // resources while they are scrolled past it. Every column name is asked for by clicking it, which
-// puts the resources in the order of that column.
+// puts the resources in the order of that column, and the column they stand in the order of is
+// named in white, so the player sees what order they are looking at.
 function createHeader(title: string, onSorted: () => void): HTMLElement {
   const header = document.createElement("div");
   header.className = "global-state-header";
@@ -62,6 +64,7 @@ function createSortButton(
 ): HTMLElement {
   const sortButton = document.createElement("button");
   sortButton.className = `${className} global-state-sort`;
+  sortButton.classList.toggle("global-state-sort-selected", columnSortOrder === sortOrder);
   sortButton.dataset.sortOrder = columnSortOrder;
   if (tooltip) {
     sortButton.innerHTML = nameOrIcon;

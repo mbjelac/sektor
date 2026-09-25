@@ -277,10 +277,10 @@ test("counts every sektor into what the planet moves, whoever owns it", async ({
   expect(await getGlobalThroughputRows(page)).toEqual([
     { resource: "Energy ⚡", imported: "4", exported: "" },
     { resource: "Food 🥕", imported: "4", exported: "" },
-    { resource: "Ore 🪨", imported: "", exported: "6" },
     { resource: "Water 💧", imported: "1", exported: "" },
     { resource: "Wood 🪵", imported: "", exported: "3" },
     { resource: "Work 🛠️", imported: "", exported: "3" },
+    { resource: "Ore 🪨", imported: "", exported: "6" },
   ]);
 });
 
@@ -294,8 +294,8 @@ test("sets what one sektor sends out against what another brings in", async ({ p
   await page.goto("/?test=true");
 
   expect(await getGlobalThroughputRows(page)).toEqual([
-    { resource: "Ore 🪨", imported: "", exported: "6" },
     { resource: "Water 💧", imported: "1", exported: "" },
+    { resource: "Ore 🪨", imported: "", exported: "6" },
   ]);
 });
 
@@ -380,24 +380,29 @@ test("shows what a building put up in a sektor does to what the planet moves", a
 });
 
 // A player looking for what the planet is shortest of, or has most of over, asks for it by clicking
-// the column it stands in. The resources stand in the order of their names until they do.
-test("puts the planet's resources in the order of their names to begin with", async ({ page }) => {
+// the column it stands in. The resources stand with the most brought in first until they do.
+test("puts the planet's most brought in resources first to begin with", async ({ page }) => {
   await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
 
   await page.goto("/?test=true");
-
-  expect(await getGlobalResourceNames(page))
-    .toEqual(["Energy ⚡", "Food 🥕", "Fuel 🛢️", "Metal ⚙️", "Ore 🪨", "Stone 🧱", "Water 💧", "Wood 🪵", "Work 🛠️"]);
-});
-
-test("puts the most brought in first when the imported column is clicked", async ({ page }) => {
-  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
-  await page.goto("/?test=true");
-
-  await page.locator('#global-state-panel .global-state-sort[data-sort-order="imported"]').click();
 
   expect(await getGlobalResourceNames(page))
     .toEqual(["Ore 🪨", "Water 💧", "Food 🥕", "Energy ⚡", "Stone 🧱", "Wood 🪵", "Fuel 🛢️", "Work 🛠️", "Metal ⚙️"]);
+});
+
+// The column the resources stand in the order of is named in white, so the player sees what order
+// they are looking at.
+test("names the column the planet's resources are in the order of in white", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
+  await page.goto("/?test=true");
+
+  await page.locator('#global-state-panel .global-state-sort[data-sort-order="exported"]').click();
+
+  expect(await getGlobalSortColors(page)).toEqual({
+    resource: "rgb(153, 153, 153)",
+    imported: "rgb(153, 153, 153)",
+    exported: "rgb(255, 255, 255)",
+  });
 });
 
 test("puts the most sent out first when the exported column is clicked", async ({ page }) => {
@@ -410,10 +415,9 @@ test("puts the most sent out first when the exported column is clicked", async (
     .toEqual(["Metal ⚙️", "Fuel 🛢️", "Work 🛠️", "Wood 🪵", "Stone 🧱", "Energy ⚡", "Food 🥕", "Ore 🪨", "Water 💧"]);
 });
 
-test("puts the planet's resources back in the order of their names when the resource column is clicked", async ({ page }) => {
+test("puts the planet's resources in the order of their names when the resource column is clicked", async ({ page }) => {
   await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
   await page.goto("/?test=true");
-  await page.locator('#global-state-panel .global-state-sort[data-sort-order="exported"]').click();
 
   await page.locator('#global-state-panel .global-state-sort[data-sort-order="resource"]').click();
 
@@ -425,6 +429,15 @@ test("puts the planet's resources back in the order of their names when the reso
 function getGlobalResourceNames(page: Page) {
   return page.locator("#global-state-panel .global-state-item .global-state-resource")
     .evaluateAll(cells => cells.map(cell => cell.textContent));
+}
+
+// The colour each column of the planet's list is named in, with the mouse away from all of them.
+async function getGlobalSortColors(page: Page) {
+  await page.mouse.move(0, 0);
+  return page.locator("#global-state-panel .global-state-sort").evaluateAll(sortButtons =>
+    Object.fromEntries(sortButtons.map(sortButton =>
+      [(sortButton as HTMLElement).dataset.sortOrder, getComputedStyle(sortButton).color]))
+  );
 }
 
 // A sektor of buildings standing in a row, one to a location, with the same ore under every one of
