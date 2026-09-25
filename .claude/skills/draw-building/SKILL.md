@@ -16,6 +16,18 @@ appears — the `.sgl` files under `frontend/src/assets/` (e.g. the terrain elev
 code blocks under the `## Render` headings in `frontend/src/assets/terrain.md` — it means this
 language, and everything below applies to it.
 
+### Generators
+
+Before writing a new script to generate SGL, check `tools/sgl/generator/` — reuse or extend what
+is there.
+
+- `tools/sgl/generator/terrain/middle_elevations.py` — writes
+  `frontend/src/assets/terrain/grassland/elevations/middle/<edge><variant>.sgl` (edge = e/n/s/w,
+  variant = 0–9): for each, a whole grassy rocky outcrop with rocks piled up towards that edge,
+  of which only the triangle facing that edge is kept. Fixed seed; rerunning reproduces the files.
+- `tools/sgl/generator/terrain/outcrop.py` — shared helpers: random core rocks, rock palette,
+  tree sizes and colours, pri5 rock geometry, placing trees on rock roofs.
+
 ## The working file
 
 ```
