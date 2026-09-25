@@ -84,3 +84,7 @@ Global player scoring:
         - this is the initial sort
     - Import amount: sort list by descending import amount, then ascending export amount
     - Export amount: sort list by descending export amount, then ascending import amount
+
+#5 Player can easily see what ordering is specified
+- initial ordering in the map global imports/exports list is by imports
+- the header by which the list is currently ordered is displayed in white
