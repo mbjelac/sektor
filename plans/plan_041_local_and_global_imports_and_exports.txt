@@ -88,3 +88,4 @@ Global player scoring:
 #5 Player can easily see what ordering is specified
 - initial ordering in the map global imports/exports list is by imports
 - the header by which the list is currently ordered is displayed in white
+- apply same thing to list page global imports/exports list
