@@ -8,13 +8,13 @@
     - when clicked, collapse messages
 - [done] when messages collapsed, they are not shown
 
-#2 Player can see the last message
-- when messages collapsed, show only the top-most (last) message
+#2 [done] Player can see the last message
+- [done] when messages collapsed, show only the top-most (last) message
     - hide collapse button
     - if message changes, still flash it like before
 
-#3 Player can bring up messages again
-- when messages collapsed, the single message has an expand button on it
+#3 [done] Player can bring up messages again
+- [done] when messages collapsed, the single message has an expand button on it
     - right aligned
     - icon heroicon chevron-up
     - white text
@@ -25,7 +25,7 @@
         - show collapse button on top-most message
     - do not display expand button if there is only one message
 
-#4 Player can see number of collapsed messages
-- on expand button, next to icon, show number of collapsed messages
+#4 [done] Player can see number of collapsed messages
+- [done] on expand button, next to icon, show number of collapsed messages
     - total number of messages minus one (the last one is always shown)
     - text is white, bold, small

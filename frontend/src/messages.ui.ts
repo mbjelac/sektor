@@ -6,7 +6,7 @@ import {
 import { resourceNameText } from "./throughputDisplay.ui";
 import { getNegativeScoringResources } from "./resources";
 import { pointAtResourceWhileHovered } from "./resourceHover.ui";
-import { chevronDownIcon } from "./icons";
+import { chevronDownIcon, chevronUpIcon } from "./icons";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -25,6 +25,7 @@ const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 // One complaint to a resource, each named after the resource it complains of.
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
 const COLLAPSE_BUTTON_ID = "messages-collapse-button";
+const EXPAND_BUTTON_ID = "messages-expand-button";
 
 // What a player could do here which would help the planet most, told to them as the map opens and
 // whenever anything changes what this sektor or the planet moves. What the planet wants of anybody
@@ -37,7 +38,7 @@ export function updateMessages(
   showMostImportedMessage(planetImportsAndExports);
   showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
   showHabitatShortageMessages(habitatShortages);
-  showCollapseButton();
+  showToggleButtons();
 }
 
 // The people of a sektor complain of each thing their habitats are going without, one complaint to
@@ -157,26 +158,41 @@ function hideMessage(messageId: string) {
 }
 
 // Several messages stand over a good part of the map, so the one on top carries a button which
-// puts them all away and lets the player see what they are building. A single message is left as
-// it is: there is little of the map behind it to get back.
-function showCollapseButton() {
+// puts them all away but the newest, and one which brings them back. Which of the two the player
+// sees is up to whether the messages are put away already. A single message carries neither: there
+// is little of the map behind it to get back, and nothing else to bring back.
+function showToggleButtons() {
   document.getElementById(COLLAPSE_BUTTON_ID)?.remove();
+  document.getElementById(EXPAND_BUTTON_ID)?.remove();
 
   const messages = document.getElementById("messages")!;
   if (messages.children.length <= 1) return;
 
-  messages.firstElementChild!.prepend(createCollapseButton());
+  const expandButton = createToggleButton(EXPAND_BUTTON_ID, chevronUpIcon, expandMessages);
+  // How many messages are put away, told beside the arrow so that the player knows what they would
+  // be bringing back. Told from the button's look rather than as words of its own, so that what the
+  // message says is still exactly what it says.
+  expandButton.dataset.collapsedMessageCount = String(messages.children.length - 1);
+
+  messages.firstElementChild!.prepend(
+    createToggleButton(COLLAPSE_BUTTON_ID, chevronDownIcon, collapseMessages),
+    expandButton,
+  );
 }
 
-function createCollapseButton(): HTMLElement {
-  const collapseButton = document.createElement("button");
-  collapseButton.id = COLLAPSE_BUTTON_ID;
-  collapseButton.className = "messages-toggle-button";
-  collapseButton.innerHTML = chevronDownIcon;
-  collapseButton.addEventListener("click", collapseMessages);
-  return collapseButton;
+function createToggleButton(buttonId: string, icon: string, toggleMessages: () => void): HTMLElement {
+  const toggleButton = document.createElement("button");
+  toggleButton.id = buttonId;
+  toggleButton.className = "messages-toggle-button";
+  toggleButton.innerHTML = icon;
+  toggleButton.addEventListener("click", toggleMessages);
+  return toggleButton;
 }
 
 function collapseMessages() {
   document.getElementById("messages")!.classList.add("messages-collapsed");
+}
+
+function expandMessages() {
+  document.getElementById("messages")!.classList.remove("messages-collapsed");
 }

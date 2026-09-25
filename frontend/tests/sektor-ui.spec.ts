@@ -1262,8 +1262,8 @@ test("shows the collapse button on the top-most message", async ({ page }) => {
   await expectScreenshot(page, "messages-collapse-button", "body");
 });
 
-// A player who wants the map rather than the advice puts all of it away.
-test("hides the messages when the collapse button is clicked", async ({ page }) => {
+// A player who wants the map rather than the advice puts it away, all but the newest.
+test("hides all but the top-most message when the collapse button is clicked", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
@@ -1275,12 +1275,46 @@ test("hides the messages when the collapse button is clicked", async ({ page }) 
     id: message.id,
     shown: getComputedStyle(message).display !== "none",
   })))).toEqual([
-    { id: "most-imported-scarce-message", shown: false },
+    { id: "most-imported-scarce-message", shown: true },
     { id: "most-imported-message", shown: false },
   ]);
 });
 
-test("shows the map without messages once they are collapsed", async ({ page }) => {
+// With the messages put away there is nothing left for the collapse button to put away.
+test("hides the collapse button once the messages are collapsed", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestHouse");
+
+  await page.locator("#messages-collapse-button").click();
+
+  await expect(page.locator("#messages-collapse-button")).toBeHidden();
+});
+
+// Advice which changes while the messages are put away is still the newest, so it is the one left
+// standing, and it flashes like any other so that the player catches that it changed.
+test("shows and flashes a message which changes while the messages are collapsed", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuildingAtOffset(page, "TestProcessor", -60);
+  await page.locator("#messages-collapse-button").click();
+
+  await placeBuildingAtOffset(page, "TestHabitat", 60);
+
+  expect(await page.locator(".message").evaluateAll(messages => messages.map(message => ({
+    id: message.id,
+    shown: getComputedStyle(message).display !== "none",
+    flashing: message.classList.contains("message-flashing"),
+  })))).toEqual([
+    { id: "habitat-shortage-message-Care", shown: true, flashing: true },
+    { id: "most-imported-scarce-message", shown: false, flashing: true },
+    { id: "most-imported-message", shown: false, flashing: true },
+  ]);
+});
+
+test("shows only the top-most message once the messages are collapsed", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
@@ -1296,3 +1330,99 @@ function getMessageIdsWithCollapseButton(page: Page) {
   return page.locator(".message:has(#messages-collapse-button)")
     .evaluateAll(messages => messages.map(message => message.id));
 }
+
+// Messages put away can be brought back from the one left standing.
+test("puts an expand button on the message left standing once the messages are collapsed", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestHouse");
+
+  await page.locator("#messages-collapse-button").click();
+
+  expect(await getShownToggleButtons(page)).toEqual({
+    collapse: [],
+    expand: ["most-imported-scarce-message"],
+  });
+});
+
+test("shows the expand button on the message left standing", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestHouse");
+
+  await page.locator("#messages-collapse-button").click();
+
+  await expectScreenshot(page, "messages-expand-button", "#messages");
+});
+
+// Brought back, the messages stand as they did before they were put away, ready to be put away
+// again.
+test("shows all messages again when the expand button is clicked", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestHouse");
+  await page.locator("#messages-collapse-button").click();
+
+  await page.locator("#messages-expand-button").click();
+
+  expect({
+    shownMessages: await page.locator(".message").evaluateAll(messages => messages.map(message => ({
+      id: message.id,
+      shown: getComputedStyle(message).display !== "none",
+    }))),
+    toggleButtons: await getShownToggleButtons(page),
+  }).toEqual({
+    shownMessages: [
+      { id: "most-imported-scarce-message", shown: true },
+      { id: "most-imported-message", shown: true },
+    ],
+    toggleButtons: {
+      collapse: ["most-imported-scarce-message"],
+      expand: [],
+    },
+  });
+});
+
+// A single message has nothing behind it to bring back.
+test("puts no expand button on a single message", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+
+  await page.locator("#most-imported-message").waitFor();
+
+  await expect(page.locator("#messages-expand-button")).toHaveCount(0);
+});
+
+// The messages whose collapse or expand button the player can see, top-most first.
+async function getShownToggleButtons(page: Page) {
+  const messageIdsWithShownButton = (buttonId: string) => page.locator(".message")
+    .evaluateAll((messages, buttonId) => messages
+      .filter(message => {
+        const button = message.querySelector(`#${buttonId}`);
+        return button !== null && getComputedStyle(button).display !== "none"
+          && getComputedStyle(message).display !== "none";
+      })
+      .map(message => message.id), buttonId);
+
+  return {
+    collapse: await messageIdsWithShownButton("messages-collapse-button"),
+    expand: await messageIdsWithShownButton("messages-expand-button"),
+  };
+}
+
+// The player is told how many messages are put away, all of them but the one left standing.
+test("tells on the expand button how many messages are collapsed", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuildingAtOffset(page, "TestProcessor", -60);
+  await placeBuildingAtOffset(page, "TestHabitat", 60);
+
+  await page.locator("#messages-collapse-button").click();
+
+  expect(await page.locator("#messages-expand-button")
+    .evaluate(button => getComputedStyle(button, "::after").content)).toEqual('"2"');
+});

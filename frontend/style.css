@@ -1299,7 +1299,19 @@ body > main {
     cursor: pointer;
 }
 
-.messages-collapsed .message {
+#messages-expand-button::after {
+    content: attr(data-collapsed-message-count);
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Put away, the messages leave only the newest standing, so that the player still reads the latest
+   advice as it comes; the button which put them away has nothing left to put away, and the one
+   which brings them back takes its place. */
+.messages-collapsed .message:not(:first-child),
+.messages-collapsed #messages-collapse-button,
+#messages:not(.messages-collapsed) #messages-expand-button {
     display: none;
 }
 
