@@ -14,3 +14,11 @@
 - [done] explanation: the function has no inputs, only outputs
 - [done] this building has the name "Forest"
 - [done] add EcosystemSupport to resources.md as an exportable (not local) resource
+
+#2 Forest squares are lumped together to make up actual forests
+- when creating a sektor, use this probability list to create forests of various sizes:
+    - 10% one forest of size 1
+    - 10% one forest of size 2
+    - 10% one forest of size 3
+- forests of size > 1 are just multiple forests squares which are neighbouring to each other
+    - diagonals don't count
