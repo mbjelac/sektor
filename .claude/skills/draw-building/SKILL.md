@@ -25,6 +25,25 @@ is there.
   `../../../frontend/src/assets/terrain/temperate/elevations/middle/<edge><variant>.sgl` (edge = e/n/s/w,
   variant = 0–9): for each, a whole grassy rocky outcrop with rocks piled up towards that edge,
   of which only the triangle facing that edge is kept. Fixed seed; rerunning reproduces the files.
+- `tools/sgl/generator/terrain/forests.py` — writes
+  `../../../frontend/src/assets/terrain/temperate/forests/<variant>.sgl` (variant = 0–9): each a
+  dense forest of 178 `sph` trees on the ground (`t` z=7), centres anywhere from −50 to 50.
+  One seed for all variants, so rerunning reproduces every file and adding variants keeps the
+  existing ones. How it works and what to tune:
+  - Tree size and colour come from `outcrop.tree_size()` / `random_tree_color()` (the same trees
+    as on the elevations), each dimension grown by `SIZE_INCREASE` (2) — width 6–10, height 7–11.
+  - **Touching is the point**: neighbouring crowns touch or overlap a little; a gap between
+    neighbours is the exception. There is no minimum-clearance rule.
+  - Placement is best-candidate: each tree tries `CANDIDATES` (12) random spots and takes the one
+    with the most `room` — the gap to the nearest crown, negative when overlapping. That spreads
+    trees evenly without a grid.
+  - The square's edge counts as a neighbouring crown (`edge_room` = distance to edge − radius);
+    without it trees pile up in the free space along the edge.
+  - Density: `TREES` is sized to the area — 178 fills 100×100 so ~98% of trees touch a neighbour,
+    with at most ~1.5 gap and ~5 overlap. Scale it with the area (`TREES ∝ (2·SQUARE_REACH)²`)
+    when the reach changes, or gaps appear.
+  - Check a result by measuring each tree's nearest-neighbour gap (touching count, largest
+    gap/overlap), trees centred within 3 of an edge (~12% expected), and duplicate positions.
 - `tools/sgl/generator/terrain/outcrop.py` — shared helpers: random core rocks, rock palette,
   tree sizes and colours, pri5 rock geometry, placing trees on rock roofs.
 
