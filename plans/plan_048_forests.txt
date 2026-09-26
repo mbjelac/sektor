@@ -25,7 +25,7 @@
 - [done] forests of size > 1 are just multiple forests squares which are neighbouring to each other
     - diagonals don't count
 
-#3 Damaging ecosystem support is tracked
+#3 Damage to ecosystem is tracked
 - when sektor created, each Forest outputs EcosystemSupport
     - total sum of this value is stored with the created sektor as initialEcosystemSupport
 - a sektor stat is "Ecosystem damage" calculated as:
