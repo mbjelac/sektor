@@ -30,4 +30,8 @@ export interface SektorData {
   terrain?: number[][];
   locationProperties: { [key: string]: number[][] };
   buildings: Building[];
+  // How much the ecosystem was supported when the sektor was made, before anybody built anything
+  // there: all the EcosystemSupport its forests gave. A sektor made before there were any forests
+  // carries none, and had none to give.
+  initialEcosystemSupport?: number;
 }

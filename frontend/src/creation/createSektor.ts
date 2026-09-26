@@ -3,6 +3,7 @@ import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
 import { createTerrainMatrix } from "./terrainMatrix";
 import { RandomNumber } from "./randomNumber";
 import { plantForests } from "./forests";
+import { forestEcosystemSupport } from "../sektor/forest";
 
 export type { RandomNumber };
 
@@ -15,11 +16,15 @@ export function createSektor(
   randomNumber: RandomNumber = Math.random,
 ): SektorData {
   const terrain = createTerrainMatrix(randomNumber);
+  const forests = plantForests(terrain, randomNumber);
   return {
     level,
     terrain,
     locationProperties: createLocationProperties(locationPropertyNames, randomNumber),
-    buildings: plantForests(terrain, randomNumber),
+    buildings: forests,
+    // Nothing but forests stands in a sektor just made, so what they give is all the support the
+    // ecosystem has to begin with.
+    initialEcosystemSupport: forests.length * forestEcosystemSupport(),
   };
 }
 

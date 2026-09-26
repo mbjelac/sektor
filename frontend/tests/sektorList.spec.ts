@@ -532,7 +532,8 @@ test("numbers every sektor it makes above the last one", async ({ page }) => {
   expect(sektors.map((sektor: { id: string }) => sektor.id)).toEqual(["Alpha", "Beta", "Gamma", "0", "1", "2"]);
 });
 
-test("gives every sektor it makes a level and empty ground to build on", async ({ page }) => {
+// Forests grow on a sektor before anybody gets to it, but nothing the player builds stands there yet.
+test("gives every sektor it makes a level and ground to build on with nothing but forests on it", async ({ page }) => {
   await page.goto("/?test=true");
 
   await createSektorNow(page);
@@ -541,11 +542,11 @@ test("gives every sektor it makes a level and empty ground to build on", async (
   expect({
     hasLevel: Number.isInteger(sektorData.level),
     hasGround: Object.keys(sektorData.locationProperties).length > 0,
-    buildings: sektorData.buildings,
-  }).toEqual({ hasLevel: true, hasGround: true, buildings: [] });
+    buildingsOtherThanForests: sektorData.buildings.filter((building: { type: string }) => building.type !== "Forest"),
+  }).toEqual({ hasLevel: true, hasGround: true, buildingsOtherThanForests: [] });
 });
 
-test("stops making sektors while ten unclaimed empty ones are waiting", async ({ page }) => {
+test("stops making sektors while ten unclaimed ones are waiting", async ({ page }) => {
   await page.evaluate(() => localStorage.setItem(
     "sektors", JSON.stringify(Array.from({ length: 10 }, (_, index) => ({ id: `waiting${index}`, name: null, owner: null })))
   ));

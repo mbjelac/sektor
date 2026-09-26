@@ -20,7 +20,8 @@ import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, propertyValueColor } from "../properties";
 import { getLocalResources } from "../resources";
-import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, faceSmileIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
+import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, ecosystemDamage as ecosystemDamageIcon, faceSmileIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
+import { ecosystemDamage } from "./ecosystemDamage";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
@@ -265,6 +266,7 @@ const terrain = getTerrain();
 const sektor = new Sektor(getLocations(), everyBuildingDefinition, getLocalResources(), terrain);
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
+const initialEcosystemSupport = getInitialEcosystemSupport();
 // A building just put up is shown going up for a while, from the moment it was placed, before it
 // is shown standing there finished.
 interface Construction {
@@ -296,6 +298,7 @@ function saveState() {
     terrain,
     locationProperties: locationsToLocationProperties(locations),
     buildings: state.buildings,
+    initialEcosystemSupport,
   });
 }
 
@@ -315,6 +318,13 @@ function getSektorLevel(): number {
     if (sektorData) return sektorData.level;
   }
   return LOWEST_LEVEL;
+}
+
+// How much the ecosystem was supported when the sektor was made is settled then and never changes,
+// so it is read once and written back on every save, which would otherwise drop it.
+function getInitialEcosystemSupport(): number {
+  if (isTestMode || !sektorId) return 0;
+  return getSektorData(sektorId)?.initialEcosystemSupport ?? 0;
 }
 
 // A building whose function is starved is marked on the map, and what is starved only changes
@@ -360,6 +370,7 @@ function showSektorStats(sektorState: SektorState) {
   stats.appendChild(createStat(arrowDownTrayIcon, "Imports", formatNumber(sumThroughputs(sektorState.imports))));
   stats.appendChild(createStat(arrowUpTrayIcon, "Exports", formatNumber(sumThroughputs(sektorState.exports))));
   stats.appendChild(createStat(faceSmileIcon, "Hapiness", formatHapiness(sektorState)));
+  stats.appendChild(createStat(ecosystemDamageIcon, "Damage to ecosystem", formatEcosystemDamage(sektorState)));
 
   document.getElementById("sektor-title")!.appendChild(stats);
 }
@@ -372,6 +383,11 @@ function formatHapiness(sektorState: SektorState): string {
     ? 0
     : Math.round(sektorState.hapiness / sektorState.possibleHapiness * 100);
   return `${formatNumber(sektorState.hapiness)} / ${formatNumber(sektorState.possibleHapiness)} (${percentage} %)`;
+}
+
+function formatEcosystemDamage(sektorState: SektorState): string {
+  const damage = ecosystemDamage(initialEcosystemSupport, sektorState.exports);
+  return `${formatNumber(damage.damage)} / ${formatNumber(damage.initialEcosystemSupport)} (${damage.percentage} %)`;
 }
 
 function createStat(icon: string, tooltip: string, value: string): HTMLElement {

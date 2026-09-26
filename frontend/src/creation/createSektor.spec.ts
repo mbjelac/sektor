@@ -43,4 +43,13 @@ describe("createSektor", () => {
 
     expect({ level: sektorData.level, buildings: sektorData.buildings }).toEqual({ level: 2, buildings: [] });
   });
+
+  // Every draw falls low enough to start a forest of one square, on a map drawn with no sea and no
+  // rock, so every square of it holds a forest giving 14 EcosystemSupport.
+  it("stores all the EcosystemSupport its forests give as the ecosystem's initial support", () => {
+    const sektorData = createSektor(1, LOCATION_PROPERTIES, () => 0.25);
+
+    expect({ forests: sektorData.buildings.length, initialEcosystemSupport: sektorData.initialEcosystemSupport })
+      .toEqual({ forests: SEKTOR_SIZE * SEKTOR_SIZE, initialEcosystemSupport: SEKTOR_SIZE * SEKTOR_SIZE * 14 });
+  });
 });

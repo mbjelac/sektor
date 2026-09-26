@@ -149,6 +149,7 @@ test("names every stat beside the sektor name by the same tooltip the list names
     { tooltip: "Imports", value: "4" },
     { tooltip: "Exports", value: "6" },
     { tooltip: "Hapiness", value: "0 / 0 (0 %)" },
+    { tooltip: "Damage to ecosystem", value: "0 / 0 (0 %)" },
   ]);
 });
 
@@ -1194,6 +1195,7 @@ test("says how happy the sektor's people are", async ({ page }) => {
     { tooltip: "Imports", value: "1" },
     { tooltip: "Exports", value: "0" },
     { tooltip: "Hapiness", value: "5 / 5 (100 %)" },
+    { tooltip: "Damage to ecosystem", value: "0 / 0 (0 %)" },
   ]);
 });
 
