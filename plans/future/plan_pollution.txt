@@ -16,6 +16,7 @@ Table of buildings and which pollution(s) they are affected by and in what way:
 | Arena       | air, water       | decreased output HealthSocial                   |
 | Park        | air, water, soil | decreased all HealthX outputs                   |
 | TownSquare  | air              | decreased output HealthSocial                   |
+| Forest      | air, water, soil | decreased all outputs                           |
 
 Table of polluting buildings:
 
