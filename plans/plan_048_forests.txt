@@ -24,3 +24,14 @@
     - this replaces the 10% chance per GROUND square from #1
 - [done] forests of size > 1 are just multiple forests squares which are neighbouring to each other
     - diagonals don't count
+
+#3 Damaging ecosystem support is tracked
+- when sektor created, each Forest outputs EcosystemSupport
+    - total sum of this value is stored with the created sektor as initialEcosystemSupport
+- a sektor stat is "Ecosystem damage" calculated as:
+    - damage = initialEcosystemSupport - current EcosystemSupport export
+    - display stat in sektor stats on top of map page
+        - icon in icons: ecosystemDamage
+        - display value: "<damage> / <initialEcosystemSupport> (<percentage> %)"
+        - percentage rounded to integer
+        - tooltip: "Damage to ecosystem"
