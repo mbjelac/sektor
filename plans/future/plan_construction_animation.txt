@@ -1,0 +1,5 @@
+Each building, when constructed, plays a little "construction animation" - construction rig, various things going up and expanding, etc.
+A little detail, contribution to gameplay is zero, but it might significantly boost the atmosphere.
+
+Technical: The construction animation can be thought of as another building, with animations after which it ends up looking like the constructed building.
+All animations should last for max 4-5 seconds after which the animation buildings dissapears and the actual building is shown.
