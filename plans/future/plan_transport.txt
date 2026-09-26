@@ -1,0 +1,33 @@
+Not that much related to transport grids (maybe) ...
+The idea is - if a building has output A and another building has input A, it is important how far away from each other those buildings are.
+Transporting a resource is not free and distance is a factor.
+
+Ways to model this (they may or may not be mutually exclusive):
+1. Transport grid (see plan_transport_grids)
+- if the two buildings are connected by a transport grid, transport becomes easy (free?)
+- problem: building transport grids if tedious and boring for the player (unless this is a game about transport grids, which it is not)
+2. Transport buildings
+- there can be some sort of a transport building, e.g. a "TrainStation"
+- this building can have an area of effect (already mentioned in plan_pollution)
+- buildings in it's area of effect are connected to all other buildings in all areas of effects of all other TrainStations in the sektor
+- connected means transport is easy (free?)
+- problem: not all resources have same mode of transport...
+    - more transport building types?
+    - same problem exists for 1.
+    - Utopia had a concept like this: if you wanted to build far away from the existing city you first had to build a sort of a "relay pod" or something
+- in any case, this transport building could have an area of effect covering 1/4 of the sektor (5x5 grid meaning cartesian distance of 2 from it)
+    - this would require the player build 4 of these so they can cover the whole sektor with efficient transport
+
+Simpler:
+Transport grid is automatically "constructed" but it has a cost:
+- utilities (electricity, water, etc.) need WorkMaintenance, WorkTechnical, EnergyElectric, etc.
+- transport (all other resources, including all types of Work) need ... the same stuff.
+These are all listed in the transport grid mode which can render the transport grid and show the player how did the game sum up the resource cost.
+Transport hubs (various buildings for various types of transport) can drastically reduce the cost of transport.
+It is very important where are they located, and the transport grid rendering can tell the player where (similar to Geography).
+Each resource (or resource group) can be serviced by it's own transport hub type:
+- EnergyElectrical: PowerRelay
+- WorkX, EducationX, HealthX, Childcare, Hapiness: TrainStation
+- WaterX: PumpStation
+- All others: FreightJunction
+Depending on the amount of resources in one of the above resource groups coming & going around the sektor, there may be need for more transportation hubs for that group type.
