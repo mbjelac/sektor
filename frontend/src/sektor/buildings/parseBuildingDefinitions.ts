@@ -31,9 +31,18 @@ export interface BuildingProperties {
   tags?: string[];
 }
 
+// What stands on a building's location while the building is going up, before the building
+// itself is shown there.
+export interface ConstructionRender {
+  renderingCode: string;
+  // How long the building takes to go up, in milliseconds.
+  duration: number;
+}
+
 export interface BuildingDefinition {
   name: string;
   renderingCode: string;
+  constructionRender?: ConstructionRender;
   buildingFunctions: BuildingFunction[];
   properties: BuildingProperties;
 }
@@ -48,16 +57,21 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
   let codeLines: string[] = [];
   let functionLineGroups: string[][] = [];
   let propertyLines: string[] = [];
-  let section: "none" | "render" | "function" | "properties" = "none";
+  let constructionCodeLines: string[] = [];
+  let constructionPropertyLines: string[] = [];
+  let section: "none" | "render" | "constructionRender" | "function" | "properties" = "none";
 
   function pushBuilding() {
     if (currentName && codeLines.length > 0) {
-      buildings.push({
+      const building: BuildingDefinition = {
         name: currentName,
         renderingCode: codeLines.join("\n"),
         buildingFunctions: functionLineGroups.map(functionLines => parseBuildingFunction(functionLines)),
         properties: parseProperties(propertyLines),
-      });
+      };
+      const constructionRender = parseConstructionRender(constructionCodeLines, constructionPropertyLines);
+      if (constructionRender) building.constructionRender = constructionRender;
+      buildings.push(building);
     }
   }
 
@@ -69,6 +83,8 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
       codeLines = [];
       functionLineGroups = [];
       propertyLines = [];
+      constructionCodeLines = [];
+      constructionPropertyLines = [];
       inCodeBlock = false;
       section = "none";
       continue;
@@ -76,6 +92,11 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
 
     if (line.match(/^##\s+Render/)) {
       section = "render";
+      continue;
+    }
+
+    if (line.match(/^##\s+Construction Render/)) {
+      section = "constructionRender";
       continue;
     }
 
@@ -97,6 +118,10 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
 
     if (inCodeBlock && section === "render") {
       codeLines.push(line);
+    } else if (inCodeBlock && section === "constructionRender") {
+      constructionCodeLines.push(line);
+    } else if (section === "constructionRender") {
+      constructionPropertyLines.push(line);
     } else if (section === "properties") {
       propertyLines.push(line);
     } else if (section === "function") {
@@ -107,6 +132,16 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
   pushBuilding();
 
   return buildings;
+}
+
+// A building without both the code of its construction and how long it lasts goes up at once.
+function parseConstructionRender(codeLines: string[], propertyLines: string[]): ConstructionRender | undefined {
+  if (codeLines.length === 0) return undefined;
+  const durationMatch = propertyLines
+    .map(line => line.trim().match(/^duration=(.+)$/))
+    .find(match => match !== null && isAmount(match[1]));
+  if (!durationMatch) return undefined;
+  return { renderingCode: codeLines.join("\n"), duration: parseInt(durationMatch[1]) };
 }
 
 function parseProperties(lines: string[]): BuildingProperties {

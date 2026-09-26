@@ -4,11 +4,11 @@ A little detail, contribution to gameplay is zero, but it might significantly bo
 Technical: The construction animation can be thought of as another building, with animations after which it ends up looking like the constructed building.
 All animations should last for max 4-5 seconds after which the animation buildings dissapears and the actual building is shown.
 
-#1 Player sees the building being constructed
-- when a building is placed on the map, do not render it immediately
+#1 [done] Player sees the building being constructed
+- [done] when a building is placed on the map, do not render it immediately
     - first render from the building specification "Construction Render" section
     - the section should have a "duration" property which has a value in milliseconds
         - example: "duration=1500" is 1500ms, or 1 and a half second
     - after this duration passes, remove the Construction Render rendering and replace it with the building rendering (from the Render section)
-- if a building specification does not have the Construction Render section, place the building immediately as before
-- in test mode do NOT use construction render
+- [done] if a building specification does not have the Construction Render section, place the building immediately as before
+- [done] in test mode do NOT use construction render

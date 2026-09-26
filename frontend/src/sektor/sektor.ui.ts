@@ -264,7 +264,14 @@ const terrain = getTerrain();
 const sektor = new Sektor(getLocations(), buildingDefinitions, getLocalResources(), terrain);
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
-const placedBuildings: { type: string; location: BuildingLocation; code: string }[] = [];
+// A building just put up is shown going up for a while, from the moment it was placed, before it
+// is shown standing there finished.
+interface Construction {
+  renderingCode: string;
+  duration: number;
+  startMillis: number;
+}
+const placedBuildings: { type: string; location: BuildingLocation; code: string; construction?: Construction }[] = [];
 let notificationTimeout: ReturnType<typeof setTimeout> | null = null;
 
 function locationsToLocationProperties(locationMatrix: Location[][]): { [key: string]: number[][] } {
@@ -665,6 +672,31 @@ function bakedBuildingBodies(p: p5, type: string, renderingCode: string): BakedB
   const bakedBodies = bakeCommands(p, parseCommands(renderingCode));
   bakedBuildings.set(type, bakedBodies);
   return bakedBodies;
+}
+
+// A building whose definition does not say how it goes up is there finished the moment it is placed.
+// So is every building of a test run, whose screenshots would otherwise catch it half built.
+function startConstruction(type: string, startMillis: number): Construction | undefined {
+  if (isTestMode) return undefined;
+  const constructionRender = buildingDefinitions.find(definition => definition.name === type)?.constructionRender;
+  if (!constructionRender) return undefined;
+  return { renderingCode: constructionRender.renderingCode, duration: constructionRender.duration, startMillis };
+}
+
+// The construction's animations are timed from the moment the building was placed, so they play
+// from their beginning whenever the building goes up. Once the construction is over it is dropped
+// and the building is drawn finished from then on.
+function drawPlacedBuilding(p: p5, building: { type: string; code: string; construction?: Construction }) {
+  if (building.construction) {
+    const constructionMillis = p.millis() - building.construction.startMillis;
+    if (constructionMillis < building.construction.duration) {
+      const constructionBodies = bakedBuildingBodies(p, `${building.type} construction`, building.construction.renderingCode);
+      drawBakedBodies(p, constructionBodies, constructionMillis);
+      return;
+    }
+    building.construction = undefined;
+  }
+  drawBakedBodies(p, bakedBuildingBodies(p, building.type, building.code), p.millis());
 }
 
 function showError(message: string) {
@@ -1122,7 +1154,7 @@ const sektorUi = (p: p5) => {
     for (const building of result.addedBuildings) {
       const code = getBuildingCode(building.type);
       if (code) {
-        placedBuildings.push({ type: building.type, location: building.location, code });
+        placedBuildings.push({ type: building.type, location: building.location, code, construction: startConstruction(building.type, p.millis()) });
         floorGeometryNeedsRebaking = true;
       }
     }
@@ -1206,7 +1238,7 @@ const sektorUi = (p: p5) => {
       p.push();
       const { wx, wz } = gridToWorld(building.location.x, building.location.y);
       p.translate(wx, 0, wz);
-      drawBakedBodies(p, bakedBuildingBodies(p, building.type, building.code), p.millis());
+      drawPlacedBuilding(p, building);
       p.pop();
     }
 

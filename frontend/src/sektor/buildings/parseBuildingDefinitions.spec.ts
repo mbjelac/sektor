@@ -536,4 +536,71 @@ describe("parseBuildingDefinitions", () => {
 
     expect(result[0].buildingFunctions).toEqual([]);
   });
+
+  it("parses construction render with its duration", () => {
+    const result = parseBuildingDefinitions([
+      "# Tower",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Construction Render",
+      "",
+      "duration=1500",
+      "",
+      "```",
+      "box s(2,2,2)",
+      "cyl s(1,1,1)",
+      "```",
+    ]);
+
+    expect(result).toEqual([{
+      name: "Tower",
+      renderingCode: "box s(10,10,10)",
+      constructionRender: { renderingCode: "box s(2,2,2)\ncyl s(1,1,1)", duration: 1500 },
+      buildingFunctions: [],
+      properties: {},
+    }]);
+  });
+
+  it("ignores construction render without duration", () => {
+    const result = parseBuildingDefinitions([
+      "# Tower",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Construction Render",
+      "```",
+      "box s(2,2,2)",
+      "```",
+    ]);
+
+    expect(result[0].constructionRender).toEqual(undefined);
+  });
+
+  it("keeps construction render to the building it belongs to", () => {
+    const result = parseBuildingDefinitions([
+      "# Tower",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Construction Render",
+      "duration=1000",
+      "```",
+      "box s(2,2,2)",
+      "```",
+      "# Shed",
+      "## Render",
+      "```",
+      "box s(5,5,5)",
+      "```",
+    ]);
+
+    expect(result.map(building => building.constructionRender)).toEqual([
+      { renderingCode: "box s(2,2,2)", duration: 1000 },
+      undefined,
+    ]);
+  });
 });
