@@ -16,9 +16,12 @@
 - [done] add EcosystemSupport to resources.md as an exportable (not local) resource
 
 #2 Forest squares are lumped together to make up actual forests
-- when creating a sektor, use this probability list to create forests of various sizes:
-    - 10% one forest of size 1
-    - 10% one forest of size 2
-    - 10% one forest of size 3
-- forests of size > 1 are just multiple forests squares which are neighbouring to each other
+- [done] when creating a sektor, use this algorithm to create forests of various sizes:
+    - for the entire sektor:
+        - 10% sektor contains one forest of size 1
+        - 10% sektor contains one forest of size 2
+        - 10% sektor contains one forest of size 3
+    - each line is drawn independently, so a sektor can get 0 to 3 forests
+    - this replaces the 10% chance per GROUND square from #1
+- [done] forests of size > 1 are just multiple forests squares which are neighbouring to each other
     - diagonals don't count
