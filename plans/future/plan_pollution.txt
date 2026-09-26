@@ -1,5 +1,36 @@
-Some buildings emit air, soild or water pollution.
+Some buildings emit air, soil or water pollution.
 This is not part of imports & exports but it does have an area of effect.
-If other buildings are constructed within that area they are effected.
-WaterWells affected by water pollution: they produce WaterTechnical instead of WaterPottable.
-Habitats affected by air pollution: their HealthPhysical is down to 0 or reduced (also can depend on how close to the building they are)
+If other buildings are constructed within that area they are affected.
+
+Table of buildings and which pollution(s) they are affected by and in what way:
+|| Building || Pollution || Effect ||
+| WaterWells | water| produce WaterTechnical instead of WaterPottable |
+| Habitats | air, water | decreased output of WorkUnqualified, Hapiness |
+| Agriplot | soil, water | "soil" property decreases |
+| Library | air | decreased HealthMental |
+| SunCatcher | air | decreased insolation (air particles) |
+| Polytechnic | air | decreased output WorkTechnical |
+| ChildKeep | air, water | decreased output Childcare |
+| Gymnasium | air, water | decreased output HealthPhysical |
+| Arena | air, water | decreased output HealthSocial |
+| Park | air, water, soil | decreased all HealthX outputs |
+| TownSquare | air | decreased output HealthSocial |
+
+Table of polluting buildings:
+|| Building || Pollution || Area ||
+| Extractor | air, soil, water | 2 |
+| Refinery | air, water | 3 |
+| Fertilizatron | water | 1 |
+
+Area: Manhattan distance from polluting building
+
+Area 3:
+   .
+  ...
+ .....
+...x...
+ .....
+  ...
+   .
+
+The amount of effect decreases by distance. It is most heavy on distance 1 (so, right next to the building).
