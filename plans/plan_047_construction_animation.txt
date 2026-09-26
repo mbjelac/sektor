@@ -11,3 +11,4 @@ All animations should last for max 4-5 seconds after which the animation buildin
         - example: "duration=1500" is 1500ms, or 1 and a half second
     - after this duration passes, remove the Construction Render rendering and replace it with the building rendering (from the Render section)
 - if a building specification does not have the Construction Render section, place the building immediately as before
+- in test mode do NOT use contruction render
