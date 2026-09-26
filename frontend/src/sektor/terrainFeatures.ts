@@ -71,10 +71,10 @@ function elevationSideTowards(terrain: number[][], x: number, y: number): Elevat
 // How many shapes rock is drawn in: every side of it has a file for each of them.
 const ELEVATION_VARIATION_COUNT = 10;
 
-const ELEVATIONS_FOLDER = "../assets/terrain/grassland/elevations";
+const ELEVATIONS_FOLDER = "../assets/terrain/temperate/elevations";
 
 // The bodies of every side file of the rock, by the path it was read from.
 const elevationSideRenderingCodes = import.meta.glob<string>(
-  "../assets/terrain/grassland/elevations/*/*.sgl",
+  "../assets/terrain/temperate/elevations/*/*.sgl",
   { query: "?raw", import: "default", eager: true },
 );

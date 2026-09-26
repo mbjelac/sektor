@@ -22,7 +22,7 @@ Before writing a new script to generate SGL, check `tools/sgl/generator/` — re
 is there.
 
 - `tools/sgl/generator/terrain/middle_elevations.py` — writes
-  `frontend/src/assets/terrain/grassland/elevations/middle/<edge><variant>.sgl` (edge = e/n/s/w,
+  `../../../frontend/src/assets/terrain/temperate/elevations/middle/<edge><variant>.sgl` (edge = e/n/s/w,
   variant = 0–9): for each, a whole grassy rocky outcrop with rocks piled up towards that edge,
   of which only the triangle facing that edge is kept. Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/outcrop.py` — shared helpers: random core rocks, rock palette,
