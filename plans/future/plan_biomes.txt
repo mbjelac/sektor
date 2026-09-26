@@ -18,3 +18,18 @@ Some location properties very much depend on biome:
 | 🌊 Freshwater            | 3    | 5           | 3    | 3          |
 | 🌊 Marine                | 0    | 4           | 5    | 3          |
 
+Biome structure:
+temperate
+    forest
+    grassland
+tropical
+    forest (jungle)
+    grassland (savanna)
+desert
+polar
+    forest (taiga)
+    grassland (tundra)
+
+So, except for the Desert, all biome groups have 2 sub-groups:
+- grassland: very little trees (and very sparesly wooded elevations)
+- forest: contains forests (buildings which can be cleared for negative points) and produce HealthX for free
