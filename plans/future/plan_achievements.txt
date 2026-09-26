@@ -8,3 +8,4 @@ Ideas for achievements:
 - 80-20 export-import ratio
 - reducing a global import by 10% (20%, 30%, ...)
 - reaching a certain number of exports (or imports, or hapiness) with a very few buildings constructed
+- in forest biomes, keeping ecosystem damage to a minimum (20%, 10%, 5%, 0%) while having imports & exports
