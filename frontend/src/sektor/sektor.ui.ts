@@ -6,7 +6,7 @@ import {withoutDepthWrites} from "../../../shared/applyCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
 import { BuildingLocation, Location, Sektor, SektorState } from "./Sektor";
-import { buildingDefinitions } from "./buildings/buildings";
+import { buildingDefinitions, everyBuildingDefinition } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import { updateSektorStatePanel } from "./sektorStatePanel.ui";
 import { onResourceHover } from "../resourceHover.ui";
@@ -26,7 +26,8 @@ import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
-import { elevationRenderingCode, elevationSides, elevationVariation, ELEVATION_NAME } from "./terrainFeatures";
+import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
+import { FOREST_NAME, forestRenderingCode } from "./forest";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -261,7 +262,7 @@ function createTestTerrain(): number[][] {
 
 const builderLevel = getBuilderLevel();
 const terrain = getTerrain();
-const sektor = new Sektor(getLocations(), buildingDefinitions, getLocalResources(), terrain);
+const sektor = new Sektor(getLocations(), everyBuildingDefinition, getLocalResources(), terrain);
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
 // A building just put up is shown going up for a while, from the moment it was placed, before it
@@ -401,7 +402,7 @@ function loadSavedState() {
   if (!sektorData) return;
   sektor.loadState({ buildings: sektorData.buildings });
   for (const building of sektorData.buildings) {
-    const code = getBuildingCode(building.type);
+    const code = placedBuildingCode(building.type, building.location);
     if (code) {
       placedBuildings.push({ type: building.type, location: building.location, code });
       floorGeometryNeedsRebaking = true;
@@ -420,7 +421,7 @@ let hoveredResource: string | null = null;
 function openBuildingPanel(placed: { type: string; location: BuildingLocation; code: string }) {
   const buildingState = sektor.getBuildingState(placed.location);
   if (!buildingState) return;
-  const code = getBuildingCode(placed.type);
+  const code = placedBuildingCode(placed.type, placed.location);
   if (!code) return;
   const placedFloorColor = floorColorAt(placed.location.x, placed.location.y);
   selectedBuildingLocation = placed.location;
@@ -498,7 +499,7 @@ const EMPTY_NAME = "Empty";
 // more, so the panel shows them with no bodies over the floor.
 function terrainRenderingCodeAt(gx: number, gy: number): string {
   return isElevationLocation(gx, gy)
-    ? elevationRenderingCode(elevationVariation(gx, gy), elevationSides(terrain, gx, gy))
+    ? elevationRenderingCode(squareVariation(gx, gy), elevationSides(terrain, gx, gy))
     : "";
 }
 
@@ -657,7 +658,7 @@ function isFloorSolid(x: number, z: number): boolean {
 // the same bodies, so one bake serves every such square however many of them a map has. They are
 // baked under their shape and sides rather than under their own name, which every one of them shares.
 function bakedElevationBodies(p: p5, location: BuildingLocation): BakedBodies {
-  const variation = elevationVariation(location.x, location.y);
+  const variation = squareVariation(location.x, location.y);
   const sides = elevationSides(terrain, location.x, location.y);
   const bakeName = `${ELEVATION_NAME} ${variation} ${sides.north} ${sides.east} ${sides.south} ${sides.west}`;
   return bakedBuildingBodies(p, bakeName, elevationRenderingCode(variation, sides));
@@ -686,7 +687,7 @@ function startConstruction(type: string, startMillis: number): Construction | un
 // The construction's animations are timed from the moment the building was placed, so they play
 // from their beginning whenever the building goes up. Once the construction is over it is dropped
 // and the building is drawn finished from then on.
-function drawPlacedBuilding(p: p5, building: { type: string; code: string; construction?: Construction }) {
+function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingLocation; code: string; construction?: Construction }) {
   if (building.construction) {
     const constructionMillis = p.millis() - building.construction.startMillis;
     if (constructionMillis < building.construction.duration) {
@@ -696,7 +697,15 @@ function drawPlacedBuilding(p: p5, building: { type: string; code: string; const
     }
     building.construction = undefined;
   }
-  drawBakedBodies(p, bakedBuildingBodies(p, building.type, building.code), p.millis());
+  drawBakedBodies(p, bakedBuildingBodies(p, placedBuildingBakeName(building), building.code), p.millis());
+}
+
+// Forests standing in the same shape draw the same bodies, so they are baked under their shape
+// rather than under the name every one of them shares.
+function placedBuildingBakeName(building: { type: string; location: BuildingLocation }): string {
+  return building.type === FOREST_NAME
+    ? `${FOREST_NAME} ${squareVariation(building.location.x, building.location.y)}`
+    : building.type;
 }
 
 function showError(message: string) {
@@ -1152,7 +1161,7 @@ const sektorUi = (p: p5) => {
     const result = sektor.createBuilding({ type: selected, location: { x: grid.x, y: grid.y } });
 
     for (const building of result.addedBuildings) {
-      const code = getBuildingCode(building.type);
+      const code = placedBuildingCode(building.type, building.location);
       if (code) {
         placedBuildings.push({ type: building.type, location: building.location, code, construction: startConstruction(building.type, p.millis()) });
         floorGeometryNeedsRebaking = true;
@@ -1249,6 +1258,14 @@ const sektorUi = (p: p5) => {
     document.getElementById("canvas-container")!.dataset.rendered = "true";
   };
 };
+
+// A forest is not among the buildings of the toolbar, and is drawn in the shape its square is
+// counted down to; every other building is drawn the same wherever it stands.
+function placedBuildingCode(type: string, location: BuildingLocation): string | null {
+  return type === FOREST_NAME
+    ? forestRenderingCode(squareVariation(location.x, location.y))
+    : getBuildingCode(type);
+}
 
 new p5(sektorUi);
 showSektorName();

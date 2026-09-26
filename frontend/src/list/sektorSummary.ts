@@ -1,6 +1,6 @@
 import { Sektor } from "../sektor/Sektor";
 import { getSektorData } from "../sektor/sektor.api";
-import { buildingDefinitions } from "../sektor/buildings/buildings";
+import { everyBuildingDefinition } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { getLocalResources } from "../resources";
 import { LOWEST_LEVEL } from "../playerLevel";
@@ -27,7 +27,7 @@ export function getSektorSummary(sektorId: string): SektorSummary {
 
   const sektor = new Sektor(
     locationPropertiesToLocations(sektorData.locationProperties),
-    buildingDefinitions,
+    everyBuildingDefinition,
     getLocalResources(),
   );
   sektor.loadState({ buildings: sektorData.buildings });

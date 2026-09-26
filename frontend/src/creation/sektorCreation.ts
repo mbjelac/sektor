@@ -1,5 +1,4 @@
 import { addSektorToList, getSektorList } from "../list/sektorList.api";
-import { getSektorSummary } from "../list/sektorSummary";
 import { saveSektorData } from "../sektor/sektor.api";
 import { getLocationPropertyNames } from "../properties";
 import { getPlayers } from "../players";
@@ -10,7 +9,7 @@ import { generateSektorName } from "./sektorName.api";
 const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Sektors nobody has taken up pile up if they are made faster than they are claimed, so no more are
 // made once there are this many waiting.
-const MAXIMUM_UNCLAIMED_EMPTY_SEKTORS = 10;
+const MAXIMUM_UNCLAIMED_SEKTORS = 10;
 
 let creationTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -29,7 +28,7 @@ export function stopCreatingSektors() {
 
 // Returns whether a sektor was made, so that a list already on screen can be drawn again.
 export async function createSektorIfNeeded(): Promise<boolean> {
-  if (countUnclaimedEmptySektors() >= MAXIMUM_UNCLAIMED_EMPTY_SEKTORS) return false;
+  if (countUnclaimedSektors() >= MAXIMUM_UNCLAIMED_SEKTORS) return false;
 
   const levels = neededLevels();
   const level = levels[Math.floor(Math.random() * levels.length)];
@@ -50,11 +49,9 @@ export async function createSektorIfNeeded(): Promise<boolean> {
   return true;
 }
 
-// A sektor is waiting for somebody as long as nobody owns it and nothing has been built in it.
-function countUnclaimedEmptySektors(): number {
-  return getSektorList().filter(sektorListItem =>
-    sektorListItem.owner === null && getSektorSummary(sektorListItem.id).buildingCount === 0
-  ).length;
+// A sektor is waiting for somebody as long as nobody owns it, whatever already stands in it.
+function countUnclaimedSektors(): number {
+  return getSektorList().filter(sektorListItem => sektorListItem.owner === null).length;
 }
 
 // Every player needs sektors of their own level to work on, and a couple of the level above so that

@@ -154,9 +154,8 @@ is a performance optimization only, and is not done here.
     - [done] started with setInterval on the sektor list page
     - [done] not started when ?test=true, so a snapshot test never sees a sektor appear on its own
     - [done] determine whether to create new sektor:
-        - [done] do not create if there are 10 or more unclaimed empty sektors
+        - [done] do not create if there are 10 or more unclaimed sektors
             - [done] unclaimed = no owner
-            - [done] empty = number of buildings is 0
     - [done] if creating, create a sektor in one of needed levels, chosen randomly
         - [done] needed levels are all current player levels
         - [done] plus one level above for each player

@@ -27,3 +27,4 @@ WasteBio 🌿 #267530 negative
 Childcare 🧸 #ffa6e9 local
 WasteNuclear 🛢 #96230c negative
 Hapiness ☺️ #ffd1f4 local
+EcosystemSupport 🌳 #2e8b3a

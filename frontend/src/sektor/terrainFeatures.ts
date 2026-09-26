@@ -35,16 +35,16 @@ export function elevationSides(terrain: number[][], x: number, y: number): Eleva
   };
 }
 
-// Which shape the rock on a square stands in. Two outcrops side by side looking alike would read
-// as one thing stamped twice, so the shape is taken from where the square lies: the same square of
+// Which shape whatever grows or stands out of a square is drawn in: rock, or a forest. Two outcrops
+// or two forests side by side looking alike would read as one thing stamped twice, so the shape is taken from where the square lies: the same square of
 // the same map always comes out the same, while its neighbours come out differently. Scrambling
 // the square's place before it is counted down to a shape is what spreads the shapes about instead
 // of laying them out in bands; 37 and 100 share no divisor, so no two squares of a map are
 // scrambled to the same number and every shape is given exactly its share of the map.
-export function elevationVariation(x: number, z: number): number {
+export function squareVariation(x: number, z: number): number {
   const placeOnMap = x * 10 + z;
   const scrambled = (placeOnMap * 37 + 11) % 100;
-  return scrambled % ELEVATION_VARIATION_COUNT;
+  return scrambled % SQUARE_VARIATION_COUNT;
 }
 
 export function elevationRenderingCode(variation: number, sides: ElevationSides): string {
@@ -68,8 +68,9 @@ function elevationSideTowards(terrain: number[][], x: number, y: number): Elevat
   return terrain[x]?.[y] === ELEVATION ? "middle" : "edge";
 }
 
-// How many shapes rock is drawn in: every side of it has a file for each of them.
-const ELEVATION_VARIATION_COUNT = 10;
+// How many shapes rock and forests are drawn in: every side of rock, and every forest, has a file
+// for each of them.
+const SQUARE_VARIATION_COUNT = 10;
 
 const ELEVATIONS_FOLDER = "../assets/terrain/temperate/elevations";
 

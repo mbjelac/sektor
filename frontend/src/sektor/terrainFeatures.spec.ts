@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { elevationRenderingCode, elevationSideFiles, elevationSides, elevationVariation } from "./terrainFeatures";
+import { elevationRenderingCode, elevationSideFiles, elevationSides, squareVariation } from "./terrainFeatures";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
 
-// How many shapes the rock stands in, which is how many the squares of a map are shared out between.
-const ELEVATION_VARIATION_COUNT = 10;
+// How many shapes rock and forests stand in, which is how many the squares of a map are shared out between.
+const SQUARE_VARIATION_COUNT = 10;
 
 function everySquareOfTheMap(): { x: number, z: number }[] {
   return Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>
@@ -12,23 +12,23 @@ function everySquareOfTheMap(): { x: number, z: number }[] {
     .flat();
 }
 
-describe("elevationVariation", () => {
-  // Rock is drawn in whichever shape its square is counted down to, so every square of the map has
-  // to name a shape there is.
-  it("gives every square of the map one of the shapes rock stands in", () => {
+describe("squareVariation", () => {
+  // Rock and forests are drawn in whichever shape their square is counted down to, so every square
+  // of the map has to name a shape there is.
+  it("gives every square of the map one of the shapes rock and forests stand in", () => {
     expect(everySquareOfTheMap().filter(square => {
-      const variation = elevationVariation(square.x, square.z);
-      return !Number.isInteger(variation) || variation < 0 || variation >= ELEVATION_VARIATION_COUNT;
+      const variation = squareVariation(square.x, square.z);
+      return !Number.isInteger(variation) || variation < 0 || variation >= SQUARE_VARIATION_COUNT;
     })).toEqual([]);
   });
 
   // Every shape is given the same share of the map, so no map is mostly one outcrop repeated and
   // none of the shapes goes unused.
   it("shares the map out evenly between the shapes", () => {
-    const squaresPerShape = new Array<number>(ELEVATION_VARIATION_COUNT).fill(0);
-    for (const square of everySquareOfTheMap()) squaresPerShape[elevationVariation(square.x, square.z)]++;
+    const squaresPerShape = new Array<number>(SQUARE_VARIATION_COUNT).fill(0);
+    for (const square of everySquareOfTheMap()) squaresPerShape[squareVariation(square.x, square.z)]++;
 
-    expect([...new Set(squaresPerShape)]).toEqual([SEKTOR_SIZE * SEKTOR_SIZE / ELEVATION_VARIATION_COUNT]);
+    expect([...new Set(squaresPerShape)]).toEqual([SEKTOR_SIZE * SEKTOR_SIZE / SQUARE_VARIATION_COUNT]);
   });
 });
 
@@ -64,7 +64,7 @@ describe("elevationRenderingCode", () => {
   // Every side of every shape has bodies to draw it with, so no side of any rock comes out empty.
   it("has bodies to draw every side of every shape", () => {
     const everySideDrawnAs = (side: "edge" | "middle") => ({ north: side, east: side, south: side, west: side });
-    const shapesWithAnEmptySide = Array.from({ length: ELEVATION_VARIATION_COUNT }, (_unused, variation) => variation)
+    const shapesWithAnEmptySide = Array.from({ length: SQUARE_VARIATION_COUNT }, (_unused, variation) => variation)
       .flatMap(variation => (["edge", "middle"] as const).map(side => ({ variation, side })))
       .filter(({ variation, side }) =>
         elevationRenderingCode(variation, everySideDrawnAs(side)).split("\n").some(line => line.trim() === ""));
