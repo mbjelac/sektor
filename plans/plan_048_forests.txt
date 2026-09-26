@@ -1,4 +1,4 @@
-#1 Sektor should have forests
+#1 [done] Sektor should have forests
 - [done] when creating a sektor, for each GROUND square (terrain type 0) there is a chance that it contains a forest
     - chance: 10%
 - [done] a forest is a building which is NOT in the building toolbar
