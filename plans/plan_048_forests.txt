@@ -1,0 +1,15 @@
+#1 Sektor should have forests
+- when creating a sektor, for each GROUND square (terrain type 0) there is a chance that it contains a forest
+    - chance: 10%
+- a forest is a building which is NOT in the building toolbar
+- it is rendered by choosing one SGL file from frontend/src/assets/terrain/temperate/forests
+- method of choosing is same as method of choosing an elevation
+    - depends on square location and results in getting a number between 0 and 9
+- the forest building has this Function:
+    ->
+    HealthPhysical 2
+    HealthSocial 2
+    HealthMental 2
+    EcosystemSupport 14
+- explanation: the function has no inputs, only outputs
+- this building has the name "Forest"
