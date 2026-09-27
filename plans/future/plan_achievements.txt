@@ -9,3 +9,18 @@ Ideas for achievements:
 - reducing a global import by 10% (20%, 30%, ...)
 - reaching a certain number of exports (or imports, or hapiness) with a very few buildings constructed
 - in forest biomes, keeping ecosystem damage to a minimum (20%, 10%, 5%, 0%) while having imports & exports
+
+Evidently they are grouped. Each group can have sub-levels:
+1. Novice
+2. Expert
+3. Master
+
+For example, the ecosystem damage achievements can be:
+- Novice Ecologist
+- Expert Ecologist
+- Master Ecologist
+
+Hapiness: Humanist
+import/export ratios: Industrialist
+reducing global import: Benefactor
+few buildings: Minimalist
