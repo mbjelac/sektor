@@ -9,7 +9,7 @@ Table of buildings and which pollution(s) they are affected by and in what way:
 | Habitats    | air, water       | decreased output of WorkUnqualified, Hapiness   |
 | Agriplot    | soil, water      | "soil" property decreases                       |
 | Library     | air              | decreased HealthMental                          |
-| SunCatcher  | air              | decreased insolation (air particles)            |
+| SunCatcher  | air              | "insolation" property decreases (air particles) |
 | Polytechnic | air              | decreased output WorkTechnical                  |
 | ChildKeep   | air, water       | decreased output Childcare                      |
 | Gymnasium   | air, water       | decreased output HealthPhysical                 |

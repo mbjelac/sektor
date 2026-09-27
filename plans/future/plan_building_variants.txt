@@ -1,0 +1,2 @@
+Some buildings have variants - different renderings of the same building.
+Example: Park, TownSquare, Habitats
