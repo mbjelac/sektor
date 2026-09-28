@@ -5,15 +5,15 @@ If other buildings are constructed within that area they are affected.
 Table of buildings and which pollution(s) they are affected by and in what way:
 | Building    | Pollution        | Effect                                          |
 |-------------|------------------|-------------------------------------------------|
-| WaterWells  | water            | produce WaterTechnical instead of WaterPottable |
+| WaterWells  | water            | disabled                                        |
 | Habitats    | air, water       | decreased output of WorkUnqualified, Hapiness   |
-| Agriplot    | soil, water      | "soil" property decreases                       |
+| Agriplot    | soil             | disabled                                        |
 | Library     | air              | decreased HealthMental                          |
 | SunCatcher  | air              | "insolation" property decreases (air particles) |
 | Polytechnic | air              | decreased output WorkTechnical                  |
-| ChildKeep   | air, water       | decreased output Childcare                      |
-| Gymnasium   | air, water       | decreased output HealthPhysical                 |
-| Arena       | air, water       | decreased output HealthSocial                   |
+| ChildKeep   | air              | decreased output Childcare                      |
+| Gymnasium   | air              | decreased output HealthPhysical                 |
+| Arena       | air              | decreased output HealthSocial                   |
 | Park        | air, water, soil | decreased all HealthX outputs                   |
 | TownSquare  | air              | decreased output HealthSocial                   |
 | Forest      | air, water, soil | decreased all outputs                           |
@@ -27,14 +27,25 @@ Table of polluting buildings:
 | Fertilizatron | water            | 1    |
 
 Area: Manhattan distance from polluting building
-
-Area 3:
-   .
-  ...
- .....
-...x...
- .....
-  ...
-   .
+    - example for area 3:
+           .
+          ...
+         .....
+        ...x...
+         .....
+          ...
+           .
 
 The amount of effect decreases by distance. It is most heavy on distance 1 (so, right next to the building).
+
+Area: Manhattan distance from polluting building
+    - example for area 3, pollution level is 1-3:
+           1
+          121
+         12321
+        123x321
+         12321
+          121
+           1
+
+If two areas overlap, each adds it's pollution level, up to max 3.
