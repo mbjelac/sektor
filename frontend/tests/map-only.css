@@ -1,0 +1,7 @@
+/* Everything standing over the map — panels, messages, notifications — is made see-through while
+   the map is looked at, so a change to any of them leaves the pictures of the map as they were. It
+   is made see-through rather than hidden, so that whatever is pointed at stays pointed at. */
+body > :not(#canvas-container),
+#canvas-container > :not(canvas) {
+    opacity: 0 !important;
+}

@@ -1,10 +1,16 @@
 import { Page } from "@playwright/test";
-import { test, expect, setup, expectScreenshot } from "./test-utils";
+import { test, expect, setup, expectScreenshot, expectMapScreenshot, MIDDLE_OF_MAP } from "./test-utils";
 
 setup();
 
+// The one picture of the whole page, which shows where the panels stand around the map. Everything
+// else is looked at on its own, so that a change to one of them leaves the others' pictures alone.
+test("lays out the panels around the map", async ({ page }) => {
+  await expectScreenshot(page, "sektor-page", "body");
+});
+
 test("renders empty grid of floors", async ({ page }) => {
-  await expectScreenshot(page, "empty-grid");
+  await expectMapScreenshot(page, "empty-grid");
 });
 
 // A building a player has not climbed high enough for is kept out of their toolbar, while every
@@ -94,7 +100,7 @@ test("renders building on floor after placement", async ({ page }) => {
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
-  await expectScreenshot(page, "building-placed");
+  await expectMapScreenshot(page, "building-placed", MIDDLE_OF_MAP);
 });
 
 test("puts the tool down after placement, leaving the new building selected on the map", async ({ page }) => {
@@ -106,7 +112,10 @@ test("puts the tool down after placement, leaving the new building selected on t
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "tool-put-down-after-placement", "body");
+  expect({
+    selectedTools: await getSelectedToolNames(page),
+    buildingPanelShown: await page.locator("#building-panel").isVisible(),
+  }).toEqual({ selectedTools: [], buildingPanelShown: true });
 });
 
 test("keeps the tool in hand while SHIFT is held, so several of the same building can be placed", async ({ page }) => {
@@ -124,7 +133,10 @@ test("keeps the tool in hand while SHIFT is held, so several of the same buildin
   await canvas.click({ position: { x: centerX + 60, y: centerY - 20 }, modifiers: ["Shift"] });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "building-placed-twice-with-shift", "body");
+  expect({
+    selectedTools: await getSelectedToolNames(page),
+    buildings: await page.locator('#sektor-stats .sektor-stat:has([title="Buildings"]) .sektor-stat-value').textContent(),
+  }).toEqual({ selectedTools: ["TestFactory"], buildings: "2" });
 });
 
 // The stats of the sektor stand beside its name, so that a player building on it is told what the
@@ -175,7 +187,7 @@ test("draws only the wireframe of the floor under a building which shows no floo
   await canvas.click({ position: { x: box!.width / 2, y: box!.height - 90 } });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "floor-wireframe-under-building", "body");
+  await expectMapScreenshot(page, "floor-wireframe-under-building", { x: 540, y: 530, width: 200, height: 150 });
 });
 
 test("displays the location property overlay while a building affected by it is selected", async ({ page }) => {
@@ -185,7 +197,7 @@ test("displays the location property overlay while a building affected by it is 
   await page.locator('.building-item[data-building-name="TestMine"]').click();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "property-overlay");
+  await expectMapScreenshot(page, "property-overlay");
 });
 
 test("hides the location property overlay when the building is deselected", async ({ page }) => {
@@ -196,7 +208,7 @@ test("hides the location property overlay when the building is deselected", asyn
   await page.locator('.building-item[data-building-name="TestMine"]').click();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "property-overlay-hidden");
+  await expectMapScreenshot(page, "property-overlay-hidden");
 });
 
 test("displays no location property overlay for a building affected by soil", async ({ page }) => {
@@ -206,7 +218,7 @@ test("displays no location property overlay for a building affected by soil", as
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "property-overlay-soil");
+  await expectMapScreenshot(page, "property-overlay-soil");
 });
 
 test("displays no location property overlay for a building without a location property", async ({ page }) => {
@@ -216,7 +228,7 @@ test("displays no location property overlay for a building without a location pr
   await page.locator('.building-item[data-building-name="TestHouse"]').click();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "property-overlay-none");
+  await expectMapScreenshot(page, "property-overlay-none");
 });
 
 test("displays the location property overlay for the property selected in the geography panel", async ({ page }) => {
@@ -225,7 +237,7 @@ test("displays the location property overlay for the property selected in the ge
   await page.locator('.property-toggle[data-property="insolation"]').click();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "property-overlay-selected-in-panel");
+  await expectMapScreenshot(page, "property-overlay-selected-in-panel");
 });
 
 test("displays no location property overlay when soil is selected in the geography panel", async ({ page }) => {
@@ -236,7 +248,7 @@ test("displays no location property overlay when soil is selected in the geograp
   await page.locator('.property-toggle[data-property="soil"]').click();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "property-overlay-soil-selected-in-panel");
+  await expectMapScreenshot(page, "property-overlay-soil-selected-in-panel");
 });
 
 test("deselects the building in the toolbar when clicked outside of the map", async ({ page }) => {
@@ -250,8 +262,15 @@ test("deselects the building in the toolbar when clicked outside of the map", as
   await canvas.click({ position: { x: box!.width - 20, y: box!.height - 20 } });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "building-deselected-outside-map", "body");
+  expect(await getSelectedToolNames(page)).toEqual([]);
 });
+
+// The names of the tools held in the toolbar, the destruction tool among them.
+function getSelectedToolNames(page: Page) {
+  return page.locator(".building-item.selected").evaluateAll(
+    buildingItems => buildingItems.map(buildingItem => (buildingItem as HTMLElement).dataset.buildingName),
+  );
+}
 
 test("displays building panel with few inputs", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
@@ -411,7 +430,7 @@ test("activates a function when its toggle is clicked", async ({ page }) => {
   await page.locator('#building-panel .bf-function-block[data-function-index="1"] .bf-toggle').click();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "building-function-toggled-active", "body");
+  await expectScreenshot(page, "building-function-toggled-active", '#building-panel .bf-function-block[data-function-index="1"]');
 });
 
 test("deactivates a function when its toggle is clicked", async ({ page }) => {
@@ -420,7 +439,7 @@ test("deactivates a function when its toggle is clicked", async ({ page }) => {
   await page.locator('#building-panel .bf-function-block[data-function-index="0"] .bf-toggle').click();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "building-function-toggled-inactive", "body");
+  await expectScreenshot(page, "building-function-toggled-inactive", '#building-panel .bf-function-block[data-function-index="0"]');
 });
 
 test("marks a building starved of a local resource on the map", async ({ page }) => {
@@ -433,7 +452,7 @@ test("marks a building starved of a local resource on the map", async ({ page })
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "starved-building-marked");
+  await expectMapScreenshot(page, "starved-building-marked", MIDDLE_OF_MAP);
 });
 
 test("warns in the building panel about a function starved of a local resource", async ({ page }) => {
@@ -466,7 +485,7 @@ test("clears the starvation warning when the local resource is produced", async 
   await canvas.click({ position: { x: centerX + 60, y: centerY - 20 } });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "starvation-warning-cleared", "body");
+  await expectMapScreenshot(page, "starvation-warning-cleared", MIDDLE_OF_MAP);
 });
 
 test("displays no activity label or toggle for a function the building always does", async ({ page }) => {
@@ -515,7 +534,7 @@ test("building panel persists after rotating the view", async ({ page }) => {
   await page.mouse.up();
   await page.waitForTimeout(200);
   // Building panel should still be visible
-  await expectScreenshot(page, "building-panel-after-rotate", "body");
+  await expect(page.locator("#building-panel")).toBeVisible();
 });
 
 test("displays function panel when building tool is selected", async ({ page }) => {
@@ -573,7 +592,7 @@ test("destroys building when trash icon is clicked", async ({ page }) => {
   await page.waitForTimeout(200);
 
   // Panel should be closed, building removed from map
-  await expectScreenshot(page, "building-destroyed", "body");
+  await expectMapScreenshot(page, "building-destroyed", MIDDLE_OF_MAP);
 });
 
 test("destroys buildings when clicked with the destruction tool", async ({ page }) => {
@@ -599,7 +618,7 @@ test("destroys buildings when clicked with the destruction tool", async ({ page 
   await canvas.click({ position: { x: centerX + 60, y: centerY - 20 } });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "buildings-destroyed-with-tool", "body");
+  await expectMapScreenshot(page, "buildings-destroyed-with-tool", MIDDLE_OF_MAP);
 });
 
 test("shows error when destroying an empty location", async ({ page }) => {
@@ -612,7 +631,7 @@ test("shows error when destroying an empty location", async ({ page }) => {
   await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "destroy-empty-location-error", "body");
+  await expect(page.locator("#notification")).toHaveText("locationEmpty");
 });
 
 // What the sektor moves, resource by resource, and what each of those is worth as things stand on
@@ -680,7 +699,7 @@ test("highlights buildings importing hovered resource", async ({ page }) => {
   await energyRow.hover();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "import-hover-highlight", "body");
+  await expectMapScreenshot(page, "import-hover-highlight", MIDDLE_OF_MAP);
 });
 
 test("shows error when placing building on occupied location", async ({ page }) => {
@@ -690,13 +709,13 @@ test("shows error when placing building on occupied location", async ({ page }) 
   const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
   const clickPos = { x: box!.width / 2, y: box!.height / 2 };
-  // Place first building
+  // Place first building, holding SHIFT to keep the tool in hand
+  await canvas.click({ position: clickPos, modifiers: ["Shift"] });
+  await page.waitForTimeout(200);
+  // Try to place again on same spot
   await canvas.click({ position: clickPos });
   await page.waitForTimeout(200);
-  // Try to place again on same spot — the tool stays selected after placement
-  await canvas.click({ position: clickPos });
-  await page.waitForTimeout(200);
-  await expectScreenshot(page, "building-error", "body");
+  await expect(page.locator("#notification")).toHaveText("locationOccupied");
 });
 
 // The sea is not dry land and nothing is put up on it: a click on the water leaves the map as it
@@ -711,7 +730,19 @@ test("shows error when placing building on the sea", async ({ page }) => {
   // above the middle the other tests build on.
   await canvas.click({ position: { x: box!.width / 2 - 50, y: box!.height / 2 - 240 } });
   await page.waitForTimeout(200);
-  await expectScreenshot(page, "sea-building-error", "body");
+  await expect(page.locator("#notification")).toHaveText("notDryEnough");
+});
+
+// Every error is told the same way, so the look of one of them stands for all of them.
+test("shows an error in red over the map", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2 - 50, y: box!.height / 2 - 240 } });
+  await page.waitForTimeout(200);
+  await expectScreenshot(page, "error-notification", "#notification");
 });
 
 // Rock is no ground to build on: a click on an outcrop leaves the map as it was and says why.
@@ -725,7 +756,7 @@ test("shows error when placing building on elevation", async ({ page }) => {
   // middle the other tests build on.
   await canvas.click({ position: { x: box!.width / 2 + 423, y: box!.height / 2 - 30 } });
   await page.waitForTimeout(200);
-  await expectScreenshot(page, "elevation-building-error", "body");
+  await expect(page.locator("#notification")).toHaveText("notFlatEnough");
 });
 
 // Water is shown the way a building is, under its own name and with what lies under it, so that a
@@ -736,7 +767,7 @@ test("shows the panel of a sea square under the name of the sea", async ({ page 
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2 - 50, y: box!.height / 2 - 240 } });
   await page.waitForTimeout(200);
-  await expectScreenshot(page, "sea-panel", "body");
+  await expectScreenshot(page, "sea-panel", "#building-panel");
 });
 
 // Rock is shown the way a building is, under its own name and with what the ground beneath it
@@ -747,7 +778,7 @@ test("shows the panel of an elevation without the control which would destroy it
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2 + 423, y: box!.height / 2 - 30 } });
   await page.waitForTimeout(200);
-  await expectScreenshot(page, "elevation-panel", "body");
+  await expectScreenshot(page, "elevation-panel", "#building-panel");
 });
 
 // Rock was there before the player and stays after them, so the destruction tool leaves it
@@ -760,7 +791,7 @@ test("shows error when destroying an elevation", async ({ page }) => {
   const box = await canvas.boundingBox();
   await canvas.click({ position: { x: box!.width / 2 + 423, y: box!.height / 2 - 30 } });
   await page.waitForTimeout(200);
-  await expectScreenshot(page, "elevation-destroy-error", "body");
+  await expect(page.locator("#notification")).toHaveText("canNotDestroyElevations");
 });
 
 // A sektor is worth what it does for the planet, so the same Food brought in is worth different
@@ -1018,7 +1049,7 @@ test("shows what the planet is shortest of over the map", async ({ page }) => {
 
   await page.locator("#most-imported-message").waitFor();
 
-  await expectScreenshot(page, "most-imported-message", "body");
+  await expectScreenshot(page, "most-imported-message", "#messages");
 });
 
 // A building put up changes what the planet is short of, so the advice on the screen is written
@@ -1058,16 +1089,6 @@ test("tells the player which of the sektor's imports the planet is short of", as
       "⚠️ Avoid importing scarse resources Food 🥕, Water 💧",
       "ℹ️ This planet needs: Food 🥕, Water 💧, Ore 🪨",
     ]);
-});
-
-test("stacks what the player is told one message beneath the other", async ({ page }) => {
-  await storeSektorMovingManyResources(page, "Beta");
-  await page.goto("/sektor.html?id=Alpha&test=true");
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-
-  await placeBuilding(page, "TestHouse");
-
-  await expectScreenshot(page, "stacked-messages", "body");
 });
 
 // A sektor bringing in nothing the planet is short of is doing it no harm, so it is told nothing.
@@ -1126,7 +1147,7 @@ test("highlights buildings importing a resource pointed at in a message", async 
   await page.locator("#most-imported-scarce-message .message-resource", { hasText: "Food" }).hover();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "message-resource-hover-highlight", "body");
+  await expectMapScreenshot(page, "message-resource-hover-highlight", MIDDLE_OF_MAP);
 });
 
 // Every resource a message names is a thing to point at, not a word of the sentence.
@@ -1166,7 +1187,7 @@ test("highlights buildings making a resource in green and buildings taking it in
   await page.locator(".ss-row", { hasText: "Wood" }).first().hover();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "output-hover-highlight", "body");
+  await expectMapScreenshot(page, "output-hover-highlight", MIDDLE_OF_MAP);
 });
 
 async function placeBuildingAt(page: Page, buildingName: string, position: { x: number; y: number }) {
@@ -1251,7 +1272,7 @@ test("marks the habitat going without the resource complained of", async ({ page
   await page.locator('[id^="habitat-shortage-message-"] .message-resource').hover();
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "habitat-shortage-message", "body");
+  await expectMapScreenshot(page, "habitat-shortage-message", MIDDLE_OF_MAP);
 });
 
 // A shortage seen to is no longer complained of.
@@ -1305,7 +1326,7 @@ test("shows what the player is told and what they are warned of", async ({ page 
 
   await placeBuildingAtOffset(page, "TestHabitat", 60);
 
-  await expectScreenshot(page, "information-and-warning-messages", "body");
+  await expectScreenshot(page, "information-and-warning-messages", "#messages");
 });
 
 // A building put up a little to one side of the middle of the map, so that several stand on ground
@@ -1338,14 +1359,14 @@ test("puts a collapse button on the top-most of several messages", async ({ page
   });
 });
 
-test("shows the collapse button on the top-most message", async ({ page }) => {
+test("stacks what the player is told one message beneath the other, the top-most carrying the collapse button", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
   await placeBuilding(page, "TestHouse");
 
-  await expectScreenshot(page, "messages-collapse-button", "body");
+  await expectScreenshot(page, "messages-collapse-button", "#messages");
 });
 
 // A player who wants the map rather than the advice puts it away, all but the newest.
@@ -1408,7 +1429,7 @@ test("shows only the top-most message once the messages are collapsed", async ({
 
   await page.locator("#messages-collapse-button").click();
 
-  await expectScreenshot(page, "messages-collapsed", "body");
+  await expectScreenshot(page, "messages-collapsed", "#messages");
 });
 
 // The messages which carry a collapse button, top-most first.

@@ -1,3 +1,4 @@
+import path from "path";
 import { test, expect, Page } from "@playwright/test";
 
 export { test, expect };
@@ -32,11 +33,32 @@ export function prepareSektorNames(page: Page, sektorNames: string[]) {
   );
 }
 
-export async function expectScreenshot(page: Page, name: string, selector = "#canvas-container") {
+export async function expectScreenshot(page: Page, name: string, selector: string) {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.waitForTimeout(100);
   const element = page.locator(selector);
   await expect(element).toHaveScreenshot(`${name}.png`, {
+    maxDiffPixelRatio: 0,
+  });
+}
+
+export type MapRegion = { x: number; y: number; width: number; height: number };
+
+// The middle of the map, where the tests put their buildings up, measured on the canvas.
+export const MIDDLE_OF_MAP: MapRegion = { x: 440, y: 230, width: 400, height: 260 };
+
+const MAP_ONLY_STYLE_PATH = path.join(__dirname, "map-only.css");
+
+// The map alone, or only the region of it a test is about, so that a change elsewhere on the map
+// leaves the picture as it was.
+export async function expectMapScreenshot(page: Page, name: string, region?: MapRegion) {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.waitForTimeout(100);
+  const canvasBox = (await page.locator("#canvas-container > canvas").boundingBox())!;
+  const mapRegion = region ?? { x: 0, y: 0, width: canvasBox.width, height: canvasBox.height };
+  await expect(page).toHaveScreenshot(`${name}.png`, {
+    clip: { x: canvasBox.x + mapRegion.x, y: canvasBox.y + mapRegion.y, width: mapRegion.width, height: mapRegion.height },
+    stylePath: MAP_ONLY_STYLE_PATH,
     maxDiffPixelRatio: 0,
   });
 }

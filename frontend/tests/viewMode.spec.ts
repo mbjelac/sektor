@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { test, expect, expectScreenshot, makeSektorsByHand } from "./test-utils";
+import { test, expect, expectScreenshot, expectMapScreenshot, makeSektorsByHand } from "./test-utils";
 
 const OTHER_PLAYER = "Ana";
 const CURRENT_PLAYER = "Tester";
@@ -60,7 +60,7 @@ test("builds nothing when the player clicks the map of a viewed sektor", async (
   await canvas.click({ position: { x: canvasBox!.width / 2, y: canvasBox!.height / 2 } });
   await page.waitForTimeout(200);
 
-  await expectScreenshot(page, "view-mode-nothing-built");
+  await expectMapScreenshot(page, "view-mode-nothing-built");
 });
 
 test("names the sektor it is showing", async ({ page }) => {
@@ -307,7 +307,7 @@ test("draws the buildings of a sektor shown in view mode", async ({ page }) => {
 
   await page.goto("/sektor.html?id=Beta");
 
-  await expectScreenshot(page, "view-mode-buildings");
+  await expectMapScreenshot(page, "view-mode-buildings");
 });
 
 test("shows a building of a sektor in view mode without the controls which would change it", async ({ page }) => {

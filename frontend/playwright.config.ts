@@ -8,7 +8,9 @@ import { defineConfig } from "@playwright/test";
 const testServerPort = 5274;
 
 export default defineConfig({
-  workers: 1,
+  // Every test has a browser context of its own, and with it a storage of its own, so no test sees
+  // what another one saved and all of them run side by side.
+  fullyParallel: true,
   testDir: "./tests",
   snapshotPathTemplate: "{testDir}/snapshots/{arg}{ext}",
   use: {
