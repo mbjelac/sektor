@@ -48,4 +48,4 @@ Area: Manhattan distance from polluting building
           121
            1
 
-If two areas overlap, each adds it's pollution level, up to max 3.
+If two areas overlap, each adds it's pollution level to area squares, up to max 3.
