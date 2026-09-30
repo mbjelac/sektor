@@ -5,9 +5,8 @@ WorkEducational 📚 #3EB01C
 WorkMaintenance 🪜 #ffb638
 WorkEngineering 🧮 #82baff
 WorkAdministrative 📝 #ededed
-WaterPottable 💧 #55aaff
-WaterTechnical 🚱 #6c87ba
-WaterSewage 🟤 #a17d4c negative
+Water 💧 #55aaff
+Sewage 🟤 #a17d4c negative
 FoodRaw 🥕 #ff9955
 FoodProcessed 🥫 #ff6338
 EducationElementary 📖 #D4F4FF

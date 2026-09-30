@@ -139,21 +139,10 @@ pri4 c(#c7c2a900) s(23,23,10) t(-30,30,0) act(#c7c2a9,500,5000)
 
 ## Function
 
-Name: Purified 
-
 EnergyElectric 3
 WorkTechnical 1
 ->
-WaterPottable groundwater
-
-## Function
-
-Name: Unpurified
-
-EnergyElectric 2
-WorkTechnical 1
-->
-WaterTechnical groundwater
+Water groundwater
 
 ## Properties
 
@@ -305,13 +294,13 @@ sph s(4,4,5) t(27,44,7) c(#94d17d)
 Name: Basic needs
 Active: always
 
-WaterPottable 2
+Water 2
 FoodRaw 5
 FoodProcessed 3
 EnergyElectric 4
 ->
 WorkUnqualified 16
-WaterSewage 6
+Sewage 6
 
 ## Function
 
@@ -490,7 +479,7 @@ pri4 r(90,90,0) s(4,4,30) t(17,12,8) c(#1c750b)
 
 ## Function
 
-WaterPottable 4
+Water 4
 Fertilizer 2
 EnergyElectric 1
 WorkTechnical 2
@@ -593,7 +582,7 @@ OreMineral minerals
 Name: Uranium
 
 EnergyElectric 4
-WaterTechnical 3
+Water 3
 WorkTechnical 2
 WorkEngineering 1
 ->
@@ -888,7 +877,7 @@ Name: Metals
 
 WorkTechnical 3
 EnergyElectric 10
-WaterTechnical 5
+Water 5
 OreMetal 5
 ->
 Metals 10
@@ -899,7 +888,7 @@ Name: Minerals
 
 WorkTechnical 2
 EnergyElectric 3
-WaterTechnical 2
+Water 2
 OreMineral 5
 ->
 Minerals 20
@@ -910,7 +899,7 @@ Name: Uranium
 
 WorkTechnical 6
 EnergyElectric 5
-WaterTechnical 15
+Water 15
 OreUranium 5
 ->
 Uranium 6
@@ -1010,7 +999,7 @@ sph c(#2c6d2d) s(4,4,10) t(43,-4,6)
 
 WorkMaintenance 2
 EnergyElectric 1
-WaterPottable 2
+Water 2
 ->
 HealthSocial 8
 
@@ -1127,7 +1116,7 @@ sph s(4,4,5) t(-39,40,8) c(#2aea2a)
 ## Function
 
 EnergyElectric 1
-WaterPottable 2
+Water 2
 WorkMaintenance 2
 ->
 HealthPhysical 2
@@ -1242,7 +1231,7 @@ con s(4,4,1) t(22,-33,37) r(0,180,0) c(#ffffff)
 
 ## Function
 
-WaterPottable 5
+Water 5
 FoodRaw 3
 FoodProcessed 2
 EnergyElectric 4
@@ -1250,7 +1239,7 @@ WorkEducational 4
 WorkMaintenance 1
 ->
 Childcare 10
-WaterSewage 6
+Sewage 6
 
 ## Properties
 
@@ -1396,22 +1385,12 @@ pri4 s(1,1,8) t(-33,-33,16) r(60,90,0) ar(1,0,0,50)
 
 ## Function
 
-Name: Basic
-
-WaterSewage 5
+Sewage 5
 EnergyElectric 4
 WorkTechnical 2
 ->
-WaterTechnical 8
+Water 8
 
-## Function
-
-Name: Advanced
-
-WaterTechnical 5
-EnergyElectric 6
-->
-WaterPottable 8
 
 ## Properties
 
@@ -1527,7 +1506,7 @@ cyl s(2,2,3) t(37,-35,19) r(45,0,90) c(#ad2e15)
 Uranium 5
 WorkTechnical 4
 WorkEngineering 2
-WaterTechnical 2
+Water 2
 ->
 EnergyElectric 20
 WasteNuclear 2
@@ -2275,7 +2254,7 @@ sph s(4,4,5) t(-37,-41,7) c(#074b02)
 ## Function
 
 EnergyElectric 3
-WaterPottable 6
+Water 6
 WorkMaintenance 4
 WorkAdministrative 1
 ->
@@ -2426,7 +2405,7 @@ cyl s(6,6,9) t(20,-35,14) r(0,0,90) c(#00ffee)
 
 EnergyElectric 10
 WorkTechnical 1
-WaterPottable 8
+Water 8
 FoodRaw 18
 ->
 FoodProcessed 12
