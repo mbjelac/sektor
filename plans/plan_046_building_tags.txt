@@ -26,7 +26,7 @@ If the player knows their looking for a power plant it would be good that they c
 
 #3 No need to display all buildings
 - initially, 1st tag from building_tags.md selected and buildings filtered by that tag
-- remove 'x' button and functionality from tag list
+- remove 'x' button and functionality from tag buttons
 
 #4 It is clear which building group is selected
 - selected tag icon has white line underneath
