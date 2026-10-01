@@ -84,11 +84,20 @@ test("displays the destruction tool above the buildings having a selected buildi
   await expectScreenshot(page, "building-tag-filtered", "#construction-panel");
 });
 
-test("deselects the building tag and displays all buildings when the clear icon is clicked", async ({ page }) => {
+test("selects the first building tag at the start, displaying only buildings having it", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await page.locator('.building-tag[data-building-tag="industry"]').click();
-  await page.locator('.clear-building-tags').click();
-  await expectScreenshot(page, "building-tags-cleared", "#construction-panel");
+
+  const selectedBuildingTags = await page.locator('.building-tag.selected').evaluateAll(
+    tagButtons => tagButtons.map(tagButton => (tagButton as HTMLElement).dataset.buildingTag),
+  );
+  const shownBuildingNames = await page.locator('.building-item:not([hidden])').evaluateAll(
+    buildingItems => buildingItems.map(buildingItem => (buildingItem as HTMLElement).dataset.buildingName),
+  );
+
+  expect({ selectedBuildingTags, shownBuildingNames }).toEqual({
+    selectedBuildingTags: ["food"],
+    shownBuildingNames: ["Destroy", "TestFactory", "TestMine", "TestHouse", "TestProcessor", "TestRefinery", "TestWorkshop", "TestClinic", "TestCarer", "TestReactor", "TestHabitat"],
+  });
 });
 
 test("renders building on floor after placement", async ({ page }) => {

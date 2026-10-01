@@ -22,7 +22,7 @@ let selectedBuilding: string | null = null;
 // The code of a building is needed to draw it on the map, also when the map is shown without the
 // toolbar, so it is looked up straight from the definitions.
 const buildingCodeMap = new Map(buildingDefinitions.map(building => [building.name, building.renderingCode]));
-let selectedBuildingTag: string | null = null;
+let selectedBuildingTag: string = buildingTags[0];
 let selectionCallback: ((buildingName: string | null) => void) | null = null;
 
 export function getSelectedBuilding(): string | null {
@@ -132,13 +132,15 @@ export function initToolbar(playerLevel: number, isViewMode = false) {
     thumbnails.push({building, canvasContainer});
   }
 
+  showBuildingsHavingSelectedTag();
   showBuildingThumbnails(thumbnails);
 }
 
 function showBuildingTagFilter() {
   const buildingTagFilter = document.getElementById("building-tag-filter")!;
   buildingTagFilter.innerHTML = "";
-  selectedBuildingTag = null;
+  // The player is never shown every building at once, so the toolbar opens on the first tag.
+  selectedBuildingTag = buildingTags[0];
 
   for (const buildingTag of buildingTags) {
     const tagButton = document.createElement("button");
@@ -146,26 +148,26 @@ function showBuildingTagFilter() {
     tagButton.dataset.buildingTag = buildingTag;
     tagButton.title = buildingTag;
     tagButton.innerHTML = buildingTagIcon(buildingTag);
+    if (buildingTag === selectedBuildingTag) {
+      tagButton.classList.add("selected");
+    }
     // The player looks for one kind of building at a time, so picking a tag lets go of the one
     // picked before.
     tagButton.addEventListener("click", () => {
       buildingTagFilter.querySelectorAll(".building-tag").forEach(otherTagButton => otherTagButton.classList.remove("selected"));
       selectedBuildingTag = buildingTag;
       tagButton.classList.add("selected");
+      showSelectedBuildingTagName();
       showBuildingsHavingSelectedTag();
     });
     buildingTagFilter.appendChild(tagButton);
   }
 
-  const clearTagsButton = document.createElement("button");
-  clearTagsButton.className = "building-tag clear-building-tags";
-  clearTagsButton.innerHTML = icons.xMarkIcon;
-  clearTagsButton.addEventListener("click", () => {
-    selectedBuildingTag = null;
-    buildingTagFilter.querySelectorAll(".building-tag").forEach(tagButton => tagButton.classList.remove("selected"));
-    showBuildingsHavingSelectedTag();
-  });
-  buildingTagFilter.appendChild(clearTagsButton);
+  showSelectedBuildingTagName();
+}
+
+function showSelectedBuildingTagName() {
+  document.getElementById("building-tag-name")!.textContent = capitalized(selectedBuildingTag);
 }
 
 function showBuildingsHavingSelectedTag() {
@@ -181,9 +183,13 @@ function showBuildingsHavingSelectedTag() {
 // nothing more than an icon of the same name. The icons are drawn in black, which is replaced by
 // the color of the button they sit in, so they can be colored like the rest of the toolbar.
 function buildingTagIcon(buildingTag: string): string {
-  const iconName = `buildingTag${buildingTag.charAt(0).toUpperCase()}${buildingTag.slice(1)}`;
+  const iconName = `buildingTag${capitalized(buildingTag)}`;
   const iconMarkup = (icons as Record<string, string>)[iconName];
   return iconMarkup.replaceAll("#000000", "currentColor");
+}
+
+function capitalized(text: string): string {
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
 }
 
 // Every building the player has unlocked is theirs to place in any sektor. The destruction tool is

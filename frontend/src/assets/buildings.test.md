@@ -43,7 +43,7 @@ Ore ore
 ## Properties
 
 showFloor=false
-tags=industry
+tags=food,industry
 
 # TestHouse
 
@@ -62,6 +62,10 @@ Water 1
 ->
 Work 3
 
+## Properties
+
+tags=food
+
 # TestProcessor
 
 ## Render
@@ -75,6 +79,10 @@ pri4 s(22,22,22) t(0,0,0) c(#66cc66)
 Food 2
 ->
 Wood 3
+
+## Properties
+
+tags=food
 
 # TestRefinery
 
@@ -94,6 +102,10 @@ Stone 1
 ->
 Metal 6
 Fuel 3
+
+## Properties
+
+tags=food
 
 # TestWorkshop
 
@@ -117,6 +129,10 @@ Wood 3
 ->
 Fuel wind
 
+## Properties
+
+tags=food
+
 # TestClinic
 
 ## Render
@@ -131,6 +147,10 @@ Care 2
 ->
 Work 4
 
+## Properties
+
+tags=food
+
 # TestCarer
 
 ## Render
@@ -144,6 +164,10 @@ pri4 s(22,22,20) t(0,0,0) c(#66aacc)
 Food 1
 ->
 Care 4
+
+## Properties
+
+tags=food
 
 # TestReactor
 
@@ -168,6 +192,10 @@ Energy 1
 ->
 Water 1
 
+## Properties
+
+tags=food
+
 # TestTower
 
 ## Render
@@ -185,6 +213,7 @@ Work 1
 ## Properties
 
 minLevel=5
+tags=food
 
 # TestHabitat
 
@@ -202,3 +231,7 @@ Name: Living well
 Care 2
 ->
 Hapiness 5
+
+## Properties
+
+tags=food

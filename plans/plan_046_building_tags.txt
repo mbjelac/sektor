@@ -24,14 +24,14 @@ If the player knows their looking for a power plant it would be good that they c
 #2 [done] No building toolbar when viewing unclaimed or other player's sektor
 - [done] show building toolbar only when current player owner of the sektor
 
-#3 No need to display all buildings
-- initially, 1st tag from building_tags.md selected and buildings filtered by that tag
-- remove 'x' button and functionality from tag buttons
+#3 [done] No need to display all buildings
+- [done] initially, 1st tag from building_tags.md selected and buildings filtered by that tag
+- [done] remove 'x' button and functionality from tag buttons
 
-#4 It is clear which building group is selected
-- selected tag icon has white line underneath
+#4 [done] It is clear which building group is selected
+- [done] selected tag icon has white line underneath
     - 2px thick
-- tag name displayed
+- [done] tag name displayed
     - underneath tag icon row
     - white text, small
     - first letter uppercase
