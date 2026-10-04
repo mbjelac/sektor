@@ -1,30 +1,28 @@
-Some buildings emit air (atmosphere) or ground pollution.
+Some buildings emit pollution.
 This is not part of imports & exports but it does have an area of effect.
 If other buildings are constructed within that area they are affected.
 
+Pollution reduces a location's natural level of soil & groundwater, affecting buildings which use that for production.
+It also affects other buildings which are nture or people oriented:
+
 Table of buildings and which pollution(s) they are affected by and in what way:
-| Building    | Pollution        | Effect                                          |
-|-------------|------------------|-------------------------------------------------|
-| WaterWells  | ground           | disabled                                        |
-| Habitats    | air, ground      | decreased output of WorkUnqualified, Hapiness   |
-| Agriplot    | ground           | disabled                                        |
-| Library     | air              | decreased HealthMental                          |
-| SunCatcher  | air              | "insolation" property decreases (air particles) |
-| Polytechnic | air              | decreased output WorkTechnical                  |
-| ChildKeep   | air              | decreased output Childcare                      |
-| Gymnasium   | air              | decreased output HealthPhysical                 |
-| Arena       | air              | decreased output HealthSocial                   |
-| Park        | air, ground      | decreased all HealthX outputs                   |
-| TownSquare  | air              | decreased output HealthSocial                   |
-| Forest      | air, ground      | decreased all outputs                           |
+| Building    | Effect                                          |
+|-------------|-------------------------------------------------|
+| Habitats    | decreased output of WorkUnqualified, Hapiness   |
+| Library     | decreased HealthMental                          |
+| ChildKeep   | decreased output Childcare                      |
+| Arena       | decreased output HealthSocial                   |
+| Park        | decreased all HealthX outputs                   |
+| TownSquare  | decreased output HealthSocial                   |
+| Forest      | decreased all outputs                           |
 
 Table of polluting buildings:
 
-| Building      | Pollution        | Area |
-|---------------|------------------|------|
-| Extractor     | air, ground      | 2    |
-| Refinery      | air, ground      | 3    |
-| Fertilizatron | ground           | 1    |
+| Building      | Area |
+|---------------|------|
+| Extractor     | 2    |
+| Refinery      | 3    |
+| Fertilizatron | 1    |
 
 Area: Manhattan distance from polluting building
     - example for area 3:
@@ -48,4 +46,4 @@ Area: Manhattan distance from polluting building
           121
            1
 
-If two areas overlap, each adds it's pollution level to area squares, up to max 3.
+If two areas overlap, each adds it's pollution level to area squares.
