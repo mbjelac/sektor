@@ -61,3 +61,7 @@ If two areas overlap, each adds it's pollution level to area squares.
             - 4 = 80%
     - pollution location property can have value between 0 & 100
         - representing the percentage of how much a location is polluted
+    - when a polluting building (a building with pollutionArea > 0) is constructed, the pollution properties of neighbouring squares are increased by that percentage amount
+        - it never increases beyond 100
+    - when a sektor is loaded with polluting buldings already in it, pollution properties are already set to modified levels
+    - when a polluting building is destroyed, the pollution properties are decreased by appropriate amount
