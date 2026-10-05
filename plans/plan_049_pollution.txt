@@ -28,7 +28,7 @@ If two areas overlap, each adds it's pollution level to area squares.
 
 #1 Pollution is a location property
 - creating a level always sets pollution to 0 for all map squares
-- pollution is shown in the building panel of the selected building
+- [done] pollution is shown in the building panel of the selected building
 
 #2 Constructing a polluting building pollutes the area around it
 - when building spec contains property pollutionArea, building is a polluting building and constructing it increases surrounding pollution location property
@@ -65,3 +65,17 @@ If two areas overlap, each adds it's pollution level to area squares.
         - it never increases beyond 100
     - when a sektor is loaded with polluting buldings already in it, pollution properties are already set to modified levels
     - when a polluting building is destroyed, the pollution properties are decreased by appropriate amount
+    - when displaying pollution in building panel geography, use " %" suffix
+
+#3 Pollution affects location properties
+- location properties of a location with a non-zero pollution property are affected
+    - affected properties:
+        - soil
+        - groundwater
+    - affected location properties are first decreased by their inverse percentage of pollution
+        - affectedProperty = round(originalProperty * (100 - pollutionProperty) / 100)
+    - example:
+        - soil = 8
+        - polution = 80
+        - when using value of soil in calculations (like for output of a building) the value 2 is used round(8 * 0.2)
+
