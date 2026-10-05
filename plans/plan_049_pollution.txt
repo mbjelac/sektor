@@ -9,9 +9,6 @@ Table of buildings and which pollution(s) they are affected by and in what way:
 | Building    | Effect                                          |
 |-------------|-------------------------------------------------|
 | Habitats    | decreased output of WorkUnqualified, Hapiness   |
-| Library     | decreased HealthMental                          |
-| ChildKeep   | decreased output Childcare                      |
-| Arena       | decreased output HealthSocial                   |
 | Park        | decreased all HealthX outputs                   |
 | TownSquare  | decreased output HealthSocial                   |
 | Forest      | decreased all outputs                           |
@@ -31,7 +28,7 @@ If two areas overlap, each adds it's pollution level to area squares.
 - [done] pollution is shown in the building panel of the selected building
 
 #2 Constructing a polluting building pollutes the area around it
-- when building spec contains property pollutionArea, building is a polluting building and constructing it increases surrounding pollution location property
+- [done] when building spec contains property pollutionArea, building is a polluting building and constructing it increases surrounding pollution location property
     - buildings.md Properties section contains property pollutionArea=X
     - X is a number between 1 & 4
     - area polluted is a manhattan distance of x from the building
