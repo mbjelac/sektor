@@ -59,6 +59,13 @@ export interface CreateBuildingResult {
   addedBuildings: Building[];
 }
 
+// The location property telling how fouled the ground of a location is, as a percentage.
+export const POLLUTION_PROPERTY = "pollution";
+// How much more polluted a location is for every square nearer a polluting building it lies.
+const POLLUTION_STEP = 20;
+// Ground cannot be fouled more than all the way.
+export const MOST_POLLUTION = 100;
+
 export class Sektor {
   private buildings: Building[] = [];
   private readonly locations: Location[][];
@@ -385,6 +392,7 @@ export class Sektor {
 
     const createdBuilding = { ...building };
     this.buildings.push(createdBuilding);
+    if (this.isPolluting(createdBuilding)) this.updatePollution();
 
     return { error: undefined, addedBuildings: [createdBuilding] };
   }
@@ -400,8 +408,38 @@ export class Sektor {
     this.buildings = this.buildings.filter(
       existing => !(existing.location.x === location.x && existing.location.y === location.y)
     );
+    if (this.isPolluting(building)) this.updatePollution();
 
     return { success: true };
+  }
+
+  // The ground of a sektor starts out clean, so the pollution of a location is all of what every
+  // polluting building standing around it puts there. Working it out afresh from the buildings
+  // standing means a building taken down takes away exactly what it put there, even where the
+  // pollution was more than a location can hold and was capped.
+  private updatePollution() {
+    const pollutingBuildings = this.buildings.filter(building => this.isPolluting(building));
+    this.locations.forEach((row, x) => row.forEach((location, y) => {
+      const pollution = pollutingBuildings.reduce(
+        (total, building) => total + this.pollutionAround(building, { x, y }),
+        0,
+      );
+      location.properties[POLLUTION_PROPERTY] = Math.min(MOST_POLLUTION, pollution);
+    }));
+  }
+
+  private isPolluting(building: Building): boolean {
+    return this.findBuildingDefinition(building.type)?.properties.pollutionArea !== undefined;
+  }
+
+  // A polluting building fouls the ground the most right beside it and less with every square
+  // further out, down to one step of pollution at the edge of its area. The building's own square
+  // is not counted as around it.
+  private pollutionAround(building: Building, location: BuildingLocation): number {
+    const pollutionArea = this.findBuildingDefinition(building.type)?.properties.pollutionArea ?? 0;
+    const distance = Math.abs(location.x - building.location.x) + Math.abs(location.y - building.location.y);
+    if (distance === 0 || distance > pollutionArea) return 0;
+    return (pollutionArea - distance + 1) * POLLUTION_STEP;
   }
 
   // Nothing stands in open water, so a square of sea is not a square to build on.

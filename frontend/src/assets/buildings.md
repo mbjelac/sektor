@@ -923,6 +923,7 @@ OreUranium uranium
 
 showFloor=false
 tags=industry
+pollutionArea=3
 
 # WindLoop
 
@@ -1377,6 +1378,7 @@ Metals 10
 ## Properties
 
 tags=industry
+pollutionArea=4
 
 # Mineral Refinery
 
@@ -1572,6 +1574,7 @@ Minerals 20
 ## Properties
 
 tags=industry
+pollutionArea=3
 
 # Uranium Mill
 
@@ -1994,6 +1997,7 @@ Fertilizer 12
 ## Properties
 
 tags=food,industry
+pollutionArea=1
 
 # ChildKeep
 

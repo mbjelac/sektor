@@ -2,6 +2,7 @@ import propertiesMd from "./assets/properties.md?raw";
 import testPropertiesMd from "./assets/properties.test.md?raw";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../shared/modifierLimits";
 import { isTestMode } from "./testMode";
+import { MOST_POLLUTION, POLLUTION_PROPERTY } from "./sektor/Sektor";
 
 const source = isTestMode ? testPropertiesMd : propertiesMd;
 
@@ -45,7 +46,14 @@ export function floorColor(soilValue: number): [number, number, number] {
 export function propertyValueColor(propertyName: string, value: number): [number, number, number] {
   const property = propertyDefinitions.find(property => property.name === propertyName);
   if (!property) return [128, 128, 128];
-  return interpolateColors([0, 0, 0], parseHexColor(property.color), valueFraction(value));
+  return interpolateColors([0, 0, 0], parseHexColor(property.color), propertyValueFraction(propertyName, value));
+}
+
+// Pollution is a percentage of the ground fouled, not an amount the ground holds as every other
+// property is, so it is measured against ground fouled all the way.
+function propertyValueFraction(propertyName: string, value: number): number {
+  if (propertyName === POLLUTION_PROPERTY) return value / MOST_POLLUTION;
+  return valueFraction(value);
 }
 
 export function valueFraction(value: number): number {

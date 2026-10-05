@@ -260,6 +260,28 @@ test("displays no location property overlay when soil is selected in the geograp
   await expectMapScreenshot(page, "property-overlay-soil-selected-in-panel");
 });
 
+// TestSmokestack fouls the ground two squares around it, the most right beside it.
+test("displays the pollution overlay by how much of every location is fouled", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await placeBuilding(page, "TestSmokestack");
+
+  await page.locator('.property-toggle[data-property="pollution"]').click();
+  await page.waitForTimeout(200);
+
+  await expectMapScreenshot(page, "property-overlay-pollution", MIDDLE_OF_MAP);
+});
+
+test("displays the pollution of a location in the building panel as a percentage", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await placeBuilding(page, "TestSmokestack");
+
+  await placeBuildingAtOffset(page, "TestMine", 60);
+
+  await expectScreenshot(page, "building-panel-polluted-location", "#building-panel");
+});
+
 test("deselects the building in the toolbar when clicked outside of the map", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();

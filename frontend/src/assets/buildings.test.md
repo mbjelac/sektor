@@ -235,3 +235,22 @@ Hapiness 5
 ## Properties
 
 tags=food
+
+# TestSmokestack
+
+## Render
+
+```
+cyl s(8,8,40) t(0,0,0) c(#555555)
+```
+
+## Function
+
+Energy 2
+->
+Fuel 1
+
+## Properties
+
+tags=industry
+pollutionArea=2

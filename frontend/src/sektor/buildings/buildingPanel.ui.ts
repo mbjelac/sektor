@@ -5,7 +5,7 @@ import { drawFloor, drawFloorWireframe } from "../../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../../shared/constants";
 import { trashIcon } from "../../icons";
 import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
-import { BuildingFunctionState, BuildingLocation } from "../Sektor";
+import { BuildingFunctionState, BuildingLocation, POLLUTION_PROPERTY } from "../Sektor";
 import { propertyDefinitions } from "../../properties";
 import { formatNumber } from "../../formatNumber";
 
@@ -164,7 +164,11 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
 
       const valueCell = document.createElement("span");
       valueCell.className = "bp-property-value";
-      valueCell.textContent = formatNumber(propertyValue);
+      // Pollution is how much of a location is fouled rather than how much it holds, so it is a
+      // percentage.
+      valueCell.textContent = propertyName === POLLUTION_PROPERTY
+        ? `${formatNumber(propertyValue)} %`
+        : formatNumber(propertyValue);
       row.appendChild(valueCell);
 
       propertiesSection.appendChild(row);

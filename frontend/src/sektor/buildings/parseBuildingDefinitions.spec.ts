@@ -250,6 +250,35 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].properties).toEqual({ minLevel: 4 });
   });
 
+  it("parses pollutionArea property", () => {
+    const result = parseBuildingDefinitions([
+      "# Smokestack",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Properties",
+      "pollutionArea=3",
+    ]);
+
+    expect(result[0].properties).toEqual({ pollutionArea: 3 });
+  });
+
+  // A building fouls the ground at least one square around it and at most four.
+  it("ignores a pollutionArea property outside of 1 to 4", () => {
+    const result = ["0", "5"].map(pollutionArea => parseBuildingDefinitions([
+      "# Smokestack",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Properties",
+      `pollutionArea=${pollutionArea}`,
+    ])[0].properties);
+
+    expect(result).toEqual([{}, {}]);
+  });
+
   it("parses tags property as a list of tags", () => {
     const result = parseBuildingDefinitions([
       "# Mine",

@@ -19,6 +19,9 @@ export interface BuildingFunction {
 
 const ALWAYS_ACTIVE_VALUE = "always";
 
+// The furthest a building can foul the ground around it.
+const LARGEST_POLLUTION_AREA = 4;
+
 // The line separating a function's inputs from its outputs.
 const OUTPUT_SEPARATOR = "->";
 
@@ -29,6 +32,9 @@ export interface BuildingProperties {
   minLevel?: number;
   // What the building is about, so the player can find it among the others in the toolbar.
   tags?: string[];
+  // How far, counted in squares along and across the map, the building fouls the ground around it.
+  // A building whose definition names none pollutes nothing.
+  pollutionArea?: number;
 }
 
 // What stands on a building's location while the building is going up, before the building
@@ -159,6 +165,10 @@ function parseProperties(lines: string[]): BuildingProperties {
     }
     if (match[1] === "tags") {
       props.tags = match[2].split(",").map(tag => tag.trim()).filter(tag => tag.length > 0);
+    }
+    if (match[1] === "pollutionArea" && isAmount(match[2])) {
+      const pollutionArea = parseInt(match[2]);
+      if (pollutionArea >= 1 && pollutionArea <= LARGEST_POLLUTION_AREA) props.pollutionArea = pollutionArea;
     }
   }
   return props;
