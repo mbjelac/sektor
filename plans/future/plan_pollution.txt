@@ -24,26 +24,31 @@ Table of polluting buildings:
 | Refinery      | 3    |
 | Fertilizatron | 1    |
 
-Area: Manhattan distance from polluting building
-    - example for area 3:
-           .
-          ...
-         .....
-        ...x...
-         .....
-          ...
-           .
-
-The amount of effect decreases by distance. It is most heavy on distance 1 (so, right next to the building).
-
-Area: Manhattan distance from polluting building
-    - example for area 3, pollution level is 1-3:
-           1
-          121
-         12321
-        123x321
-         12321
-          121
-           1
-
 If two areas overlap, each adds it's pollution level to area squares.
+
+#1 Pollution is a location property
+- creating a level always sets pollution to 0 for all map squares
+- pollution is shown in the building panel of the selected building
+
+#2 Constructing a polluting building pollutes the area around it
+- when building spec contains property pollutionArea, building is a polluting building and constructing it increases surrounding pollution location property
+    - buildings.md Properties section contains property pollutionArea=X
+    - X is a number between 1 & 3
+    - area polluted is a manhattan distance of x from the building
+        - example for area 3:
+               .
+              ...
+             .....
+            ...x...
+             .....
+              ...
+               .
+    - the map's squares within the area have their location property "pollution" increased relative to the distance of the building
+        - example for pollutionArea=3, pollution level is 1-3:
+               1
+              121
+             12321
+            123x321
+             12321
+              121
+               1
