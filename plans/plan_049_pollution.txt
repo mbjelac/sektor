@@ -78,4 +78,7 @@ If two areas overlap, each adds it's pollution level to area squares.
         - soil = 8
         - polution = 80
         - when using value of soil in calculations (like for output of a building) the value 2 is used round(8 * 0.2)
+- affected location properties are indicated
+    - in building panel geography section the affected properties are indicated to be affected:
+        - their value is displayed as: "currentValue / originalValue ⚠️"
 
