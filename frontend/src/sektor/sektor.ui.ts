@@ -542,6 +542,9 @@ function drawPropertyOverlay(p: p5, propertyName: string) {
   for (let x = 0; x < SEKTOR_SIZE; x++) {
     for (let y = 0; y < SEKTOR_SIZE; y++) {
       const propertyValue = locations[x]?.[y]?.properties[propertyName] ?? 0;
+      // A black frame around a square holding none of the property reads as something being
+      // there, so a square holding none is left without a frame.
+      if (propertyValue === 0) continue;
       drawLocationHighlight(p, { x, y }, propertyValueColor(propertyName, propertyValue));
     }
   }

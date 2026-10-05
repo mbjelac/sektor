@@ -68,8 +68,8 @@ If two areas overlap, each adds it's pollution level to area squares.
     - 100% full pollution color
     - between 0% & 100% interpolate
 
-#3 Zero value location property overlay is confusing
-- if any location property is zero for a map square, do not display overlay frame for it at all
+#3 [done] Zero value location property overlay is confusing
+- [done] if any location property is zero for a map square, do not display overlay frame for it at all
 
 #4 Pollution affects location properties
 - location properties of a location with a non-zero pollution property are affected
