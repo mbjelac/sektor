@@ -4,7 +4,7 @@ import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 
 const PATTERNED_PROPERTIES = ["metals", "minerals", "uranium", "wind", "groundwater", "soil"];
-const ALL_PROPERTIES = [...PATTERNED_PROPERTIES, "insolation", "somethingNobodyDescribed"];
+const ALL_PROPERTIES = [...PATTERNED_PROPERTIES, "insolation", "pollution", "somethingNobodyDescribed"];
 
 const RUNS = 50;
 
@@ -57,6 +57,13 @@ describe("createLocationPropertyMatrix", () => {
     const dimLocations = runsOf("insolation").flatMap(matrix => matrix.flat()).filter(value => value < DIMMEST_SUNLIGHT);
 
     expect(dimLocations).toEqual([]);
+  });
+
+  // Nothing has stood in a sektor just made to foul its ground, so none of it is polluted.
+  it("leaves every location of a sektor just made unpolluted", () => {
+    const pollutedLocations = runsOf("pollution").flatMap(matrix => matrix.flat()).filter(value => value !== 0);
+
+    expect(pollutedLocations).toEqual([]);
   });
 
   // Wind does not settle anywhere: it comes in one edge of the map and leaves by the other, so

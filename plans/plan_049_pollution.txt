@@ -26,8 +26,8 @@ Table of polluting buildings:
 
 If two areas overlap, each adds it's pollution level to area squares.
 
-#1 Pollution is a location property
-- creating a level always sets pollution to 0 for all map squares
+#1 [done] Pollution is a location property
+- [done] creating a level always sets pollution to 0 for all map squares
 - [done] pollution is shown in the building panel of the selected building
 
 #2 Constructing a polluting building pollutes the area around it

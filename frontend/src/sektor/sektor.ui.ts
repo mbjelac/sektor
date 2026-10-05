@@ -206,6 +206,8 @@ function createTestLocations(gridSize: number): Location[][] {
         ore: ((x * 7 + z * 41) % propertyValueCount) + MODIFIER_MIN,
         insolation: ((x * 29 + z * 11) % propertyValueCount) + MODIFIER_MIN,
         wind: ((x * 37 + z * 19) % propertyValueCount) + MODIFIER_MIN,
+        // Nothing has been built in the test sektor to foul it.
+        pollution: 0,
       },
     }))
   );

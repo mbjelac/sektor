@@ -36,6 +36,7 @@ const MATRIX_CREATORS: { [propertyName: string]: MatrixCreator } = {
   wind: createWindMatrix,
   groundwater: createGroundwaterMatrix,
   soil: createSoilMatrix,
+  pollution: createUnpollutedMatrix,
 };
 
 // Metal runs in seams: a line of ground wandering across the map, here and there two tiles wide.
@@ -73,6 +74,12 @@ function createInsolationMatrix(randomNumber: RandomNumber): number[][] {
 // other, and now and then a second one.
 function createWindMatrix(randomNumber: RandomNumber): number[][] {
   return matrixAroundHotspots(windHotspots(randomNumber), randomNumber);
+}
+
+// Pollution is what buildings leave behind, not what the ground starts with: a sektor just made has
+// had nothing standing in it to foul it, so every location of it is clean.
+function createUnpollutedMatrix(): number[][] {
+  return Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => 0));
 }
 
 // Groundwater gathers in pockets: smaller than mineral blotches, and several of them.
