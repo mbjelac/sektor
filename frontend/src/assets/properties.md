@@ -5,4 +5,4 @@ minerals #9782ff
 uranium #ffcd4f
 insolation #ffff00
 wind #ebfdff
-
+pollution #ff0000
