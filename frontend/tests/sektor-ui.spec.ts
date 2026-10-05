@@ -272,12 +272,14 @@ test("displays the pollution overlay by how much of every location is fouled", a
   await expectMapScreenshot(page, "property-overlay-pollution", MIDDLE_OF_MAP);
 });
 
-test("displays the pollution of a location in the building panel as a percentage", async ({ page }) => {
+// The mine stands right beside TestSmokestack, on ground fouled 40 %, so its soil and groundwater
+// are shown as what is left of them beside what the ground held.
+test("displays the pollution of a location in the building panel as a percentage, and what it spoils", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-tag[data-building-tag="industry"]').click();
   await placeBuilding(page, "TestSmokestack");
 
-  await placeBuildingAtOffset(page, "TestMine", 60);
+  await placeBuildingAtOffset(page, "TestMine", -60);
 
   await expectScreenshot(page, "building-panel-polluted-location", "#building-panel");
 });

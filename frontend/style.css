@@ -518,6 +518,9 @@ body > main {
     font-family: sans-serif;
     font-size: 12px;
     align-items: center;
+    /* As tall as a row carrying the ⚠️ of a property pollution has spoiled, so that every row is
+       spaced the same whether or not it carries one. */
+    min-height: 20px;
 }
 
 .bp-property-value {

@@ -2,7 +2,7 @@ import propertiesMd from "./assets/properties.md?raw";
 import testPropertiesMd from "./assets/properties.test.md?raw";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../shared/modifierLimits";
 import { isTestMode } from "./testMode";
-import { MOST_POLLUTION, POLLUTION_PROPERTY } from "./sektor/Sektor";
+import { MOST_POLLUTION, POLLUTION_PROPERTY } from "./sektor/pollution";
 
 const source = isTestMode ? testPropertiesMd : propertiesMd;
 

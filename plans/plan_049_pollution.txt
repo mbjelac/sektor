@@ -71,8 +71,8 @@ If two areas overlap, each adds it's pollution level to area squares.
 #3 [done] Zero value location property overlay is confusing
 - [done] if any location property is zero for a map square, do not display overlay frame for it at all
 
-#4 Pollution affects location properties
-- location properties of a location with a non-zero pollution property are affected
+#4 [done] Pollution affects location properties
+- [done] location properties of a location with a non-zero pollution property are affected
     - affected properties:
         - soil
         - groundwater
@@ -82,7 +82,7 @@ If two areas overlap, each adds it's pollution level to area squares.
         - soil = 8
         - polution = 80
         - when using value of soil in calculations (like for output of a building) the value 2 is used because of round(8 * 0.2)
-- affected location properties are indicated
+- [done] affected location properties are indicated
     - in building panel geography section the affected properties are indicated to be affected:
         - their value is displayed as: "currentValue / originalValue ⚠️"
 

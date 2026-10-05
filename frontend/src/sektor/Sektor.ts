@@ -2,6 +2,7 @@
 import { BuildingDefinition, BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
 import { ELEVATION, SEA } from "../../../shared/terrain";
+import { MOST_POLLUTION, POLLUTION_PROPERTY, pollutedLocationProperties } from "./pollution";
 
 export type { BuildingLocation, BuildingCreation, Building, Location };
 
@@ -59,12 +60,8 @@ export interface CreateBuildingResult {
   addedBuildings: Building[];
 }
 
-// The location property telling how fouled the ground of a location is, as a percentage.
-export const POLLUTION_PROPERTY = "pollution";
 // How much more polluted a location is for every square nearer a polluting building it lies.
 const POLLUTION_STEP = 20;
-// Ground cannot be fouled more than all the way.
-export const MOST_POLLUTION = 100;
 
 export class Sektor {
   private buildings: Building[] = [];
@@ -365,10 +362,10 @@ export class Sektor {
   }
 
   // An output naming a location property is produced in the amount the building's own location
-  // has of that property, and a location which has nothing of it makes the building produce
-  // nothing, never a negative amount.
+  // has of that property, once pollution has spoiled what it spoils, and a location which has
+  // nothing of it makes the building produce nothing, never a negative amount.
   private getOutputAmounts(buildingFunction: BuildingFunction, location: BuildingLocation): ResourceThroughput[] {
-    const locationProperties = this.locations[location.x]?.[location.y]?.properties ?? {};
+    const locationProperties = pollutedLocationProperties(this.locations[location.x]?.[location.y]?.properties ?? {});
     return buildingFunction.outputs.map(output => ({
       name: output.name,
       value: output.locationProperty !== undefined

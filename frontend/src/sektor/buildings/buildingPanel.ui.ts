@@ -5,7 +5,8 @@ import { drawFloor, drawFloorWireframe } from "../../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../../shared/constants";
 import { trashIcon } from "../../icons";
 import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
-import { BuildingFunctionState, BuildingLocation, POLLUTION_PROPERTY } from "../Sektor";
+import { BuildingFunctionState, BuildingLocation } from "../Sektor";
+import { POLLUTION_PROPERTY, isAffectedByPollution, pollutedLocationProperties } from "../pollution";
 import { propertyDefinitions } from "../../properties";
 import { formatNumber } from "../../formatNumber";
 
@@ -164,11 +165,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
 
       const valueCell = document.createElement("span");
       valueCell.className = "bp-property-value";
-      // Pollution is how much of a location is fouled rather than how much it holds, so it is a
-      // percentage.
-      valueCell.textContent = propertyName === POLLUTION_PROPERTY
-        ? `${formatNumber(propertyValue)} %`
-        : formatNumber(propertyValue);
+      valueCell.textContent = propertyValueText(propertyName, propertyValue, locationProperties);
       row.appendChild(valueCell);
 
       propertiesSection.appendChild(row);
@@ -186,6 +183,18 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
 
   panelLocation = location;
   panelEl.scrollTop = scrollTop;
+}
+
+// Pollution is how much of a location is fouled rather than how much it holds, so it is a
+// percentage. A property pollution has spoiled is shown as what is left of it beside what the
+// ground held before, with a warning, so the player sees what the pollution costs them.
+function propertyValueText(propertyName: string, propertyValue: number, locationProperties: { [_: string]: number }): string {
+  if (propertyName === POLLUTION_PROPERTY) return `${formatNumber(propertyValue)} %`;
+  if (isAffectedByPollution(propertyName, locationProperties[POLLUTION_PROPERTY] ?? 0)) {
+    const pollutedValue = pollutedLocationProperties(locationProperties)[propertyName];
+    return `${formatNumber(pollutedValue)} / ${formatNumber(propertyValue)} ⚠️`;
+  }
+  return formatNumber(propertyValue);
 }
 
 export function hideBuildingPanel() {
