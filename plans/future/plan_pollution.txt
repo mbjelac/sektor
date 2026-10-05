@@ -33,7 +33,7 @@ If two areas overlap, each adds it's pollution level to area squares.
 #2 Constructing a polluting building pollutes the area around it
 - when building spec contains property pollutionArea, building is a polluting building and constructing it increases surrounding pollution location property
     - buildings.md Properties section contains property pollutionArea=X
-    - X is a number between 1 & 3
+    - X is a number between 1 & 4
     - area polluted is a manhattan distance of x from the building
         - example for area 3:
                .
@@ -44,7 +44,9 @@ If two areas overlap, each adds it's pollution level to area squares.
               ...
                .
     - the map's squares within the area have their location property "pollution" increased relative to the distance of the building
-        - example for pollutionArea=3, pollution level is 1-3:
+        - outer edge of the area is the lowest pollution
+        - value increasng as distance to polluting building decreases
+        - example for pollutionArea=3:
                1
               121
              12321
@@ -52,3 +54,10 @@ If two areas overlap, each adds it's pollution level to area squares.
              12321
               121
                1
+        - the values 1-4 are actually percentages
+            - 1 = 20%
+            - 2 = 40%
+            - 3 = 60%
+            - 4 = 80%
+    - pollution location property can have value between 0 & 100
+        - representing the percentage of how much a location is polluted
