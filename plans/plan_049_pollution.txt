@@ -63,6 +63,10 @@ If two areas overlap, each adds it's pollution level to area squares.
     - when a sektor is loaded with polluting buldings already in it, pollution properties are already set to modified levels
     - when a polluting building is destroyed, the pollution properties are decreased by appropriate amount
     - when displaying pollution in building panel geography, use " %" suffix
+- when pollution is selected as overlay in main geography panel, color overlay based on pollution percentage
+    - 0% black
+    - 100% full pollution color
+    - between 0% & 100% interpolate
 
 #3 Pollution affects location properties
 - location properties of a location with a non-zero pollution property are affected
