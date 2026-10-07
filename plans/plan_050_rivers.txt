@@ -1,0 +1,38 @@
+A river is a series of squares connected to each other linearly starting at one edge of the map and ending in another edge of the map.
+A river square may not have a building.
+
+Transport: Edges of a river square may have a bycicle bridge over it. Same types apply as for bicycle paths.
+
+Special case, a river may fork.
+
+Different river sizes - some rivers are narrow, some are wide.
+
+Water is animated.
+
+#1 A sektor may have a river flowing through it
+- when creating a sektor, first create ground (0) and sea (1), then *before* elevation create a river
+    - a sektor may have one river, with 50% probability
+    - terrain matrix values for river are 3, 4, 5 & 6
+    - a river should be generated from an *edge* of the map (not a sea coast!)
+    - then meander throught the map by flowing to the neighbouring square - sraight, left or right
+    - circling back in on itself is not allowed!
+    - when reaching a square on the sea coast, stop
+    - when reaching another map edge, stop
+    - use a value from 3 to 6 depending on the source of the river for that square:
+        - use one number for each direction from which the river has flowed into the square
+        - example:
+                .3....
+                .344..
+                ...3..
+                .553..
+                .3....
+            - the river started in the top-left corner of the map
+            - 3 is the value meaning river had flowed in from north
+            - then it takes a turn: 4 is the value meaning river had flowed in from west
+            - then turns again to south (3)
+            - then turns to west: 5 is the value meaning river had flowed in from east
+            - not in the example, but if the river had turned towards north we would use 6
+            - values are just for example, but whatever value chosen for whatever direction, this should be consistent for all generated rivers
+- proceed to create elevations on ground only (0)
+- render river as a blue strip going across the floor
+
