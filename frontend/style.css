@@ -523,6 +523,14 @@ body > main {
     min-height: 20px;
 }
 
+.bp-pollution-warning {
+    align-self: stretch;
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 12px;
+    text-align: center;
+}
+
 .bp-property-value {
     text-align: right;
 }

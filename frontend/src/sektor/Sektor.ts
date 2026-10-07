@@ -2,7 +2,7 @@
 import { BuildingDefinition, BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
 import { ELEVATION, SEA } from "../../../shared/terrain";
-import { MOST_POLLUTION, POLLUTION_PROPERTY, pollutedLocationProperties } from "./pollution";
+import { MOST_POLLUTION, POLLUTION_PROPERTY, isAffectedByPollution, pollutedLocationProperties } from "./pollution";
 
 export type { BuildingLocation, BuildingCreation, Building, Location };
 
@@ -313,6 +313,28 @@ export class Sektor {
     const building = this.findBuildingAt(location);
     if (!building) return false;
     return this.findThroughputValue(this.getOutputs(building, []), resourceType) > 0;
+  }
+
+  // Every building whose output pollution has decreased, so that all of them can be marked.
+  findBuildingsWithOutputDecreasedByPollution(): BuildingLocation[] {
+    return this.buildings
+      .filter(building => this.isOutputDecreasedByPollution(building.location))
+      .map(building => building.location);
+  }
+
+  // A building drawing what it makes out of a property pollution spoils makes less of it on fouled
+  // ground. Only what the building is doing counts: a function switched off makes nothing to lose.
+  isOutputDecreasedByPollution(location: BuildingLocation): boolean {
+    const building = this.findBuildingAt(location);
+    if (!building) return false;
+    const buildingDefinition = this.findBuildingDefinition(building.type);
+    if (!buildingDefinition) return false;
+    const pollution = this.locations[location.x]?.[location.y]?.properties[POLLUTION_PROPERTY] ?? 0;
+    const functionActivations = this.getFunctionActivations(building, buildingDefinition);
+    return buildingDefinition.buildingFunctions
+      .filter((_, functionIndex) => functionActivations[functionIndex])
+      .flatMap(buildingFunction => buildingFunction.outputs)
+      .some(output => output.locationProperty !== undefined && isAffectedByPollution(output.locationProperty, pollution));
   }
 
   private findThroughputValue(throughputs: ResourceThroughput[], resourceType: string): number {

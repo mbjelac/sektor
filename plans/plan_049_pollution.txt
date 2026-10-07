@@ -85,7 +85,7 @@ If two areas overlap, each adds it's pollution level to area squares.
     - in building panel geography section the affected properties are indicated to be affected:
         - their value is displayed as: "currentValue / originalValue ⚠️"
 
-#5 Buildings affected by pollution are visible
+#5 [done] Buildings affected by pollution are visible
 - [done] all buildings which depend on soil or groundwater for output AND are on polluted area
     - marked on map with yellow warning triangle
     - have warning in their building panel

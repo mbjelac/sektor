@@ -60,10 +60,11 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunctions, locationProperties, floorColor, showFloor, location, onDestroy, onToggleFunction }: {
+export function showBuildingPanel({ name, code, buildingFunctions, outputDecreasedByPollution, locationProperties, floorColor, showFloor, location, onDestroy, onToggleFunction }: {
   name: string,
   code: string,
   buildingFunctions: BuildingFunctionState[],
+  outputDecreasedByPollution?: boolean,
   locationProperties?: { [_: string]: number },
   floorColor: [number, number, number],
   showFloor?: boolean,
@@ -134,6 +135,15 @@ export function showBuildingPanel({ name, code, buildingFunctions, locationPrope
     functionBlock.dataset.functionIndex = String(functionIndex);
     panelEl!.appendChild(functionBlock);
   });
+
+  // However many of its outputs pollution has decreased, the building is warned of it once, under
+  // everything it consumes and produces.
+  if (outputDecreasedByPollution) {
+    const pollutionWarning = document.createElement("div");
+    pollutionWarning.className = "bp-pollution-warning";
+    pollutionWarning.textContent = "⚠️ Output decreased due to pollution!";
+    panelEl.appendChild(pollutionWarning);
+  }
 
   if (locationProperties) {
     const propertiesSection = document.createElement("div");

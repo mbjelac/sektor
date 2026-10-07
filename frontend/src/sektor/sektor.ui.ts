@@ -329,9 +329,10 @@ function getInitialEcosystemSupport(): number {
   return getSektorData(sektorId)?.initialEcosystemSupport ?? 0;
 }
 
-// A building whose function is starved is marked on the map, and what is starved only changes
-// with the sektor state, so the marked buildings are worked out there rather than every frame.
-let starvedBuildingLocations: BuildingLocation[] = [];
+// A building whose function is starved, or whose output pollution has decreased, is marked on the
+// map, and either only changes with the sektor state, so the marked buildings are worked out there
+// rather than every frame. A building warned of both is marked once.
+let warnedBuildingLocations: BuildingLocation[] = [];
 
 function updateSektorState() {
   const sektorState = sektor.getSektorState();
@@ -340,8 +341,10 @@ function updateSektorState() {
   const planetImportsAndExports = getPlanetImportsAndExportsWhileBuilding(sektorId, sektorState);
   updateSektorStatePanel(sektorState, planetImportsAndExports);
   updateMessages(sektorState, planetImportsAndExports, sektorState.habitatShortages);
-  starvedBuildingLocations = sektorState.starvedFunctions
-    .map(starvedFunction => starvedFunction.buildingLocation)
+  warnedBuildingLocations = [
+    ...sektorState.starvedFunctions.map(starvedFunction => starvedFunction.buildingLocation),
+    ...sektor.findBuildingsWithOutputDecreasedByPollution(),
+  ]
     .filter((location, index, locations) =>
       locations.findIndex(other => other.x === location.x && other.y === location.y) === index
     );
@@ -448,6 +451,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     name: placed.type,
     code: code,
     buildingFunctions: buildingState.buildingFunctions,
+    outputDecreasedByPollution: sektor.isOutputDecreasedByPollution(placed.location),
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
     floorColor: placedFloorColor,
     showFloor: definition?.properties.showFloor,
@@ -574,19 +578,19 @@ function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number
   }
 }
 
-const STARVATION_WARNING_SIZE = BLOCK_SIZE * 0.6;
-const STARVATION_WARNING_HEIGHT = BLOCK_SIZE * 0.85;
+const WARNING_SIZE = BLOCK_SIZE * 0.36;
+const WARNING_HEIGHT = BLOCK_SIZE * 0.595;
 
 // The warning is a flat sign standing upright over the building, like a signpost: it turns
 // around its upright axis to face the camera, but never tips away from the floor.
-function drawStarvationWarning(p: p5, location: BuildingLocation, cameraAngleY: number) {
+function drawWarning(p: p5, location: BuildingLocation, cameraAngleY: number) {
   const { wx, wz } = gridToWorld(location.x, location.y);
-  const half = STARVATION_WARNING_SIZE / 2;
+  const half = WARNING_SIZE / 2;
 
   p.push();
   p.noStroke();
   p.noLights();
-  p.translate(wx, -STARVATION_WARNING_HEIGHT, wz);
+  p.translate(wx, -WARNING_HEIGHT, wz);
   p.rotateY(cameraAngleY);
 
   p.fill(255, 221, 0);
@@ -599,13 +603,13 @@ function drawStarvationWarning(p: p5, location: BuildingLocation, cameraAngleY: 
   // The exclamation point sits just in front of the triangle, so the two do not fight over the
   // same depth.
   p.fill(0);
-  p.translate(0, 0, STARVATION_WARNING_SIZE * 0.02);
+  p.translate(0, 0, WARNING_SIZE * 0.02);
   p.push();
-  p.translate(0, -STARVATION_WARNING_SIZE * 0.05, 0);
-  p.plane(STARVATION_WARNING_SIZE * 0.1, STARVATION_WARNING_SIZE * 0.3);
+  p.translate(0, -WARNING_SIZE * 0.05, 0);
+  p.plane(WARNING_SIZE * 0.1, WARNING_SIZE * 0.3);
   p.pop();
-  p.translate(0, STARVATION_WARNING_SIZE * 0.22, 0);
-  p.plane(STARVATION_WARNING_SIZE * 0.1, STARVATION_WARNING_SIZE * 0.1);
+  p.translate(0, WARNING_SIZE * 0.22, 0);
+  p.plane(WARNING_SIZE * 0.1, WARNING_SIZE * 0.1);
 
   p.pop();
 }
@@ -1272,8 +1276,8 @@ const sektorUi = (p: p5) => {
       p.pop();
     }
 
-    for (const location of starvedBuildingLocations) {
-      drawStarvationWarning(p, location, camAngleY);
+    for (const location of warnedBuildingLocations) {
+      drawWarning(p, location, camAngleY);
     }
 
     document.getElementById("canvas-container")!.dataset.rendered = "true";
