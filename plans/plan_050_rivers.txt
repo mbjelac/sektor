@@ -41,3 +41,13 @@ Water is animated.
     - do not construct it
     - display error message: "notDryEnough"
 
+#3 Render river as a continuous flow of water
+- river is composed of straight sections & curves
+    - straight section is a river square which has a river in the north and south, or east & west
+    - a curve is a river square which has a river in any other combination except the two straight ones
+    - if a river square is on the edge of the map, assume there is a river square on the other side
+    - treat sea as river squares
+- render straight sections as strips of blue
+    - thickness 60% of the floor width
+- render curves as L-shapes with the same thickness as the strips
+
