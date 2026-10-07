@@ -51,3 +51,9 @@ Water is animated.
     - thickness 60% of the floor width
 - [done] render curves as L-shapes with the same thickness as the strips
 
+#4 A river location is labelled that way
+- when a player clicks on a location with a river, the building location panel displays:
+    - label: "River"
+    - image: that floor with river segment
+    - location geography regularly
+
