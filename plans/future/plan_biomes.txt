@@ -34,3 +34,7 @@ So, except for the Desert, all biome groups have sub-groups:
 - grassland: very little trees (and very sparesly wooded elevations)
 - forest: contains forests (buildings which can be cleared for negative points)
 - marine: like grassland, but mostly sea
+
+Desert has only
+- grassland (but no trees here at all)
+- marine
