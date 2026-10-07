@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Sektor } from "./Sektor";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
-import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
+import { ELEVATION, GROUND, RIVER_FROM_WEST, SEA } from "../../../shared/terrain";
 
 function buildingDefinition(name: string, inputs: { name: string, value: number }[], outputs: { name: string, value: number }[]): BuildingDefinition {
   return {
@@ -22,17 +22,18 @@ function createSektor(): Sektor {
   return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
 }
 
-// A sektor of three squares: dry ground, sea and rock, so that a test can build on each of them.
+// A sektor of four squares: dry ground, sea, rock and river, so that a test can build on each of them.
 const GROUND_LOCATION = { x: 0, y: 0 };
 const SEA_LOCATION = { x: 1, y: 0 };
 const ELEVATION_LOCATION = { x: 2, y: 0 };
+const RIVER_LOCATION = { x: 3, y: 0 };
 
 function createSektorWithSeaAndElevation(): Sektor {
   return new Sektor(
     [[{ properties: { soil: 1.0 } }]],
     testDefinitions,
     [],
-    [[GROUND], [SEA], [ELEVATION]],
+    [[GROUND], [SEA], [ELEVATION], [RIVER_FROM_WEST]],
   );
 }
 
@@ -58,6 +59,23 @@ describe("createBuilding", () => {
     const sektor = createSektorWithSeaAndElevation();
 
     const result = sektor.createBuilding({ type: "Mill", location: SEA_LOCATION });
+
+    expect({
+      result,
+      buildings: sektor.getState().buildings,
+    }).toEqual({
+      result: {
+        error: "notDryEnough",
+        addedBuildings: [],
+      },
+      buildings: [],
+    });
+  });
+
+  it("does not create a building on a square of river", () => {
+    const sektor = createSektorWithSeaAndElevation();
+
+    const result = sektor.createBuilding({ type: "Mill", location: RIVER_LOCATION });
 
     expect({
       result,

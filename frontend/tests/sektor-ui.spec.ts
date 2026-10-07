@@ -823,6 +823,19 @@ test("shows error when placing building on the sea", async ({ page }) => {
   await expect(page.locator("#notification")).toHaveText("notDryEnough");
 });
 
+// A river is no more dry land than the sea is: a click on it leaves the map as it was and says why.
+test("shows error when placing building on a river", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  // The test sektor's river comes in over the rim at the bottom of the screen, left of the middle.
+  await canvas.click({ position: { x: box!.width / 2 - 80, y: box!.height / 2 + 190 } });
+  await page.waitForTimeout(200);
+  await expect(page.locator("#notification")).toHaveText("notDryEnough");
+});
+
 // Every error is told the same way, so the look of one of them stands for all of them.
 test("shows an error in red over the map", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });

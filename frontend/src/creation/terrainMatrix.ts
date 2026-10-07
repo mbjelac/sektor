@@ -3,11 +3,24 @@
 // of it, so that the water a sektor has reads as a coast. How much of the map it takes is drawn
 // anew for every sektor, out of the few helpings there are.
 //
+// Half of all sektors have a river running through them. It comes in over the rim of the map where
+// the land meets it, wanders across the land a square at a time, and runs out again into the sea or
+// over the rim.
+//
 // What is left over is not all flat either: rock stands out of the dry land here and there, which
 // a player builds around as they do the sea.
 
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
-import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
+import {
+  ELEVATION,
+  GROUND,
+  isRiver,
+  RIVER_FROM_EAST,
+  RIVER_FROM_NORTH,
+  RIVER_FROM_SOUTH,
+  RIVER_FROM_WEST,
+  SEA,
+} from "../../../shared/terrain";
 import { RandomNumber } from "./randomNumber";
 
 // A square of the sektor's map, by how far along and across it lies.
@@ -35,6 +48,7 @@ export const ELEVATION_SQUARE_COUNTS = [
 export function createTerrainMatrix(randomNumber: RandomNumber): number[][] {
   const terrain = allGround();
   floodWithSea(terrain, randomNumber);
+  runRiver(terrain, randomNumber);
   raiseElevations(terrain, randomNumber);
   return terrain;
 }
@@ -55,6 +69,109 @@ function floodWithSea(terrain: number[][], randomNumber: RandomNumber) {
     sea.push(flooded);
   }
 }
+
+// A draw falling below this leaves the sektor without a river.
+const CHANCE_OF_NO_RIVER = 0.5;
+
+// A river comes in over the rim from one of the squares of land lying on it. A square of the rim
+// which already touches the sea is the coast rather than the rim, and no river comes in from there.
+function runRiver(terrain: number[][], randomNumber: RandomNumber) {
+  if (randomNumber() < CHANCE_OF_NO_RIVER) return;
+
+  const sources = RIVER_SOURCES.filter(source =>
+    terrain[source.square.x][source.square.z] === GROUND && !touchesSea(terrain, source.square)
+  );
+  if (sources.length === 0) return;
+
+  const source = sources[Math.floor(randomNumber() * sources.length)];
+  terrain[source.square.x][source.square.z] = source.flow.riverSquare;
+  // The river comes in from over the rim, so its first step takes it straight into the land rather
+  // than along the rim it has just crossed.
+  flowOnward(terrain, source.square, [source.flow], randomNumber);
+}
+
+// The river flows on from the square it has reached, into the next square straight ahead, to the
+// left or to the right, whichever the draw falls on first. A way which runs it into a corner with
+// nowhere left to go is taken back and another one tried, so that every river ends in the sea or
+// over the rim rather than in the middle of the land. Whether it got there is what is answered.
+function flowOnward(terrain: number[][], square: Square, flows: Flow[], randomNumber: RandomNumber): boolean {
+  for (const flow of inRandomOrder(flows, randomNumber)) {
+    const next = { x: square.x + flow.x, z: square.z + flow.z };
+    if (!canRiverFlowInto(terrain, next, square)) continue;
+
+    terrain[next.x][next.z] = flow.riverSquare;
+    if (isRiverMouth(terrain, next)) return true;
+    if (flowOnward(terrain, next, flowsStraightOrTurning(flow), randomNumber)) return true;
+    terrain[next.x][next.z] = GROUND;
+  }
+  return false;
+}
+
+// A river flows only over land, and never back into itself: the square it flows into touches no
+// river but the square it flows in from, or the river would come round to run alongside itself.
+function canRiverFlowInto(terrain: number[][], square: Square, flowingFrom: Square): boolean {
+  if (!isOnMap(square) || terrain[square.x][square.z] !== GROUND) return false;
+  return squaresTouching(square).every(touching =>
+    !isRiver(terrain[touching.x][touching.z]) || (touching.x === flowingFrom.x && touching.z === flowingFrom.z)
+  );
+}
+
+// A river ends where it reaches the sea, or where it reaches the rim of the map and runs out over it.
+function isRiverMouth(terrain: number[][], square: Square): boolean {
+  return touchesSea(terrain, square) || isOnEdge(square);
+}
+
+function touchesSea(terrain: number[][], square: Square): boolean {
+  return squaresTouching(square).some(touching => terrain[touching.x][touching.z] === SEA);
+}
+
+function isOnEdge(square: Square): boolean {
+  return square.x === 0 || square.z === 0 || square.x === SEKTOR_SIZE - 1 || square.z === SEKTOR_SIZE - 1;
+}
+
+function inRandomOrder<Item>(items: Item[], randomNumber: RandomNumber): Item[] {
+  const remaining = [...items];
+  const ordered: Item[] = [];
+  while (remaining.length > 0) {
+    ordered.push(...remaining.splice(Math.floor(randomNumber() * remaining.length), 1));
+  }
+  return ordered;
+}
+
+// A step of the river from one square to the next, and what the square it steps into is marked as:
+// the side of it the river came in from.
+interface Flow {
+  x: number;
+  z: number;
+  riverSquare: number;
+}
+
+const FLOWS: Flow[] = [
+  { x: 0, z: 1, riverSquare: RIVER_FROM_NORTH },
+  { x: 1, z: 0, riverSquare: RIVER_FROM_WEST },
+  { x: -1, z: 0, riverSquare: RIVER_FROM_EAST },
+  { x: 0, z: -1, riverSquare: RIVER_FROM_SOUTH },
+];
+
+// A river goes on the way it was going, or turns a quarter to either side. It never turns right
+// round, which would take it straight back up itself.
+function flowsStraightOrTurning(flow: Flow): Flow[] {
+  return [flow, flowAlong(flow.z, -flow.x), flowAlong(-flow.z, flow.x)];
+}
+
+function flowAlong(x: number, z: number): Flow {
+  return FLOWS.find(flow => flow.x === x && flow.z === z)!;
+}
+
+// Every square on the rim of the map a river can come in from, and which way it flows coming in:
+// straight away from the rim. A corner lies on two sides of the rim, and a river can come in over
+// either of them.
+const RIVER_SOURCES: { square: Square, flow: Flow }[] = Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>
+  Array.from({ length: SEKTOR_SIZE }, (_alsoUnused, z) => ({ x, z })))
+  .flat()
+  .flatMap(square => FLOWS
+    .filter(flow => !isOnMap({ x: square.x - flow.x, z: square.z - flow.z }))
+    .map(flow => ({ square, flow })));
 
 // Rock stands where it stands: elevation has no shape of its own and is scattered over whatever
 // dry land the sea has left, never twice on the same square.

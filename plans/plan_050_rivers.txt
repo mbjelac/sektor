@@ -9,8 +9,8 @@ Different river sizes - some rivers are narrow, some are wide.
 
 Water is animated.
 
-#1 A sektor may have a river flowing through it
-- when creating a sektor, first create ground (0) and sea (1), then *before* elevation create a river
+#1 [done] A sektor may have a river flowing through it
+- [done] when creating a sektor, first create ground (0) and sea (1), then *before* elevation create a river
     - a sektor may have one river, with 50% probability
     - terrain matrix values for river are 3, 4, 5 & 6
     - a river should be generated from an *edge* of the map (not a sea coast!)
@@ -33,21 +33,21 @@ Water is animated.
             - then turns to west: 5 is the value meaning river had flowed in from east
             - not in the example, but if the river had turned towards north we would use 6
             - values are just for example, but whatever value chosen for whatever direction, this should be consistent for all generated rivers
-- proceed to create elevations on ground only (0)
-- render river as a blue strip going across the floor
+- [done] proceed to create elevations on ground only (0)
+- [done] render river as a blue strip going across the floor
 
-#2 Buildings cannot be built on rivers
-- if a player attempts to construct a building on a river
+#2 [done] Buildings cannot be built on rivers
+- [done] if a player attempts to construct a building on a river
     - do not construct it
     - display error message: "notDryEnough"
 
-#3 Render river as a continuous flow of water
-- river is composed of straight sections & curves
+#3 [done] Render river as a continuous flow of water
+- [done] river is composed of straight sections & curves
     - straight section is a river square which has a river in the north and south, or east & west
     - a curve is a river square which has a river in any other combination except the two straight ones
     - if a river square is on the edge of the map, assume there is a river square on the other side
     - treat sea as river squares
-- render straight sections as strips of blue
+- [done] render straight sections as strips of blue
     - thickness 60% of the floor width
-- render curves as L-shapes with the same thickness as the strips
+- [done] render curves as L-shapes with the same thickness as the strips
 

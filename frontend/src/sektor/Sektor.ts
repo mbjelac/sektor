@@ -1,7 +1,7 @@
 
 import { BuildingDefinition, BuildingFunction, BuildingFunctionOutput, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
-import { ELEVATION, SEA } from "../../../shared/terrain";
+import { ELEVATION, isRiver, SEA } from "../../../shared/terrain";
 import {
   MOST_POLLUTION,
   POLLUTION_PROPERTY,
@@ -415,7 +415,7 @@ export class Sektor {
   }
 
   createBuilding(building: BuildingCreation): CreateBuildingResult {
-    if (this.isSea(building.location)) {
+    if (this.isSea(building.location) || this.isRiver(building.location)) {
       return { error: "notDryEnough", addedBuildings: [] };
     }
 
@@ -482,6 +482,11 @@ export class Sektor {
   // Nothing stands in open water, so a square of sea is not a square to build on.
   private isSea(location: BuildingLocation): boolean {
     return this.terrain[location.x]?.[location.y] === SEA;
+  }
+
+  // A river is open water as much as the sea is, however narrow it runs.
+  private isRiver(location: BuildingLocation): boolean {
+    return isRiver(this.terrain[location.x]?.[location.y]);
   }
 
   // Rock is no ground to build on either, and unlike the sea it is not going anywhere: a square of

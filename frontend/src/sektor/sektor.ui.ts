@@ -26,7 +26,9 @@ import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
-import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
+import { ELEVATION, GROUND, isRiver, RIVER_FROM_EAST, RIVER_FROM_NORTH, SEA } from "../../../shared/terrain";
+import { drawRiver } from "./river.ui";
+import { riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
@@ -239,8 +241,8 @@ function getTerrain(): number[][] {
   return Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => GROUND));
 }
 
-// The test sektor has a bay in one corner, rock standing about the rim, and dry land everywhere
-// else, so that the tests see water, rock, land and the coast between them, in the same place
+// The test sektor has a bay in one corner, rock standing about the rim, a river coming in over the
+// rim at the far side and turning to run out over the rim again, and dry land everywhere else, so that the tests see water, rock, land and the coast between them, in the same place
 // every time. The middle of the map is left plain ground, as that is where a test puts its
 // buildings, and so are the four corners, one of which a test builds on to see the sides of a
 // floor.
@@ -252,12 +254,18 @@ const TEST_TERRAIN_ROWS = [
   "..........",
   ".........^",
   "..........",
-  "..........",
-  "^.........",
-  ".^........",
+  "......5333",
+  "^.....5...",
+  ".^....5...",
 ];
 
-const TEST_TERRAIN_SQUARES: { [drawn: string]: number } = { "~": SEA, "^": ELEVATION, ".": GROUND };
+const TEST_TERRAIN_SQUARES: { [drawn: string]: number } = {
+  "~": SEA,
+  "^": ELEVATION,
+  ".": GROUND,
+  "3": RIVER_FROM_NORTH,
+  "5": RIVER_FROM_EAST,
+};
 
 function createTestTerrain(): number[][] {
   return TEST_TERRAIN_ROWS.map(row => [...row].map(square => TEST_TERRAIN_SQUARES[square]));
@@ -653,6 +661,7 @@ function bakeOpaqueFloors(p: p5) {
       drawSeaBed(p);
     } else {
       drawFloor(p, BLOCK_SIZE, floorColorAt(x, z));
+      if (isRiverLocation(x, z)) drawRiver(p, riverSides(terrain, x, z));
     }
   });
 }
@@ -777,6 +786,10 @@ function floorColorAt(gx: number, gy: number): [number, number, number] {
 
 function isSeaLocation(gx: number, gy: number): boolean {
   return terrain[gx]?.[gy] === SEA;
+}
+
+function isRiverLocation(gx: number, gy: number): boolean {
+  return isRiver(terrain[gx]?.[gy]);
 }
 
 function isElevationLocation(gx: number, gy: number): boolean {
