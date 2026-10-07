@@ -86,11 +86,12 @@ If two areas overlap, each adds it's pollution level to area squares.
         - their value is displayed as: "currentValue / originalValue ⚠️"
 
 #5 Buildings affected by pollution are visible
-- all buildings which depend on soil or groundwater for output AND are on polluted area
+- [done] all buildings which depend on soil or groundwater for output AND are on polluted area
     - marked on map with yellow warning triangle
     - have warning in their building panel
         - beneath input & output table
         - text: "⚠️ Output decreased due to pollution!"
+        - text color: white
 
 #6 Pollution affects some buildings directly
 - buildings with specified property are affected by pollution
