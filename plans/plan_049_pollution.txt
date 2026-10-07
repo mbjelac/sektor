@@ -112,3 +112,4 @@ If two areas overlap, each adds it's pollution level to area squares.
     - display (only one) warning
         - beneath input & output table
         - text: "⚠️ Output decreased due to pollution!"
+        - text color: white
