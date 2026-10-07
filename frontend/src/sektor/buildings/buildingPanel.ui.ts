@@ -124,6 +124,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, outputDecreas
     const functionBlock = createFunctionDisplay({
       buildingFunction: buildingFunctionState.buildingFunction,
       outputAmounts: buildingFunctionState.outputAmounts,
+      pollution: locationProperties?.[POLLUTION_PROPERTY],
       activation: switchable
         ? {
           active: buildingFunctionState.active,

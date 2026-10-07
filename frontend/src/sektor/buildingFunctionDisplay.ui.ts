@@ -4,15 +4,17 @@ import { BuildingFunction, BuildingFunctionOutput, ResourceThroughput } from "./
 import { arrowRightIcon, exclamationTriangleSolidIcon } from "../icons";
 import { formatNumber } from "../formatNumber";
 import { propertyDefinitions } from "../properties";
+import { isOutputAffectedByPollution } from "./pollution";
 
 // Only a building with several functions can have them turned on and off, so a function shown
 // without an activation gets no activity label. A function which is only being looked at, not
 // played, gets the label without a toggle to change it by.
 // A building which is not on the map yet stands on no location, so it is shown without output
-// amounts, which only a location it stands on can decide.
-export function createFunctionDisplay({ buildingFunction, outputAmounts, activation, starved }: {
+// amounts, which only a location it stands on can decide, and without the pollution of one.
+export function createFunctionDisplay({ buildingFunction, outputAmounts, pollution, activation, starved }: {
   buildingFunction: BuildingFunction,
   outputAmounts?: ResourceThroughput[],
+  pollution?: number,
   activation?: { active: boolean, onToggle?: () => void },
   starved?: boolean,
 }): HTMLElement {
@@ -37,7 +39,7 @@ export function createFunctionDisplay({ buildingFunction, outputAmounts, activat
   arrowEl.innerHTML = arrowRightIcon;
   functionDisplay.appendChild(arrowEl);
 
-  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts));
+  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0));
 
   return functionBlock;
 }
@@ -137,7 +139,7 @@ function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
   return table;
 }
 
-function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts?: ResourceThroughput[]): HTMLElement {
+function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-outputs-table";
 
@@ -167,7 +169,7 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts?: R
 
     const amountCell = document.createElement("div");
     amountCell.className = "bf-outputs-cell bf-outputs-amount";
-    amountCell.textContent = findOutputAmount(output, outputAmounts);
+    amountCell.textContent = outputAmountText(output, outputAmounts, pollution);
     row.appendChild(amountCell);
 
     table.appendChild(row);
@@ -178,6 +180,14 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts?: R
   }
 
   return table;
+}
+
+// An output pollution has cut down is shown as what is left of it beside what the building makes
+// on clean ground, with a warning, so the player sees what the pollution costs them.
+function outputAmountText(output: BuildingFunctionOutput, outputAmounts: ResourceThroughput[] | undefined, pollution: number): string {
+  const outputAmount = findOutputAmount(output, outputAmounts);
+  if (!isOutputAffectedByPollution(output, pollution)) return outputAmount;
+  return `${outputAmount} / ${formatNumber(output.value ?? 0)} ⚠️`;
 }
 
 // The amount of an output named after a location property is the property's value on the

@@ -26,7 +26,22 @@ describe("FOREST_DEFINITION", () => {
 
     expect({ imports: sektorState.imports, exports: sektorState.exports }).toEqual({
       imports: [],
-      exports: [{ name: "EcosystemSupport", value: 14 }],
+      exports: [{ name: "EcosystemSupport", value: 5 }],
     });
+  });
+
+  // 5 * (100 % - 40 %) = 3.
+  it("gives less ecosystem support on polluted ground", () => {
+    const sektor = new Sektor([[{ properties: { pollution: 40 } }]], [FOREST_DEFINITION], ["HealthPhysical", "HealthSocial", "HealthMental"]);
+    sektor.loadState({ buildings: [{ type: "Forest", location: { x: 0, y: 0 } }] });
+
+    expect(sektor.getSektorState().exports).toEqual([{ name: "EcosystemSupport", value: 3 }]);
+  });
+
+  it("is a building whose output pollution has decreased on polluted ground", () => {
+    const sektor = new Sektor([[{ properties: { pollution: 40 } }]], [FOREST_DEFINITION], []);
+    sektor.loadState({ buildings: [{ type: "Forest", location: { x: 0, y: 0 } }] });
+
+    expect(sektor.findBuildingsWithOutputDecreasedByPollution()).toEqual([{ x: 0, y: 0 }]);
   });
 });

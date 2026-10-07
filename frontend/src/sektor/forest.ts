@@ -15,14 +15,15 @@ export const ECOSYSTEM_SUPPORT_RESOURCE = "EcosystemSupport";
 export const FOREST_DEFINITION: BuildingDefinition = {
   name: FOREST_NAME,
   renderingCode: "",
-  // A forest takes nothing in: what it gives, it gives by standing there.
+  // A forest takes nothing in: what it gives, it gives by standing there, and fouled ground gives
+  // less of all of it.
   buildingFunctions: [{
     inputs: [],
     outputs: [
-      { name: "HealthPhysical", value: 2 },
-      { name: "HealthSocial", value: 2 },
-      { name: "HealthMental", value: 2 },
-      { name: ECOSYSTEM_SUPPORT_RESOURCE, value: 14 },
+      { name: "HealthPhysical", value: 2, affectedByPollution: true },
+      { name: "HealthSocial", value: 2, affectedByPollution: true },
+      { name: "HealthMental", value: 2, affectedByPollution: true },
+      { name: ECOSYSTEM_SUPPORT_RESOURCE, value: 5, affectedByPollution: true },
     ],
   }],
   properties: {},

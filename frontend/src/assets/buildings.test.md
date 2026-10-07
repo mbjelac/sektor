@@ -254,3 +254,21 @@ Fuel 1
 
 tags=industry
 pollutionArea=2
+
+# TestPurifier
+
+## Render
+
+```
+pri4 s(24,24,12) t(0,0,0) c(#66bbaa)
+```
+
+## Function
+
+Energy 1
+->
+Water 7 pollution
+
+## Properties
+
+tags=industry

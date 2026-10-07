@@ -114,14 +114,14 @@ If two areas overlap, each adds it's pollution level to area squares.
         - text: "⚠️ Output decreased due to pollution!"
         - text color: white
 
-#7 Forests are affected by pollution
-- modify Forest building function as:
+#7 [done] Forests are affected by pollution
+- [done] modify Forest building function as:
     ->
-    HealthPhysical 1 pollution
-    HealthSocial 1 pollution
-    HealthMental 1 pollution
+    HealthPhysical 2 pollution
+    HealthSocial 2 pollution
+    HealthMental 2 pollution
     EcosystemSupport 5 pollution
-- mark forest on polluted location with floating warning triangle
+- [done] mark forest on polluted location with floating warning triangle
 
 #8 Player is notified about pollution
 - if at least one building is affected by pollution (whether from decreased location property or output directly)

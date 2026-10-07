@@ -6,6 +6,9 @@ export interface BuildingFunctionOutput {
   name: string;
   value?: number;
   locationProperty?: string;
+  // An output made in an amount, which the pollution of the building's location cuts down to
+  // its own percentage of that amount.
+  affectedByPollution?: boolean;
 }
 
 export interface BuildingFunction {
@@ -18,6 +21,9 @@ export interface BuildingFunction {
 }
 
 const ALWAYS_ACTIVE_VALUE = "always";
+
+// Written after the amount of an output which pollution affects.
+const AFFECTED_BY_POLLUTION_MARKER = "pollution";
 
 // The furthest a building can foul the ground around it.
 const LARGEST_POLLUTION_AREA = 4;
@@ -198,12 +204,13 @@ function parseBuildingFunction(lines: string[]): BuildingFunction {
       alwaysActive = activeMatch[1].trim() === ALWAYS_ACTIVE_VALUE;
       continue;
     }
-    const match = trimmed.match(/^(\S+)\s+(\S+)$/);
+    const match = trimmed.match(/^(\S+)\s+(\S+)(?:\s+(\S+))?$/);
     if (!match) continue;
     const resourceName = match[1];
     const amountOrProperty = match[2];
+    const marker = match[3];
     if (seenOutputSeparator) {
-      outputs.push(parseOutput(resourceName, amountOrProperty));
+      outputs.push(parseOutput(resourceName, amountOrProperty, marker));
     } else if (isAmount(amountOrProperty)) {
       inputs.push({ name: resourceName, value: parseInt(amountOrProperty) });
     }
@@ -222,11 +229,13 @@ function parseBuildingFunction(lines: string[]): BuildingFunction {
 }
 
 // An output is written either with the amount it produces or with the name of the location
-// property whose value on the building's location is the amount it produces.
-function parseOutput(resourceName: string, amountOrProperty: string): BuildingFunctionOutput {
-  return isAmount(amountOrProperty)
-    ? { name: resourceName, value: parseInt(amountOrProperty) }
-    : { name: resourceName, locationProperty: amountOrProperty };
+// property whose value on the building's location is the amount it produces. An amount may be
+// followed by the marker of an output pollution affects.
+function parseOutput(resourceName: string, amountOrProperty: string, marker: string | undefined): BuildingFunctionOutput {
+  if (!isAmount(amountOrProperty)) return { name: resourceName, locationProperty: amountOrProperty };
+  return marker === AFFECTED_BY_POLLUTION_MARKER
+    ? { name: resourceName, value: parseInt(amountOrProperty), affectedByPollution: true }
+    : { name: resourceName, value: parseInt(amountOrProperty) };
 }
 
 function isAmount(amountOrProperty: string): boolean {

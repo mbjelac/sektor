@@ -1,8 +1,15 @@
 
-import { BuildingDefinition, BuildingFunction, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
+import { BuildingDefinition, BuildingFunction, BuildingFunctionOutput, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
 import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
 import { ELEVATION, SEA } from "../../../shared/terrain";
-import { MOST_POLLUTION, POLLUTION_PROPERTY, isAffectedByPollution, pollutedLocationProperties } from "./pollution";
+import {
+  MOST_POLLUTION,
+  POLLUTION_PROPERTY,
+  isAffectedByPollution,
+  isOutputAffectedByPollution,
+  pollutedLocationProperties,
+  pollutedOutputAmount,
+} from "./pollution";
 
 export type { BuildingLocation, BuildingCreation, Building, Location };
 
@@ -323,7 +330,8 @@ export class Sektor {
   }
 
   // A building drawing what it makes out of a property pollution spoils makes less of it on fouled
-  // ground. Only what the building is doing counts: a function switched off makes nothing to lose.
+  // ground, and so does a building making an output pollution affects. Only what the building is
+  // doing counts: a function switched off makes nothing to lose.
   isOutputDecreasedByPollution(location: BuildingLocation): boolean {
     const building = this.findBuildingAt(location);
     if (!building) return false;
@@ -334,7 +342,10 @@ export class Sektor {
     return buildingDefinition.buildingFunctions
       .filter((_, functionIndex) => functionActivations[functionIndex])
       .flatMap(buildingFunction => buildingFunction.outputs)
-      .some(output => output.locationProperty !== undefined && isAffectedByPollution(output.locationProperty, pollution));
+      .some(output =>
+        (output.locationProperty !== undefined && isAffectedByPollution(output.locationProperty, pollution))
+        || isOutputAffectedByPollution(output, pollution)
+      );
   }
 
   private findThroughputValue(throughputs: ResourceThroughput[], resourceType: string): number {
@@ -385,15 +396,22 @@ export class Sektor {
 
   // An output naming a location property is produced in the amount the building's own location
   // has of that property, once pollution has spoiled what it spoils, and a location which has
-  // nothing of it makes the building produce nothing, never a negative amount.
+  // nothing of it makes the building produce nothing, never a negative amount. An output made in
+  // an amount which pollution affects is cut down by the pollution of the location.
   private getOutputAmounts(buildingFunction: BuildingFunction, location: BuildingLocation): ResourceThroughput[] {
     const locationProperties = pollutedLocationProperties(this.locations[location.x]?.[location.y]?.properties ?? {});
+    const pollution = locationProperties[POLLUTION_PROPERTY] ?? 0;
     return buildingFunction.outputs.map(output => ({
       name: output.name,
       value: output.locationProperty !== undefined
         ? Math.max(0, locationProperties[output.locationProperty] ?? 0)
-        : output.value ?? 0,
+        : this.getOutputAmount(output, pollution),
     }));
+  }
+
+  private getOutputAmount(output: BuildingFunctionOutput, pollution: number): number {
+    const amount = output.value ?? 0;
+    return isOutputAffectedByPollution(output, pollution) ? pollutedOutputAmount(amount, pollution) : amount;
   }
 
   createBuilding(building: BuildingCreation): CreateBuildingResult {

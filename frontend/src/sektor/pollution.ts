@@ -1,3 +1,5 @@
+import { BuildingFunctionOutput } from "./buildings/parseBuildingDefinitions";
+
 // The location property telling how fouled the ground of a location is, as a percentage.
 export const POLLUTION_PROPERTY = "pollution";
 // Ground cannot be fouled more than all the way.
@@ -22,4 +24,15 @@ export function pollutedLocationProperties(locationProperties: { [propertyName: 
 // A property pollution spoils is only affected at a location which is fouled at all.
 export function isAffectedByPollution(propertyName: string, pollution: number): boolean {
   return pollution > 0 && POLLUTION_AFFECTED_PROPERTIES.includes(propertyName);
+}
+
+// An output marked as affected by pollution is only affected on a location which is fouled at all.
+export function isOutputAffectedByPollution(output: BuildingFunctionOutput, pollution: number): boolean {
+  return pollution > 0 && output.affectedByPollution === true;
+}
+
+// An output pollution affects is made only in the part of its amount the clean part of the ground
+// comes to, as a property pollution spoils is: what the fouled percentage takes away is lost.
+export function pollutedOutputAmount(amount: number, pollution: number): number {
+  return Math.round(amount * (MOST_POLLUTION - pollution) / MOST_POLLUTION);
 }

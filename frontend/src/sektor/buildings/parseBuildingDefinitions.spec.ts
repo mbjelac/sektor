@@ -250,6 +250,26 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].properties).toEqual({ minLevel: 4 });
   });
 
+  it("parses an output marked as affected by pollution", () => {
+    const result = parseBuildingDefinitions([
+      "# Purifier",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Function",
+      "Energy 2",
+      "->",
+      "Water 5 pollution",
+      "Steam 1",
+    ]);
+
+    expect(result[0].buildingFunctions[0].outputs).toEqual([
+      { name: "Water", value: 5, affectedByPollution: true },
+      { name: "Steam", value: 1 },
+    ]);
+  });
+
   it("parses pollutionArea property", () => {
     const result = parseBuildingDefinitions([
       "# Smokestack",

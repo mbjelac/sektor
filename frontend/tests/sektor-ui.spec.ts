@@ -305,6 +305,27 @@ test("warns in the building panel about output decreased by pollution", async ({
   await expectScreenshot(page, "output-decreased-by-pollution-warning", "#building-panel");
 });
 
+// TestPurifier's water is marked as affected by pollution, so beside TestSmokestack, on ground
+// fouled 40 %, it makes 7 * (100 % - 40 %) = 4.2, rounded to 4.
+async function placePurifierBesideSmokestack(page: Page) {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await placeBuilding(page, "TestSmokestack");
+  await placeBuildingAtOffset(page, "TestPurifier", -60);
+}
+
+test("marks a building whose output pollution affects on the map", async ({ page }) => {
+  await placePurifierBesideSmokestack(page);
+
+  await expectMapScreenshot(page, "output-affected-by-pollution", MIDDLE_OF_MAP);
+});
+
+test("displays an output pollution affects in the building panel as what is left of it beside its whole amount", async ({ page }) => {
+  await placePurifierBesideSmokestack(page);
+
+  await expectScreenshot(page, "output-affected-by-pollution-panel", "#building-panel");
+});
+
 test("deselects the building in the toolbar when clicked outside of the map", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
