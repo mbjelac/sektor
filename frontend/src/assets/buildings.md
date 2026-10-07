@@ -1817,7 +1817,7 @@ WorkMaintenance 2
 EnergyElectric 1
 Water 2
 ->
-HealthSocial 8
+HealthSocial 8 pollution
 
 ## Properties
 
@@ -1935,9 +1935,9 @@ EnergyElectric 1
 Water 2
 WorkMaintenance 2
 ->
-HealthPhysical 2
-HealthMental 2
-HealthSocial 4
+HealthPhysical 2 pollution
+HealthMental 2 pollution
+HealthSocial 4 pollution
 
 ## Properties
 
@@ -2055,7 +2055,7 @@ EnergyElectric 4
 WorkEducational 4
 WorkMaintenance 1
 ->
-Childcare 10
+Childcare 10 pollution
 Sewage 6
 
 ## Properties
