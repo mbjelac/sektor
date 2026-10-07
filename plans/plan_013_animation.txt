@@ -80,3 +80,9 @@ because in a timespan of 200ms there will be 10 steps.
         - t is millisecond delay between a single step
         - when any r param increases past 360, subtract 360 (these are degrees)
             - same for -360 (add 360 then)
+- [done] rotation offset moves the point an object rotates about
+    - function ro(dx,dy,dz) specifies the offset of the rotation point
+        - by default, an object rotates about its centre
+        - dx, dy, dz: offset of the rotation point from the object's centre in the 3 axes, in the same units as t
+        - applies to both rotation (r) and rotation animation (ar)
+        - example: blades of a windmill all rotate about the hub, not about their own centres

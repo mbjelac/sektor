@@ -34,7 +34,7 @@ test("hollow pyramid cut above its hollow", async ({ page }) => {
 
 // Turned upside down to show that the hollow still opens at the base of a cut off pyramid.
 test("hollow pyramid with frustum seen from its base", async ({ page }) => {
-  await page.locator("#editor textarea").fill("pyr4 h(80) f(50) t(0,0,100) r(0,180,0)");
+  await page.locator("#editor textarea").fill("pyr4 h(80) f(50) r(0,180,0)");
   await expectScreenshot(page, "pyr4-frustum-hollow-base");
 });
 
@@ -60,6 +60,6 @@ test("hollow cone cut above its hollow", async ({ page }) => {
 
 // Turned upside down to show that the hollow still opens at the base of a cut off cone.
 test("hollow cone with frustum seen from its base", async ({ page }) => {
-  await page.locator("#editor textarea").fill("con h(80) f(50) t(0,0,100) r(0,180,0)");
+  await page.locator("#editor textarea").fill("con h(80) f(50) r(0,180,0)");
   await expectScreenshot(page, "con-frustum-hollow-base");
 });

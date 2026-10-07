@@ -16,3 +16,10 @@ for (const { axis, template } of rotateCases) {
     });
   }
 }
+
+// Moved down to the middle of its base, the point it turns about stays on the floor, so the
+// pyramid tips over about the middle of its base instead of turning about its own centre.
+test("rotate about an offset point: pyr3 r(0,90,0) ro(0,0,-50)", async ({ page }) => {
+  await page.locator("#editor textarea").fill("pyr3 r(0,90,0) ro(0,0,-50)");
+  await expectScreenshot(page, "rotate-offset");
+});

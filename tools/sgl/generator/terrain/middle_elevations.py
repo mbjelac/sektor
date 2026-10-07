@@ -1,4 +1,4 @@
-# Generates the "middle" elevation triangles: frontend/src/assets/terrain/grassland/elevations/middle/<edge><variant>.sgl
+# Generates the "middle" elevation triangles: frontend/src/assets/terrain/temperate/elevations/middle/<edge><variant>.sgl
 #
 # For each variant and each edge, a whole outcrop square is generated with a pile of rocks rising towards that edge
 # (like the "Neighbouring elevation" example in frontend/src/assets/terrain.md), so that the neighbouring square's
@@ -11,17 +11,16 @@ import random
 import re
 
 from outcrop import (random_rock, rock_color, random_tree_color, tree_size, rock_line, top_of, roof_under,
-                     circle, inside, rock_geometry)
+                     circle, inside, rock_geometry, LOW_ROCK_TOP)
 
 TILE_EDGE = 50
 PILE_REACH = 38
-LOW_ROCK_TOP = 10.75
 VARIANTS = 10
 SEED = 9044
 # Outward unit vector of each high edge.
 EDGE_DIRECTIONS = {'e': (1, 0), 's': (0, 1), 'w': (-1, 0), 'n': (0, -1)}
 OUTPUT_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..',
-                                'frontend', 'src', 'assets', 'terrain', 'grassland', 'elevations', 'middle')
+                                'frontend', 'src', 'assets', 'terrain', 'temperate', 'elevations', 'middle')
 
 
 def main():
@@ -65,7 +64,7 @@ def pressed_rock(direction, along, size_range, top_offset_range, outward_target,
     direction_x, direction_y = direction
     along = along + random.randint(-3, 3)
     rock = [[random.randint(*size_range), random.randint(*size_range), 30],
-            [35 * direction_x - along * direction_y, 35 * direction_y + along * direction_x, random.choice([-5, 0])],
+            [35 * direction_x - along * direction_y, 35 * direction_y + along * direction_x, random.choice([-11, -6])],
             [random.randint(-20, 140), random.randint(-8, 11), random.choice([-5, 0, 0])],
             rock_color()]
     wanted_top = max(LOW_ROCK_TOP, falling_top(along, highest) - random.uniform(*top_offset_range))
@@ -126,7 +125,7 @@ def place_ground_trees(rocks, rocks_geometry, trees):
         if overlaps_tree(x, y, radius, trees):
             continue
         trees.append((x, y, radius))
-        lines.append(f"sph s({width},{width},{height}) t({x},{y},7) c(#{random_tree_color()})")
+        lines.append(f"sph s({width},{width},{height}) t({x},{y},0) c(#{random_tree_color()})")
     return lines
 
 
@@ -146,7 +145,7 @@ def place_roof_trees(rocks_geometry, trees):
         if overlaps_tree(x, y, radius, trees):
             continue
         trees.append((x, y, radius))
-        lines.append(f"sph s({width},{width},{height}) t({x},{y},{round(surface - 0.075 * height)}) "
+        lines.append(f"sph s({width},{width},{height}) t({x},{y},{round(surface)}) "
                      f"c(#{random_tree_color()})")
     return lines
 

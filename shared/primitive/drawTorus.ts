@@ -13,10 +13,10 @@ const DEFAULT_HOLLOW = 50;
 const MINIMUM_TUBE_RADIUS = OUTER_RADIUS / 100;
 
 export function drawTorus(p: p5, color?: string, hollow?: number) {
-  const holeRadius = OUTER_RADIUS * (hollow ?? DEFAULT_HOLLOW) / 100;
-  const tubeRadius = Math.max((OUTER_RADIUS - holeRadius) / 2, MINIMUM_TUBE_RADIUS);
+  const tubeRadius = torusTubeRadius(hollow);
   const ringRadius = OUTER_RADIUS - tubeRadius;
-  const floorY = -(BLOCK_SIZE * 0.15) / 2;
+  // The base stands on the body's own origin, which is where t() puts it.
+  const floorY = 0;
   const centerY = floorY - tubeRadius;
 
   p.push();
@@ -25,4 +25,9 @@ export function drawTorus(p: p5, color?: string, hollow?: number) {
   p.fill(...colorToRgb(color));
   p.torus(ringRadius, tubeRadius);
   p.pop();
+}
+
+export function torusTubeRadius(hollow?: number): number {
+  const holeRadius = OUTER_RADIUS * (hollow ?? DEFAULT_HOLLOW) / 100;
+  return Math.max((OUTER_RADIUS - holeRadius) / 2, MINIMUM_TUBE_RADIUS);
 }

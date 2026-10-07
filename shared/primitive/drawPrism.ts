@@ -5,7 +5,8 @@ import { faceNormal } from "./faceNormal";
 
 export function drawPrism(p: p5, sides: number, color?: string, hollow?: number) {
   const h = BLOCK_SIZE / 2;
-  const floorY = -(BLOCK_SIZE * 0.15) / 2;
+  // The base stands on the body's own origin, which is where t() puts it.
+  const floorY = 0;
   const topY = floorY - BLOCK_SIZE;
 
   const bottomVerts: [number, number, number][] = [];

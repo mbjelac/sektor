@@ -4,7 +4,7 @@ import {drawPrism} from "./primitive/drawPrism";
 import {drawSphere} from "./primitive/drawSphere";
 import {drawCylinder} from "./primitive/drawCylinder";
 import {drawCone} from "./primitive/drawCone";
-import {drawTorus} from "./primitive/drawTorus";
+import {drawTorus, torusTubeRadius} from "./primitive/drawTorus";
 import {CreateBody} from "./parseCommands";
 import {BLOCK_SIZE} from "./constants";
 import {animatedColor, animatedRotate, animatedTranslate} from "./animateCommands";
@@ -16,6 +16,9 @@ const pyrSides: Record<string, number> = {
 const priSides: Record<string, number> = {
   pri3: 3, pri4: 4, pri5: 5, pri6: 6, pri7: 7, pri8: 8, pri9: 9,
 };
+
+// How far the top of the ground stands above the origin: the floor block is centred on it.
+const GROUND_HEIGHT = (BLOCK_SIZE * 0.15) / 2;
 
 export function applyCommands(p: p5, commands: CreateBody[], elapsedMilliseconds = 0) {
   drawBodies(p, opaqueBodies(commands, elapsedMilliseconds), elapsedMilliseconds);
@@ -58,15 +61,20 @@ function isTransparent(color: string | undefined): boolean {
 
 function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsedMilliseconds: number) {
   p.push();
-  if (command.translate || command.animateTranslate) {
-    const translate = animatedTranslate(command, elapsedMilliseconds);
-    const scale = BLOCK_SIZE / 100;
-    p.translate(
-      translate[0] * scale,
-      -translate[2] * scale,
-      translate[1] * scale
-    );
-  }
+  // A body's base stands on its t() point, and t() is measured from the top of the ground, so
+  // t(x,y,0) stands a body of any height on the ground. Rotation turns it about its own centre,
+  // halfway up the body above that point, so that a body spinning in place stays in place — or
+  // about a point ro() away from that centre.
+  const translate = animatedTranslate(command, elapsedMilliseconds);
+  const rotationOffset = command.rotationOffset ?? [0, 0, 0];
+  const scale = BLOCK_SIZE / 100;
+  const centreHeight = bodyCentreHeight(command);
+  const heightFactor = command.scale ? toScaleFactor(command.scale[2]) : 1;
+  p.translate(
+    (translate[0] + rotationOffset[0]) * scale,
+    -(translate[2] + rotationOffset[2]) * scale - GROUND_HEIGHT - centreHeight * heightFactor,
+    (translate[1] + rotationOffset[1]) * scale
+  );
   if (command.rotate || command.animateRotate) {
     const rotate = animatedRotate(command, elapsedMilliseconds);
     const toRad = Math.PI / 180;
@@ -74,14 +82,15 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
     p.rotateX(rotate[1] * toRad);
     p.rotateZ(rotate[2] * toRad);
   }
+  p.translate(-rotationOffset[0] * scale, rotationOffset[2] * scale, -rotationOffset[1] * scale);
   if (command.scale) {
-    const toFactor = (v: number) => Math.max(v, 1) / 100;
     p.scale(
-      toFactor(command.scale[0]),
-      toFactor(command.scale[2]),
-      toFactor(command.scale[1])
+      toScaleFactor(command.scale[0]),
+      toScaleFactor(command.scale[2]),
+      toScaleFactor(command.scale[1])
     );
   }
+  p.translate(0, centreHeight, 0);
   const pyrN = pyrSides[command.type];
   if (pyrN) {
     drawPyramid(p, pyrN, color, command.hollow ?? undefined, command.frustum ?? undefined);
@@ -103,4 +112,18 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
     drawTorus(p, color, command.hollow ?? undefined);
   }
   p.pop();
+}
+
+// How high above its base the centre of a body stands, before it is scaled: halfway up, which for a
+// torus lying flat is the middle of its tube, and for a cut off pyramid or cone is halfway up to the cut.
+function bodyCentreHeight(command: CreateBody): number {
+  if (command.type === "tor") return torusTubeRadius(command.hollow ?? undefined);
+  if (command.frustum && (pyrSides[command.type] || command.type === "con")) {
+    return BLOCK_SIZE * (1 - command.frustum / 100) / 2;
+  }
+  return BLOCK_SIZE / 2;
+}
+
+function toScaleFactor(value: number): number {
+  return Math.max(value, 1) / 100;
 }

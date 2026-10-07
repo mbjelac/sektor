@@ -24,39 +24,39 @@ test("prism with full hollow", async ({ page }) => {
   await expectScreenshot(page, "pri4-hollow-full");
 });
 
-// A pyramid is hollow from its base, so it is lifted above the floor and turned upside down
-// to show the hollow.
+// A pyramid is hollow from its base, so it is turned upside down about its centre, standing on its
+// tip, to show the hollow.
 for (const sides of [3, 4, 5, 6, 7, 8, 9]) {
   test(`pyr${sides} with hollow`, async ({ page }) => {
-    await page.locator("#editor textarea").fill(`pyr${sides} h(50) t(0,0,100) r(0,180,0)`);
+    await page.locator("#editor textarea").fill(`pyr${sides} h(50) r(0,180,0)`);
     await expectScreenshot(page, `pyr${sides}-hollow`);
   });
 }
 
 test("pyramid with full hollow", async ({ page }) => {
-  await page.locator("#editor textarea").fill("pyr4 h(100) t(0,0,100) r(0,180,0)");
+  await page.locator("#editor textarea").fill("pyr4 h(100) r(0,180,0)");
   await expectScreenshot(page, "pyr4-hollow-full");
 });
 
 test("pyramid with no hollow", async ({ page }) => {
-  await page.locator("#editor textarea").fill("pyr4 h(0) t(0,0,100) r(0,180,0)");
+  await page.locator("#editor textarea").fill("pyr4 h(0) r(0,180,0)");
   await expectScreenshot(page, "pyr4-hollow-none");
 });
 
-// A cone is hollow from its base, like a pyramid, so it too is lifted above the floor and
-// turned upside down to show the hollow.
+// A cone is hollow from its base, like a pyramid, so it too is turned upside down about its centre
+// to show the hollow.
 test("cone with hollow", async ({ page }) => {
-  await page.locator("#editor textarea").fill("con h(50) t(0,0,100) r(0,180,0)");
+  await page.locator("#editor textarea").fill("con h(50) r(0,180,0)");
   await expectScreenshot(page, "con-hollow");
 });
 
 test("cone with full hollow", async ({ page }) => {
-  await page.locator("#editor textarea").fill("con h(100) t(0,0,100) r(0,180,0)");
+  await page.locator("#editor textarea").fill("con h(100) r(0,180,0)");
   await expectScreenshot(page, "con-hollow-full");
 });
 
 test("cone with no hollow", async ({ page }) => {
-  await page.locator("#editor textarea").fill("con h(0) t(0,0,100) r(0,180,0)");
+  await page.locator("#editor textarea").fill("con h(0) r(0,180,0)");
   await expectScreenshot(page, "con-hollow-none");
 });
 

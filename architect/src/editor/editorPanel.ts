@@ -254,8 +254,8 @@ function parseRotate(line: string): [number, number, number] {
 }
 
 function parseTranslate(line: string): [number, number, number] {
-  const m = line.match(/t\(\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/);
-  return m ? [parseInt(m[1]), parseInt(m[2]), parseInt(m[3])] : [0, 0, 0];
+  const m = line.match(/t\(\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)/);
+  return m ? [parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3])] : [0, 0, 0];
 }
 
 function parseScale(line: string): [number, number, number] {

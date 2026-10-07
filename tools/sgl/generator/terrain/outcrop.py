@@ -1,8 +1,15 @@
 # Building blocks for generating grassy rocky outcrops in SGL (Sektor Graphics Language):
 # pri5 rocks, sph trees, and the geometry needed to place trees on the ground or on rock roofs.
-# The geometry mirrors shared/applyCommands.ts and shared/primitive/*.
+# The geometry mirrors shared/applyCommands.ts and shared/primitive/*: a body's base stands on its t point, heights
+# are measured from the top of the ground, and rotation turns a body about its centre, halfway up above its base.
 import math
 import random
+
+# Rocks are sunk into the ground, the tall ones deeper, so that only their upper part shows.
+LOW_ROCK_HEIGHT = 10
+LOW_ROCK_Z = -7
+TALL_ROCK_ZS = [-11, -11, -6]
+LOW_ROCK_TOP = LOW_ROCK_Z + LOW_ROCK_HEIGHT
 
 ROCK_PALETTE = ['abc3a7', 'a4aea3', 'a5b3a2', '8fac8b', 'acb89d', 'b0bea2', 'b6ccb3', 'd2d7bc']
 TREE_COLOR_LOW = (0x00, 0x69, 0x03)
@@ -13,11 +20,11 @@ def random_rock(tall):
     if tall:
         distance = random.uniform(0, 18)
         height = random.randint(18, 23)
-        position_z = random.choice([-5, -5, 0])
+        position_z = random.choice(TALL_ROCK_ZS)
     else:
         distance = random.uniform(22, 35)
-        height = 10
-        position_z = 0
+        height = LOW_ROCK_HEIGHT
+        position_z = LOW_ROCK_Z
     angle = random.uniform(0, 2 * math.pi)
     position_x = max(-25, min(25, round(distance * math.cos(angle))))
     position_y = max(-25, min(25, round(distance * math.sin(angle))))
@@ -93,18 +100,20 @@ def roof_height(top, x, y):
 def rock_geometry(scale, position, rotation):
     # Returns the rock's top face corners, bottom face corners (x, y, height) and its ground-plane outline.
     angles = [-math.pi / 2 + math.pi / 4 + 2 * math.pi * index / 5 for index in range(5)]
-    top = [world((50 * math.cos(angle), -107.5, 50 * math.sin(angle)), scale, position, rotation) for angle in angles]
-    bottom = [world((50 * math.cos(angle), -7.5, 50 * math.sin(angle)), scale, position, rotation) for angle in angles]
+    top = [world((50 * math.cos(angle), -100, 50 * math.sin(angle)), scale, position, rotation) for angle in angles]
+    bottom = [world((50 * math.cos(angle), 0, 50 * math.sin(angle)), scale, position, rotation) for angle in angles]
     return top, bottom, hull(top + bottom)
 
 
 def world(vertex, scale, position, rotation):
-    x, y, z = vertex[0] * scale[0] / 100, vertex[1] * scale[2] / 100, vertex[2] * scale[1] / 100
+    # The vertex is turned about the rock's centre, halfway up the rock above its base.
+    centre_height = 50 * scale[2] / 100
+    x, y, z = vertex[0] * scale[0] / 100, vertex[1] * scale[2] / 100 + centre_height, vertex[2] * scale[1] / 100
     spin, tilt_x, tilt_y = [degrees * math.pi / 180 for degrees in rotation]
     x, y = x * math.cos(tilt_y) - y * math.sin(tilt_y), x * math.sin(tilt_y) + y * math.cos(tilt_y)
     y, z = y * math.cos(tilt_x) - z * math.sin(tilt_x), y * math.sin(tilt_x) + z * math.cos(tilt_x)
     x, z = x * math.cos(spin) + z * math.sin(spin), -x * math.sin(spin) + z * math.cos(spin)
-    return x + position[0], z + position[1], -y + position[2]
+    return x + position[0], z + position[1], -y + position[2] + centre_height
 
 
 def hull(points):

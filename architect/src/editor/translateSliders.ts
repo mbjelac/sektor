@@ -1,7 +1,7 @@
 import type { SubpanelState } from "./editorPanel";
 import { createSlider, updateFunctionOnLine } from "./editorWidgets";
 
-const TRANSLATE_REGEX = /t\(\s*-?\d+\s*,\s*-?\d+\s*,\s*-?\d+\s*\)/;
+const TRANSLATE_REGEX = /t\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)/;
 
 export function addTranslateSliders(
   el: HTMLElement,

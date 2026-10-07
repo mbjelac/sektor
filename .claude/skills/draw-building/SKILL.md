@@ -27,7 +27,7 @@ is there.
   of which only the triangle facing that edge is kept. Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/forests.py` — writes
   `../../../frontend/src/assets/terrain/temperate/forests/<variant>.sgl` (variant = 0–9): each a
-  dense forest of 178 `sph` trees on the ground (`t` z=7), centres anywhere from −50 to 50.
+  dense forest of 178 `sph` trees on the ground (`t` z=0), centres anywhere from −50 to 50.
   One seed for all variants, so rerunning reproduces every file and adding variants keeps the
   existing ones. How it works and what to tune:
   - Tree size and colour come from `outcrop.tree_size()` / `random_tree_color()` (the same trees
@@ -87,6 +87,7 @@ The body keyword starts the line; modifiers follow in any order.
 | `t(x,y,z)` | position — **x and y are the ground plane, z is height** |
 | `s(x,y,z)` or `s(n)` | size as a percentage of the 100-unit block; the third value is the height |
 | `r(a,b,c)` | rotation in degrees: **a spins about the vertical axis**, b tips about the x axis, c tips about the y axis |
+| `ro(x,y,z)` | move the point `r`/`ar` turn about away from the body's centre, in the units and axes of `t`; decimals allowed |
 | `c(#rrggbb)` or `c(#rrggbbaa)` | color; alpha < ff makes it transparent |
 | `h(n)` | hollow it out, 0–100 |
 | `f(n)` | cut the top off a `pyr`/`con`, 0–100 |
@@ -99,18 +100,23 @@ clamped to 100.
 
 ## Where a body actually sits
 
-Every body stands on a floor plane **`0.075 × s_z` above its `t` z** — so `t` z is not the bottom
-of the body, and two bodies with different heights and the same `t` z do not sit level. These
-formulas are what to compute with:
+Every body's **base stands on its `t` point**, and `t` z is measured from the **top of the
+ground**: `t(x,y,0)` stands a body of any height on the ground, and two bodies with the same `t` z
+sit level whatever their heights. Rotation (`r`, `ar`) turns a body about its **centre**: above
+`t`, halfway up the body — `0.5·s_z` up, `(1 − p/100)·0.5·s_z` for a `pyr`/`con` cut with `f(p)`,
+one tube radius up for a `tor`. So a rotated body stays where it stood and spins in place, and
+`r(0,180,0)` flips a body upside down without moving it. Its base is then no longer at `t` z —
+the formulas below are for unrotated bodies. `ro(x,y,z)` moves the pivot off the centre — e.g. to
+turn several blades about one shared hub, give each the hub's position minus its own centre. These formulas are what to compute with:
 
 | | Height above the ground | Horizontal size |
 |---|---|---|
-| base of any body | `t_z + 0.075·s_z` | — |
-| top of `pri`/`cyl` | `t_z + 1.075·s_z` (so it is `s_z` tall) | — |
-| apex of `pyr`/`con` | `t_z + 1.075·s_z` | — |
-| top of a cut-off `pyr`/`con` with `f(p)` | `t_z + (1.075 − p/100)·s_z` | base width `× p/100` |
-| centre of `sph` | `t_z + 0.575·s_z` | radii `0.5·s_x`, `0.5·s_y`, `0.5·s_z` |
-| centre of `tor` (default `h`) | `t_z + 0.2417·s_z` | outer radius `0.667·s_x` |
+| base of any body | `t_z` | — |
+| top of `pri`/`cyl` | `t_z + s_z` | — |
+| apex of `pyr`/`con` | `t_z + s_z` | — |
+| top of a cut-off `pyr`/`con` with `f(p)` | `t_z + (1 − p/100)·s_z` | base width `× p/100` |
+| centre of `sph` | `t_z + 0.5·s_z` | radii `0.5·s_x`, `0.5·s_y`, `0.5·s_z` |
+| centre of `tor` | `t_z + tube radius·s_z/100`, tube radius `(66.67 − 0.6667·h)/2` (16.67 by default) | outer radius `0.667·s_x` |
 
 Note `f(p)`: a **larger** p cuts **more** off, leaving a shorter body with a **wider** top.
 
@@ -143,8 +149,9 @@ rather than emitting the same line many times.
 
 ## Hard rules
 
-- **Integers only.** Every numeric argument is matched as `-?\d+`. `t(5,5,11.5)` does not fail
-  loudly — the whole `t(...)` silently fails to match and the body lands at the origin.
+- **Integers only, except in `t()` and `ro()`.** These accept decimals (`t(5,5,11.5)`); every other numeric
+  argument is matched as `-?\d+`, and a decimal there makes the whole modifier silently fail to
+  match — `r(0,22.5,0)` is no rotation at all.
 - Each modifier is found by scanning the line, so the **first** match wins if one appears twice.
 - An unrecognised line is dropped in silence. A typo'd keyword means a missing body, not an error.
 

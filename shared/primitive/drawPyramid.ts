@@ -6,7 +6,8 @@ import { faceNormal } from "./faceNormal";
 export function drawPyramid(p: p5, sides: number, color?: string, hollow?: number, frustum?: number) {
   const baseRadius = BLOCK_SIZE / 2;
   const height = BLOCK_SIZE;
-  const floorY = -(BLOCK_SIZE * 0.15) / 2;
+  // The base stands on the body's own origin, which is where t() puts it.
+  const floorY = 0;
 
   const baseVertices: [number, number, number][] = [];
   for (let vertexIndex = 0; vertexIndex < sides; vertexIndex++) {

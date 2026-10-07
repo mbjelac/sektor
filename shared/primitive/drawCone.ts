@@ -8,7 +8,8 @@ const CONE_SEGMENTS = 48;
 export function drawCone(p: p5, color?: string, hollow?: number, frustum?: number) {
   const radius = BLOCK_SIZE / 2;
   const height = BLOCK_SIZE;
-  const floorY = -(BLOCK_SIZE * 0.15) / 2;
+  // The base stands on the body's own origin, which is where t() puts it.
+  const floorY = 0;
 
   p.fill(...colorToRgb(color));
 
