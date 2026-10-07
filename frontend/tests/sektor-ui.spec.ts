@@ -873,6 +873,17 @@ test("shows the panel of a sea square under the name of the sea", async ({ page 
   await expectScreenshot(page, "sea-panel", "#building-panel");
 });
 
+// A river is shown the way a building is, under its own name, with its stretch of water lying on the
+// floor and with what the ground beneath it holds.
+test("shows the panel of a river square under the name of the river", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2 - 80, y: box!.height / 2 + 190 } });
+  await page.waitForTimeout(200);
+  await expectScreenshot(page, "river-panel", "#building-panel");
+});
+
 // Rock is shown the way a building is, under its own name and with what the ground beneath it
 // holds — but with no button for taking it down, as it is not the player's to remove.
 test("shows the panel of an elevation without the control which would destroy it", async ({ page }) => {

@@ -27,7 +27,7 @@ import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, isRiver, RIVER_FROM_EAST, RIVER_FROM_NORTH, SEA } from "../../../shared/terrain";
-import { drawRiver } from "./river.ui";
+import { drawRiver, RIVER_NAME } from "./river.ui";
 import { riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
@@ -518,12 +518,16 @@ function openTerrainPanel(location: BuildingLocation) {
     buildingFunctions: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
     floorColor: floorColorAt(location.x, location.y),
+    drawOnFloor: isRiverLocation(location.x, location.y)
+      ? (preview => drawRiver(preview, riverSides(terrain, location.x, location.y)))
+      : undefined,
     location: location,
   });
 }
 
 function terrainNameAt(gx: number, gy: number): string {
   if (isSeaLocation(gx, gy)) return SEA_NAME;
+  if (isRiverLocation(gx, gy)) return RIVER_NAME;
   if (isElevationLocation(gx, gy)) return ELEVATION_NAME;
   return EMPTY_NAME;
 }

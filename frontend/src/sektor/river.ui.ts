@@ -7,8 +7,11 @@ import { waterSurfaceHeight } from "../../../shared/drawFloor";
 import { SEA_COLOR } from "./sea.ui";
 import { RiverSide } from "./river";
 
+// What the panel calls a square of river the player has clicked on.
+export const RIVER_NAME = "River";
+
 // How wide the water of a river is, straight or curving, as a part of the width of a square.
-const RIVER_WIDTH = BLOCK_SIZE * 0.6;
+const RIVER_WIDTH = BLOCK_SIZE * 0.5;
 
 // The water lies just over the floor rather than on it, so that the two do not fight over the
 // same depth.
