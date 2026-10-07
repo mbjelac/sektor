@@ -8,7 +8,6 @@ It also affects other buildings which are nture or people oriented:
 Table of buildings and which pollution(s) they are affected by and in what way:
 | Building    | Effect                                          |
 |-------------|-------------------------------------------------|
-| Habitats    | decreased output of WorkUnqualified, Hapiness   |
 | Park        | decreased all HealthX outputs                   |
 | TownSquare  | decreased output HealthSocial                   |
 | Forest      | decreased all outputs                           |
@@ -88,8 +87,27 @@ If two areas overlap, each adds it's pollution level to area squares.
 
 #5 Buildings affected by pollution are visible
 - all buildings which depend on soil or groundwater for output AND are on polluted area
-    - marked on map with yellow warning sign
+    - marked on map with yellow warning triangle
     - have warning in their building panel
         - beneath input & output table
         - text: "⚠️ Output decreased due to pollution!"
 
+#6 Pollution affects some buildings directly
+- buildings with specified property are affected by pollution
+    - if a building's output is marked by "pollution"
+        - example:
+            WorkMaintenance 1
+            EnergyElectric 2
+            ->
+            Water 5 pollution
+        - and the building is on a location with pollution property > 0 %
+        - then apply pollution percentage to building's outputs marked with "pollution"
+            - rounded to integer
+            - example: output 7 on pollution 20%: 7 * 20% = 7 * 0.2 = 1.4 = 1
+- affected buildings are marked on map
+    - if a building has at least one pollution-marked output & is on a polluted location, mark it on the map with yellow warning triangle
+- affected outputs marked on building panel
+    - if an output is affected by pollution display it's value like "currentValue / originalValue ⚠️"
+    - display (only one) warning
+        - beneath input & output table
+        - text: "⚠️ Output decreased due to pollution!"
