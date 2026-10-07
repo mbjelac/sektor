@@ -1,0 +1,15 @@
+Import & export (in & out of a sektor) should not have to be automatically possible.
+Shipping stuff in & out requires a special building which is like an inter-city transport hub.
+
+The hub has no outputs, just inputs, but it's presence in a sektor enables sektor imports & exports.
+
+If the building does not exist:
+- when imports & exports are calculated
+- mark buildings and recalculate imports & exports without marked buildings until import amount is 0
+- marked buildings should be indicated to the player on the map, and the reason should be visible in the building panel
+
+Capacity:
+There can be multiple import/export hubs. Each hub increases the imports/exports capacity of the sektor.
+When buildings marked on each building placement or destruction, if total number of imports & exports is less or equal to total import/export capacity, no buildings are marked.
+Mark buildings and recalculate until this is the case.
+Start marking buildings farthest from the closest import/export hub.
