@@ -123,6 +123,6 @@ If two areas overlap, each adds it's pollution level to area squares.
     EcosystemSupport 5 pollution
 - [done] mark forest on polluted location with floating warning triangle
 
-#8 Player is notified about pollution
-- if at least one building is affected by pollution (whether from decreased location property or output directly)
+#8 [done] Player is notified about pollution
+- [done] if at least one building is affected by pollution (whether from decreased location property or output directly)
     - add a warning message: "Citizens are complaining about pollution!"

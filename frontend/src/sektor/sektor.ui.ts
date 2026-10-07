@@ -340,10 +340,16 @@ function updateSektorState() {
   // with this sektor as it now stands every time anything here changes.
   const planetImportsAndExports = getPlanetImportsAndExportsWhileBuilding(sektorId, sektorState);
   updateSektorStatePanel(sektorState, planetImportsAndExports);
-  updateMessages(sektorState, planetImportsAndExports, sektorState.habitatShortages);
+  const buildingsWithOutputDecreasedByPollution = sektor.findBuildingsWithOutputDecreasedByPollution();
+  updateMessages(
+    sektorState,
+    planetImportsAndExports,
+    sektorState.habitatShortages,
+    buildingsWithOutputDecreasedByPollution.length > 0,
+  );
   warnedBuildingLocations = [
     ...sektorState.starvedFunctions.map(starvedFunction => starvedFunction.buildingLocation),
-    ...sektor.findBuildingsWithOutputDecreasedByPollution(),
+    ...buildingsWithOutputDecreasedByPollution,
   ]
     .filter((location, index, locations) =>
       locations.findIndex(other => other.x === location.x && other.y === location.y) === index
@@ -1309,6 +1315,7 @@ updateMessages(
   openedSektorState,
   getPlanetImportsAndExportsWhileBuilding(sektorId, openedSektorState),
   openedSektorState.habitatShortages,
+  sektor.findBuildingsWithOutputDecreasedByPollution().length > 0,
 );
 if (isTestMode) {
   (window as any).updateSektorStatePanel = updateSektorStatePanel;

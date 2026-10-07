@@ -305,6 +305,21 @@ test("warns in the building panel about output decreased by pollution", async ({
   await expectScreenshot(page, "output-decreased-by-pollution-warning", "#building-panel");
 });
 
+test("warns that citizens are complaining about pollution once a building's output is decreased by it", async ({ page }) => {
+  await placeFactoryBesideSmokestack(page);
+
+  await expectScreenshot(page, "pollution-message", "#pollution-message");
+});
+
+// The smokestack fouls the ground around it, but nothing standing there gives any less for it.
+test("says nothing of pollution while no building's output is decreased by it", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await placeBuilding(page, "TestSmokestack");
+
+  expect(await page.locator("#pollution-message").count()).toEqual(0);
+});
+
 // TestPurifier's water is marked as affected by pollution, so beside TestSmokestack, on ground
 // fouled 40 %, it makes 7 * (100 % - 40 %) = 4.2, rounded to 4.
 async function placePurifierBesideSmokestack(page: Page) {

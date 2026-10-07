@@ -24,6 +24,7 @@ const MOST_IMPORTED_MESSAGE_ID = "most-imported-message";
 const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 // One complaint to a resource, each named after the resource it complains of.
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
+const POLLUTION_MESSAGE_ID = "pollution-message";
 const COLLAPSE_BUTTON_ID = "messages-collapse-button";
 const EXPAND_BUTTON_ID = "messages-expand-button";
 
@@ -34,10 +35,12 @@ export function updateMessages(
   sektorImportsAndExports: ImportsAndExports,
   planetImportsAndExports: ImportsAndExports,
   habitatShortages: string[],
+  anyBuildingAffectedByPollution: boolean,
 ) {
   showMostImportedMessage(planetImportsAndExports);
   showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
   showHabitatShortageMessages(habitatShortages);
+  showPollutionMessage(anyBuildingAffectedByPollution);
   showToggleButtons();
 }
 
@@ -61,6 +64,17 @@ function showHabitatShortageMessages(habitatShortages: string[]) {
 
 function shortageMessageResource(messageId: string): string {
   return messageId.slice(HABITAT_SHORTAGE_MESSAGE_ID.length);
+}
+
+// The people of a sektor complain once pollution makes any building of it give less, whichever
+// building it is and however it is affected, and stop once none is.
+function showPollutionMessage(anyBuildingAffectedByPollution: boolean) {
+  if (!anyBuildingAffectedByPollution) {
+    hideMessage(POLLUTION_MESSAGE_ID);
+    return;
+  }
+
+  showMessage(POLLUTION_MESSAGE_ID, "warning", "Citizens are complaining about pollution!", []);
 }
 
 // Whatever the planet is shortest of is what a player can do most good by sending out. A planet
