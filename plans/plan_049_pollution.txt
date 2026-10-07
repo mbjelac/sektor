@@ -94,7 +94,7 @@ If two areas overlap, each adds it's pollution level to area squares.
         - text color: white
 
 #6 Pollution affects some buildings directly
-- buildings with specified property are affected by pollution
+- [done] buildings with specified property are affected by pollution
     - if a building's output is marked by "pollution"
         - example:
             WorkMaintenance 1
@@ -104,10 +104,10 @@ If two areas overlap, each adds it's pollution level to area squares.
         - and the building is on a location with pollution property > 0 %
         - then apply pollution percentage to building's outputs marked with "pollution"
             - rounded to integer
-            - example: output 7 on pollution 20%: 7 * 20% = 7 * 0.2 = 1.4 = 1
-- affected buildings are marked on map
+            - example: output 7 on pollution 20%: 7 * (100% - 20%) = 7 * 0.8 = 5.6 = 6
+- [done] affected buildings are marked on map
     - if a building has at least one pollution-marked output & is on a polluted location, mark it on the map with yellow warning triangle
-- affected outputs marked on building panel
+- [done] affected outputs marked on building panel
     - if an output is affected by pollution display it's value like "currentValue / originalValue ⚠️"
     - display (only one) warning
         - beneath input & output table
