@@ -113,3 +113,12 @@ If two areas overlap, each adds it's pollution level to area squares.
         - beneath input & output table
         - text: "⚠️ Output decreased due to pollution!"
         - text color: white
+
+#7 Forests are affected by pollution
+- modify Forest building function as:
+    ->
+    HealthPhysical 1 pollution
+    HealthSocial 1 pollution
+    HealthMental 1 pollution
+    EcosystemSupport 5 pollution
+- mark forest on polluted location with floating warning triangle
