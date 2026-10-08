@@ -67,3 +67,6 @@ Water is animated.
     - floor of trough is light-blue green
     - the trough is covered by a polygon shaped like the trough (elongated rectangle or L)
         - color: blue, transparent 50%
+
+#6 If a river exists, it is at least 10 squares long
+- when creating a river, if it is done and it is shorter than 10 squares, remove river and repeat generation
