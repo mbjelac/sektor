@@ -11,9 +11,9 @@ import {
   FLOOR_SIDE_COLOR,
   FLOOR_UNDERSIDE_COLOR,
 } from "../../../shared/drawFloor";
-import { glintVariation, SEA_COLOR } from "./sea.ui";
+import { SEA_COLOR } from "./sea.ui";
 import { withoutDepthWrites } from "../../../shared/applyCommands";
-import { RiverSide } from "./river";
+import { GlintPlace, RiverSide } from "./river";
 
 // What the panel calls a square of river the player has clicked on.
 export const RIVER_NAME = "River";
@@ -71,21 +71,20 @@ export function drawRiverSurface(p: p5, sides: RiverSide[]) {
   p.pop();
 }
 
-// Where a square of the river lies, and which way the river runs through it. The glints of the
+// Where a square of the river lies, and the strips of glints running through it. The glints of the
 // whole river go into a single shape, which no transform can be applied in the middle of, so each
 // glint is placed against its own square's middle rather than drawn with the square translated
 // under it.
 export interface RiverSquare {
-  x: number;
-  z: number;
   centerX: number;
   centerZ: number;
-  sides: RiverSide[];
+  glintStrips: GlintPlace[][];
 }
 
-// A river is never still. Its water is cut into a grid of small squares of light, four across the
-// river and eight along a square of it, each fading in and out on its own count. The grid follows
-// the river round a curve, as it is laid over the cells of the trough, whatever shape they make.
+// A river is never still: light runs down it the way the water flows. Its water is cut into strips
+// of small squares of light running with the river. Every glint swells and fades without end, the
+// way the sea's glints do, each a little behind the one before it along its strip, so that the
+// light travels down the strip from where the river comes into the square to where it goes out.
 // The whole river goes into one shape, for the same reason the sea's glints do.
 export function drawRiverGlints(p: p5, riverSquares: RiverSquare[], elapsedMilliseconds: number) {
   p.push();
@@ -101,42 +100,36 @@ export function drawRiverGlints(p: p5, riverSquares: RiverSquare[], elapsedMilli
   p.pop();
 }
 
-// A glint is numbered by where it falls in a grid laid over the whole map rather than over its own
-// square, so that no two squares of the river shimmer alike.
+// The glints of a strip lag behind one another so that the light takes one whole cycle to cross the
+// square along any of its strips, and runs on into the next square of the river as it leaves this
+// one. A strip round the outside of a curve is longer than one round its inside, so the light runs
+// faster round the outside and slower round the inside.
+//
+// The light of every strip starts at its own point in the cycle, so that it does not run down the
+// river as one band across it. The strip at the same place across the river starts at the same
+// point in every square, so the light it carries runs on unbroken from one square to the next.
 function addGlintsOnSquare(p: p5, riverSquare: RiverSquare, elapsedMilliseconds: number) {
-  for (const cell of troughCells(riverSquare.sides)) {
-    for (const glintX of glintsAcross(cell.x)) {
-      for (const glintZ of glintsAcross(cell.z)) {
-        addGlint(
-          p,
-          riverSquare.x * GLINTS_ACROSS_SQUARE + glintX,
-          riverSquare.z * GLINTS_ACROSS_SQUARE + glintZ,
-          riverSquare,
-          elapsedMilliseconds,
-        );
-      }
-    }
-  }
+  riverSquare.glintStrips.forEach((strip, stripIndex) => {
+    const cyclesElapsed = elapsedMilliseconds / GLINT_CYCLE_MILLISECONDS + STRIP_START_OFFSETS[stripIndex];
+    strip.forEach((glintPlace, indexInStrip) => {
+      addGlint(p, riverSquare, glintPlace, glintAlpha(cyclesElapsed - indexInStrip / strip.length));
+    });
+  });
 }
 
-// The glints lying across a cell, numbered by where they fall across the whole square.
-function glintsAcross(cellIndex: number): number[] {
-  const first = Math.round((CELL_BOUNDS[cellIndex] + HALF) / GLINT_SIZE);
-  const last = Math.round((CELL_BOUNDS[cellIndex + 1] + HALF) / GLINT_SIZE);
-  return Array.from({ length: last - first }, (_unused, index) => first + index);
-}
-
-// A glint goes from clear to half seen through white and back to clear, swelling the way the sea's
+// Over its cycle a glint goes from clear to white and back to clear, swelling the way the sea's
 // glints do: faint for most of its cycle and brightest only briefly.
-function addGlint(p: p5, glintX: number, glintZ: number, riverSquare: RiverSquare, elapsedMilliseconds: number) {
-  const cyclesElapsed = elapsedMilliseconds / GLINT_CYCLE_MILLISECONDS + glintVariation(glintX, glintZ);
+function glintAlpha(cyclesElapsed: number): number {
   const swell = Math.sin((cyclesElapsed - Math.floor(cyclesElapsed)) * Math.PI);
-  const alpha = GLINT_MAX_ALPHA * swell * swell;
+  return GLINT_MAX_ALPHA * swell * swell;
+}
+
+function addGlint(p: p5, riverSquare: RiverSquare, glintPlace: GlintPlace, alpha: number) {
   if (alpha < 1) return;
 
-  const left = riverSquare.centerX + (glintX % GLINTS_ACROSS_SQUARE) * GLINT_SIZE - HALF;
+  const left = riverSquare.centerX + (glintPlace.x - 0.5) * GLINT_SIZE;
   const right = left + GLINT_SIZE;
-  const front = riverSquare.centerZ + (glintZ % GLINTS_ACROSS_SQUARE) * GLINT_SIZE - HALF;
+  const front = riverSquare.centerZ + (glintPlace.z - 0.5) * GLINT_SIZE;
   const back = front + GLINT_SIZE;
 
   // A fill set between vertices is carried by the vertices after it, so every glint keeps its own
@@ -150,12 +143,16 @@ function addGlint(p: p5, glintX: number, glintZ: number, riverSquare: RiverSquar
   p.vertex(left, GLINT_HEIGHT, back);
 }
 
-// Four glints stand across the river, which is half a square wide, so eight stand along a square.
+// Four glints stand across the river, which is half a square wide.
 const GLINTS_ACROSS_RIVER = 4;
 const GLINT_SIZE = RIVER_WIDTH / GLINTS_ACROSS_RIVER;
-const GLINTS_ACROSS_SQUARE = Math.round(BLOCK_SIZE / GLINT_SIZE);
 
-// How long a glint takes to swell and fade away again.
+// How far into its cycle the light of each strip starts, as a part of the whole cycle: one for each
+// place across the river, from its left bank to its right, drawn once for the whole river.
+const STRIP_START_OFFSETS = Array.from({ length: GLINTS_ACROSS_RIVER }, () => Math.random());
+
+// How long a glint takes to swell and fade away again, which is as long as the light takes to run
+// down a strip from one side of a square to the other.
 const GLINT_CYCLE_MILLISECONDS = 5000;
 
 // How white a glint gets at its brightest

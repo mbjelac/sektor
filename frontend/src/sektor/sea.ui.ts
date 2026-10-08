@@ -111,7 +111,7 @@ function glintEdge(glintIndex: number): number {
 // shimmering. So a glint's own place in the grid stands in for the die roll, scrambled past all
 // resemblance to its neighbours' — a grid of squares all swelling together would read as a grid,
 // which is the one thing the sea must not look like.
-export function glintVariation(glintX: number, glintZ: number): number {
+function glintVariation(glintX: number, glintZ: number): number {
   const scrambled = Math.sin(glintX * 127.1 + glintZ * 311.7 + 74.7) * 43758.5453;
   return scrambled - Math.floor(scrambled);
 }

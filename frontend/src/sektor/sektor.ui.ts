@@ -28,7 +28,7 @@ import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, isRiver, RIVER_FROM_EAST, RIVER_FROM_NORTH, SEA } from "../../../shared/terrain";
 import { drawRiverBed, drawRiverGlints, drawRiverSurface, RIVER_NAME, RiverSquare } from "./river.ui";
-import { riverSides } from "./river";
+import { riverGlintStrips, riverSideFlowedInFrom, riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
@@ -840,8 +840,8 @@ function everySeaSquare(): SeaSquare[] {
   return squares;
 }
 
-// Every square of the river, ready to be shimmered over: where it lies on the map, where the middle
-// of it stands in the world, and which way the river runs through it. The river does not move
+// Every square of the river, ready to be shimmered over: where the middle of it stands in the world,
+// and the strips of glints the river runs down through it. The river does not move
 // either, so the list is made once.
 const riverSquares: RiverSquare[] = everyRiverSquare();
 
@@ -851,7 +851,11 @@ function everyRiverSquare(): RiverSquare[] {
     for (let gy = 0; gy < SEKTOR_SIZE; gy++) {
       if (!isRiverLocation(gx, gy)) continue;
       const { wx, wz } = gridToWorld(gx, gy);
-      squares.push({ x: gx, z: gy, centerX: wx, centerZ: wz, sides: riverSides(terrain, gx, gy) });
+      squares.push({
+        centerX: wx,
+        centerZ: wz,
+        glintStrips: riverGlintStrips(riverSides(terrain, gx, gy), riverSideFlowedInFrom(terrain, gx, gy)),
+      });
     }
   }
   return squares;
