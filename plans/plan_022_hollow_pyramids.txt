@@ -39,9 +39,9 @@ This describes extensions to the rendering code, applied in Architect & Frontend
 - [done] apply equivalent of #3 to spheres when f function specified
 - [done] create visual tests for this
 
-#7 A sphere can be hollow
-- apply the hollow function to spheres
+#7 [done] A sphere can be hollow
+- [done] apply the hollow function to spheres
     - analogous to other bodies
     - value 100 means it is a paper-thin sphere
     - value 0 means it is full, like now
-- combination of functions h & f must work
+- [done] combination of functions h & f must work

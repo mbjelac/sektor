@@ -76,3 +76,12 @@ test("torus with no hollow", async ({ page }) => {
   await page.locator("#editor textarea").fill("tor h(0)");
   await expectScreenshot(page, "tor-hollow-none");
 });
+
+// A hollow sphere is closed all around its hollow, so it is see-through here to show the hollow
+// inside it.
+for (const value of [50, 100, 0]) {
+  test(`sphere with hollow ${value}`, async ({ page }) => {
+    await page.locator("#editor textarea").fill(`sph h(${value}) c(#e0303080)`);
+    await expectScreenshot(page, `sph-hollow-${value}`);
+  });
+}

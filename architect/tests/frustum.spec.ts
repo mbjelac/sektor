@@ -107,3 +107,27 @@ test("sphere with frustum turned on its side", async ({ page }) => {
   await page.locator("#editor textarea").fill("sph f(50) r(0,90,0)");
   await expectScreenshot(page, "sph-frustum-rotated");
 });
+
+// The cut reaches the sphere hollowing this one out, so it opens the hollow up at the top.
+test("hollow sphere cut open by the frustum", async ({ page }) => {
+  await page.locator("#editor textarea").fill("sph h(80) f(50)");
+  await expectScreenshot(page, "sph-frustum-hollow-open");
+});
+
+test("paper thin sphere cut open by the frustum", async ({ page }) => {
+  await page.locator("#editor textarea").fill("sph h(100) f(50)");
+  await expectScreenshot(page, "sph-frustum-hollow-full");
+});
+
+// The cut stays above the sphere hollowing this one out, so the hollow stays closed and the top
+// is solid.
+test("hollow sphere cut above its hollow", async ({ page }) => {
+  await page.locator("#editor textarea").fill("sph h(30) f(20)");
+  await expectScreenshot(page, "sph-frustum-hollow-closed");
+});
+
+// The cut lies below the sphere hollowing this one out, so no hollow is left.
+test("hollow sphere cut below its hollow", async ({ page }) => {
+  await page.locator("#editor textarea").fill("sph h(30) f(80)");
+  await expectScreenshot(page, "sph-frustum-hollow-gone");
+});

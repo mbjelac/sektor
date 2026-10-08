@@ -100,7 +100,7 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
     drawPrism(p, priN, color, command.hollow ?? undefined);
   }
   if (command.type === "sph") {
-    drawSphere(p, color, command.frustum ?? undefined);
+    drawSphere(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
   }
   if (command.type === "cyl") {
     drawCylinder(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
