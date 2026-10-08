@@ -1,5 +1,9 @@
 import p5 from "p5";
 
+// The earth a block of ground is cut out of: lighter underneath it, darker on its sides.
+export const FLOOR_UNDERSIDE_COLOR: [number, number, number] = [180, 140, 90];
+export const FLOOR_SIDE_COLOR: [number, number, number] = [100, 70, 40];
+
 // A location of ground is a block: the ground itself on top, the earth it is cut out of on every
 // side and underneath.
 export function drawFloor(
@@ -10,8 +14,8 @@ export function drawFloor(
   const h = s / 2;
   const height = floorBlockHeight(s);
   const green: [number, number, number] = topColor ?? [30, 200, 80];
-  const brown: [number, number, number] = [180, 140, 90];
-  const darkBrown: [number, number, number] = [100, 70, 40];
+  const brown = FLOOR_UNDERSIDE_COLOR;
+  const darkBrown = FLOOR_SIDE_COLOR;
   const bottom = floorBlockBottom(s);
   const top = bottom - height;
 
@@ -163,12 +167,12 @@ function drawSideOutline(
 
 // How tall a block of ground stands, as a part of a location's width. Every location's ground
 // stands the same height, so the map is flat.
-function floorBlockHeight(size: number): number {
+export function floorBlockHeight(size: number): number {
   return size * FLOOR_HEIGHT_FRACTION;
 }
 
 // Where the underside of every floor block sits.
-function floorBlockBottom(size: number): number {
+export function floorBlockBottom(size: number): number {
   return size * FLOOR_HEIGHT_FRACTION / 2;
 }
 

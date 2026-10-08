@@ -27,7 +27,7 @@ import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, isRiver, RIVER_FROM_EAST, RIVER_FROM_NORTH, SEA } from "../../../shared/terrain";
-import { drawRiver, RIVER_NAME } from "./river.ui";
+import { drawRiverBed, drawRiverSurface, RIVER_NAME } from "./river.ui";
 import { riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
@@ -518,11 +518,19 @@ function openTerrainPanel(location: BuildingLocation) {
     buildingFunctions: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
     floorColor: floorColorAt(location.x, location.y),
-    drawOnFloor: isRiverLocation(location.x, location.y)
-      ? (preview => drawRiver(preview, riverSides(terrain, location.x, location.y)))
+    drawFloorInstead: isRiverLocation(location.x, location.y)
+      ? (preview => drawRiverInPanel(preview, location))
       : undefined,
     location: location,
   });
+}
+
+// The panel shows a square on its own, drawn in one pass, so the water is laid over the bed straight
+// after it.
+function drawRiverInPanel(preview: p5, location: BuildingLocation) {
+  const sides = riverSides(terrain, location.x, location.y);
+  drawRiverBed(preview, sides, floorColorAt(location.x, location.y));
+  drawRiverSurface(preview, sides);
 }
 
 function terrainNameAt(gx: number, gy: number): string {
@@ -663,17 +671,19 @@ function bakeOpaqueFloors(p: p5) {
       drawFloorWireframe(p, BLOCK_SIZE);
     } else if (isSeaLocation(x, z)) {
       drawSeaBed(p);
+    } else if (isRiverLocation(x, z)) {
+      drawRiverBed(p, riverSides(terrain, x, z), floorColorAt(x, z));
     } else {
       drawFloor(p, BLOCK_SIZE, floorColorAt(x, z));
-      if (isRiverLocation(x, z)) drawRiver(p, riverSides(terrain, x, z));
     }
   });
 }
 
 function bakeWaterSurfaces(p: p5) {
   forEachLocation(p, (x, z) => {
-    if (!isSeaLocation(x, z) || !isFloorSolid(x, z)) return;
-    drawSeaSurface(p);
+    if (!isFloorSolid(x, z)) return;
+    if (isSeaLocation(x, z)) drawSeaSurface(p);
+    if (isRiverLocation(x, z)) drawRiverSurface(p, riverSides(terrain, x, z));
   });
 }
 

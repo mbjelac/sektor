@@ -14,13 +14,13 @@ let panelEl: HTMLElement | null = null;
 let panelLocation: BuildingLocation | null = null;
 let previewP5: p5 | null = null;
 let previewContainer: HTMLElement | null = null;
-// Whatever lies on the floor itself rather than standing on it — the water of a river — is drawn by
-// whoever opened the panel, as only they know what that is.
+// A floor which is not a plain block of ground — the bed of a river — is drawn by whoever opened the
+// panel, in place of the block, as only they know what it is.
 let currentDraw: {
   code: string;
   floorColor: [number, number, number];
   showFloor: boolean;
-  drawOnFloor?: (p: p5) => void;
+  drawFloorInstead?: (p: p5) => void;
 } | null = null;
 
 function ensurePreviewP5(parent: HTMLElement) {
@@ -56,9 +56,10 @@ function ensurePreviewP5(parent: HTMLElement) {
       p.noStroke();
 
       p.translate(0, BLOCK_SIZE * 0.3, 0);
-      if (currentDraw.showFloor) {
+      if (currentDraw.drawFloorInstead) {
+        currentDraw.drawFloorInstead(p);
+      } else if (currentDraw.showFloor) {
         drawFloor(p, BLOCK_SIZE, currentDraw.floorColor);
-        currentDraw.drawOnFloor?.(p);
       } else {
         drawFloorWireframe(p, BLOCK_SIZE);
       }
@@ -68,7 +69,7 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunctions, outputDecreasedByPollution, locationProperties, floorColor, showFloor, drawOnFloor, location, onDestroy, onToggleFunction }: {
+export function showBuildingPanel({ name, code, buildingFunctions, outputDecreasedByPollution, locationProperties, floorColor, showFloor, drawFloorInstead, location, onDestroy, onToggleFunction }: {
   name: string,
   code: string,
   buildingFunctions: BuildingFunctionState[],
@@ -76,7 +77,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, outputDecreas
   locationProperties?: { [_: string]: number },
   floorColor: [number, number, number],
   showFloor?: boolean,
-  drawOnFloor?: (p: p5) => void,
+  drawFloorInstead?: (p: p5) => void,
   location: BuildingLocation,
   onDestroy?: () => void,
   onToggleFunction?: (functionIndex: number) => void
@@ -197,7 +198,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, outputDecreas
   document.getElementById("right-panels")!.prepend(panelEl);
 
   // Set draw data and render
-  currentDraw = { code, floorColor, showFloor: showFloor !== false, drawOnFloor };
+  currentDraw = { code, floorColor, showFloor: showFloor !== false, drawFloorInstead };
   ensurePreviewP5(previewContainer);
   previewP5!.redraw();
 

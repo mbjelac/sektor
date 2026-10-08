@@ -57,9 +57,9 @@ Water is animated.
     - image: that floor with river segment
     - location geography regularly
 
-#5 Render rivers more realistically
-- do not display river as flat shapes on the floor
-- render the river floor as ground with a river bed
+#5 [done] Render rivers more realistically
+- [done] do not display river as flat shapes on the floor
+- [done] render the river floor as ground with a river bed
     - a prism with an elongated rectangular trough etched in it (in case of straight sections)
         - or in case of curves an L-shaped trough
     - within the trough the sides are same color as outer sides of floor block
