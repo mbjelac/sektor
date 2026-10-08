@@ -100,7 +100,7 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
     drawPrism(p, priN, color, command.hollow ?? undefined);
   }
   if (command.type === "sph") {
-    drawSphere(p, color);
+    drawSphere(p, color, command.frustum ?? undefined);
   }
   if (command.type === "cyl") {
     drawCylinder(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
@@ -115,10 +115,11 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
 }
 
 // How high above its base the centre of a body stands, before it is scaled: halfway up, which for a
-// torus lying flat is the middle of its tube, and for a cut off pyramid or cone is halfway up to the cut.
+// torus lying flat is the middle of its tube, and for a cut off pyramid, cone or sphere is halfway up to
+// the cut.
 function bodyCentreHeight(command: CreateBody): number {
   if (command.type === "tor") return torusTubeRadius(command.hollow ?? undefined);
-  if (command.frustum && (pyrSides[command.type] || command.type === "con")) {
+  if (command.frustum && (pyrSides[command.type] || command.type === "con" || command.type === "sph")) {
     return BLOCK_SIZE * (1 - command.frustum / 100) / 2;
   }
   return BLOCK_SIZE / 2;

@@ -94,3 +94,16 @@ test("hollow cylinder cut past its hole", async ({ page }) => {
   await page.locator("#editor textarea").fill("cyl h(30) f(90)");
   await expectScreenshot(page, "cyl-frustum-hollow-gone");
 });
+
+for (const value of [50, 0, 100, 25]) {
+  test(`sphere with frustum ${value}`, async ({ page }) => {
+    await page.locator("#editor textarea").fill(`sph f(${value})`);
+    await expectScreenshot(page, `sph-frustum-${value}`);
+  });
+}
+
+// Turned on its side to show that the cut sphere turns about its own centre, halfway up to the cut.
+test("sphere with frustum turned on its side", async ({ page }) => {
+  await page.locator("#editor textarea").fill("sph f(50) r(0,90,0)");
+  await expectScreenshot(page, "sph-frustum-rotated");
+});
