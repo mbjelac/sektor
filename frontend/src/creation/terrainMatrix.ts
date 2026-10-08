@@ -73,8 +73,10 @@ function floodWithSea(terrain: number[][], randomNumber: RandomNumber) {
 // A draw falling below this leaves the sektor without a river.
 const CHANCE_OF_NO_RIVER = 0.5;
 
-// A river comes in over the rim from one of the squares of land lying on it. A square of the rim
-// which already touches the sea is the coast rather than the rim, and no river comes in from there.
+// A river is a river only if it runs a good way across the land: one which comes in over the rim and
+// runs straight out into the sea or over the rim again a few squares on is taken away and another
+// one run in its place. A map with too little land between its rim and its sea may have room for
+// no river that long, so after enough tries it is left without one.
 function runRiver(terrain: number[][], randomNumber: RandomNumber) {
   if (randomNumber() < CHANCE_OF_NO_RIVER) return;
 
@@ -83,11 +85,33 @@ function runRiver(terrain: number[][], randomNumber: RandomNumber) {
   );
   if (sources.length === 0) return;
 
+  for (let attempt = 0; attempt < RIVER_ATTEMPTS; attempt++) {
+    runRiverFromRandomSource(terrain, sources, randomNumber);
+    if (squaresOfRiver(terrain).length >= SHORTEST_RIVER_SQUARE_COUNT) return;
+    for (const square of squaresOfRiver(terrain)) {
+      terrain[square.x][square.z] = GROUND;
+    }
+  }
+}
+
+// The fewest squares a river runs across.
+const SHORTEST_RIVER_SQUARE_COUNT = 8;
+
+// How many rivers are run before a map is taken to have no room for one long enough.
+const RIVER_ATTEMPTS = 100;
+
+// A river comes in over the rim from one of the squares of land lying on it. A square of the rim
+// which already touches the sea is the coast rather than the rim, and no river comes in from there.
+function runRiverFromRandomSource(terrain: number[][], sources: RiverSource[], randomNumber: RandomNumber) {
   const source = sources[Math.floor(randomNumber() * sources.length)];
   terrain[source.square.x][source.square.z] = source.flow.riverSquare;
   // The river comes in from over the rim, so its first step takes it straight into the land rather
   // than along the rim it has just crossed.
   flowOnward(terrain, source.square, [source.flow], randomNumber);
+}
+
+function squaresOfRiver(terrain: number[][]): Square[] {
+  return terrain.flatMap((row, x) => row.flatMap((square, z) => isRiver(square) ? [{ x, z }] : []));
 }
 
 // The river flows on from the square it has reached, into the next square straight ahead, to the
@@ -166,7 +190,12 @@ function flowAlong(x: number, z: number): Flow {
 // Every square on the rim of the map a river can come in from, and which way it flows coming in:
 // straight away from the rim. A corner lies on two sides of the rim, and a river can come in over
 // either of them.
-const RIVER_SOURCES: { square: Square, flow: Flow }[] = Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>
+interface RiverSource {
+  square: Square;
+  flow: Flow;
+}
+
+const RIVER_SOURCES: RiverSource[] = Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>
   Array.from({ length: SEKTOR_SIZE }, (_alsoUnused, z) => ({ x, z })))
   .flat()
   .flatMap(square => FLOWS

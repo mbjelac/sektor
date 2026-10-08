@@ -79,6 +79,11 @@ describe("createTerrainMatrix", () => {
     expect(mapsWhoseRiverComesInFromTheCoast()).toEqual([]);
   });
 
+  // A river runs a good way across the land, or there is none at all.
+  it("makes the river of every map at least eight squares long", () => {
+    expect(mapsWithRiverShorterThanEightSquares()).toEqual([]);
+  });
+
   // A river ends where it reaches the sea or the rim of the map, never in the middle of dry land.
   it("ends the river of every map at the sea or at the rim of the map", () => {
     expect(mapsWhoseRiverEndsInTheLand()).toEqual([]);
@@ -127,6 +132,13 @@ function mapsWhoseRiverComesInFromTheCoast(): object[] {
     if (!source) return [];
 
     return touchesSea(terrain, source) ? [{ source }] : [];
+  });
+}
+
+function mapsWithRiverShorterThanEightSquares(): object[] {
+  return mapsDrawn().flatMap(terrain => {
+    const riverSquares = squaresOfRiver(terrain);
+    return riverSquares.length === 0 || riverSquares.length >= 8 ? [] : [{ riverSquares }];
   });
 }
 

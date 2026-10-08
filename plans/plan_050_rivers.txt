@@ -68,5 +68,5 @@ Water is animated.
     - the trough is covered by a polygon shaped like the trough (elongated rectangle or L)
         - color: blue, transparent 50%
 
-#6 If a river exists, it is at least 8 squares long
+#6 [done] If a river exists, it is at least 8 squares long
 - [done] when creating a river, if it is done and it is shorter than 8 squares, remove river and repeat generation
