@@ -63,3 +63,34 @@ test("hollow cone with frustum seen from its base", async ({ page }) => {
   await page.locator("#editor textarea").fill("con h(80) f(50) r(0,180,0)");
   await expectScreenshot(page, "con-frustum-hollow-base");
 });
+
+for (const value of [50, 0, 100]) {
+  test(`cylinder with frustum ${value}`, async ({ page }) => {
+    await page.locator("#editor textarea").fill(`cyl f(${value})`);
+    await expectScreenshot(page, `cyl-frustum-${value}`);
+  });
+}
+
+// Laid on its side to show that the cut stays parallel to the axis however the cylinder is turned.
+test("cylinder with frustum laid on its side", async ({ page }) => {
+  await page.locator("#editor textarea").fill("cyl f(50) r(0,90,0)");
+  await expectScreenshot(page, "cyl-frustum-rotated");
+});
+
+// The cut reaches into the hole of the hollow cylinder, so it opens the hole up along its side.
+test("hollow cylinder cut open by the frustum", async ({ page }) => {
+  await page.locator("#editor textarea").fill("cyl h(60) f(50)");
+  await expectScreenshot(page, "cyl-frustum-hollow-open");
+});
+
+// The cut stays short of the hole of the hollow cylinder, so the hole is left whole.
+test("hollow cylinder cut short of its hole", async ({ page }) => {
+  await page.locator("#editor textarea").fill("cyl h(30) f(20)");
+  await expectScreenshot(page, "cyl-frustum-hollow-closed");
+});
+
+// The cut lies past the far side of the hole of the hollow cylinder, so no hole is left.
+test("hollow cylinder cut past its hole", async ({ page }) => {
+  await page.locator("#editor textarea").fill("cyl h(30) f(90)");
+  await expectScreenshot(page, "cyl-frustum-hollow-gone");
+});

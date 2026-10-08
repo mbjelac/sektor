@@ -103,7 +103,7 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
     drawSphere(p, color);
   }
   if (command.type === "cyl") {
-    drawCylinder(p, color, command.hollow ?? undefined);
+    drawCylinder(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
   }
   if (command.type === "con") {
     drawCone(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
