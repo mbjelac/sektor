@@ -284,7 +284,7 @@ interface Construction {
   duration: number;
   startMillis: number;
 }
-const placedBuildings: { type: string; location: BuildingLocation; code: string; construction?: Construction }[] = [];
+const placedBuildings: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }[] = [];
 let notificationTimeout: ReturnType<typeof setTimeout> | null = null;
 
 function locationsToLocationProperties(locationMatrix: Location[][]): { [key: string]: number[][] } {
@@ -441,7 +441,7 @@ function loadSavedState() {
   for (const building of sektorData.buildings) {
     const code = placedBuildingCode(building.type, building.location);
     if (code) {
-      placedBuildings.push({ type: building.type, location: building.location, code });
+      placedBuildings.push({ type: building.type, location: building.location, code, animationStartDelayMillis: randomAnimationStartDelayMillis() });
       floorGeometryNeedsRebaking = true;
     }
   }
@@ -741,10 +741,23 @@ function startConstruction(type: string, startMillis: number): Construction | un
   return { renderingCode: constructionRender.renderingCode, duration: constructionRender.duration, startMillis };
 }
 
+// The most a building waits before its animations start.
+const MOST_ANIMATION_START_DELAY_MILLIS = 5000;
+
+// Buildings of a kind standing side by side would otherwise move in step, so each of them starts its
+// animations after a delay of its own, drawn once as it is put on the map, whether the player builds
+// it or the sektor is loaded with it. A test run's screenshots need every building where they expect
+// it, so there no building waits.
+function randomAnimationStartDelayMillis(): number {
+  if (isTestMode) return 0;
+  return Math.random() * MOST_ANIMATION_START_DELAY_MILLIS;
+}
+
 // The construction's animations are timed from the moment the building was placed, so they play
 // from their beginning whenever the building goes up. Once the construction is over it is dropped
-// and the building is drawn finished from then on.
-function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingLocation; code: string; construction?: Construction }) {
+// and the building is drawn finished from then on, its animations held at their start until its
+// delay is over.
+function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }) {
   if (building.construction) {
     const constructionMillis = p.millis() - building.construction.startMillis;
     if (constructionMillis < building.construction.duration) {
@@ -754,7 +767,8 @@ function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingL
     }
     building.construction = undefined;
   }
-  drawBakedBodies(p, bakedBuildingBodies(p, placedBuildingBakeName(building), building.code), p.millis());
+  const animationMillis = Math.max(0, p.millis() - building.animationStartDelayMillis);
+  drawBakedBodies(p, bakedBuildingBodies(p, placedBuildingBakeName(building), building.code), animationMillis);
 }
 
 // Forests standing in the same shape draw the same bodies, so they are baked under their shape
@@ -1245,7 +1259,13 @@ const sektorUi = (p: p5) => {
     for (const building of result.addedBuildings) {
       const code = placedBuildingCode(building.type, building.location);
       if (code) {
-        placedBuildings.push({ type: building.type, location: building.location, code, construction: startConstruction(building.type, p.millis()) });
+        placedBuildings.push({
+          type: building.type,
+          location: building.location,
+          code,
+          construction: startConstruction(building.type, p.millis()),
+          animationStartDelayMillis: randomAnimationStartDelayMillis(),
+        });
         floorGeometryNeedsRebaking = true;
       }
     }
