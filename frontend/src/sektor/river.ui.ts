@@ -13,7 +13,7 @@ import {
 } from "../../../shared/drawFloor";
 import { SEA_COLOR } from "./sea.ui";
 import { withoutDepthWrites } from "../../../shared/applyCommands";
-import { GlintPlace, RiverSide } from "./river";
+import { GlintPlace, GLINTS_ACROSS_RIVER, RiverSide } from "./river";
 
 // What the panel calls a square of river the player has clicked on.
 export const RIVER_NAME = "River";
@@ -143,8 +143,6 @@ function addGlint(p: p5, riverSquare: RiverSquare, glintPlace: GlintPlace, alpha
   p.vertex(left, GLINT_HEIGHT, back);
 }
 
-// Four glints stand across the river, which is half a square wide.
-const GLINTS_ACROSS_RIVER = 4;
 const GLINT_SIZE = RIVER_WIDTH / GLINTS_ACROSS_RIVER;
 
 // How far into its cycle the light of each strip starts, as a part of the whole cycle: one for each

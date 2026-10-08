@@ -29,6 +29,10 @@ export function riverSideFlowedInFrom(terrain: number[][], x: number, z: number)
   return SIDE_FLOWED_IN_FROM[terrain[x][z]];
 }
 
+// How many glints stand across the river, which is half a square wide; a glint is as large as a
+// glint of the sea, a quarter of a square.
+export const GLINTS_ACROSS_RIVER = 2;
+
 // Where a glint lies on a square of river, counted in glints from the middle of the square to the
 // middle of the glint.
 export interface GlintPlace {
@@ -36,11 +40,11 @@ export interface GlintPlace {
   z: number;
 }
 
-// The water of a square of river is cut into four strips of glints running with the river, each
+// The water of a square of river is cut into two strips of glints running with the river, each
 // listed from where the river comes into the square to where it goes out. A straight section's
-// strips are all eight glints long. A curve's strips follow the curve as nested Ls: the outermost
-// runs along the outside of the curve, eleven glints long, and each one inside it is two glints
-// shorter, down to five.
+// strips are both four glints long. A curve's strips follow the curve as nested Ls: the outer one
+// runs along the outside of the curve, five glints long, and the inner one round its inside, three
+// glints long.
 //
 // The strips are listed from the left bank of the river to the right, looking the way it flows, so
 // that a strip comes in at the same place across the river as the strip of the same number left the
@@ -67,21 +71,26 @@ export function riverGlintStrips(sides: RiverSide[], flowedInFrom: RiverSide): G
 // The glints of a strip are given as how far they lie along the way the river flows into the
 // square, and how far across it: towards its right bank in a straight section, and towards the
 // outside of a curve.
-const STRIPS = [0, 1, 2, 3];
+const STRIPS = Array.from({ length: GLINTS_ACROSS_RIVER }, (_unused, strip) => strip);
+
+// How far the middle of the outermost glint lies from the middle of the square, and from the middle
+// of the river: a square is twice as wide as the river.
+const SQUARE_EDGE = GLINTS_ACROSS_RIVER - 0.5;
+const RIVER_EDGE = GLINTS_ACROSS_RIVER / 2 - 0.5;
 
 // A straight section's strips are numbered from its left bank.
 function straightStrip(strip: number): [number, number][] {
-  return glintsBetween(-3.5, 3.5).map(along => [along, strip - 1.5]);
+  return glintsBetween(-SQUARE_EDGE, SQUARE_EDGE).map(along => [along, strip - RIVER_EDGE]);
 }
 
 // A curve's strips are numbered from its outside in. A strip comes in along the arm the river flows
 // in through, runs on into the middle of the square until it reaches its own turn, turns there and
 // runs out along the other arm.
 function curvedStrip(strip: number): [number, number][] {
-  const turn = 1.5 - strip;
+  const turn = RIVER_EDGE - strip;
   return [
-    ...glintsBetween(-3.5, turn).map((along): [number, number] => [along, turn]),
-    ...glintsBetween(-3.5, turn - 1).reverse().map((across): [number, number] => [turn, across]),
+    ...glintsBetween(-SQUARE_EDGE, turn).map((along): [number, number] => [along, turn]),
+    ...glintsBetween(-SQUARE_EDGE, turn - 1).reverse().map((across): [number, number] => [turn, across]),
   ];
 }
 

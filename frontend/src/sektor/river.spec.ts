@@ -46,72 +46,50 @@ describe("riverSides", () => {
 });
 
 describe("riverGlintStrips", () => {
-  it("runs four strips of eight glints straight across a straight section", () => {
-    expect(riverGlintStrips([WEST, EAST], WEST).map(strip => strip.length)).toEqual([8, 8, 8, 8]);
+  it("runs two strips of four glints straight across a straight section", () => {
+    expect(riverGlintStrips([WEST, EAST], WEST).map(strip => strip.length)).toEqual([4, 4]);
   });
 
   // The river flows in from the west, so every strip starts at the west side of the square, the
-  // middle of its first glint three and a half glints west of the middle of the square. Looking
+  // middle of its first glint one and a half glints west of the middle of the square. Looking
   // east, the way the river flows, its left bank is the north one.
   it("starts every strip of a straight section at the side the river flows in from, left bank first", () => {
-    expect(riverGlintStrips([WEST, EAST], WEST).map(strip => [strip[0], strip[7]])).toEqual([
-      [{ x: -3.5, z: -1.5 }, { x: 3.5, z: -1.5 }],
-      [{ x: -3.5, z: -0.5 }, { x: 3.5, z: -0.5 }],
-      [{ x: -3.5, z: 0.5 }, { x: 3.5, z: 0.5 }],
-      [{ x: -3.5, z: 1.5 }, { x: 3.5, z: 1.5 }],
+    expect(riverGlintStrips([WEST, EAST], WEST)).toEqual([
+      [{ x: -1.5, z: -0.5 }, { x: -0.5, z: -0.5 }, { x: 0.5, z: -0.5 }, { x: 1.5, z: -0.5 }],
+      [{ x: -1.5, z: 0.5 }, { x: -0.5, z: 0.5 }, { x: 0.5, z: 0.5 }, { x: 1.5, z: 0.5 }],
     ]);
   });
 
   // Looking west, the way the river flows, its left bank is the south one.
   it("starts every strip at the side the river flows in from whichever way the square is listed", () => {
-    expect(riverGlintStrips([WEST, EAST], EAST)[0][0]).toEqual({ x: 3.5, z: 1.5 });
+    expect(riverGlintStrips([WEST, EAST], EAST)[0][0]).toEqual({ x: 1.5, z: 0.5 });
   });
 
   // Flowing south and turning east is turning left, so the inside of the curve is on the left bank.
   it("lists the strips of a curve turning left from its inside out", () => {
-    expect(riverGlintStrips([NORTH, EAST], NORTH).map(strip => strip.length)).toEqual([5, 7, 9, 11]);
+    expect(riverGlintStrips([NORTH, EAST], NORTH).map(strip => strip.length)).toEqual([3, 5]);
   });
 
   // Flowing west and turning north is turning right, so the outside of the curve is on the left bank.
   it("lists the strips of a curve turning right from its outside in", () => {
-    expect(riverGlintStrips([NORTH, EAST], EAST).map(strip => strip.length)).toEqual([11, 9, 7, 5]);
+    expect(riverGlintStrips([NORTH, EAST], EAST).map(strip => strip.length)).toEqual([5, 3]);
   });
 
   // The river flows in from the north and out to the east, so the outside of the curve is the
-  // south-west of the square: the outer strip comes down the west bank and turns along the south one.
-  it("runs the outermost strip of a curve round the outside of it", () => {
-    expect(riverGlintStrips([NORTH, EAST], NORTH)[3]).toEqual([
-      { x: -1.5, z: -3.5 },
-      { x: -1.5, z: -2.5 },
-      { x: -1.5, z: -1.5 },
-      { x: -1.5, z: -0.5 },
-      { x: -1.5, z: 0.5 },
-      { x: -1.5, z: 1.5 },
-      { x: -0.5, z: 1.5 },
-      { x: 0.5, z: 1.5 },
-      { x: 1.5, z: 1.5 },
-      { x: 2.5, z: 1.5 },
-      { x: 3.5, z: 1.5 },
-    ]);
-  });
-
-  it("runs the innermost strip of a curve round the inside of it", () => {
-    expect(riverGlintStrips([NORTH, EAST], NORTH)[0]).toEqual([
-      { x: 1.5, z: -3.5 },
-      { x: 1.5, z: -2.5 },
-      { x: 1.5, z: -1.5 },
-      { x: 2.5, z: -1.5 },
-      { x: 3.5, z: -1.5 },
+  // south-west of the square: the outer strip comes down the west half of the river and turns along
+  // the south half, and the inner one comes down the east half and turns along the north half.
+  it("runs the strips of a curve round it, the outer one round the outside", () => {
+    expect(riverGlintStrips([NORTH, EAST], NORTH)).toEqual([
+      [{ x: 0.5, z: -1.5 }, { x: 0.5, z: -0.5 }, { x: 1.5, z: -0.5 }],
+      [{ x: -0.5, z: -1.5 }, { x: -0.5, z: -0.5 }, { x: -0.5, z: 0.5 }, { x: 0.5, z: 0.5 }, { x: 1.5, z: 0.5 }],
     ]);
   });
 
   it("runs the strips of a curve the other way round when the river flows the other way", () => {
-    expect(riverGlintStrips([NORTH, EAST], EAST)[3]).toEqual([
-      { x: 3.5, z: -1.5 },
-      { x: 2.5, z: -1.5 },
-      { x: 1.5, z: -1.5 },
-      { x: 1.5, z: -2.5 },
-      { x: 1.5, z: -3.5 },
+    expect(riverGlintStrips([NORTH, EAST], EAST)[1]).toEqual([
+      { x: 1.5, z: -0.5 },
+      { x: 0.5, z: -0.5 },
+      { x: 0.5, z: -1.5 },
     ]);
   });
 });
