@@ -27,3 +27,21 @@ This describes extensions to the rendering code, applied in Architect & Frontend
 - [done] apply equivalent of #3 to cones when f function specified
     - both h & f functions can be specified on the same object, they have to work
 - [done] create visual tests for this
+
+#5 A cylinder can be frustum
+- apply equivalent of #3 to cylinders when f function specified
+    - a frustum cylinder means it is cut away with a plane parallel to it's axis
+        - however rotated it is, it is always cut away on this plane
+    - both h & f functions can be specified on the same object, they have to work
+- create visual tests for this
+
+#6 A sphere can be frustum
+- apply equivalent of #3 to spheres when f function specified
+- create visual tests for this
+
+#7 A sphere can be hollow
+- apply the hollow function to spheres
+    - analogous to other bodies
+    - value 100 means it is a paper-thin sphere
+    - value 0 means it is full, like now
+- combination of functions h & f must work
