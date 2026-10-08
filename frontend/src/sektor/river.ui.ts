@@ -285,34 +285,35 @@ function drawUnderside(p: p5) {
   p.endShape(p.CLOSE);
 }
 
-// The faces are drawn without edges, as the ground is cut into cells which would otherwise show as
-// a grid on top of the square. The edges a block of ground shows — its sides, and here the rim of
-// the trough — are drawn on their own, in whatever stroke the square is drawn in.
+// The faces are drawn without edges, as the block is cut into cells which would otherwise show as a
+// grid on it. The only edges it shows are the outlines of its four sides, each drawn whole, notch
+// and all, in whatever stroke the square is drawn in.
 function drawOutlines(p: p5, trough: Cell[]) {
   p.push();
   p.noFill();
-  for (const segment of outerSideSegments(trough)) {
-    drawOutline(p, segment.from, segment.to, segment.top, BOTTOM);
-  }
-  for (const wall of troughWalls(trough)) {
-    drawOutline(p, wall.from, wall.to, TOP, RIVER_BED);
+  for (const direction of DIRECTIONS) {
+    drawSideOutline(p, outerSideSegments(trough).filter(segment => isSameDirection(segment.facing, direction)));
   }
   p.pop();
 }
 
-function drawOutline(
-  p: p5,
-  [fromX, fromZ]: [number, number],
-  [toX, toZ]: [number, number],
-  top: number,
-  bottom: number,
-) {
+// A side runs along the tops of its segments, stepping down into the notch and up out of it, and
+// back along the bottom of the block.
+function drawSideOutline(p: p5, segments: SideSegment[]) {
+  const first = segments[0];
+  const last = segments[segments.length - 1];
   p.beginShape();
-  p.vertex(fromX, top, fromZ);
-  p.vertex(toX, top, toZ);
-  p.vertex(toX, bottom, toZ);
-  p.vertex(fromX, bottom, fromZ);
+  for (const segment of segments) {
+    p.vertex(segment.from[0], segment.top, segment.from[1]);
+    p.vertex(segment.to[0], segment.top, segment.to[1]);
+  }
+  p.vertex(last.to[0], BOTTOM, last.to[1]);
+  p.vertex(first.from[0], BOTTOM, first.from[1]);
   p.endShape(p.CLOSE);
+}
+
+function isSameDirection(direction: RiverSide, otherDirection: RiverSide): boolean {
+  return direction.x === otherDirection.x && direction.z === otherDirection.z;
 }
 
 const DIRECTIONS: RiverSide[] = [{ x: 0, z: -1 }, { x: 0, z: 1 }, { x: -1, z: 0 }, { x: 1, z: 0 }];
