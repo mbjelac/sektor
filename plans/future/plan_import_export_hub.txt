@@ -1,7 +1,5 @@
-Import & export (in & out of a sektor) should not have to be automatically possible.
-Shipping stuff in & out requires a special building which is like an inter-city transport hub.
-
-The hub has no outputs, just inputs, but it's presence in a sektor enables sektor imports & exports.
+Import & export (in & out of a sektor) is not automatically possible.
+Shipping stuff in & out requires a special building - an inter-city transport hub.
 
 If the building does not exist:
 - when imports & exports are calculated
@@ -13,3 +11,28 @@ There can be multiple import/export hubs. Each hub increases the imports/exports
 When buildings marked on each building placement or destruction, if total number of imports & exports is less or equal to total import/export capacity, no buildings are marked.
 Mark buildings and recalculate until this is the case.
 Start marking buildings farthest from the closest import/export hub.
+
+#1 Sektor imports & exports are limited by hub capacity
+- when imports & exports are calculated
+    - sum up the total ImportExport resources = "capacity"
+    - sum up the total amount of imports and exports = "amount"
+        - ImportExport is local so it doesn't show up in exports
+    - amount must be less or equal to capacity
+    - hubs are buildings which have ImportExport as output
+    - if amount is greater than capacity
+        - order buildings by biggest distance from nearest hub
+        - mark building as disabled
+        - recalculate imports & exports without including marked buildings
+    - repeat until amount not greater than capacity
+- disabled buildings do not consume inputs nor produce outputs
+- disabled buildings are marked on map by floating warning
+- disabled building panel marked
+    - contains warning
+        - text: "⚠️ Building missing required inputs!"
+        - white text
+        - below building label
+    - all input & output amounts displayed as "0 / amount"
+- player is notified with a warning message
+    - text: "Some buildings cannot function: Missing required inputs!"
+- player is notified with a warning message
+    - text: "Import & export capacity exceeded! Optimize sektor or build more transport hubs."
