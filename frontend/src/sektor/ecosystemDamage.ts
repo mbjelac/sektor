@@ -1,6 +1,3 @@
-import { ResourceThroughput } from "../../../shared/sektorData";
-import { ECOSYSTEM_SUPPORT_RESOURCE } from "./forest";
-
 // How much of the support the ecosystem had when the sektor was made it no longer has: every
 // forest cut down, or every bit of its support used up in the sektor, is support the ecosystem
 // has lost, told against what it started with.
@@ -12,9 +9,8 @@ export interface EcosystemDamage {
   percentage: number;
 }
 
-export function ecosystemDamage(initialEcosystemSupport: number, exports: ResourceThroughput[]): EcosystemDamage {
-  const exportedEcosystemSupport = exports.find(throughput => throughput.name === ECOSYSTEM_SUPPORT_RESOURCE)?.value ?? 0;
-  const damage = initialEcosystemSupport - exportedEcosystemSupport;
+export function ecosystemDamage(initialEcosystemSupport: number, ecosystemSupport: number): EcosystemDamage {
+  const damage = initialEcosystemSupport - ecosystemSupport;
   return {
     damage,
     initialEcosystemSupport,

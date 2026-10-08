@@ -3231,3 +3231,42 @@ WasteBio 8
 ## Properties
 
 tags=food
+
+# FloaterTower
+
+## Render
+
+```
+cyl s(95,95,1) c(#c4c4c4)
+cyl s(40,40,42) c(#8f8466)
+cyl s(8,8,10) t(0,0,40) c(#918973)
+pri4 s(14,70,40) t(0,0,4) r(0,0,0) c(#ffe9ad)
+pri4 s(14,70,40) t(0,0,4) r(60,0,0) c(#ffe9ad)
+pri4 s(14,70,40) t(0,0,4) r(120,0,0) c(#ffe9ad)
+con s(80,80,60) t(0,0,1) r(0,0,180) f(89) c(#a47e65)
+pri4 s(10,10,90) t(0,0,-42) r(0,0,90) h(80) c(#363636)
+pri4 s(10,10,90) t(0,0,-42) r(60,0,90) h(80) c(#363636)
+pri4 s(10,10,90) t(0,0,-42) r(120,0,90) h(80) c(#363636)
+cyl s(12,12,1) t(0,0,50) c(#3057a6)
+cyl s(11,11,6) t(0,0,50) h(50) c(#3057a6)
+cyl s(6,6,6) t(0,0,53) h(80) c(#333d52)
+pri4 s(20,2,2) t(10,0,56) r(0,0,-40) c(#b41d1db0)
+pri4 s(20,2,2) t(5,-9,56) r(60,0,-40) c(#b41d1db0)
+pri4 s(20,2,2) t(-5,-9,56) r(120,0,-40) c(#b41d1db0)
+pri4 s(20,2,2) t(-11,0,56) r(180,0,-40) c(#b41d1db0)
+pri4 s(20,2,2) t(-5,10,56) r(240,0,-40) c(#b41d1db0)
+pri4 s(20,2,2) t(5,8,56) r(300,0,-40) c(#b41d1db0)
+```
+
+## Function
+
+EnergyElectric 6
+WorkAdministrative 2
+WorkTechnical 1
+WorkMaintenance 3
+->
+ImportExport 44
+
+## Properties
+
+tags=transport

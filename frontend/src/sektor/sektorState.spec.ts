@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { Sektor } from "./Sektor";
+import { IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
+import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 
 const testDefinitions: BuildingDefinition[] = [
   {
@@ -36,7 +37,7 @@ const testDefinitions: BuildingDefinition[] = [
 
 describe("getSektorState", () => {
   it("returns empty imports and exports when there are no buildings", () => {
-    const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
+    const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
 
     const result = sektor.getSektorState();
 
@@ -45,14 +46,16 @@ describe("getSektorState", () => {
       exports: [],
       hapiness: 0,
       possibleHapiness: 0,
+      ecosystemSupport: 0,
       habitatShortages: [],
       starvedFunctions: [],
+      disabledBuildings: [],
     });
   });
 
   it("returns imports and exports for a single building", () => {
-    const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
-    sektor.loadState({ buildings: [{ type: "Well", location: { x: 0, y: 0 } }] });
+    const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
+    sektor.loadState({ buildings: [{ type: "Well", location: { x: 0, y: 0 } }, TEST_HUB] });
 
     const result = sektor.getSektorState();
 
@@ -66,17 +69,20 @@ describe("getSektorState", () => {
       ],
       hapiness: 0,
       possibleHapiness: 0,
+      ecosystemSupport: 0,
       habitatShortages: [],
       starvedFunctions: [],
+      disabledBuildings: [],
     });
   });
 
   it("aggregates imports and exports by resource name across buildings", () => {
-    const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
+    const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
     sektor.loadState({
       buildings: [
         { type: "Well", location: { x: 0, y: 0 } },
         { type: "Farm", location: { x: 1, y: 0 } },
+        TEST_HUB,
       ],
     });
 
@@ -94,8 +100,10 @@ describe("getSektorState", () => {
       ],
       hapiness: 0,
       possibleHapiness: 0,
+      ecosystemSupport: 0,
       habitatShortages: [],
       starvedFunctions: [],
+      disabledBuildings: [],
     });
   });
 });
@@ -132,12 +140,13 @@ const poolDefinitions: BuildingDefinition[] = [
 
 describe("resource pool", () => {
   it("imports the amount by which inputs exceed outputs", () => {
-    const sektor = new Sektor([[{ properties: {} }]], poolDefinitions, []);
+    const sektor = new Sektor([[{ properties: {} }]], [...poolDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
     sektor.loadState({
       buildings: [
         { type: "Consumer", location: { x: 0, y: 0 } },
         { type: "Consumer", location: { x: 1, y: 0 } },
         { type: "Producer", location: { x: 2, y: 0 } },
+        TEST_HUB,
       ],
     });
 
@@ -151,11 +160,12 @@ describe("resource pool", () => {
   });
 
   it("exports the amount by which outputs exceed inputs", () => {
-    const sektor = new Sektor([[{ properties: {} }]], poolDefinitions, []);
+    const sektor = new Sektor([[{ properties: {} }]], [...poolDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
     sektor.loadState({
       buildings: [
         { type: "Consumer", location: { x: 0, y: 0 } },
         { type: "Producer", location: { x: 1, y: 0 } },
+        TEST_HUB,
       ],
     });
 
@@ -169,12 +179,13 @@ describe("resource pool", () => {
   });
 
   it("neither imports nor exports when outputs equal inputs", () => {
-    const sektor = new Sektor([[{ properties: {} }]], poolDefinitions, []);
+    const sektor = new Sektor([[{ properties: {} }]], [...poolDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
     sektor.loadState({
       buildings: [
         { type: "Consumer", location: { x: 0, y: 0 } },
         { type: "Consumer", location: { x: 1, y: 0 } },
         { type: "BigProducer", location: { x: 2, y: 0 } },
+        TEST_HUB,
       ],
     });
 
@@ -188,12 +199,13 @@ describe("resource pool", () => {
   });
 
   it("exports the freed amount when a consuming building is destroyed", () => {
-    const sektor = new Sektor([[{ properties: {} }]], poolDefinitions, []);
+    const sektor = new Sektor([[{ properties: {} }]], [...poolDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
     sektor.loadState({
       buildings: [
         { type: "Consumer", location: { x: 0, y: 0 } },
         { type: "Consumer", location: { x: 1, y: 0 } },
         { type: "BigProducer", location: { x: 2, y: 0 } },
+        TEST_HUB,
       ],
     });
 
@@ -242,10 +254,10 @@ describe("outputs named after a location property", () => {
   it("produces the location property value as the output amount", () => {
     const sektor = new Sektor(
       [[{ properties: { insolation: 3 } }]],
-      locationPropertyDefinitions,
-      [],
+      [...locationPropertyDefinitions, TEST_HUB_DEFINITION],
+      [IMPORT_EXPORT_RESOURCE],
     );
-    sektor.loadState({ buildings: [{ type: "SolarFarm", location: { x: 0, y: 0 } }] });
+    sektor.loadState({ buildings: [{ type: "SolarFarm", location: { x: 0, y: 0 } }, TEST_HUB] });
 
     expect(sektor.getSektorState().exports).toEqual([
       { name: "Energy", value: 3 },
@@ -255,10 +267,10 @@ describe("outputs named after a location property", () => {
   it("produces nothing where the location has none of the property", () => {
     const sektor = new Sektor(
       [[{ properties: { insolation: 0 } }]],
-      locationPropertyDefinitions,
-      [],
+      [...locationPropertyDefinitions, TEST_HUB_DEFINITION],
+      [IMPORT_EXPORT_RESOURCE],
     );
-    sektor.loadState({ buildings: [{ type: "SolarFarm", location: { x: 0, y: 0 } }] });
+    sektor.loadState({ buildings: [{ type: "SolarFarm", location: { x: 0, y: 0 } }, TEST_HUB] });
 
     expect(sektor.getSektorState().exports).toEqual([
       { name: "Energy", value: 0 },
@@ -268,10 +280,10 @@ describe("outputs named after a location property", () => {
   it("produces the written amount when the output names no location property", () => {
     const sektor = new Sektor(
       [[{ properties: { insolation: 3 } }]],
-      locationPropertyDefinitions,
-      [],
+      [...locationPropertyDefinitions, TEST_HUB_DEFINITION],
+      [IMPORT_EXPORT_RESOURCE],
     );
-    sektor.loadState({ buildings: [{ type: "Mine", location: { x: 0, y: 0 } }] });
+    sektor.loadState({ buildings: [{ type: "Mine", location: { x: 0, y: 0 } }, TEST_HUB] });
 
     expect(sektor.getSektorState().exports).toEqual([
       { name: "Ore", value: 5 },
@@ -281,13 +293,14 @@ describe("outputs named after a location property", () => {
   it("pools the produced amount with the other buildings' inputs and outputs", () => {
     const sektor = new Sektor(
       [[{ properties: { insolation: 4 } }, { properties: { insolation: 4 } }]],
-      locationPropertyDefinitions,
-      [],
+      [...locationPropertyDefinitions, TEST_HUB_DEFINITION],
+      [IMPORT_EXPORT_RESOURCE],
     );
     sektor.loadState({
       buildings: [
         { type: "SolarFarm", location: { x: 0, y: 0 } },
         { type: "Mine", location: { x: 0, y: 1 } },
+        TEST_HUB,
       ],
     });
 
@@ -302,8 +315,10 @@ describe("outputs named after a location property", () => {
       ],
       hapiness: 0,
       possibleHapiness: 0,
+      ecosystemSupport: 0,
       habitatShortages: [],
       starvedFunctions: [],
+      disabledBuildings: [],
     });
   });
 });

@@ -272,3 +272,20 @@ Water 7 pollution
 ## Properties
 
 tags=industry
+
+# TestHub
+
+## Render
+
+```
+pri4 s(28,28,14) t(0,0,-4) c(#ffedc2)
+```
+
+## Function
+
+->
+ImportExport 100
+
+## Properties
+
+tags=food,industry

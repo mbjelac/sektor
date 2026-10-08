@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Sektor } from "./Sektor";
+import { IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
+import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 
 const testDefinitions: BuildingDefinition[] = [
@@ -18,8 +19,8 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function purifierPolluted(pollution: number): Sektor {
-  const sektor = new Sektor([[{ properties: { pollution } }]], testDefinitions, []);
-  sektor.loadState({ buildings: [{ type: "Purifier", location: { x: 0, y: 0 } }] });
+  const sektor = new Sektor([[{ properties: { pollution } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
+  sektor.loadState({ buildings: [{ type: "Purifier", location: { x: 0, y: 0 } }, TEST_HUB] });
   return sektor;
 }
 

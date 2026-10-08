@@ -12,8 +12,8 @@ When buildings marked on each building placement or destruction, if total number
 Mark buildings and recalculate until this is the case.
 Start marking buildings farthest from the closest import/export hub.
 
-#1 Sektor imports & exports are limited by hub capacity
-- when imports & exports are calculated
+#1 [done] Sektor imports & exports are limited by hub capacity
+- [done] when imports & exports are calculated
     - sum up the total ImportExport resources = "capacity"
     - sum up the total amount of imports and exports = "amount"
         - ImportExport is local so it doesn't show up in exports
@@ -24,15 +24,16 @@ Start marking buildings farthest from the closest import/export hub.
         - mark building as disabled
         - recalculate imports & exports without including marked buildings
     - repeat until amount not greater than capacity
-- disabled buildings do not consume inputs nor produce outputs
-- disabled buildings are marked on map by floating warning
-- disabled building panel marked
+- [done] buildings with no inputs are filtered out of the disabling algorithm - they do not need imports
+- [done] disabled buildings do not consume inputs nor produce outputs
+- [done] disabled buildings are marked on map by floating warning
+- [done] disabled building panel marked
     - contains warning
         - text: "⚠️ Building missing required inputs!"
         - white text
         - below building label
     - all input & output amounts displayed as "0 / amount"
-- player is notified with a warning message
+- [done] player is notified with a warning message
     - text: "Some buildings cannot function: Missing required inputs!"
-- player is notified with a warning message
+- [done] player is notified with a warning message
     - text: "Import & export capacity exceeded! Optimize sektor or build more transport hubs."

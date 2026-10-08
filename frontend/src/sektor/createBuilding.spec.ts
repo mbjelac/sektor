@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Sektor } from "./Sektor";
+import { IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
+import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 import { ELEVATION, GROUND, RIVER_FROM_WEST, SEA } from "../../../shared/terrain";
 
@@ -142,9 +143,15 @@ describe("createBuilding", () => {
   });
 });
 
+function createSektorWithHub(): Sektor {
+  const sektor = new Sektor([[{ properties: { soil: 1.0 } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
+  sektor.createBuilding(TEST_HUB);
+  return sektor;
+}
+
 describe("createBuilding imports and exports", () => {
   it("adds the created building's inputs to imports and outputs to exports", () => {
-    const sektor = createSektor();
+    const sektor = createSektorWithHub();
 
     sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
 
@@ -158,7 +165,7 @@ describe("createBuilding imports and exports", () => {
   });
 
   it("lowers an import when a building producing that resource is created", () => {
-    const sektor = createSektor();
+    const sektor = createSektorWithHub();
     sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
 
     sektor.createBuilding({ type: "WheatFarm", location: { x: 1, y: 0 } });
@@ -179,7 +186,7 @@ describe("createBuilding imports and exports", () => {
   });
 
   it("lowers an export when a building consuming that resource is created", () => {
-    const sektor = createSektor();
+    const sektor = createSektorWithHub();
     sektor.createBuilding({ type: "WheatFarm", location: { x: 0, y: 0 } });
 
     sektor.createBuilding({ type: "Well", location: { x: 1, y: 0 } });

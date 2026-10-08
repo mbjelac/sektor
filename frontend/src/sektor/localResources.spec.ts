@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { Building, BuildingLocation, Sektor } from "./Sektor";
+import { Building, BuildingLocation, IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
+import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 
 // "Care" and "Water" are the local resources of these tests: they can neither be imported nor
 // exported.
-const LOCAL_RESOURCES = ["Care", "Water"];
+const LOCAL_RESOURCES = ["Care", "Water", IMPORT_EXPORT_RESOURCE];
 
 const testDefinitions: BuildingDefinition[] = [
   {
@@ -68,10 +69,10 @@ const SEKTOR_SIZE = 5;
 function sektorWithBuildings(buildings: Building[]): Sektor {
   const sektor = new Sektor(
     Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => ({ properties: {} }))),
-    testDefinitions,
+    [...testDefinitions, TEST_HUB_DEFINITION],
     LOCAL_RESOURCES,
   );
-  sektor.loadState({ buildings });
+  sektor.loadState({ buildings: [...buildings, TEST_HUB] });
   return sektor;
 }
 

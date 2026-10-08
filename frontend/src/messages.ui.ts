@@ -25,6 +25,8 @@ const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 // One complaint to a resource, each named after the resource it complains of.
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
 const POLLUTION_MESSAGE_ID = "pollution-message";
+const DISABLED_BUILDINGS_MESSAGE_ID = "disabled-buildings-message";
+const IMPORT_EXPORT_CAPACITY_MESSAGE_ID = "import-export-capacity-message";
 const COLLAPSE_BUTTON_ID = "messages-collapse-button";
 const EXPAND_BUTTON_ID = "messages-expand-button";
 
@@ -36,11 +38,14 @@ export function updateMessages(
   planetImportsAndExports: ImportsAndExports,
   habitatShortages: string[],
   anyBuildingAffectedByPollution: boolean,
+  anyBuildingDisabled: boolean,
 ) {
   showMostImportedMessage(planetImportsAndExports);
   showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
   showHabitatShortageMessages(habitatShortages);
   showPollutionMessage(anyBuildingAffectedByPollution);
+  showDisabledBuildingsMessage(anyBuildingDisabled);
+  showImportExportCapacityMessage(anyBuildingDisabled);
   showToggleButtons();
 }
 
@@ -75,6 +80,33 @@ function showPollutionMessage(anyBuildingAffectedByPollution: boolean) {
   }
 
   showMessage(POLLUTION_MESSAGE_ID, "warning", "Citizens are complaining about pollution!", []);
+}
+
+// A player whose sektor ships more in and out than its hubs can carry is warned once, whichever
+// buildings it has cost them, until none is disabled.
+function showDisabledBuildingsMessage(anyBuildingDisabled: boolean) {
+  if (!anyBuildingDisabled) {
+    hideMessage(DISABLED_BUILDINGS_MESSAGE_ID);
+    return;
+  }
+
+  showMessage(DISABLED_BUILDINGS_MESSAGE_ID, "warning", "Some buildings cannot function: Missing required inputs!", []);
+}
+
+// Buildings are only ever disabled because the hubs cannot carry what the sektor ships, so the
+// player is also told what to do about it.
+function showImportExportCapacityMessage(anyBuildingDisabled: boolean) {
+  if (!anyBuildingDisabled) {
+    hideMessage(IMPORT_EXPORT_CAPACITY_MESSAGE_ID);
+    return;
+  }
+
+  showMessage(
+    IMPORT_EXPORT_CAPACITY_MESSAGE_ID,
+    "warning",
+    "Import & export capacity exceeded! Optimize sektor or build more transport hubs.",
+    [],
+  );
 }
 
 // Whatever the planet is shortest of is what a player can do most good by sending out. A planet

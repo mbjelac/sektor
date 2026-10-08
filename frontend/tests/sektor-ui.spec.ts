@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { test, expect, setup, expectScreenshot, expectMapScreenshot, MIDDLE_OF_MAP } from "./test-utils";
+import { test, expect, setup, expectScreenshot, expectMapScreenshot, MIDDLE_OF_MAP, placeHub } from "./test-utils";
 
 setup();
 
@@ -96,12 +96,13 @@ test("selects the first building tag at the start, displaying only buildings hav
 
   expect({ selectedBuildingTags, shownBuildingNames }).toEqual({
     selectedBuildingTags: ["food"],
-    shownBuildingNames: ["Destroy", "TestFactory", "TestMine", "TestHouse", "TestProcessor", "TestRefinery", "TestWorkshop", "TestClinic", "TestCarer", "TestReactor", "TestHabitat"],
+    shownBuildingNames: ["Destroy", "TestFactory", "TestMine", "TestHouse", "TestProcessor", "TestRefinery", "TestWorkshop", "TestClinic", "TestCarer", "TestReactor", "TestHabitat", "TestHub"],
   });
 });
 
 test("renders building on floor after placement", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
   // Click on center of the canvas (should hit a floor tile near the middle of the grid)
@@ -151,12 +152,14 @@ test("keeps the tool in hand while SHIFT is held, so several of the same buildin
 // The stats of the sektor stand beside its name, so that a player building on it is told what the
 // list tells them about it from outside.
 test("shows the stats of the sektor beside its name", async ({ page }) => {
+  await placeHub(page);
   await placeOneBuilding(page);
 
   await expectScreenshot(page, "sektor-stats", "#sektor-stats");
 });
 
 test("names every stat beside the sektor name by the same tooltip the list names it by", async ({ page }) => {
+  await placeHub(page);
   await placeOneBuilding(page);
 
   const stats = await page.locator("#sektor-stats .sektor-stat").evaluateAll(stats => stats.map(stat => ({
@@ -166,7 +169,7 @@ test("names every stat beside the sektor name by the same tooltip the list names
 
   expect(stats).toEqual([
     { tooltip: "Difficulty", value: "1" },
-    { tooltip: "Buildings", value: "1" },
+    { tooltip: "Buildings", value: "2" },
     { tooltip: "Imports", value: "4" },
     { tooltip: "Exports", value: "6" },
     { tooltip: "Hapiness", value: "0 / 0 (0 %)" },
@@ -189,6 +192,7 @@ async function placeOneBuilding(page: Page) {
 // the floors in front of them.
 test("draws only the wireframe of the floor under a building which shows no floor", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await page.locator('.building-item[data-building-name="TestMine"]').click();
   await page.waitForTimeout(100);
   const canvas = page.locator("#canvas-container > canvas");
@@ -264,6 +268,7 @@ test("displays no location property overlay when soil is selected in the geograp
 test("displays the pollution overlay by how much of every location is fouled", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await placeHub(page);
   await placeBuilding(page, "TestSmokestack");
 
   await page.locator('.property-toggle[data-property="pollution"]').click();
@@ -277,6 +282,7 @@ test("displays the pollution overlay by how much of every location is fouled", a
 test("displays the pollution of a location in the building panel as a percentage, and what it spoils", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await placeHub(page);
   await placeBuilding(page, "TestSmokestack");
 
   await placeBuildingAtOffset(page, "TestMine", -60);
@@ -294,18 +300,21 @@ async function placeFactoryBesideSmokestack(page: Page) {
 }
 
 test("marks a building whose output pollution has decreased on the map", async ({ page }) => {
+  await placeHub(page);
   await placeFactoryBesideSmokestack(page);
 
   await expectMapScreenshot(page, "output-decreased-by-pollution", MIDDLE_OF_MAP);
 });
 
 test("warns in the building panel about output decreased by pollution", async ({ page }) => {
+  await placeHub(page);
   await placeFactoryBesideSmokestack(page);
 
   await expectScreenshot(page, "output-decreased-by-pollution-warning", "#building-panel");
 });
 
 test("warns that citizens are complaining about pollution once a building's output is decreased by it", async ({ page }) => {
+  await placeHub(page);
   await placeFactoryBesideSmokestack(page);
 
   await expectScreenshot(page, "pollution-message", "#pollution-message");
@@ -315,6 +324,7 @@ test("warns that citizens are complaining about pollution once a building's outp
 test("says nothing of pollution while no building's output is decreased by it", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await placeHub(page);
   await placeBuilding(page, "TestSmokestack");
 
   expect(await page.locator("#pollution-message").count()).toEqual(0);
@@ -330,12 +340,14 @@ async function placePurifierBesideSmokestack(page: Page) {
 }
 
 test("marks a building whose output pollution affects on the map", async ({ page }) => {
+  await placeHub(page);
   await placePurifierBesideSmokestack(page);
 
   await expectMapScreenshot(page, "output-affected-by-pollution", MIDDLE_OF_MAP);
 });
 
 test("displays an output pollution affects in the building panel as what is left of it beside its whole amount", async ({ page }) => {
+  await placeHub(page);
   await placePurifierBesideSmokestack(page);
 
   await expectScreenshot(page, "output-affected-by-pollution-panel", "#building-panel");
@@ -364,6 +376,7 @@ function getSelectedToolNames(page: Page) {
 
 test("displays building panel with few inputs", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await page.locator('.building-item[data-building-name="TestMine"]').click();
   await page.waitForTimeout(100);
   const canvas = page.locator("#canvas-container > canvas");
@@ -375,6 +388,7 @@ test("displays building panel with few inputs", async ({ page }) => {
 
 test("displays building panel with many inputs", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await page.locator('.building-item[data-building-name="TestRefinery"]').click();
   await page.waitForTimeout(100);
   const canvas = page.locator("#canvas-container > canvas");
@@ -503,18 +517,21 @@ async function placeWorkshop(page: Page) {
 }
 
 test("displays the first function of a placed building as active", async ({ page }) => {
+  await placeHub(page);
   await placeWorkshop(page);
 
   await expectScreenshot(page, "building-function-initially-active", '#building-panel .bf-function-block[data-function-index="0"]');
 });
 
 test("displays the other functions of a placed building as inactive", async ({ page }) => {
+  await placeHub(page);
   await placeWorkshop(page);
 
   await expectScreenshot(page, "building-function-initially-inactive", '#building-panel .bf-function-block[data-function-index="1"]');
 });
 
 test("activates a function when its toggle is clicked", async ({ page }) => {
+  await placeHub(page);
   await placeWorkshop(page);
 
   await page.locator('#building-panel .bf-function-block[data-function-index="1"] .bf-toggle').click();
@@ -524,6 +541,7 @@ test("activates a function when its toggle is clicked", async ({ page }) => {
 });
 
 test("deactivates a function when its toggle is clicked", async ({ page }) => {
+  await placeHub(page);
   await placeWorkshop(page);
 
   await page.locator('#building-panel .bf-function-block[data-function-index="0"] .bf-toggle').click();
@@ -564,6 +582,7 @@ test("clears the starvation warning when the local resource is produced", async 
   const centerX = box!.width / 2;
   const centerY = box!.height / 2;
 
+  await placeHub(page);
   await page.locator('.building-item[data-building-name="TestClinic"]').click();
   await page.waitForTimeout(100);
   await canvas.click({ position: { x: centerX - 60, y: centerY - 20 } });
@@ -581,6 +600,7 @@ test("clears the starvation warning when the local resource is produced", async 
 test("displays no activity label or toggle for a function the building always does", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   // TestReactor's second function is marked "Active: always"
+  await placeHub(page);
   await page.locator('.building-item[data-building-name="TestReactor"]').click();
   await page.waitForTimeout(100);
   const canvas = page.locator("#canvas-container > canvas");
@@ -762,6 +782,7 @@ test("highlights buildings importing hovered resource", async ({ page }) => {
   const centerY = box!.height / 2;
 
   // Place TestFactory (imports Energy) and TestMine (imports Energy)
+  await placeHub(page);
   await page.locator('.building-item[data-building-name="TestFactory"]').click();
   await page.waitForTimeout(100);
   await canvas.click({ position: { x: centerX - 60, y: centerY - 20 } });
@@ -916,6 +937,7 @@ test("scores what the sektor moves against what the rest of the planet moves", a
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
   expect(await getLocalThroughputRows(page)).toEqual([
@@ -930,6 +952,7 @@ test("scores what the sektor moves against itself while it is the whole planet",
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
   expect(await getLocalThroughputRows(page)).toEqual([
@@ -949,7 +972,10 @@ async function storeSektorSendingOutFood(page: Page, sektorId: string) {
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
       level: 1,
       locationProperties: { soil: [[10]] },
-      buildings: [{ type: "TestFactory", location: { x: 0, y: 0 } }],
+      buildings: [
+        { type: "TestFactory", location: { x: 0, y: 0 } },
+        { type: "TestHub", location: { x: 0, y: 1 } },
+      ],
     }));
   }, sektorId);
 }
@@ -984,6 +1010,7 @@ test("shows what the whole planet moves when the globe beside the panel title is
   await storeSektorSendingOutFood(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
   await page.locator("#global-state-button").click();
@@ -1002,6 +1029,7 @@ test("puts the most brought in first when the planet's list is called up over th
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
   await page.locator("#global-state-button").click();
@@ -1014,6 +1042,7 @@ test("shows the planet's imports and exports over the map", async ({ page }) => 
   await storeSektorSendingOutFood(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
   await page.locator("#global-state-button").click();
@@ -1025,6 +1054,7 @@ test("shows the planet's imports and exports over the map", async ({ page }) => 
 // for the whole planet rather than as something else again.
 test("stands the planet's list at the size of the sektor's own panel", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
   const panelWidth = await page.locator("#sektor-state-panel").evaluate(panel => panel.offsetWidth);
 
@@ -1036,6 +1066,7 @@ test("stands the planet's list at the size of the sektor's own panel", async ({ 
 
 test("puts the planet's list away when the x in its corner is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
   await page.locator("#global-state-button").click();
 
@@ -1050,6 +1081,7 @@ test("scrolls the planet's resources without a bar when there are more than the 
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
   await page.locator("#global-state-button").click();
@@ -1081,6 +1113,7 @@ async function storeSektorMovingManyResources(page: Page, sektorId: string) {
         { type: "TestRefinery", location: { x: 0, y: 0 } },
         { type: "TestHouse", location: { x: 1, y: 0 } },
         { type: "TestProcessor", location: { x: 2, y: 0 } },
+        { type: "TestHub", location: { x: 0, y: 1 } },
       ],
     }));
   }, sektorId);
@@ -1104,6 +1137,7 @@ function getGlobalDialogRows(page: Page) {
 // they are looking at.
 test("names the column the planet's list over the map is in the order of in white", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
   await page.locator("#global-state-button").click();
 
@@ -1132,6 +1166,7 @@ test("puts the planet's resources in the order of their names when the resource 
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
   await page.locator("#global-state-button").click();
 
@@ -1172,6 +1207,7 @@ test("writes over what the player is told when what the planet is shortest of ch
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
@@ -1196,6 +1232,7 @@ test("tells the player which of the sektor's imports the planet is short of", as
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
@@ -1222,6 +1259,7 @@ test("puts the message it has just changed at the top of the stack", async ({ pa
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator("#most-imported-message").waitFor();
 
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.id)))
@@ -1234,6 +1272,8 @@ test("flashes a message with something new to say", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeHub(page);
 
   await placeBuilding(page, "TestHouse");
 
@@ -1255,6 +1295,7 @@ test("highlights buildings importing a resource pointed at in a message", async 
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
   await deselectEverything(page);
 
@@ -1269,6 +1310,8 @@ test("names every resource of a message as a thing of its own", async ({ page })
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeHub(page);
 
   await placeBuilding(page, "TestHouse");
 
@@ -1294,6 +1337,7 @@ test("highlights buildings making a resource in green and buildings taking it in
   const canvasBox = await canvas.boundingBox();
   const centerX = canvasBox!.width / 2;
   const centerY = canvasBox!.height / 2;
+  await placeHub(page);
   await placeBuildingAt(page, "TestProcessor", { x: centerX - 60, y: centerY - 20 });
   await placeBuildingAt(page, "TestRefinery", { x: centerX + 60, y: centerY - 20 });
   await deselectEverything(page);
@@ -1317,6 +1361,7 @@ test("says how happy the sektor's people are", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");
   const canvasBox = await canvas.boundingBox();
+  await placeHub(page);
   await placeBuildingAt(page, "TestCarer", { x: canvasBox!.width / 2 - 60, y: canvasBox!.height / 2 - 20 });
 
   await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 + 60, y: canvasBox!.height / 2 - 20 });
@@ -1326,7 +1371,7 @@ test("says how happy the sektor's people are", async ({ page }) => {
     value: stat.querySelector(".sektor-stat-value")!.textContent,
   })))).toEqual([
     { tooltip: "Difficulty", value: "1" },
-    { tooltip: "Buildings", value: "2" },
+    { tooltip: "Buildings", value: "3" },
     { tooltip: "Imports", value: "1" },
     { tooltip: "Exports", value: "0" },
     { tooltip: "Hapiness", value: "5 / 5 (100 %)" },
@@ -1339,6 +1384,8 @@ test("says how happy the sektor's people are", async ({ page }) => {
 test("says the people of a sektor whose habitat goes without are happy at nothing", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
+  await placeHub(page);
+
   await placeBuilding(page, "TestHabitat");
 
   await expect(page.locator('#sektor-stats .sektor-stat-icon[title="Hapiness"]')).toHaveCount(1);
@@ -1347,6 +1394,8 @@ test("says the people of a sektor whose habitat goes without are happy at nothin
 // How happy a sektor's people are is always said, even of a sektor nobody lives in yet.
 test("says how happy the people of a sektor with no habitat are", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeHub(page);
 
   await placeBuilding(page, "TestProcessor");
 
@@ -1358,6 +1407,7 @@ test("shows the hapiness of a sektor in its header", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");
   const canvasBox = await canvas.boundingBox();
+  await placeHub(page);
   await placeBuildingAt(page, "TestCarer", { x: canvasBox!.width / 2 - 60, y: canvasBox!.height / 2 - 20 });
 
   await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 + 60, y: canvasBox!.height / 2 - 20 });
@@ -1370,6 +1420,8 @@ test("shows the hapiness of a sektor in its header", async ({ page }) => {
 test("complains of what the sektor's habitats are going without", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
+  await placeHub(page);
+
   await placeBuilding(page, "TestHabitat");
 
   await expect(page.locator('[id^="habitat-shortage-message-"]'))
@@ -1380,6 +1432,7 @@ test("complains of what the sektor's habitats are going without", async ({ page 
 // it marks the habitat going without it.
 test("marks the habitat going without the resource complained of", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestHabitat");
   await deselectEverything(page);
 
@@ -1394,6 +1447,7 @@ test("stops complaining once the habitat is given what it was going without", as
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");
   const canvasBox = await canvas.boundingBox();
+  await placeHub(page);
   await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 + 60, y: canvasBox!.height / 2 - 20 });
 
   await placeBuildingAt(page, "TestCarer", { x: canvasBox!.width / 2 - 60, y: canvasBox!.height / 2 - 20 });
@@ -1403,6 +1457,8 @@ test("stops complaining once the habitat is given what it was going without", as
 
 test("complains of nothing in a sektor with no habitat", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeHub(page);
 
   await placeBuilding(page, "TestProcessor");
 
@@ -1416,6 +1472,7 @@ test("tells what is worth knowing apart from what the player is warned of", asyn
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
+  await placeHub(page);
   await placeBuildingAtOffset(page, "TestProcessor", -60);
 
   await placeBuildingAtOffset(page, "TestHabitat", 60);
@@ -1436,6 +1493,7 @@ test("shows what the player is told and what they are warned of", async ({ page 
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
+  await placeHub(page);
   await placeBuildingAtOffset(page, "TestProcessor", -60);
 
   await placeBuildingAtOffset(page, "TestHabitat", 60);
@@ -1462,6 +1520,7 @@ test("puts a collapse button on the top-most of several messages", async ({ page
   await page.locator("#most-imported-message").waitFor();
   const collapseButtonsBeforeBuilding = await getMessageIdsWithCollapseButton(page);
 
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   expect({
@@ -1478,6 +1537,7 @@ test("stacks what the player is told one message beneath the other, the top-most
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   await expectScreenshot(page, "messages-collapse-button", "#messages");
@@ -1488,6 +1548,7 @@ test("hides all but the top-most message when the collapse button is clicked", a
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   await page.locator("#messages-collapse-button").click();
@@ -1506,6 +1567,7 @@ test("hides the collapse button once the messages are collapsed", async ({ page 
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   await page.locator("#messages-collapse-button").click();
@@ -1519,6 +1581,7 @@ test("shows and flashes a message which changes while the messages are collapsed
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuildingAtOffset(page, "TestProcessor", -60);
   await page.locator("#messages-collapse-button").click();
 
@@ -1539,6 +1602,7 @@ test("shows only the top-most message once the messages are collapsed", async ({
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   await page.locator("#messages-collapse-button").click();
@@ -1557,6 +1621,7 @@ test("puts an expand button on the message left standing once the messages are c
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   await page.locator("#messages-collapse-button").click();
@@ -1571,6 +1636,7 @@ test("shows the expand button on the message left standing", async ({ page }) =>
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   await page.locator("#messages-collapse-button").click();
@@ -1584,6 +1650,7 @@ test("shows all messages again when the expand button is clicked", async ({ page
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuilding(page, "TestHouse");
   await page.locator("#messages-collapse-button").click();
 
@@ -1639,6 +1706,7 @@ test("tells on the expand button how many messages are collapsed", async ({ page
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await placeBuildingAtOffset(page, "TestProcessor", -60);
   await placeBuildingAtOffset(page, "TestHabitat", 60);
 

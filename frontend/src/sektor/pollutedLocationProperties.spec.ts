@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Sektor } from "./Sektor";
+import { IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
+import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 import { pollutedLocationProperties } from "./pollution";
 
@@ -44,8 +45,9 @@ describe("pollutedLocationProperties", () => {
 
 describe("output of a building on polluted ground", () => {
   it("is what is left of the location property once pollution has spoiled it", () => {
-    const sektor = new Sektor([[{ properties: { soil: 8, pollution: 80 } }]], testDefinitions, []);
+    const sektor = new Sektor([[{ properties: { soil: 8, pollution: 80 } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
     sektor.createBuilding({ type: "Farm", location: { x: 0, y: 0 } });
+    sektor.createBuilding(TEST_HUB);
 
     expect(sektor.getSektorState().exports).toEqual([{ name: "Wheat", value: 2 }]);
   });

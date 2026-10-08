@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { BuildingLocation, Sektor } from "./Sektor";
+import { BuildingLocation, IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
+import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 
 const testDefinitions: BuildingDefinition[] = [
@@ -57,11 +58,13 @@ const testDefinitions: BuildingDefinition[] = [
 const buildingLocation: BuildingLocation = { x: 0, y: 0 };
 
 function emptySektor(): Sektor {
-  return new Sektor(
+  const sektor = new Sektor(
     [[{ properties: {} }]],
-    testDefinitions,
-    [],
+    [...testDefinitions, TEST_HUB_DEFINITION],
+    [IMPORT_EXPORT_RESOURCE],
   );
+  sektor.createBuilding(TEST_HUB);
+  return sektor;
 }
 
 function sektorWith(buildingType: string): Sektor {

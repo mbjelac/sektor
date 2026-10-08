@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Sektor } from "./Sektor";
+import { IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
+import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 
 const testDefinitions: BuildingDefinition[] = [
@@ -29,7 +30,9 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { soil: 2 } }]], testDefinitions, []);
+  const sektor = new Sektor([[{ properties: { soil: 2 } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
+  sektor.createBuilding(TEST_HUB);
+  return sektor;
 }
 
 describe("getBuildingState", () => {
@@ -60,6 +63,7 @@ describe("getBuildingState", () => {
         active: true,
         starved: false,
       }],
+      disabled: false,
     });
   });
 

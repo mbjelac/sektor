@@ -337,9 +337,9 @@ function getInitialEcosystemSupport(): number {
   return getSektorData(sektorId)?.initialEcosystemSupport ?? 0;
 }
 
-// A building whose function is starved, or whose output pollution has decreased, is marked on the
-// map, and either only changes with the sektor state, so the marked buildings are worked out there
-// rather than every frame. A building warned of both is marked once.
+// A building whose function is starved, which is disabled, or whose output pollution has decreased,
+// is marked on the map, and each only changes with the sektor state, so the marked buildings are
+// worked out there rather than every frame. A building warned of several is marked once.
 let warnedBuildingLocations: BuildingLocation[] = [];
 
 function updateSektorState() {
@@ -354,9 +354,11 @@ function updateSektorState() {
     planetImportsAndExports,
     sektorState.habitatShortages,
     buildingsWithOutputDecreasedByPollution.length > 0,
+    sektorState.disabledBuildings.length > 0,
   );
   warnedBuildingLocations = [
     ...sektorState.starvedFunctions.map(starvedFunction => starvedFunction.buildingLocation),
+    ...sektorState.disabledBuildings,
     ...buildingsWithOutputDecreasedByPollution,
   ]
     .filter((location, index, locations) =>
@@ -405,7 +407,7 @@ function formatHapiness(sektorState: SektorState): string {
 }
 
 function formatEcosystemDamage(sektorState: SektorState): string {
-  const damage = ecosystemDamage(initialEcosystemSupport, sektorState.exports);
+  const damage = ecosystemDamage(initialEcosystemSupport, sektorState.ecosystemSupport);
   return `${formatNumber(damage.damage)} / ${formatNumber(damage.initialEcosystemSupport)} (${damage.percentage} %)`;
 }
 
@@ -465,6 +467,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; c
     name: placed.type,
     code: code,
     buildingFunctions: buildingState.buildingFunctions,
+    disabled: buildingState.disabled,
     outputDecreasedByPollution: sektor.isOutputDecreasedByPollution(placed.location),
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
     floorColor: placedFloorColor,
@@ -1365,6 +1368,7 @@ updateMessages(
   getPlanetImportsAndExportsWhileBuilding(sektorId, openedSektorState),
   openedSektorState.habitatShortages,
   sektor.findBuildingsWithOutputDecreasedByPollution().length > 0,
+  openedSektorState.disabledBuildings.length > 0,
 );
 if (isTestMode) {
   (window as any).updateSektorStatePanel = updateSektorStatePanel;

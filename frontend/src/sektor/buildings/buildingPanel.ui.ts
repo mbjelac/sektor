@@ -69,10 +69,11 @@ function ensurePreviewP5(parent: HTMLElement) {
   });
 }
 
-export function showBuildingPanel({ name, code, buildingFunctions, outputDecreasedByPollution, locationProperties, floorColor, showFloor, drawFloorInstead, location, onDestroy, onToggleFunction }: {
+export function showBuildingPanel({ name, code, buildingFunctions, disabled, outputDecreasedByPollution, locationProperties, floorColor, showFloor, drawFloorInstead, location, onDestroy, onToggleFunction }: {
   name: string,
   code: string,
   buildingFunctions: BuildingFunctionState[],
+  disabled?: boolean,
   outputDecreasedByPollution?: boolean,
   locationProperties?: { [_: string]: number },
   floorColor: [number, number, number],
@@ -126,6 +127,15 @@ export function showBuildingPanel({ name, code, buildingFunctions, outputDecreas
 
   panelEl.appendChild(header);
 
+  // A disabled building is warned of right under its name, since nothing it is shown to consume or
+  // produce below holds while it stands idle.
+  if (disabled) {
+    const disabledWarning = document.createElement("div");
+    disabledWarning.className = "bp-disabled-warning";
+    disabledWarning.textContent = "⚠️ Building missing required inputs!";
+    panelEl.appendChild(disabledWarning);
+  }
+
   // Only a building doing several things can be told which of them to do, so a building with a
   // single function gets no activity label and no toggle, and neither does a function the
   // building always does.
@@ -142,6 +152,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, outputDecreas
         }
         : undefined,
       starved: buildingFunctionState.starved,
+      disabled,
     });
     functionBlock.dataset.functionIndex = String(functionIndex);
     panelEl!.appendChild(functionBlock);

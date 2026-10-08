@@ -523,7 +523,8 @@ body > main {
     min-height: 20px;
 }
 
-.bp-pollution-warning {
+.bp-pollution-warning,
+.bp-disabled-warning {
     align-self: stretch;
     color: #ffffff;
     font-family: sans-serif;

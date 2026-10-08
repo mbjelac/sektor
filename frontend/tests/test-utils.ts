@@ -62,3 +62,17 @@ export async function expectMapScreenshot(page: Page, name: string, region?: Map
     maxDiffPixelRatio: 0,
   });
 }
+
+// A sektor ships nothing in or out without a hub, so a test about anything else puts one up first,
+// on a square of the map left of the middle, out of the way of the test's own buildings. Clicking
+// beside the map afterwards closes the hub's panel, so the test starts with nothing selected.
+export async function placeHub(page: Page) {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestHub"]').click();
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = (await canvas.boundingBox())!;
+  await canvas.click({ position: { x: canvasBox.width / 2 - 300, y: canvasBox.height / 2 } });
+  await page.waitForTimeout(200);
+  await canvas.click({ position: { x: canvasBox.width / 2 - 340, y: 100 } });
+  await page.waitForTimeout(200);
+}

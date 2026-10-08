@@ -11,12 +11,15 @@ import { isOutputAffectedByPollution } from "./pollution";
 // played, gets the label without a toggle to change it by.
 // A building which is not on the map yet stands on no location, so it is shown without output
 // amounts, which only a location it stands on can decide, and without the pollution of one.
-export function createFunctionDisplay({ buildingFunction, outputAmounts, pollution, activation, starved }: {
+// A function of a disabled building consumes and produces nothing, so every amount of it is shown
+// as nothing beside what it would be.
+export function createFunctionDisplay({ buildingFunction, outputAmounts, pollution, activation, starved, disabled }: {
   buildingFunction: BuildingFunction,
   outputAmounts?: ResourceThroughput[],
   pollution?: number,
   activation?: { active: boolean, onToggle?: () => void },
   starved?: boolean,
+  disabled?: boolean,
 }): HTMLElement {
   const functionBlock = document.createElement("div");
   functionBlock.className = "bf-function-block";
@@ -32,14 +35,14 @@ export function createFunctionDisplay({ buildingFunction, outputAmounts, polluti
   functionDisplay.className = "bf-function";
   functionBlock.appendChild(functionDisplay);
 
-  functionDisplay.appendChild(createInputsTable(buildingFunction.inputs));
+  functionDisplay.appendChild(createInputsTable(buildingFunction.inputs, disabled ?? false));
 
   const arrowEl = document.createElement("div");
   arrowEl.className = "bf-arrow";
   arrowEl.innerHTML = arrowRightIcon;
   functionDisplay.appendChild(arrowEl);
 
-  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0));
+  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0, disabled ?? false));
 
   return functionBlock;
 }
@@ -100,7 +103,7 @@ function createActivityRow({ active, onToggle }: { active: boolean, onToggle?: (
   return activityRow;
 }
 
-function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
+function createInputsTable(inputs: ResourceThroughput[], disabled: boolean): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-inputs-table";
 
@@ -130,7 +133,7 @@ function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
 
     const amountCell = document.createElement("div");
     amountCell.className = "bf-inputs-cell bf-inputs-amount";
-    amountCell.textContent = formatNumber(input.value);
+    amountCell.textContent = disabled ? disabledAmountText(formatNumber(input.value)) : formatNumber(input.value);
     row.appendChild(amountCell);
 
     table.appendChild(row);
@@ -139,7 +142,7 @@ function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
   return table;
 }
 
-function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number): HTMLElement {
+function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number, disabled: boolean): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-outputs-table";
 
@@ -169,7 +172,9 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: Re
 
     const amountCell = document.createElement("div");
     amountCell.className = "bf-outputs-cell bf-outputs-amount";
-    amountCell.textContent = outputAmountText(output, outputAmounts, pollution);
+    amountCell.textContent = disabled
+      ? disabledAmountText(findOutputAmount(output, outputAmounts))
+      : outputAmountText(output, outputAmounts, pollution);
     row.appendChild(amountCell);
 
     table.appendChild(row);
@@ -180,6 +185,10 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: Re
   }
 
   return table;
+}
+
+function disabledAmountText(amount: string): string {
+  return `0 / ${amount}`;
 }
 
 // An output pollution has cut down is shown as what is left of it beside what the building makes

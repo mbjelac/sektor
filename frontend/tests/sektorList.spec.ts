@@ -1,5 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
-import { makeSektorsByHand, prepareSektorNames } from "./test-utils";
+import { makeSektorsByHand, placeHub, prepareSektorNames } from "./test-utils";
 
 const CURRENT_PLAYER = "Tester";
 const OTHER_PLAYER = "Ana";
@@ -237,16 +237,20 @@ test("shows the whole list page with the leaderboard beside the sektors", async 
 });
 
 // A sektor of mines, one on every piece of ore given, which the mines turn into an export the
-// sektor scores for — the more ore, the higher the score its player brings to the leaderboard.
+// sektor scores for — the more ore, the higher the score its player brings to the leaderboard. A
+// hub stands beside them to ship the ore out.
 async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: number[]) {
   await page.evaluate(([sektorName, oreAmounts]) => {
     localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
       level: 1,
       locationProperties: { ore: (oreAmounts as number[]).map(oreAmount => [oreAmount]) },
-      buildings: (oreAmounts as number[]).map((oreAmount, oreIndex) => ({
-        type: "TestMine",
-        location: { x: oreIndex, y: 0 },
-      })),
+      buildings: [
+        ...(oreAmounts as number[]).map((oreAmount, oreIndex) => ({
+          type: "TestMine",
+          location: { x: oreIndex, y: 0 },
+        })),
+        { type: "TestHub", location: { x: 0, y: 1 } },
+      ],
     }));
   }, [sektorName, oreAmounts] as [string, number[]]);
 }
@@ -366,6 +370,7 @@ test("keeps the header of the planet's resources in sight while they are scrolle
 test("shows what a building put up in a sektor does to what the planet moves", async ({ page }) => {
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
   await page.locator('.building-item[data-building-name="TestProcessor"]').click();
   const canvas = page.locator("#canvas-container > canvas");
   const canvasBox = await canvas.boundingBox();
@@ -441,16 +446,20 @@ async function getGlobalSortColors(page: Page) {
 }
 
 // A sektor of buildings standing in a row, one to a location, with the same ore under every one of
-// them for whatever mines stand there to dig up.
+// them for whatever mines stand there to dig up, and a hub beside them to ship in and out what
+// they move.
 async function storeSektorWithBuildings(page: Page, sektorId: string, buildingTypes: string[], orePerLocation = 0) {
   await page.evaluate(([sektorId, buildingTypes, orePerLocation]) => {
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
       level: 1,
       locationProperties: { ore: (buildingTypes as string[]).map(() => [orePerLocation]) },
-      buildings: (buildingTypes as string[]).map((buildingType, buildingIndex) => ({
-        type: buildingType,
-        location: { x: buildingIndex, y: 0 },
-      })),
+      buildings: [
+        ...(buildingTypes as string[]).map((buildingType, buildingIndex) => ({
+          type: buildingType,
+          location: { x: buildingIndex, y: 0 },
+        })),
+        { type: "TestHub", location: { x: 0, y: 1 } },
+      ],
     }));
   }, [sektorId, buildingTypes, orePerLocation] as [string, string[], number]);
 }

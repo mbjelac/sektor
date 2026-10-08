@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { Sektor } from "./Sektor";
+import { IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
+import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 import { ELEVATION, GROUND } from "../../../shared/terrain";
 
@@ -25,7 +26,7 @@ const testDefinitions: BuildingDefinition[] = [
 ];
 
 function createSektor(): Sektor {
-  return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
+  return new Sektor([[{ properties: { soil: 1.0 } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
 }
 
 // A sektor of two squares, the second of them rock.
@@ -80,6 +81,7 @@ describe("destroyBuilding", () => {
       buildings: [
         { type: "Mill", location: { x: 0, y: 0 } },
         { type: "Farm", location: { x: 1, y: 0 } },
+        TEST_HUB,
       ],
     });
 
@@ -94,8 +96,10 @@ describe("destroyBuilding", () => {
       ],
       hapiness: 0,
       possibleHapiness: 0,
+      ecosystemSupport: 0,
       habitatShortages: [],
       starvedFunctions: [],
+      disabledBuildings: [],
     });
   });
 });

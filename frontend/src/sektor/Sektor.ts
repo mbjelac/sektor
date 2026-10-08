@@ -10,6 +10,7 @@ import {
   pollutedLocationProperties,
   pollutedOutputAmount,
 } from "./pollution";
+import { ECOSYSTEM_SUPPORT_RESOURCE } from "./forest";
 
 export type { BuildingLocation, BuildingCreation, Building, Location };
 
@@ -30,15 +31,25 @@ export interface SektorState {
   // How happy the sektor's people would be were every habitat given all it asks for: every unit of
   // Hapiness every function of every habitat could make.
   possibleHapiness: number;
+  // How much the sektor supports its ecosystem: all of the support it makes, less what it uses up.
+  // It is counted whether or not the support can leave the sektor.
+  ecosystemSupport: number;
   // What the sektor's habitats are going without, which is why their people are not as happy as
   // they could be.
   habitatShortages: string[];
   starvedFunctions: BuildingFunctionLocation[];
+  // Buildings standing idle because the sektor cannot ship in and out all it would take to run
+  // them.
+  disabledBuildings: BuildingLocation[];
 }
 
 // The resource a sektor's people give off while they are content, which no other resource is
 // treated like.
 export const HAPINESS_RESOURCE = "Hapiness";
+
+// The resource an inter-city transport hub makes: every unit of it is a unit of imports or exports
+// the sektor can ship in or out.
+export const IMPORT_EXPORT_RESOURCE = "ImportExport";
 
 interface StarvationCandidate {
   buildingFunctionLocation: BuildingFunctionLocation;
@@ -55,6 +66,7 @@ export interface BuildingFunctionState {
 
 export interface BuildingState {
   buildingFunctions: BuildingFunctionState[];
+  disabled: boolean;
 }
 
 export interface DestroyBuildingResult {
@@ -122,14 +134,16 @@ export class Sektor {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return null;
     const functionActivations = this.getFunctionActivations(building, buildingDefinition);
-    const starvedFunctions = this.findStarvedFunctions();
+    const disabledBuildings = this.findDisabledBuildings();
+    const starvedFunctions = this.findStarvedFunctions(this.findFunctionsOfBuildings(disabledBuildings));
     return {
       buildingFunctions: buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) => ({
         buildingFunction: buildingFunction,
         outputAmounts: this.getOutputAmounts(buildingFunction, location),
         active: functionActivations[functionIndex],
-        starved: isFunctionStarved(starvedFunctions, location, functionIndex),
+        starved: includesFunction(starvedFunctions, location, functionIndex),
       })),
+      disabled: includesLocation(disabledBuildings, location),
     };
   }
 
@@ -160,14 +174,78 @@ export class Sektor {
   // imported only for the amount by which the buildings' inputs exceed the buildings' outputs,
   // and exported only for the amount by which the outputs exceed the inputs.
   getSektorState(): SektorState {
-    const starvedFunctions = this.findStarvedFunctions();
-    const totalInputs = this.aggregateThroughputs(
-      this.buildings.map(building => this.getInputs(building, starvedFunctions)).flat()
-    );
-    const totalOutputs = this.aggregateThroughputs(
-      this.buildings.map(building => this.getOutputs(building, starvedFunctions)).flat()
-    );
+    const disabledBuildings = this.findDisabledBuildings();
+    const disabledFunctions = this.findFunctionsOfBuildings(disabledBuildings);
+    const starvedFunctions = this.findStarvedFunctions(disabledFunctions);
+    const { totalInputs, totalOutputs } = this.aggregateSektorThroughputs([...disabledFunctions, ...starvedFunctions]);
+    const { imports, exports } = this.findImportsAndExports(totalInputs, totalOutputs);
 
+    return {
+      imports,
+      exports,
+      hapiness: this.findThroughputValue(totalOutputs, HAPINESS_RESOURCE),
+      possibleHapiness: this.findPossibleHapiness(),
+      ecosystemSupport: roundToOneDecimal(Math.max(0,
+        this.findThroughputValue(totalOutputs, ECOSYSTEM_SUPPORT_RESOURCE)
+        - this.findThroughputValue(totalInputs, ECOSYSTEM_SUPPORT_RESOURCE)
+      )),
+      habitatShortages: this.findHabitatShortages(starvedFunctions),
+      starvedFunctions,
+      disabledBuildings,
+    };
+  }
+
+  // Nothing is shipped in or out of a sektor but through its inter-city transport hubs, so a sektor
+  // importing and exporting more than its hubs can carry has to go without some of its buildings.
+  // Buildings are disabled one at a time, the one farthest from a hub first, and the sektor is
+  // recalculated after each, until what is left of its imports and exports fits through its hubs.
+  private findDisabledBuildings(): BuildingLocation[] {
+    const disabledBuildings: BuildingLocation[] = [];
+    for (;;) {
+      const disabledFunctions = this.findFunctionsOfBuildings(disabledBuildings);
+      const stoppedFunctions = [...disabledFunctions, ...this.findStarvedFunctions(disabledFunctions)];
+      if (!this.isImportExportCapacityExceeded(stoppedFunctions)) return disabledBuildings;
+      const buildingToDisable = this.findBuildingFarthestFromHub(stoppedFunctions);
+      if (!buildingToDisable) return disabledBuildings;
+      disabledBuildings.push(buildingToDisable);
+    }
+  }
+
+  private isImportExportCapacityExceeded(stoppedFunctions: BuildingFunctionLocation[]): boolean {
+    const { totalInputs, totalOutputs } = this.aggregateSektorThroughputs(stoppedFunctions);
+    const { imports, exports } = this.findImportsAndExports(totalInputs, totalOutputs);
+    const importExportAmount = roundToOneDecimal(
+      [...imports, ...exports].reduce((total, throughput) => total + throughput.value, 0)
+    );
+    return importExportAmount > this.findThroughputValue(totalOutputs, IMPORT_EXPORT_RESOURCE);
+  }
+
+  // Buildings equally far from a hub are disabled in the order they were built, and in a sektor
+  // without a hub every building is infinitely far from one. A building consuming nothing needs
+  // nothing brought in, so it is left running, and so is one doing nothing, which has nothing to
+  // give up.
+  private findBuildingFarthestFromHub(stoppedFunctions: BuildingFunctionLocation[]): BuildingLocation | undefined {
+    const hubLocations = this.findProducerLocations(IMPORT_EXPORT_RESOURCE, stoppedFunctions);
+    return this.buildings
+      .filter(building => this.getInputs(building, stoppedFunctions).length > 0)
+      .map(building => ({
+        location: building.location,
+        distanceToNearestHub: findDistanceToNearestLocation(building.location, hubLocations),
+      }))
+      .sort((firstBuilding, secondBuilding) => secondBuilding.distanceToNearestHub - firstBuilding.distanceToNearestHub)
+      [0]?.location;
+  }
+
+  // A disabled building runs none of its functions.
+  private findFunctionsOfBuildings(buildingLocations: BuildingLocation[]): BuildingFunctionLocation[] {
+    return buildingLocations.flatMap(buildingLocation => {
+      const building = this.findBuildingAt(buildingLocation);
+      const buildingDefinition = building && this.findBuildingDefinition(building.type);
+      return (buildingDefinition?.buildingFunctions ?? []).map((_, functionIndex) => ({ buildingLocation, functionIndex }));
+    });
+  }
+
+  private findImportsAndExports(totalInputs: ResourceThroughput[], totalOutputs: ResourceThroughput[]): { imports: ResourceThroughput[], exports: ResourceThroughput[] } {
     const imports = totalInputs.map(input => {
       const value = roundToOneDecimal(Math.max(0, input.value - this.findThroughputValue(totalOutputs, input.name)));
       return { name: input.name, value };
@@ -180,15 +258,7 @@ export class Sektor {
         const value = roundToOneDecimal(Math.max(0, output.value - this.findThroughputValue(totalInputs, output.name)));
         return { name: output.name, value };
       });
-
-    return {
-      imports,
-      exports,
-      hapiness: this.findThroughputValue(totalOutputs, HAPINESS_RESOURCE),
-      possibleHapiness: this.findPossibleHapiness(),
-      habitatShortages: this.findHabitatShortages(starvedFunctions),
-      starvedFunctions,
-    };
+    return { imports, exports };
   }
 
   // Every habitat is counted as making all the Hapiness it is made to, whether it is given what it
@@ -226,25 +296,22 @@ export class Sektor {
   // A local resource cannot be imported, so buildings needing more of it than the sektor makes
   // go without: functions consuming it are starved until the shortage is gone. Starving a
   // function also takes away what it produced, which can starve others in turn, so the sektor is
-  // recalculated until no shortage is left.
-  private findStarvedFunctions(): BuildingFunctionLocation[] {
+  // recalculated until no shortage is left. The functions of disabled buildings are not running to
+  // begin with.
+  private findStarvedFunctions(disabledFunctions: BuildingFunctionLocation[]): BuildingFunctionLocation[] {
     const starvedFunctions: BuildingFunctionLocation[] = [];
     for (;;) {
-      const shortage = this.findLocalResourceShortage(starvedFunctions);
+      const stoppedFunctions = [...disabledFunctions, ...starvedFunctions];
+      const shortage = this.findLocalResourceShortage(stoppedFunctions);
       if (!shortage) return starvedFunctions;
-      const newlyStarvedFunctions = this.selectFunctionsToStarve(shortage, starvedFunctions);
+      const newlyStarvedFunctions = this.selectFunctionsToStarve(shortage, stoppedFunctions);
       if (newlyStarvedFunctions.length === 0) return starvedFunctions;
       starvedFunctions.push(...newlyStarvedFunctions);
     }
   }
 
-  private findLocalResourceShortage(starvedFunctions: BuildingFunctionLocation[]): ResourceThroughput | undefined {
-    const totalInputs = this.aggregateThroughputs(
-      this.buildings.map(building => this.getInputs(building, starvedFunctions)).flat()
-    );
-    const totalOutputs = this.aggregateThroughputs(
-      this.buildings.map(building => this.getOutputs(building, starvedFunctions)).flat()
-    );
+  private findLocalResourceShortage(stoppedFunctions: BuildingFunctionLocation[]): ResourceThroughput | undefined {
+    const { totalInputs, totalOutputs } = this.aggregateSektorThroughputs(stoppedFunctions);
     return totalInputs
       .filter(input => this.localResources.includes(input.name))
       .map(input => ({
@@ -254,14 +321,25 @@ export class Sektor {
       .find(shortage => shortage.value > 0);
   }
 
+  private aggregateSektorThroughputs(stoppedFunctions: BuildingFunctionLocation[]): { totalInputs: ResourceThroughput[], totalOutputs: ResourceThroughput[] } {
+    return {
+      totalInputs: this.aggregateThroughputs(
+        this.buildings.map(building => this.getInputs(building, stoppedFunctions)).flat()
+      ),
+      totalOutputs: this.aggregateThroughputs(
+        this.buildings.map(building => this.getOutputs(building, stoppedFunctions)).flat()
+      ),
+    };
+  }
+
   // A local resource never travels far, so the functions closest to where it is made are the ones
   // which get it: the rest are starved, farthest first, enough of them to cover the shortage. A
   // function consuming more than is missing is still starved whole, since a function either runs
   // or it does not.
-  private selectFunctionsToStarve(shortage: ResourceThroughput, starvedFunctions: BuildingFunctionLocation[]): BuildingFunctionLocation[] {
+  private selectFunctionsToStarve(shortage: ResourceThroughput, stoppedFunctions: BuildingFunctionLocation[]): BuildingFunctionLocation[] {
     const selectedFunctions: BuildingFunctionLocation[] = [];
     let selectedAmount = 0;
-    for (const starvationCandidate of this.findStarvationCandidates(shortage, starvedFunctions)) {
+    for (const starvationCandidate of this.findStarvationCandidates(shortage, stoppedFunctions)) {
       selectedFunctions.push(starvationCandidate.buildingFunctionLocation);
       selectedAmount = roundToOneDecimal(selectedAmount + starvationCandidate.consumedAmount);
       if (selectedAmount >= shortage.value) return selectedFunctions;
@@ -272,8 +350,8 @@ export class Sektor {
   // Candidates equally far from the resource are starved in the order their buildings were built.
   // A building making the resource itself is as near to it as a building can be, and one in a
   // sektor which makes none of it is infinitely far from it.
-  private findStarvationCandidates(shortage: ResourceThroughput, starvedFunctions: BuildingFunctionLocation[]): StarvationCandidate[] {
-    const producerLocations = this.findProducerLocations(shortage.name, starvedFunctions);
+  private findStarvationCandidates(shortage: ResourceThroughput, stoppedFunctions: BuildingFunctionLocation[]): StarvationCandidate[] {
+    const producerLocations = this.findProducerLocations(shortage.name, stoppedFunctions);
     const starvationCandidates: StarvationCandidate[] = [];
     for (const building of this.buildings) {
       const buildingDefinition = this.findBuildingDefinition(building.type);
@@ -281,7 +359,7 @@ export class Sektor {
       const functionActivations = this.getFunctionActivations(building, buildingDefinition);
       for (const [functionIndex, buildingFunction] of buildingDefinition.buildingFunctions.entries()) {
         if (!functionActivations[functionIndex]) continue;
-        if (isFunctionStarved(starvedFunctions, building.location, functionIndex)) continue;
+        if (includesFunction(stoppedFunctions, building.location, functionIndex)) continue;
         const consumedAmount = this.findThroughputValue(buildingFunction.inputs, shortage.name);
         if (consumedAmount <= 0) continue;
         starvationCandidates.push({
@@ -296,9 +374,9 @@ export class Sektor {
     );
   }
 
-  private findProducerLocations(resourceType: string, starvedFunctions: BuildingFunctionLocation[]): BuildingLocation[] {
+  private findProducerLocations(resourceType: string, stoppedFunctions: BuildingFunctionLocation[]): BuildingLocation[] {
     return this.buildings
-      .filter(building => this.findThroughputValue(this.getOutputs(building, starvedFunctions), resourceType) > 0)
+      .filter(building => this.findThroughputValue(this.getOutputs(building, stoppedFunctions), resourceType) > 0)
       .map(building => building.location);
   }
 
@@ -354,31 +432,32 @@ export class Sektor {
 
   // The amounts consumed and produced by all of the building's functions are added up per
   // resource.
-  private getInputs(building: Building, starvedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
+  private getInputs(building: Building, stoppedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      this.getRunningBuildingFunctions(building, buildingDefinition, starvedFunctions)
+      this.getRunningBuildingFunctions(building, buildingDefinition, stoppedFunctions)
         .map(buildingFunction => buildingFunction.inputs).flat()
     );
   }
 
-  private getOutputs(building: Building, starvedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
+  private getOutputs(building: Building, stoppedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      this.getRunningBuildingFunctions(building, buildingDefinition, starvedFunctions).map(buildingFunction =>
+      this.getRunningBuildingFunctions(building, buildingDefinition, stoppedFunctions).map(buildingFunction =>
         this.getOutputAmounts(buildingFunction, building.location)
       ).flat()
     );
   }
 
-  // A function which is turned off, or starved of a local resource, consumes and produces
-  // nothing, so it is left out of every amount the building contributes to the sektor.
-  private getRunningBuildingFunctions(building: Building, buildingDefinition: BuildingDefinition, starvedFunctions: BuildingFunctionLocation[]): BuildingFunction[] {
+  // A function which is turned off, starved of a local resource, or of a disabled building
+  // consumes and produces nothing, so it is left out of every amount the building contributes to
+  // the sektor.
+  private getRunningBuildingFunctions(building: Building, buildingDefinition: BuildingDefinition, stoppedFunctions: BuildingFunctionLocation[]): BuildingFunction[] {
     const functionActivations = this.getFunctionActivations(building, buildingDefinition);
     return buildingDefinition.buildingFunctions.filter((_, functionIndex) =>
-      functionActivations[functionIndex] && !isFunctionStarved(starvedFunctions, building.location, functionIndex)
+      functionActivations[functionIndex] && !includesFunction(stoppedFunctions, building.location, functionIndex)
     );
   }
 
@@ -512,12 +591,16 @@ function findDistanceToNearestLocation(location: BuildingLocation, otherLocation
     .reduce((nearestDistance, distance) => Math.min(nearestDistance, distance), Number.POSITIVE_INFINITY);
 }
 
-function isFunctionStarved(starvedFunctions: BuildingFunctionLocation[], location: BuildingLocation, functionIndex: number): boolean {
-  return starvedFunctions.some(starvedFunction =>
-    starvedFunction.buildingLocation.x === location.x
-    && starvedFunction.buildingLocation.y === location.y
-    && starvedFunction.functionIndex === functionIndex
+function includesFunction(buildingFunctionLocations: BuildingFunctionLocation[], location: BuildingLocation, functionIndex: number): boolean {
+  return buildingFunctionLocations.some(buildingFunctionLocation =>
+    buildingFunctionLocation.buildingLocation.x === location.x
+    && buildingFunctionLocation.buildingLocation.y === location.y
+    && buildingFunctionLocation.functionIndex === functionIndex
   );
+}
+
+function includesLocation(locations: BuildingLocation[], location: BuildingLocation): boolean {
+  return locations.some(otherLocation => otherLocation.x === location.x && otherLocation.y === location.y);
 }
 
 // A habitat is any building made to give off Hapiness, whatever it is called and whether or not it
