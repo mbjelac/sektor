@@ -28,6 +28,7 @@
 #3 [done] Damage to ecosystem is tracked
 - [done] when sektor created, each Forest outputs EcosystemSupport
     - total sum of this value is stored with the created sektor as initialEcosystemSupport
+        - sum this even if it is a local resource
 - [done] a sektor stat is "Ecosystem damage" calculated as:
     - damage = initialEcosystemSupport - current EcosystemSupport export
     - display stat in sektor stats on top of map page
