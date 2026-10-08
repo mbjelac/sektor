@@ -27,7 +27,7 @@ import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, isRiver, RIVER_FROM_EAST, RIVER_FROM_NORTH, SEA } from "../../../shared/terrain";
-import { drawRiverBed, drawRiverSurface, RIVER_NAME } from "./river.ui";
+import { drawRiverBed, drawRiverGlints, drawRiverSurface, RIVER_NAME, RiverSquare } from "./river.ui";
 import { riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
@@ -840,6 +840,23 @@ function everySeaSquare(): SeaSquare[] {
   return squares;
 }
 
+// Every square of the river, ready to be shimmered over: where it lies on the map, where the middle
+// of it stands in the world, and which way the river runs through it. The river does not move
+// either, so the list is made once.
+const riverSquares: RiverSquare[] = everyRiverSquare();
+
+function everyRiverSquare(): RiverSquare[] {
+  const squares: RiverSquare[] = [];
+  for (let gx = 0; gx < SEKTOR_SIZE; gx++) {
+    for (let gy = 0; gy < SEKTOR_SIZE; gy++) {
+      if (!isRiverLocation(gx, gy)) continue;
+      const { wx, wz } = gridToWorld(gx, gy);
+      squares.push({ x: gx, z: gy, centerX: wx, centerZ: wz, sides: riverSides(terrain, gx, gy) });
+    }
+  }
+  return squares;
+}
+
 function rayAABB(
   ox: number, oy: number, oz: number,
   dx: number, dy: number, dz: number,
@@ -1262,11 +1279,12 @@ const sektorUi = (p: p5) => {
       withoutDepthWrites(p, () => p.model(bakedWaterSurfaces));
     }
 
-    // The glints swell and fade by the clock, so a test run would catch the sea at a different
+    // The glints swell and fade by the clock, so a test run would catch the water at a different
     // moment every time and no two screenshots of the same map would come out alike. A test is
     // shown the water standing still instead.
     if (!isTestMode) {
       drawSeaGlints(p, seaSquares, p.millis());
+      drawRiverGlints(p, riverSquares, p.millis());
     }
 
     const overlayProperty = getOverlayProperty();

@@ -11,7 +11,8 @@ import {
   FLOOR_SIDE_COLOR,
   FLOOR_UNDERSIDE_COLOR,
 } from "../../../shared/drawFloor";
-import { SEA_COLOR } from "./sea.ui";
+import { glintVariation, SEA_COLOR } from "./sea.ui";
+import { withoutDepthWrites } from "../../../shared/applyCommands";
 import { RiverSide } from "./river";
 
 // What the panel calls a square of river the player has clicked on.
@@ -25,7 +26,6 @@ const RIVER_DEPTH = floorBlockHeight(BLOCK_SIZE) * 0.5;
 
 const RIVER_BED_COLOR: [number, number, number] = [130, 205, 190];
 
-// How much of the water covering the river is let through: half of it, so the bed shows through.
 const SURFACE_TRANSPARENCY = 200;
 
 const HALF = BLOCK_SIZE / 2;
@@ -70,6 +70,100 @@ export function drawRiverSurface(p: p5, sides: RiverSide[]) {
   }
   p.pop();
 }
+
+// Where a square of the river lies, and which way the river runs through it. The glints of the
+// whole river go into a single shape, which no transform can be applied in the middle of, so each
+// glint is placed against its own square's middle rather than drawn with the square translated
+// under it.
+export interface RiverSquare {
+  x: number;
+  z: number;
+  centerX: number;
+  centerZ: number;
+  sides: RiverSide[];
+}
+
+// A river is never still. Its water is cut into a grid of small squares of light, four across the
+// river and eight along a square of it, each fading in and out on its own count. The grid follows
+// the river round a curve, as it is laid over the cells of the trough, whatever shape they make.
+// The whole river goes into one shape, for the same reason the sea's glints do.
+export function drawRiverGlints(p: p5, riverSquares: RiverSquare[], elapsedMilliseconds: number) {
+  p.push();
+  p.noStroke();
+  p.noLights();
+  withoutDepthWrites(p, () => {
+    p.beginShape(p.TRIANGLES);
+    for (const riverSquare of riverSquares) {
+      addGlintsOnSquare(p, riverSquare, elapsedMilliseconds);
+    }
+    p.endShape();
+  });
+  p.pop();
+}
+
+// A glint is numbered by where it falls in a grid laid over the whole map rather than over its own
+// square, so that no two squares of the river shimmer alike.
+function addGlintsOnSquare(p: p5, riverSquare: RiverSquare, elapsedMilliseconds: number) {
+  for (const cell of troughCells(riverSquare.sides)) {
+    for (const glintX of glintsAcross(cell.x)) {
+      for (const glintZ of glintsAcross(cell.z)) {
+        addGlint(
+          p,
+          riverSquare.x * GLINTS_ACROSS_SQUARE + glintX,
+          riverSquare.z * GLINTS_ACROSS_SQUARE + glintZ,
+          riverSquare,
+          elapsedMilliseconds,
+        );
+      }
+    }
+  }
+}
+
+// The glints lying across a cell, numbered by where they fall across the whole square.
+function glintsAcross(cellIndex: number): number[] {
+  const first = Math.round((CELL_BOUNDS[cellIndex] + HALF) / GLINT_SIZE);
+  const last = Math.round((CELL_BOUNDS[cellIndex + 1] + HALF) / GLINT_SIZE);
+  return Array.from({ length: last - first }, (_unused, index) => first + index);
+}
+
+// A glint goes from clear to half seen through white and back to clear, swelling the way the sea's
+// glints do: faint for most of its cycle and brightest only briefly.
+function addGlint(p: p5, glintX: number, glintZ: number, riverSquare: RiverSquare, elapsedMilliseconds: number) {
+  const cyclesElapsed = elapsedMilliseconds / GLINT_CYCLE_MILLISECONDS + glintVariation(glintX, glintZ);
+  const swell = Math.sin((cyclesElapsed - Math.floor(cyclesElapsed)) * Math.PI);
+  const alpha = GLINT_MAX_ALPHA * swell * swell;
+  if (alpha < 1) return;
+
+  const left = riverSquare.centerX + (glintX % GLINTS_ACROSS_SQUARE) * GLINT_SIZE - HALF;
+  const right = left + GLINT_SIZE;
+  const front = riverSquare.centerZ + (glintZ % GLINTS_ACROSS_SQUARE) * GLINT_SIZE - HALF;
+  const back = front + GLINT_SIZE;
+
+  // A fill set between vertices is carried by the vertices after it, so every glint keeps its own
+  // brightness although the whole river is one shape.
+  p.fill(255, 255, 255, alpha);
+  p.vertex(left, GLINT_HEIGHT, front);
+  p.vertex(right, GLINT_HEIGHT, front);
+  p.vertex(right, GLINT_HEIGHT, back);
+  p.vertex(left, GLINT_HEIGHT, front);
+  p.vertex(right, GLINT_HEIGHT, back);
+  p.vertex(left, GLINT_HEIGHT, back);
+}
+
+// Four glints stand across the river, which is half a square wide, so eight stand along a square.
+const GLINTS_ACROSS_RIVER = 4;
+const GLINT_SIZE = RIVER_WIDTH / GLINTS_ACROSS_RIVER;
+const GLINTS_ACROSS_SQUARE = Math.round(BLOCK_SIZE / GLINT_SIZE);
+
+// How long a glint takes to swell and fade away again.
+const GLINT_CYCLE_MILLISECONDS = 5000;
+
+// How white a glint gets at its brightest
+const GLINT_MAX_ALPHA = 50;
+
+// The glints hang a little under the surface of the water, as the sea's do, well clear of the bed.
+// Screen up is negative, so this is added to sink them.
+const GLINT_HEIGHT = TOP + BLOCK_SIZE * 0.015;
 
 function troughCells(sides: RiverSide[]): Cell[] {
   return [{ x: 1, z: 1 }, ...sides.map(side => ({ x: 1 + side.x, z: 1 + side.z }))];
