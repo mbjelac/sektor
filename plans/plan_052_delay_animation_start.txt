@@ -1,4 +1,4 @@
-#1 If specified, delay start of animation sequence for a building
+#1 [done] If specified, delay start of animation sequence for a building
 - [done] if a building in it's Properties section has property randomizedDelayAnimationStart
     - read property value as number
     - whenever a building of this type is constructed or the sektor is loaded

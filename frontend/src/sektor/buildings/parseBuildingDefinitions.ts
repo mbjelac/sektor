@@ -41,6 +41,10 @@ export interface BuildingProperties {
   // How far, counted in squares along and across the map, the building fouls the ground around it.
   // A building whose definition names none pollutes nothing.
   pollutionArea?: number;
+  // The longest, in seconds, a building of this kind waits before it starts its animations. Each
+  // building waits for a random part of it, so that buildings of a kind do not move in step. A
+  // building whose definition names none starts its animations at once.
+  randomizedDelayAnimationStart?: number;
 }
 
 // What stands on a building's location while the building is going up, before the building
@@ -175,6 +179,9 @@ function parseProperties(lines: string[]): BuildingProperties {
     if (match[1] === "pollutionArea" && isAmount(match[2])) {
       const pollutionArea = parseInt(match[2]);
       if (pollutionArea >= 1 && pollutionArea <= LARGEST_POLLUTION_AREA) props.pollutionArea = pollutionArea;
+    }
+    if (match[1] === "randomizedDelayAnimationStart" && /^\d+(\.\d+)?$/.test(match[2])) {
+      props.randomizedDelayAnimationStart = parseFloat(match[2]);
     }
   }
   return props;

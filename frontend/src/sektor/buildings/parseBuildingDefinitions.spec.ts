@@ -284,6 +284,34 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].properties).toEqual({ pollutionArea: 3 });
   });
 
+  it("parses randomizedDelayAnimationStart property as a number of seconds", () => {
+    const result = ["3", "1.5"].map(randomizedDelayAnimationStart => parseBuildingDefinitions([
+      "# Windmill",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Properties",
+      `randomizedDelayAnimationStart=${randomizedDelayAnimationStart}`,
+    ])[0].properties);
+
+    expect(result).toEqual([{ randomizedDelayAnimationStart: 3 }, { randomizedDelayAnimationStart: 1.5 }]);
+  });
+
+  it("ignores a randomizedDelayAnimationStart property which is not a number", () => {
+    const result = parseBuildingDefinitions([
+      "# Windmill",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Properties",
+      "randomizedDelayAnimationStart=soon",
+    ]);
+
+    expect(result[0].properties).toEqual({});
+  });
+
   // A building fouls the ground at least one square around it and at most four.
   it("ignores a pollutionArea property outside of 1 to 4", () => {
     const result = ["0", "5"].map(pollutionArea => parseBuildingDefinitions([

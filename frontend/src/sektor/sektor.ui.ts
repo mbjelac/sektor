@@ -441,7 +441,7 @@ function loadSavedState() {
   for (const building of sektorData.buildings) {
     const code = placedBuildingCode(building.type, building.location);
     if (code) {
-      placedBuildings.push({ type: building.type, location: building.location, code, animationStartDelayMillis: randomAnimationStartDelayMillis() });
+      placedBuildings.push({ type: building.type, location: building.location, code, animationStartDelayMillis: randomAnimationStartDelayMillis(building.type) });
       floorGeometryNeedsRebaking = true;
     }
   }
@@ -741,16 +741,11 @@ function startConstruction(type: string, startMillis: number): Construction | un
   return { renderingCode: constructionRender.renderingCode, duration: constructionRender.duration, startMillis };
 }
 
-// The most a building waits before its animations start.
-const MOST_ANIMATION_START_DELAY_MILLIS = 5000;
-
-// Buildings of a kind standing side by side would otherwise move in step, so each of them starts its
-// animations after a delay of its own, drawn once as it is put on the map, whether the player builds
-// it or the sektor is loaded with it. A test run's screenshots need every building where they expect
-// it, so there no building waits.
-function randomAnimationStartDelayMillis(): number {
-  if (isTestMode) return 0;
-  return Math.random() * MOST_ANIMATION_START_DELAY_MILLIS;
+// A building whose definition delays the start of its animations waits a random part of that delay,
+// drawn once as it is put on the map, whether the player builds it or the sektor is loaded with it.
+function randomAnimationStartDelayMillis(type: string): number {
+  const randomizedDelayAnimationStart = everyBuildingDefinition.find(definition => definition.name === type)?.properties.randomizedDelayAnimationStart ?? 0;
+  return Math.random() * randomizedDelayAnimationStart * 1000;
 }
 
 // The construction's animations are timed from the moment the building was placed, so they play
@@ -1264,7 +1259,7 @@ const sektorUi = (p: p5) => {
           location: building.location,
           code,
           construction: startConstruction(building.type, p.millis()),
-          animationStartDelayMillis: randomAnimationStartDelayMillis(),
+          animationStartDelayMillis: randomAnimationStartDelayMillis(building.type),
         });
         floorGeometryNeedsRebaking = true;
       }
