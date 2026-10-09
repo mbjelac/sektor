@@ -521,15 +521,25 @@ function openTerrainPanel(location: BuildingLocation) {
     buildingFunctions: [],
     locationProperties: locations[location.x]?.[location.y]?.properties,
     floorColor: floorColorAt(location.x, location.y),
-    drawFloorInstead: isRiverLocation(location.x, location.y)
-      ? (preview => drawRiverInPanel(preview, location))
-      : undefined,
+    drawFloorInstead: waterDrawnInPanelAt(location),
     location: location,
   });
 }
 
+// A square of water is shown in the panel as it is on the map, with no glints shimmering over it.
+function waterDrawnInPanelAt(location: BuildingLocation): ((preview: p5) => void) | undefined {
+  if (isSeaLocation(location.x, location.y)) return drawSeaInPanel;
+  if (isRiverLocation(location.x, location.y)) return preview => drawRiverInPanel(preview, location);
+  return undefined;
+}
+
 // The panel shows a square on its own, drawn in one pass, so the water is laid over the bed straight
 // after it.
+function drawSeaInPanel(preview: p5) {
+  drawSeaBed(preview);
+  drawSeaSurface(preview);
+}
+
 function drawRiverInPanel(preview: p5, location: BuildingLocation) {
   const sides = riverSides(terrain, location.x, location.y);
   drawRiverBed(preview, sides, floorColorAt(location.x, location.y));
