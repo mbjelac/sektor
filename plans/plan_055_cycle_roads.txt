@@ -9,31 +9,4 @@ The purpose of the cycle road is to allow some types of resources to be transpor
 
 Type of resources transported by cycle roads is noted in resource list by having the "people" indicator.
 
-  0 1 2
-  - - -
-0|#|#|#|
-  - - -
-1|#|#|#|
-  - - -
-2|#|#|#|
-  - - -
-
- 0123456
-0|-|-|-|
-1|-|-|-|
-2|-|-|-|
-3 - - -
-
-mapping from building matrix to road matrix:
-- north:
-    - row: row
-    - col: col * 2 + 1
-- south
-    - row: row + 1
-    - col: col * 2 + 1
-- west
-    - row: row
-    - col: col * 2
-- east
-    - row: row
-    - col: col * 2 + 2
+#1 Player can build cycle roads
