@@ -1,0 +1,4 @@
+#1 Building tags should be in it's own section
+- instead of tags all being in the tags property, there should be a dedicated section for this: "Tags"
+    - contains tags, 1 tag per line
+- adjust parsing & existing data: buildings.md & buildings.test.md
