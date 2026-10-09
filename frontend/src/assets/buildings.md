@@ -3283,3 +3283,4 @@ ImportExport 100
 ## Properties
 
 tags=transport
+randomizedDelayAnimationStart=20
