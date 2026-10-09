@@ -1,0 +1,37 @@
+Buildings can be connected by cycle roads.
+A cycle road is a building (of sorts):
+- it has inputs & outputs
+- it has SGL rendering code
+But also not a building:
+- it is not rendered in a square, it is rendered *between squares*
+
+The purpose of the cycle road is to allow some types of resources to be transported between buildings in the same sektor.
+
+  0 1 2
+  - - -
+0|#|#|#|
+  - - -
+1|#|#|#|
+  - - -
+2|#|#|#|
+  - - -
+
+ 0123456
+0|-|-|-|
+1|-|-|-|
+2|-|-|-|
+3 - - -
+
+mapping from building matrix to road matrix:
+- north:
+    - row: row
+    - col: col * 2 + 1
+- south
+    - row: row + 1
+    - col: col * 2 + 1
+- west
+    - row: row
+    - col: col * 2
+- east
+    - row: row
+    - col: col * 2 + 2
