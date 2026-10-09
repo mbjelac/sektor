@@ -1,7 +1,7 @@
 #1 If specified, delay start of animation sequence for a building
-- if a building in it's Properties section has property delayAnimationStart
+- [done] if a building in it's Properties section has property randomizedDelayAnimationStart
     - read property value as number
     - whenever a building of this type is constructed or the sektor is loaded
     - delay starting animation of this building
     - set different random number for each building
-    - value random between 0 & delayAnimationStart seconds
+    - value random between 0 & randomizedDelayAnimationStart seconds
