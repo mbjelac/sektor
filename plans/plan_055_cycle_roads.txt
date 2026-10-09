@@ -10,11 +10,11 @@ The purpose of the cycle road is to allow some types of resources to be transpor
 Type of resources transported by cycle roads is noted in resource list by having the "people" indicator.
 
 #1 Player can build cycle roads
-- every map edge can contain a cycle road
+- [done] every map edge can contain a cycle road
     - this means all roads are between two locations
     - if a road is on the edge of the map, one of the locations is outside the map, having it's x or y either -1 or 10 (map size)
     - roads can be stored into a structure which is a list of location pairs
-- roads are buildings on map edges
+- [done] roads are buildings on map edges
     - when player selects CycleRoad building in building toolbar
         - clicking on a square does not build that building
             - display error "roadsGoBetweenBuildings"
@@ -25,6 +25,7 @@ Type of resources transported by cycle roads is noted in resource list by having
                 - render the road using this location
                     - determine side of location on which the road is (north, east, west, south)
                     - render using one of frontend/src/assets/terrain/temperate/cycle-roads according to that side
+            - if the first location is not in the map, use the second location
 
 #2 Player can destroy cycle roads
 - when player selects Destroy
