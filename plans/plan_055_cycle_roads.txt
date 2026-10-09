@@ -7,6 +7,8 @@ But also not a building:
 
 The purpose of the cycle road is to allow some types of resources to be transported between buildings in the same sektor.
 
+Type of resources transported by cycle roads is noted in resource list by having the "people" indicator.
+
   0 1 2
   - - -
 0|#|#|#|
