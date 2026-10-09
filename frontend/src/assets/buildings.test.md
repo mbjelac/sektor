@@ -22,9 +22,10 @@ Energy 1
 ->
 Food soil
 
-## Properties
+## Tags
 
-tags=food,water
+food
+water
 
 # TestMine
 
@@ -43,7 +44,11 @@ Ore ore
 ## Properties
 
 showFloor=false
-tags=food,industry
+
+## Tags
+
+food
+industry
 
 # TestHouse
 
@@ -62,9 +67,9 @@ Water 1
 ->
 Work 3
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # TestProcessor
 
@@ -80,9 +85,9 @@ Food 2
 ->
 Wood 3
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # TestRefinery
 
@@ -103,9 +108,9 @@ Stone 1
 Metal 6
 Fuel 3
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # TestWorkshop
 
@@ -129,9 +134,9 @@ Wood 3
 ->
 Fuel wind
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # TestClinic
 
@@ -147,9 +152,9 @@ Care 2
 ->
 Work 4
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # TestCarer
 
@@ -165,9 +170,9 @@ Food 1
 ->
 Care 4
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # TestReactor
 
@@ -192,9 +197,9 @@ Energy 1
 ->
 Water 1
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # TestTower
 
@@ -213,7 +218,10 @@ Work 1
 ## Properties
 
 minLevel=5
-tags=food
+
+## Tags
+
+food
 
 # TestHabitat
 
@@ -232,9 +240,9 @@ Care 2
 ->
 Hapiness 5
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # TestSmokestack
 
@@ -252,8 +260,11 @@ Fuel 1
 
 ## Properties
 
-tags=industry
 pollutionArea=2
+
+## Tags
+
+industry
 
 # TestPurifier
 
@@ -269,9 +280,9 @@ Energy 1
 ->
 Water 7 pollution
 
-## Properties
+## Tags
 
-tags=industry
+industry
 
 # TestHub
 
@@ -286,6 +297,7 @@ pri4 s(28,28,14) t(0,0,-4) c(#ffedc2)
 ->
 ImportExport 100
 
-## Properties
+## Tags
 
-tags=food,industry
+food
+industry

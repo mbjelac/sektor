@@ -144,9 +144,10 @@ WorkTechnical 1
 ->
 Water groundwater
 
-## Properties
+## Tags
 
-tags=food,water
+food
+water
 
 # Habitats
 
@@ -669,9 +670,9 @@ Childcare 2
 WorkUnqualified 4
 Hapiness 1
 
-## Properties
+## Tags
 
-tags=people
+people
 
 # Library
 
@@ -741,9 +742,9 @@ WorkAdministrative 1
 ->
 HealthMental 6
 
-## Properties
+## Tags
 
-tags=people
+people
 
 # Agriplot
 
@@ -817,9 +818,10 @@ WorkTechnical 2
 ->
 FoodRaw soil
 
-## Properties
+## Tags
 
-tags=food,water
+food
+water
 
 # Extractor
 
@@ -922,8 +924,11 @@ OreUranium uranium
 ## Properties
 
 showFloor=false
-tags=industry
 pollutionArea=3
+
+## Tags
+
+industry
 
 # WindLoop
 
@@ -959,9 +964,9 @@ WorkTechnical 1
 ->
 EnergyElectric wind
 
-## Properties
+## Tags
 
-tags=energy
+energy
 
 # SunCatcher
 
@@ -993,9 +998,9 @@ WorkTechnical 1
 ->
 EnergyElectric insolation
 
-## Properties
+## Tags
 
-tags=energy
+energy
 
 # Arena
 
@@ -1032,9 +1037,9 @@ WorkAdministrative 2
 ->
 HealthSocial 20
 
-## Properties
+## Tags
 
-tags=people
+people
 
 # Maintenance Institute
 
@@ -1153,9 +1158,9 @@ WorkUnqualified 16
 ->
 WorkMaintenance 16
 
-## Properties
+## Tags
 
-tags=education
+education
 
 # Technical Institute
 
@@ -1293,9 +1298,9 @@ WorkMaintenance 18
 ->
 WorkTechnical 16
 
-## Properties
+## Tags
 
-tags=education
+education
 
 # Metal Smelter
 
@@ -1377,8 +1382,11 @@ Metals 10
 
 ## Properties
 
-tags=industry
 pollutionArea=4
+
+## Tags
+
+industry
 
 # Mineral Refinery
 
@@ -1573,8 +1581,11 @@ Minerals 20
 
 ## Properties
 
-tags=industry
 pollutionArea=3
+
+## Tags
+
+industry
 
 # Uranium Mill
 
@@ -1719,10 +1730,9 @@ OreUranium 5
 ->
 Uranium 6
 
-## Properties
+## Tags
 
-tags=industry
-
+industry
 
 # TownSquare
 
@@ -1819,10 +1829,9 @@ Water 2
 ->
 HealthSocial 8 pollution
 
-## Properties
+## Tags
 
-tags=people
-
+people
 
 # Park
 
@@ -1939,10 +1948,9 @@ HealthPhysical 2 pollution
 HealthMental 2 pollution
 HealthSocial 4 pollution
 
-## Properties
+## Tags
 
-tags=people
-
+people
 
 # Fertilizatron
 
@@ -1996,8 +2004,12 @@ Fertilizer 12
 
 ## Properties
 
-tags=food,industry
 pollutionArea=1
+
+## Tags
+
+food
+industry
 
 # ChildKeep
 
@@ -2058,9 +2070,9 @@ WorkMaintenance 1
 Childcare 10 pollution
 Sewage 6
 
-## Properties
+## Tags
 
-tags=people
+people
 
 # WaterTreatment
 
@@ -2208,10 +2220,9 @@ WorkTechnical 2
 ->
 Water 8
 
+## Tags
 
-## Properties
-
-tags=water
+water
 
 # Fission Plant
 
@@ -2328,9 +2339,9 @@ Water 2
 EnergyElectric 20
 WasteNuclear 2
 
-## Properties
+## Tags
 
-tags=energy
+energy
 
 # Nuclear Waste Depot
 
@@ -3027,9 +3038,9 @@ WorkTechnical 1
 EnergyElectric 1
 ->
 
-## Properties
+## Tags
 
-tags=energy
+energy
 
 # Gymnasium
 
@@ -3078,9 +3089,9 @@ WorkAdministrative 1
 HealthSocial 4
 HealthPhysical 8
 
-## Properties
+## Tags
 
-tags=people
+people
 
 # FoodProcessor
 
@@ -3228,9 +3239,9 @@ FoodRaw 18
 FoodProcessed 12
 WasteBio 8
 
-## Properties
+## Tags
 
-tags=food
+food
 
 # FloaterTower
 
@@ -3282,5 +3293,8 @@ ImportExport 100
 
 ## Properties
 
-tags=transport
 randomizedDelayAnimationStart=20
+
+## Tags
+
+transport

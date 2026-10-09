@@ -327,15 +327,18 @@ describe("parseBuildingDefinitions", () => {
     expect(result).toEqual([{}, {}]);
   });
 
-  it("parses tags property as a list of tags", () => {
+  it("parses Tags section as a list of tags, one per line", () => {
     const result = parseBuildingDefinitions([
       "# Mine",
       "## Render",
       "```",
       "box s(10,10,10)",
       "```",
-      "## Properties",
-      "tags=fruit,metal",
+      "## Tags",
+      "",
+      "fruit",
+      "  metal  ",
+      "",
     ]);
 
     expect(result[0].properties).toEqual({ tags: ["fruit", "metal"] });

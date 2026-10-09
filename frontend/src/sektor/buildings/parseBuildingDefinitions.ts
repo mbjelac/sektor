@@ -36,7 +36,8 @@ export interface BuildingProperties {
   // The level a player has to have reached before the building is offered to them. A building
   // whose definition names none is offered to every player from the start.
   minLevel?: number;
-  // What the building is about, so the player can find it among the others in the toolbar.
+  // What the building is about, so the player can find it among the others in the toolbar. They
+  // come from the Tags section of the definition, not from its Properties section.
   tags?: string[];
   // How far, counted in squares along and across the map, the building fouls the ground around it.
   // A building whose definition names none pollutes nothing.
@@ -75,7 +76,8 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
   let propertyLines: string[] = [];
   let constructionCodeLines: string[] = [];
   let constructionPropertyLines: string[] = [];
-  let section: "none" | "render" | "constructionRender" | "function" | "properties" = "none";
+  let tagLines: string[] = [];
+  let section: "none" | "render" | "constructionRender" | "function" | "properties" | "tags" = "none";
 
   function pushBuilding() {
     if (currentName && codeLines.length > 0) {
@@ -85,6 +87,8 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
         buildingFunctions: functionLineGroups.map(functionLines => parseBuildingFunction(functionLines)),
         properties: parseProperties(propertyLines),
       };
+      const tags = parseTags(tagLines);
+      if (tags.length > 0) building.properties.tags = tags;
       const constructionRender = parseConstructionRender(constructionCodeLines, constructionPropertyLines);
       if (constructionRender) building.constructionRender = constructionRender;
       buildings.push(building);
@@ -101,6 +105,7 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
       propertyLines = [];
       constructionCodeLines = [];
       constructionPropertyLines = [];
+      tagLines = [];
       inCodeBlock = false;
       section = "none";
       continue;
@@ -127,6 +132,11 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
       continue;
     }
 
+    if (line.match(/^##\s+Tags/)) {
+      section = "tags";
+      continue;
+    }
+
     if (line.trim().startsWith("```")) {
       inCodeBlock = !inCodeBlock;
       continue;
@@ -140,6 +150,8 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
       constructionPropertyLines.push(line);
     } else if (section === "properties") {
       propertyLines.push(line);
+    } else if (section === "tags") {
+      tagLines.push(line);
     } else if (section === "function") {
       functionLineGroups[functionLineGroups.length - 1].push(line);
     }
@@ -173,9 +185,6 @@ function parseProperties(lines: string[]): BuildingProperties {
     if (match[1] === "minLevel" && isAmount(match[2])) {
       props.minLevel = parseInt(match[2]);
     }
-    if (match[1] === "tags") {
-      props.tags = match[2].split(",").map(tag => tag.trim()).filter(tag => tag.length > 0);
-    }
     if (match[1] === "pollutionArea" && isAmount(match[2])) {
       const pollutionArea = parseInt(match[2]);
       if (pollutionArea >= 1 && pollutionArea <= LARGEST_POLLUTION_AREA) props.pollutionArea = pollutionArea;
@@ -185,6 +194,11 @@ function parseProperties(lines: string[]): BuildingProperties {
     }
   }
   return props;
+}
+
+// Each line of the Tags section holds one tag.
+function parseTags(lines: string[]): string[] {
+  return lines.map(line => line.trim()).filter(tag => tag.length > 0);
 }
 
 function parseBuildingFunction(lines: string[]): BuildingFunction {
