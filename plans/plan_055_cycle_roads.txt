@@ -34,3 +34,13 @@ Type of resources transported by cycle roads is noted in resource list by having
     - clicking on a road
         - delete road from sektor
         - do not render that road
+
+#3 Roads cannot be built on sea
+- if both locations are sea
+    - do not build road
+    - show error "notDryEnough"
+
+#4 Roads cannot be built over rivers
+- if both locations are river
+    - do not build road
+    - show error "notDryEnough"
