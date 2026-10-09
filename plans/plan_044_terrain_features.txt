@@ -35,6 +35,9 @@ Terrain features also includes water, e.g.:
             - same error functionalities as all other errors
 - [done] update building panel label
     - when a sea floor is selected, the building panel name label says "Sea"
+- update building panel image
+    - when a sea floor is selected, the building panel display the sea block as rendered in the map
+        - no animated glints
 
 #3 [done] Elevation
 - [done] when creating a sektor, some floors are "elevation" (i.e. rocks)
