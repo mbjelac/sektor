@@ -35,10 +35,12 @@ else
 fi
 nextPlanNumber="$(printf '%03d' $((highestPlanNumber + 1)))"
 
+# Snake case: every run of anything but letters and digits (spaces, dashes, dots...) becomes a
+# single underscore.
 planSlug="$(
   printf '%s' "$planName" \
     | tr '[:upper:]' '[:lower:]' \
-    | tr -s '[:space:]' '_' \
+    | tr -cs '[:alnum:]' '_' \
     | sed -e 's/^_//' -e 's/_$//'
 )"
 
