@@ -3278,7 +3278,7 @@ WorkAdministrative 2
 WorkTechnical 1
 WorkMaintenance 3
 ->
-ImportExport 44
+ImportExport 100
 
 ## Properties
 
