@@ -6,5 +6,5 @@
     - set different random number for each building
     - value random between 0 & randomizedDelayAnimationStart seconds
 
-#2 Objects which have ashow function are hidden during delay
-- for all objects which have the ashow function, do not render them until the delay is over
+#2 [done] Objects which have ashow function are hidden during delay
+- [done] for all objects which have the ashow function, do not render them until the delay is over

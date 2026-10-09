@@ -750,8 +750,8 @@ function randomAnimationStartDelayMillis(type: string): number {
 
 // The construction's animations are timed from the moment the building was placed, so they play
 // from their beginning whenever the building goes up. Once the construction is over it is dropped
-// and the building is drawn finished from then on, its animations held at their start until its
-// delay is over.
+// and the building is drawn finished from then on, its animations held at their start and its
+// ashow bodies hidden until its delay is over: the time handed on stays below zero until then.
 function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }) {
   if (building.construction) {
     const constructionMillis = p.millis() - building.construction.startMillis;
@@ -762,7 +762,7 @@ function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingL
     }
     building.construction = undefined;
   }
-  const animationMillis = Math.max(0, p.millis() - building.animationStartDelayMillis);
+  const animationMillis = p.millis() - building.animationStartDelayMillis;
   drawBakedBodies(p, bakedBuildingBodies(p, placedBuildingBakeName(building), building.code), animationMillis);
 }
 

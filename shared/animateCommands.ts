@@ -81,9 +81,11 @@ function graduallyChangedColor(baseColor: string | null, animateColorGradual: An
 }
 
 // A body with ashow is hidden for dt1, shown for dt2 and hidden again for dt3, over and over.
+// Before its animations have started — while the elapsed time is still below zero — it is hidden.
 export function isShown(command: CreateBody, elapsedMilliseconds: number): boolean {
   const animateShow = command.animateShow;
   if (!animateShow) return true;
+  if (elapsedMilliseconds < 0) return false;
   return isInMiddlePhase(animateShow.dt1, animateShow.dt2, animateShow.dt3, elapsedMilliseconds);
 }
 
