@@ -1,0 +1,19 @@
+Bodies are hidden for a while by giving them a fully transparent color and toggling it with act.
+A dedicated modifier ashow(dt1,dt2[,dt3]) replaces that: the body is hidden for dt1 ms, shown in
+its own c() color for dt2 ms, hidden again for dt3 ms (default 0), repeating, in sync across lines
+like act. A hidden body is not drawn at all.
+
+#1 [done] Hide show animation
+- [done] add ashow modifier to parsing
+    - new AnimateShow type with dt1, dt2, dt3
+    - new animateShow field on CreateBody
+    - dt3 optional, defaults to 0
+- [done] don't draw a body while ashow hides it
+    - hidden for dt1, shown for dt2, hidden for dt3, cycling like act
+    - an ashow body counts as animated, so it is not baked
+- [done] document ashow in the draw-building skill's animation table
+- [done] replace act hiding with ashow in buildings.md and building-sketches.md
+    - c(#XXXXXX00) act(#XXXXXX,dt1,dt2[,dt3]) becomes c(#XXXXXX) ashow(dt1,dt2[,dt3])
+    - c(#color) act(#00000000,dt1,dt2) becomes c(#color) ashow(0,dt1,dt2)
+    - leave act lines that toggle between two visible colors untouched
+- [done] run tests and type check

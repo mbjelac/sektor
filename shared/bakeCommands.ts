@@ -57,7 +57,8 @@ function isAnimated(command: CreateBody): boolean {
   return command.animateTranslate !== null
     || command.animateRotate !== null
     || command.animateColorToggle !== null
-    || command.animateColorGradual !== null;
+    || command.animateColorGradual !== null
+    || command.animateShow !== null;
 }
 
 function bakeBodies(p: p5, commands: CreateBody[]): p5.Geometry | null {

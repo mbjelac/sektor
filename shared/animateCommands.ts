@@ -59,13 +59,7 @@ export function animatedColor(command: CreateBody, elapsedMilliseconds: number):
 }
 
 function toggledColor(baseColor: string | null, animateColorToggle: AnimateColorToggle, elapsedMilliseconds: number): string | null {
-  const baseColorFirstSteps = animateColorToggle.dt1 / ANIMATION_STEP_MILLISECONDS;
-  const newColorSteps = animateColorToggle.dt2 / ANIMATION_STEP_MILLISECONDS;
-  const baseColorLastSteps = animateColorToggle.dt3 / ANIMATION_STEP_MILLISECONDS;
-  const cycleSteps = baseColorFirstSteps + newColorSteps + baseColorLastSteps;
-  const cycleStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateColorToggle.delay) / ANIMATION_STEP_MILLISECONDS) % cycleSteps;
-
-  const newColorActive = cycleStep >= baseColorFirstSteps && cycleStep < baseColorFirstSteps + newColorSteps;
+  const newColorActive = isInMiddlePhase(animateColorToggle.dt1, animateColorToggle.dt2, animateColorToggle.dt3, delayedElapsed(elapsedMilliseconds, animateColorToggle.delay));
   return newColorActive ? animateColorToggle.color : baseColor;
 }
 
@@ -84,6 +78,23 @@ function graduallyChangedColor(baseColor: string | null, animateColorGradual: An
     Math.round(fromRgba[2] + (toRgbaColor[2] - fromRgba[2]) * progress),
     Math.round(fromRgba[3] + (toRgbaColor[3] - fromRgba[3]) * progress),
   ]);
+}
+
+// A body with ashow is hidden for dt1, shown for dt2 and hidden again for dt3, over and over.
+export function isShown(command: CreateBody, elapsedMilliseconds: number): boolean {
+  const animateShow = command.animateShow;
+  if (!animateShow) return true;
+  return isInMiddlePhase(animateShow.dt1, animateShow.dt2, animateShow.dt3, elapsedMilliseconds);
+}
+
+// Whether a cycle of three phases, dt1, dt2 and dt3 ms long and repeating, is in its middle phase.
+function isInMiddlePhase(dt1: number, dt2: number, dt3: number, elapsedMilliseconds: number): boolean {
+  const firstPhaseSteps = dt1 / ANIMATION_STEP_MILLISECONDS;
+  const middlePhaseSteps = dt2 / ANIMATION_STEP_MILLISECONDS;
+  const lastPhaseSteps = dt3 / ANIMATION_STEP_MILLISECONDS;
+  const cycleSteps = firstPhaseSteps + middlePhaseSteps + lastPhaseSteps;
+  const cycleStep = Math.floor(elapsedMilliseconds / ANIMATION_STEP_MILLISECONDS) % cycleSteps;
+  return cycleStep >= firstPhaseSteps && cycleStep < firstPhaseSteps + middlePhaseSteps;
 }
 
 function delayedElapsed(elapsedMilliseconds: number, delay: number): number {

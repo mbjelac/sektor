@@ -7,7 +7,7 @@ import {drawCone} from "./primitive/drawCone";
 import {drawTorus, torusTubeRadius} from "./primitive/drawTorus";
 import {CreateBody} from "./parseCommands";
 import {BLOCK_SIZE} from "./constants";
-import {animatedColor, animatedRotate, animatedTranslate} from "./animateCommands";
+import {animatedColor, animatedRotate, animatedTranslate, isShown} from "./animateCommands";
 
 const pyrSides: Record<string, number> = {
   pyr3: 3, pyr4: 4, pyr5: 5, pyr6: 6, pyr7: 7, pyr8: 8, pyr9: 9,
@@ -28,9 +28,13 @@ export function applyCommands(p: p5, commands: CreateBody[], elapsedMilliseconds
   withoutDepthWrites(p, () => drawBodies(p, transparentCommands, elapsedMilliseconds));
 }
 
+// A body which is hidden, or has no opacity at all, would show nothing, so it is not drawn: there
+// is nothing for it to leave behind, in the depth buffer or anywhere else.
 export function drawBodies(p: p5, commands: CreateBody[], elapsedMilliseconds: number) {
   for (const command of commands) {
-    drawBody(p, command, bodyColor(command, elapsedMilliseconds), elapsedMilliseconds);
+    const color = bodyColor(command, elapsedMilliseconds);
+    if (!isShown(command, elapsedMilliseconds) || isInvisible(color)) continue;
+    drawBody(p, command, color, elapsedMilliseconds);
   }
 }
 
@@ -43,12 +47,21 @@ export function transparentBodies(commands: CreateBody[], elapsedMilliseconds: n
   return commands.filter(command => isTransparent(bodyColor(command, elapsedMilliseconds)));
 }
 
-// Transparent bodies do not write depth, so they never hide bodies behind them.
+// Transparent bodies do not write depth, so they never hide bodies behind them. p5 turns depth
+// writes back on whenever it switches blending on or off, which it does on the first transparent
+// body after an opaque one, so depth writes are kept off by holding p5's hands off them until the
+// transparent bodies are drawn.
 export function withoutDepthWrites(p: p5, drawTransparent: () => void) {
   const gl = p.drawingContext as WebGLRenderingContext;
+  const depthMask = gl.depthMask;
   gl.depthMask(false);
-  drawTransparent();
-  gl.depthMask(true);
+  gl.depthMask = () => {};
+  try {
+    drawTransparent();
+  } finally {
+    gl.depthMask = depthMask;
+    gl.depthMask(true);
+  }
 }
 
 function bodyColor(command: CreateBody, elapsedMilliseconds: number): string | undefined {
@@ -56,7 +69,16 @@ function bodyColor(command: CreateBody, elapsedMilliseconds: number): string | u
 }
 
 function isTransparent(color: string | undefined): boolean {
-  return color !== undefined && color.length >= 9 && parseInt(color.slice(7, 9), 16) < 255;
+  return colorAlpha(color) < 255;
+}
+
+function isInvisible(color: string | undefined): boolean {
+  return colorAlpha(color) === 0;
+}
+
+function colorAlpha(color: string | undefined): number {
+  if (color === undefined || color.length < 9) return 255;
+  return parseInt(color.slice(7, 9), 16);
 }
 
 function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsedMilliseconds: number) {

@@ -142,6 +142,7 @@ before placing anything along an edge.
 | `ar(d1,d2,d3,stepDelay)` | add these degrees every `stepDelay` ms — an endless spin; random start delay |
 | `act(#color,dt1,dt2[,dt3])` | hold the base color `dt1` ms, `#color` for `dt2` ms, base again for `dt3` ms; in sync across lines |
 | `acg(#color,dt)` | fade base ↔ `#color`, `dt` ms each way; random start delay |
+| `ashow(dt1,dt2[,dt3])` | hidden `dt1` ms, shown in the `c()` color for `dt2` ms, hidden again for `dt3` ms; in sync across lines. Use this, not a transparent `c()` with `act`, to hide a body for a while |
 
 Animation advances in 20 ms steps, so anything below that is invisible. To make a crowd of
 identical bodies feel alive, use `atr`/`ar` and also vary a number per line (a pause, a delay)
