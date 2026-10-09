@@ -301,3 +301,22 @@ ImportExport 100
 
 food
 industry
+
+# CycleRoad
+
+## Render
+
+```
+pri4 s(124,64,4) t(0,0,0) c(#616161)
+cyl s(8,8,88) t(0,-24,-40) r(0,0,90) c(#ff7b00)
+cyl s(8,8,88) t(0,24,-40) r(0,0,90) c(#ff7b00)
+```
+
+## Function
+
+WorkMaintenance 1
+->
+
+## Tags
+
+transport

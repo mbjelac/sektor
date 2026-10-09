@@ -9,7 +9,7 @@ The purpose of the cycle road is to allow some types of resources to be transpor
 
 Type of resources transported by cycle roads is noted in resource list by having the "people" indicator.
 
-#1 Player can build cycle roads
+#1 [done] Player can build cycle roads
 - [done] every map edge can contain a cycle road
     - this means all roads are between two locations
     - if a road is on the edge of the map, one of the locations is outside the map, having it's x or y either -1 or 10 (map size)
@@ -44,3 +44,6 @@ Type of resources transported by cycle roads is noted in resource list by having
 - if both locations are river
     - do not build road
     - show error "notDryEnough"
+
+#5 Roads are buildings with resource needs
+- built roads

@@ -5,7 +5,7 @@ import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCo
 import {withoutDepthWrites} from "../../../shared/applyCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
-import { BuildingLocation, Location, Sektor, SektorState } from "./Sektor";
+import { BuildingLocation, CycleRoad, Location, Sektor, SektorState } from "./Sektor";
 import { buildingDefinitions, everyBuildingDefinition } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import { updateSektorStatePanel } from "./sektorStatePanel.ui";
@@ -31,6 +31,7 @@ import { drawRiverBed, drawRiverGlints, drawRiverSurface, RIVER_NAME, RiverSquar
 import { riverGlintStrips, riverSideFlowedInFrom, riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
+import { CYCLE_ROAD_NAME, cycleRoadAt, cycleRoadDrawnSquare, cycleRoadRenderingCode, CycleRoadSide } from "./cycleRoad";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -285,6 +286,9 @@ interface Construction {
   startMillis: number;
 }
 const placedBuildings: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }[] = [];
+// A cycle road is drawn on one of the two squares it runs between, along the side of it looking
+// towards the other.
+const placedCycleRoads: { location: BuildingLocation; side: CycleRoadSide }[] = [];
 let notificationTimeout: ReturnType<typeof setTimeout> | null = null;
 
 function locationsToLocationProperties(locationMatrix: Location[][]): { [key: string]: number[][] } {
@@ -308,6 +312,7 @@ function saveState() {
     terrain,
     locationProperties: locationsToLocationProperties(locations),
     buildings: state.buildings,
+    cycleRoads: state.cycleRoads,
     initialEcosystemSupport,
   });
 }
@@ -437,7 +442,7 @@ function loadSavedState() {
   if (!sektorId) return;
   const sektorData = getSektorData(sektorId);
   if (!sektorData) return;
-  sektor.loadState({ buildings: sektorData.buildings });
+  sektor.loadState({ buildings: sektorData.buildings, cycleRoads: sektorData.cycleRoads });
   for (const building of sektorData.buildings) {
     const code = placedBuildingCode(building.type, building.location);
     if (code) {
@@ -445,6 +450,7 @@ function loadSavedState() {
       floorGeometryNeedsRebaking = true;
     }
   }
+  for (const cycleRoad of sektorData.cycleRoads ?? []) placeCycleRoad(cycleRoad);
   updateSektorState();
 }
 
@@ -964,17 +970,7 @@ function getCameraBasis(p: p5): {
 }
 
 function findClickedTile(p: p5, currentZoom: number): { x: number; y: number } | null {
-  const { eyeX, eyeY, eyeZ, rightX, rightY, rightZ, upX, upY, upZ, fwdX, fwdY, fwdZ } = getCameraBasis(p);
-
-  const ndcX = (p.mouseX / p.width) * 2 - 1;
-  const ndcY = (p.mouseY / p.height) * 2 - 1;
-
-  const hw = p.width * currentZoom / 2;
-  const hh = p.height * currentZoom / 2;
-
-  const ox = eyeX + rightX * ndcX * hw + upX * ndcY * hh;
-  const oy = eyeY + rightY * ndcX * hw + upY * ndcY * hh;
-  const oz = eyeZ + rightZ * ndcX * hw + upZ * ndcY * hh;
+  const { ox, oy, oz, fwdX, fwdY, fwdZ } = findClickRay(p, currentZoom);
 
   let bestT = Infinity;
   let bestTile: { x: number; y: number } | null = null;
@@ -1259,6 +1255,11 @@ const sektorUi = (p: p5) => {
       return;
     }
 
+    if (selected === CYCLE_ROAD_NAME) {
+      buildCycleRoad(findClickedGridPoint(p, zoom), event?.shiftKey === true);
+      return;
+    }
+
     const result = sektor.createBuilding({ type: selected, location: { x: grid.x, y: grid.y } });
 
     for (const building of result.addedBuildings) {
@@ -1359,6 +1360,15 @@ const sektorUi = (p: p5) => {
       p.pop();
     }
 
+    for (const placedCycleRoad of placedCycleRoads) {
+      p.push();
+      const { wx, wz } = gridToWorld(placedCycleRoad.location.x, placedCycleRoad.location.y);
+      p.translate(wx, 0, wz);
+      const bakedCycleRoad = bakedBuildingBodies(p, `${CYCLE_ROAD_NAME} ${placedCycleRoad.side}`, cycleRoadRenderingCode(placedCycleRoad.side));
+      drawBakedBodies(p, bakedCycleRoad, p.millis());
+      p.pop();
+    }
+
     for (const location of warnedBuildingLocations) {
       drawWarning(p, location, camAngleY);
     }
@@ -1373,6 +1383,60 @@ function placedBuildingCode(type: string, location: BuildingLocation): string | 
   return type === FOREST_NAME
     ? forestRenderingCode(squareVariation(location.x, location.y))
     : getBuildingCode(type);
+}
+
+// The point of the floor a click landed on, measured in squares: the square (x, y) runs from x to
+// x + 1 across and from y to y + 1 down. The click is followed down to the top of the floor, which
+// a camera never rolled and never looking along the floor always reaches.
+function findClickedGridPoint(p: p5, currentZoom: number): { gridX: number; gridY: number } {
+  const { ox, oy, oz, fwdX, fwdY, fwdZ } = findClickRay(p, currentZoom);
+  const distanceToFloorTop = (-FLOOR_HEIGHT / 2 - oy) / fwdY;
+  return {
+    gridX: (ox + fwdX * distanceToFloorTop) / BLOCK_SIZE + SEKTOR_SIZE / 2,
+    gridY: (oz + fwdZ * distanceToFloorTop) / BLOCK_SIZE + SEKTOR_SIZE / 2,
+  };
+}
+
+// The view is orthographic, so a click goes straight into the map along the way the camera looks,
+// from the point of the near plane under the mouse.
+function findClickRay(p: p5, currentZoom: number): { ox: number; oy: number; oz: number; fwdX: number; fwdY: number; fwdZ: number } {
+  const { eyeX, eyeY, eyeZ, rightX, rightY, rightZ, upX, upY, upZ, fwdX, fwdY, fwdZ } = getCameraBasis(p);
+
+  const ndcX = (p.mouseX / p.width) * 2 - 1;
+  const ndcY = (p.mouseY / p.height) * 2 - 1;
+
+  const hw = p.width * currentZoom / 2;
+  const hh = p.height * currentZoom / 2;
+
+  return {
+    ox: eyeX + rightX * ndcX * hw + upX * ndcY * hh,
+    oy: eyeY + rightY * ndcX * hw + upY * ndcY * hh,
+    oz: eyeZ + rightZ * ndcX * hw + upZ * ndcY * hh,
+    fwdX, fwdY, fwdZ,
+  };
+}
+
+// A cycle road runs between two squares, so a click on the middle of a square puts none up. Like
+// a building, a road just put up puts the tool down, unless SHIFT is held to lay a road square by
+// square.
+function buildCycleRoad(gridPoint: { gridX: number; gridY: number }, keepToolInHand: boolean) {
+  const cycleRoad = cycleRoadAt(gridPoint.gridX, gridPoint.gridY);
+  if (!cycleRoad) {
+    showError("roadsGoBetweenBuildings");
+    return;
+  }
+  const result = sektor.createCycleRoad(cycleRoad);
+  if (result.error !== undefined) {
+    showError(result.error);
+    return;
+  }
+  placeCycleRoad(cycleRoad);
+  saveState();
+  if (!keepToolInHand) deselectBuilding();
+}
+
+function placeCycleRoad(cycleRoad: CycleRoad) {
+  placedCycleRoads.push(cycleRoadDrawnSquare(cycleRoad));
 }
 
 new p5(sektorUi);

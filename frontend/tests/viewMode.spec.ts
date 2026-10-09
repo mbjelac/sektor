@@ -310,6 +310,20 @@ test("draws the buildings of a sektor shown in view mode", async ({ page }) => {
   await expectMapScreenshot(page, "view-mode-buildings");
 });
 
+// A road is stored by the two squares it runs between, one of which lies beyond the rim of the map
+// for a road along the rim. Nothing is drawn beyond the rim, so a road told from the square beyond
+// it is drawn on the square inside it.
+test("draws the cycle roads of a sektor shown in view mode", async ({ page }) => {
+  await storeSektor(page, "Beta", OTHER_PLAYER, [], [
+    [{ x: 4, y: 4 }, { x: 5, y: 4 }],
+    [{ x: -1, y: 4 }, { x: 0, y: 4 }],
+  ]);
+
+  await page.goto("/sektor.html?id=Beta");
+
+  await expectMapScreenshot(page, "view-mode-cycle-roads");
+});
+
 test("shows a building of a sektor in view mode without the controls which would change it", async ({ page }) => {
   // Polytechnic has several functions, so its panel is the one which would carry the toggles.
   await storeSektor(page, "Beta", OTHER_PLAYER, [{ type: "Polytechnic", location: { x: 5, y: 5 } }]);
@@ -324,16 +338,17 @@ test("shows a building of a sektor in view mode without the controls which would
   await expectScreenshot(page, "view-mode-building-panel", "#building-panel");
 });
 
-async function storeSektor(page: import("@playwright/test").Page, sektorId: string, owner: string | null, buildings: object[] = []) {
-  await page.evaluate(([sektorId, owner, buildings]) => {
+async function storeSektor(page: import("@playwright/test").Page, sektorId: string, owner: string | null, buildings: object[] = [], cycleRoads: object[] = []) {
+  await page.evaluate(([sektorId, owner, buildings, cycleRoads]) => {
     const emptyGrid = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0));
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
       level: 1,
       locationProperties: { soil: emptyGrid, groundwater: emptyGrid, ore: emptyGrid, insolation: emptyGrid, wind: emptyGrid },
       buildings,
+      cycleRoads,
     }));
     localStorage.setItem("sektors", JSON.stringify([{ id: sektorId, name: owner ? sektorId : null, owner }]));
-  }, [sektorId, owner, buildings] as [string, string | null, object[]]);
+  }, [sektorId, owner, buildings, cycleRoads] as [string, string | null, object[], object[]]);
 }
 
 // The name a player gave the sektor before the test begins, which it carries beside its id.

@@ -1,6 +1,6 @@
 
 import { BuildingDefinition, BuildingFunction, BuildingFunctionOutput, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
-import { BuildingLocation, BuildingCreation, Building, Location } from "../../../shared/sektorData";
+import { BuildingLocation, BuildingCreation, Building, CycleRoad, Location } from "../../../shared/sektorData";
 import { ELEVATION, isRiver, SEA } from "../../../shared/terrain";
 import {
   MOST_POLLUTION,
@@ -12,7 +12,7 @@ import {
 } from "./pollution";
 import { ECOSYSTEM_SUPPORT_RESOURCE } from "./forest";
 
-export type { BuildingLocation, BuildingCreation, Building, Location };
+export type { BuildingLocation, BuildingCreation, Building, CycleRoad, Location };
 
 // Names one function of one building. The plan calls this a BuildingFunction, but that name is
 // already taken by the function of a building definition, which carries no location.
@@ -79,11 +79,16 @@ export interface CreateBuildingResult {
   addedBuildings: Building[];
 }
 
+export interface CreateCycleRoadResult {
+  error: undefined | string;
+}
+
 // How much more polluted a location is for every square nearer a polluting building it lies.
 const POLLUTION_STEP = 20;
 
 export class Sektor {
   private buildings: Building[] = [];
+  private cycleRoads: CycleRoad[] = [];
   private readonly locations: Location[][];
   private readonly buildingDefinitions: BuildingDefinition[];
   private readonly localResources: string[];
@@ -107,15 +112,18 @@ export class Sektor {
     return this.locations;
   }
 
-  getState(): { buildings: Building[] } {
+  getState(): { buildings: Building[], cycleRoads: CycleRoad[] } {
     return {
       buildings: this.buildings.map(building => building.activeFunctions
         ? { ...building, activeFunctions: [...building.activeFunctions] }
         : { ...building }),
+      cycleRoads: this.cycleRoads.map(cycleRoad => [{ ...cycleRoad[0] }, { ...cycleRoad[1] }]),
     };
   }
 
-  loadState(state: { buildings: Building[] }) {
+  // A sektor saved before there were any cycle roads has none to load.
+  loadState(state: { buildings: Building[], cycleRoads?: CycleRoad[] }) {
+    this.cycleRoads = (state.cycleRoads ?? []).map(cycleRoad => [{ ...cycleRoad[0] }, { ...cycleRoad[1] }]);
     this.buildings = state.buildings.map(building => building.activeFunctions
       ? {
         type: building.type,
@@ -513,6 +521,16 @@ export class Sektor {
     return { error: undefined, addedBuildings: [createdBuilding] };
   }
 
+  // Every edge between two squares holds one cycle road at the most, whichever of the two squares
+  // it was built from.
+  createCycleRoad(cycleRoad: CycleRoad): CreateCycleRoadResult {
+    if (this.cycleRoads.some(existing => isSameCycleRoad(existing, cycleRoad))) {
+      return { error: "locationOccupied" };
+    }
+    this.cycleRoads.push([{ ...cycleRoad[0] }, { ...cycleRoad[1] }]);
+    return { error: undefined };
+  }
+
   destroyBuilding(location: BuildingLocation): DestroyBuildingResult {
     // Rock was there before the player and stays after them: the destruction tool has nothing to
     // say to it.
@@ -597,6 +615,16 @@ function includesFunction(buildingFunctionLocations: BuildingFunctionLocation[],
     && buildingFunctionLocation.buildingLocation.y === location.y
     && buildingFunctionLocation.functionIndex === functionIndex
   );
+}
+
+// A road runs between the same two squares whichever of them it is told from.
+function isSameCycleRoad(cycleRoad: CycleRoad, otherCycleRoad: CycleRoad): boolean {
+  return (isSameLocation(cycleRoad[0], otherCycleRoad[0]) && isSameLocation(cycleRoad[1], otherCycleRoad[1]))
+    || (isSameLocation(cycleRoad[0], otherCycleRoad[1]) && isSameLocation(cycleRoad[1], otherCycleRoad[0]));
+}
+
+function isSameLocation(location: BuildingLocation, otherLocation: BuildingLocation): boolean {
+  return location.x === otherLocation.x && location.y === otherLocation.y;
 }
 
 function includesLocation(locations: BuildingLocation[], location: BuildingLocation): boolean {

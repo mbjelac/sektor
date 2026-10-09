@@ -17,6 +17,11 @@ export interface Building extends BuildingCreation {
   activeFunctions?: boolean[];
 }
 
+// A cycle road runs along the edge between two squares rather than standing on a square, so it is
+// told by the two squares it runs between. A road along the rim of the map runs between a square of
+// the map and one beyond it, whose x or y is -1 or the size of the map.
+export type CycleRoad = [BuildingLocation, BuildingLocation];
+
 export interface Location {
   properties: { [key: string]: number };
 }
@@ -30,6 +35,8 @@ export interface SektorData {
   terrain?: number[][];
   locationProperties: { [key: string]: number[][] };
   buildings: Building[];
+  // A sektor made before there were any cycle roads carries none.
+  cycleRoads?: CycleRoad[];
   // How much the ecosystem was supported when the sektor was made, before anybody built anything
   // there: all the EcosystemSupport its forests gave. A sektor made before there were any forests
   // carries none, and had none to give.
