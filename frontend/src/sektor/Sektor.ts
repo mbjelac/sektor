@@ -531,6 +531,15 @@ export class Sektor {
     return { error: undefined };
   }
 
+  // A road is taken down whichever of its two squares it is told from, as it was built.
+  destroyCycleRoad(cycleRoad: CycleRoad): DestroyBuildingResult {
+    if (!this.cycleRoads.some(existing => isSameCycleRoad(existing, cycleRoad))) {
+      return { success: false, error: "locationEmpty" };
+    }
+    this.cycleRoads = this.cycleRoads.filter(existing => !isSameCycleRoad(existing, cycleRoad));
+    return { success: true };
+  }
+
   destroyBuilding(location: BuildingLocation): DestroyBuildingResult {
     // Rock was there before the player and stays after them: the destruction tool has nothing to
     // say to it.

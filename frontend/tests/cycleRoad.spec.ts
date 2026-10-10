@@ -27,6 +27,27 @@ test("shows error when placing a cycle road on a square rather than between two"
   await expect(page.locator("#notification")).toHaveText("roadsGoBetweenBuildings");
 });
 
+test("destroys a cycle road when its edge is clicked with the destruction tool", async ({ page }) => {
+  await selectCycleRoad(page);
+  await clickOnMap(page, MIDDLE_OF_EDGE);
+  await page.locator('.building-item[data-building-name="Destroy"]').click();
+  await page.waitForTimeout(100);
+
+  await clickOnMap(page, MIDDLE_OF_EDGE);
+
+  await expectMapScreenshot(page, "cycle-road-destroyed", MIDDLE_OF_MAP);
+});
+
+test("shows error when destroying on an edge holding no cycle road", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="Destroy"]').click();
+  await page.waitForTimeout(100);
+
+  await clickOnMap(page, MIDDLE_OF_EDGE);
+
+  await expect(page.locator("#notification")).toHaveText("locationEmpty");
+});
+
 async function selectCycleRoad(page: Page) {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-tag[data-building-tag="transport"]').click();

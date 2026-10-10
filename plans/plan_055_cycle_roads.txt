@@ -27,8 +27,8 @@ Type of resources transported by cycle roads is noted in resource list by having
                     - render using one of frontend/src/assets/terrain/temperate/cycle-roads according to that side
             - if the first location is not in the map, use the second location
 
-#2 Player can destroy cycle roads
-- when player selects Destroy
+#2 [done] Player can destroy cycle roads
+- [done] when player selects Destroy
     - clicking on an empty edge
         - display error "locationEmpty"
     - clicking on a road

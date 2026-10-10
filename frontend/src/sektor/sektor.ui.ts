@@ -1250,8 +1250,15 @@ const sektorUi = (p: p5) => {
       return;
     }
 
+    // A click on an edge is aimed at the road along it rather than at the building on the square.
     if (selected === DESTRUCTION_TOOL) {
-      destroyBuilding({ x: grid.x, y: grid.y });
+      const gridPoint = findClickedGridPoint(p, zoom);
+      const clickedCycleRoad = cycleRoadAt(gridPoint.gridX, gridPoint.gridY);
+      if (clickedCycleRoad) {
+        destroyCycleRoad(clickedCycleRoad);
+      } else {
+        destroyBuilding({ x: grid.x, y: grid.y });
+      }
       return;
     }
 
@@ -1433,6 +1440,19 @@ function buildCycleRoad(gridPoint: { gridX: number; gridY: number }, keepToolInH
   placeCycleRoad(cycleRoad);
   saveState();
   if (!keepToolInHand) deselectBuilding();
+}
+
+// The road may have been built from the other of its two squares than the click tells it from, and
+// so be drawn on that one, so the roads drawn are laid out afresh from the ones left standing.
+function destroyCycleRoad(cycleRoad: CycleRoad) {
+  const result = sektor.destroyCycleRoad(cycleRoad);
+  if (!result.success) {
+    showError(result.error ?? "Cannot destroy");
+    return;
+  }
+  placedCycleRoads.length = 0;
+  for (const standingCycleRoad of sektor.getState().cycleRoads) placeCycleRoad(standingCycleRoad);
+  saveState();
 }
 
 function placeCycleRoad(cycleRoad: CycleRoad) {

@@ -924,7 +924,9 @@ test("shows error when destroying an elevation", async ({ page }) => {
   await page.waitForTimeout(100);
   const canvas = page.locator("#canvas-container > canvas");
   const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2 + 423, y: box!.height / 2 - 30 } });
+  // The middle of the square of rock, well clear of its edges, where the destruction tool would be
+  // aimed at a cycle road instead.
+  await canvas.click({ position: { x: box!.width / 2 + 471, y: box!.height / 2 - 35 } });
   await page.waitForTimeout(200);
   await expect(page.locator("#notification")).toHaveText("canNotDestroyElevations");
 });
