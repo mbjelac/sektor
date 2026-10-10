@@ -50,6 +50,7 @@ describe("getSektorState", () => {
       habitatShortages: [],
       starvedFunctions: [],
       disabledBuildings: [],
+      croppedExports: [],
     });
   });
 
@@ -73,6 +74,7 @@ describe("getSektorState", () => {
       habitatShortages: [],
       starvedFunctions: [],
       disabledBuildings: [],
+      croppedExports: [],
     });
   });
 
@@ -104,6 +106,7 @@ describe("getSektorState", () => {
       habitatShortages: [],
       starvedFunctions: [],
       disabledBuildings: [],
+      croppedExports: [],
     });
   });
 });
@@ -319,6 +322,7 @@ describe("outputs named after a location property", () => {
       habitatShortages: [],
       starvedFunctions: [],
       disabledBuildings: [],
+      croppedExports: [],
     });
   });
 });

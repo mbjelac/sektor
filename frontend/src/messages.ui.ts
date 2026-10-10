@@ -26,7 +26,8 @@ const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
 const POLLUTION_MESSAGE_ID = "pollution-message";
 const DISABLED_BUILDINGS_MESSAGE_ID = "disabled-buildings-message";
-const IMPORT_EXPORT_CAPACITY_MESSAGE_ID = "import-export-capacity-message";
+const IMPORT_CAPACITY_MESSAGE_ID = "import-capacity-message";
+const EXPORT_CAPACITY_MESSAGE_ID = "export-capacity-message";
 const COLLAPSE_BUTTON_ID = "messages-collapse-button";
 const EXPAND_BUTTON_ID = "messages-expand-button";
 
@@ -38,14 +39,16 @@ export function updateMessages(
   planetImportsAndExports: ImportsAndExports,
   habitatShortages: string[],
   anyBuildingAffectedByPollution: boolean,
-  anyBuildingDisabled: boolean,
+  disabledBuildingCount: number,
+  croppedExportCount: number,
 ) {
   showMostImportedMessage(planetImportsAndExports);
   showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
   showHabitatShortageMessages(habitatShortages);
   showPollutionMessage(anyBuildingAffectedByPollution);
-  showDisabledBuildingsMessage(anyBuildingDisabled);
-  showImportExportCapacityMessage(anyBuildingDisabled);
+  showDisabledBuildingsMessage(disabledBuildingCount);
+  showImportCapacityMessage(disabledBuildingCount);
+  showExportCapacityMessage(croppedExportCount);
   showToggleButtons();
 }
 
@@ -82,10 +85,10 @@ function showPollutionMessage(anyBuildingAffectedByPollution: boolean) {
   showMessage(POLLUTION_MESSAGE_ID, "warning", "Citizens are complaining about pollution!", []);
 }
 
-// A player whose sektor ships more in and out than its hubs can carry is warned once, whichever
-// buildings it has cost them, until none is disabled.
-function showDisabledBuildingsMessage(anyBuildingDisabled: boolean) {
-  if (!anyBuildingDisabled) {
+// A player whose sektor ships in more than its hubs can carry is warned once, whichever buildings
+// it has cost them, until none is disabled.
+function showDisabledBuildingsMessage(disabledBuildingCount: number) {
+  if (disabledBuildingCount === 0) {
     hideMessage(DISABLED_BUILDINGS_MESSAGE_ID);
     return;
   }
@@ -93,18 +96,34 @@ function showDisabledBuildingsMessage(anyBuildingDisabled: boolean) {
   showMessage(DISABLED_BUILDINGS_MESSAGE_ID, "warning", "Some buildings cannot function: Missing required inputs!", []);
 }
 
-// Buildings are only ever disabled because the hubs cannot carry what the sektor ships, so the
-// player is also told what to do about it.
-function showImportExportCapacityMessage(anyBuildingDisabled: boolean) {
-  if (!anyBuildingDisabled) {
-    hideMessage(IMPORT_EXPORT_CAPACITY_MESSAGE_ID);
+// Buildings are only ever disabled because the hubs cannot carry in what the sektor imports, so the
+// player is also told how many it has cost them and what to do about it.
+function showImportCapacityMessage(disabledBuildingCount: number) {
+  if (disabledBuildingCount === 0) {
+    hideMessage(IMPORT_CAPACITY_MESSAGE_ID);
     return;
   }
 
   showMessage(
-    IMPORT_EXPORT_CAPACITY_MESSAGE_ID,
+    IMPORT_CAPACITY_MESSAGE_ID,
     "warning",
-    "Import & export capacity exceeded! Optimize sektor or build more transport hubs.",
+    `Import capacity exceeded: ${disabledBuildingCount} buildings disabled. Optimize sektor or build more transport hubs.`,
+    [],
+  );
+}
+
+// What the hubs cannot carry out is wasted rather than costing the sektor any building, so the
+// player is told how many exports go to waste and what to do about it.
+function showExportCapacityMessage(croppedExportCount: number) {
+  if (croppedExportCount === 0) {
+    hideMessage(EXPORT_CAPACITY_MESSAGE_ID);
+    return;
+  }
+
+  showMessage(
+    EXPORT_CAPACITY_MESSAGE_ID,
+    "warning",
+    `Export capacity exceeded: ${croppedExportCount} exports wasted. Optimize sektor or build more transport hubs.`,
     [],
   );
 }

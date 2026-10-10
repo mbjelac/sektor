@@ -354,7 +354,8 @@ function updateSektorState() {
     planetImportsAndExports,
     sektorState.habitatShortages,
     buildingsWithOutputDecreasedByPollution.length > 0,
-    sektorState.disabledBuildings.length > 0,
+    sektorState.disabledBuildings.length,
+    sektorState.croppedExports.length,
   );
   warnedBuildingLocations = [
     ...sektorState.starvedFunctions.map(starvedFunction => starvedFunction.buildingLocation),
@@ -1393,7 +1394,8 @@ updateMessages(
   getPlanetImportsAndExportsWhileBuilding(sektorId, openedSektorState),
   openedSektorState.habitatShortages,
   sektor.findBuildingsWithOutputDecreasedByPollution().length > 0,
-  openedSektorState.disabledBuildings.length > 0,
+  openedSektorState.disabledBuildings.length,
+  openedSektorState.croppedExports.length,
 );
 if (isTestMode) {
   (window as any).updateSektorStatePanel = updateSektorStatePanel;

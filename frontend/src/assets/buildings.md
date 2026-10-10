@@ -3289,7 +3289,7 @@ WorkAdministrative 2
 WorkTechnical 1
 WorkMaintenance 3
 ->
-ImportExport 100
+ImportExport 20
 
 ## Properties
 

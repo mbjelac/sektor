@@ -100,6 +100,7 @@ describe("destroyBuilding", () => {
       habitatShortages: [],
       starvedFunctions: [],
       disabledBuildings: [],
+      croppedExports: [],
     });
   });
 });

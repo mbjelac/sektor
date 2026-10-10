@@ -3,27 +3,59 @@ Shipping stuff in & out requires a special building - an inter-city transport hu
 
 If the building does not exist:
 - when imports & exports are calculated
-- mark buildings and recalculate imports & exports without marked buildings until import amount is 0
+- mark buildings and recalculate imports without marked buildings until import amount is 0
+- exports are cropped to 0 (nothing can be shipped out)
 - marked buildings should be indicated to the player on the map, and the reason should be visible in the building panel
 
 Capacity:
-There can be multiple import/export hubs. Each hub increases the imports/exports capacity of the sektor.
-When buildings marked on each building placement or destruction, if total number of imports & exports is less or equal to total import/export capacity, no buildings are marked.
-Mark buildings and recalculate until this is the case.
-Start marking buildings farthest from the closest import/export hub.
+There can be multiple import/export hubs. Each hub increases the import capacity and the export capacity of the sektor.
+Import capacity and export capacity are the same - the total sum of ImportExport outputs.
+Imports and exports are limited separately:
+- imports: when buildings marked on each building placement or destruction, if total amount of imports is less or equal to import capacity, no buildings are marked.
+  Mark buildings and recalculate until this is the case. Exports have no say in marking buildings.
+  Start marking buildings farthest from the closest import/export hub.
+- exports: no buildings are marked. If total amount of exports is bigger than export capacity, exports are cropped to export capacity - excess exports are just wasted.
 
 #1 [done] Sektor imports & exports are limited by hub capacity
 - [done] when imports & exports are calculated
     - sum up the total ImportExport resources = "capacity"
-    - sum up the total amount of imports and exports = "amount"
+        - import capacity and export capacity are both equal to it
+    - sum up the total amount of imports = "import amount"
         - ImportExport is local so it doesn't show up in exports
-    - amount must be less or equal to capacity
+    - import amount must be less or equal to import capacity
     - hubs are buildings which have ImportExport as output
-    - if amount is greater than capacity
+    - if import amount is greater than import capacity
         - order buildings by biggest distance from nearest hub
         - mark building as disabled
         - recalculate imports & exports without including marked buildings
-    - repeat until amount not greater than capacity
+    - repeat until import amount not greater than import capacity
+    - exports are not considered when disabling buildings
+- [done] exports are cropped to export capacity
+    - exports are cropped after buildings are disabled, from the exports of the remaining buildings
+    - sum up the total amount of exports = "export amount"
+    - if export amount is not greater than export capacity, exports are left as they are
+    - if export amount is greater than export capacity
+        - excess = export amount - export capacity
+        - crop exports: take an equal amount ("crop amount") from every export, so that the cropped exports add up to export capacity
+        - an export cannot go below 0
+            - an export smaller than the crop amount is cropped to 0
+            - what it could not give up is taken equally from the remaining exports, which raises the crop amount
+        - finding the crop amount:
+            - go through exports with amount above 0, from smallest to biggest
+            - if all remaining exports can give up the rest of the excess before the current (smallest) one reaches 0
+                - divide the rest of the excess equally among them - done
+            - otherwise
+                - all remaining exports give up as much as the current one has left
+                - subtract that from the excess and continue with the next export
+        - cropped export amounts are rounded down to one decimal, so their sum never goes above export capacity
+        - no buildings are disabled, excess exports are wasted
+        - example: export capacity 4, exports Stone 6 and Water 1 (export amount 7, excess 3)
+            - Water gives up its 1, Stone gives up 1 - excess left 1
+            - only Stone remains, it gives up the last 1
+            - result: Stone 4, Water 0
+    - "cropped exports" are the exports whose amount was reduced by cropping
+        - their number is the X in the export warning message
+    - the sektor state lists the cropped exports by resource name
 - [done] buildings with no inputs are filtered out of the disabling algorithm - they do not need imports
 - [done] disabled buildings do not consume inputs nor produce outputs
 - [done] disabled buildings are marked on map by floating warning
@@ -35,5 +67,9 @@ Start marking buildings farthest from the closest import/export hub.
     - all input & output amounts displayed as "0 / amount"
 - [done] player is notified with a warning message
     - text: "Some buildings cannot function: Missing required inputs!"
-- [done] player is notified with a warning message
-    - text: "Import & export capacity exceeded! Optimize sektor or build more transport hubs."
+- [done] player is notified with a warning message when buildings are disabled
+    - text: "Import capacity exceeded: X buildings disabled. Optimize sektor or build more transport hubs."
+        - X is the number of disabled buildings
+- [done] player is notified with a warning message when exports are cropped
+    - text: "Export capacity exceeded: X exports wasted. Optimize sektor or build more transport hubs."
+        - X is the number of cropped exports

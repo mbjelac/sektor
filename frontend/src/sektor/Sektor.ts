@@ -38,17 +38,18 @@ export interface SektorState {
   // they could be.
   habitatShortages: string[];
   starvedFunctions: BuildingFunctionLocation[];
-  // Buildings standing idle because the sektor cannot ship in and out all it would take to run
-  // them.
+  // Buildings standing idle because the sektor cannot ship in all it would take to run them.
   disabledBuildings: BuildingLocation[];
+  // The exports cut short because the sektor cannot ship out all it makes.
+  croppedExports: string[];
 }
 
 // The resource a sektor's people give off while they are content, which no other resource is
 // treated like.
 export const HAPINESS_RESOURCE = "Hapiness";
 
-// The resource an inter-city transport hub makes: every unit of it is a unit of imports or exports
-// the sektor can ship in or out.
+// The resource an inter-city transport hub makes: every unit of it is a unit of imports the sektor
+// can ship in, and a unit of exports it can ship out.
 export const IMPORT_EXPORT_RESOURCE = "ImportExport";
 
 interface StarvationCandidate {
@@ -178,7 +179,8 @@ export class Sektor {
     const disabledFunctions = this.findFunctionsOfBuildings(disabledBuildings);
     const starvedFunctions = this.findStarvedFunctions(disabledFunctions);
     const { totalInputs, totalOutputs } = this.aggregateSektorThroughputs([...disabledFunctions, ...starvedFunctions]);
-    const { imports, exports } = this.findImportsAndExports(totalInputs, totalOutputs);
+    const { imports, exports: uncroppedExports } = this.findImportsAndExports(totalInputs, totalOutputs);
+    const exports = cropExports(uncroppedExports, this.findThroughputValue(totalOutputs, IMPORT_EXPORT_RESOURCE));
 
     return {
       imports,
@@ -192,32 +194,31 @@ export class Sektor {
       habitatShortages: this.findHabitatShortages(starvedFunctions),
       starvedFunctions,
       disabledBuildings,
+      croppedExports: findCroppedExports(uncroppedExports, exports),
     };
   }
 
-  // Nothing is shipped in or out of a sektor but through its inter-city transport hubs, so a sektor
-  // importing and exporting more than its hubs can carry has to go without some of its buildings.
-  // Buildings are disabled one at a time, the one farthest from a hub first, and the sektor is
-  // recalculated after each, until what is left of its imports and exports fits through its hubs.
+  // Nothing is shipped into a sektor but through its inter-city transport hubs, so a sektor
+  // importing more than its hubs can carry has to go without some of its buildings. Buildings are
+  // disabled one at a time, the one farthest from a hub first, and the sektor is recalculated after
+  // each, until what is left of its imports fits through its hubs. Exports have no say in it: what
+  // the hubs cannot carry out is cropped instead.
   private findDisabledBuildings(): BuildingLocation[] {
     const disabledBuildings: BuildingLocation[] = [];
     for (;;) {
       const disabledFunctions = this.findFunctionsOfBuildings(disabledBuildings);
       const stoppedFunctions = [...disabledFunctions, ...this.findStarvedFunctions(disabledFunctions)];
-      if (!this.isImportExportCapacityExceeded(stoppedFunctions)) return disabledBuildings;
+      if (!this.isImportCapacityExceeded(stoppedFunctions)) return disabledBuildings;
       const buildingToDisable = this.findBuildingFarthestFromHub(stoppedFunctions);
       if (!buildingToDisable) return disabledBuildings;
       disabledBuildings.push(buildingToDisable);
     }
   }
 
-  private isImportExportCapacityExceeded(stoppedFunctions: BuildingFunctionLocation[]): boolean {
+  private isImportCapacityExceeded(stoppedFunctions: BuildingFunctionLocation[]): boolean {
     const { totalInputs, totalOutputs } = this.aggregateSektorThroughputs(stoppedFunctions);
-    const { imports, exports } = this.findImportsAndExports(totalInputs, totalOutputs);
-    const importExportAmount = roundToOneDecimal(
-      [...imports, ...exports].reduce((total, throughput) => total + throughput.value, 0)
-    );
-    return importExportAmount > this.findThroughputValue(totalOutputs, IMPORT_EXPORT_RESOURCE);
+    const { imports } = this.findImportsAndExports(totalInputs, totalOutputs);
+    return sumThroughputValues(imports) > this.findThroughputValue(totalOutputs, IMPORT_EXPORT_RESOURCE);
   }
 
   // Buildings equally far from a hub are disabled in the order they were built, and in a sektor
@@ -599,6 +600,48 @@ function includesFunction(buildingFunctionLocations: BuildingFunctionLocation[],
   );
 }
 
+// What a sektor makes beyond what its hubs can carry out is wasted. Every export gives up the same
+// amount, but none can give up more than it has, so what an export runs out of is taken equally
+// from the exports still left.
+function cropExports(exports: ResourceThroughput[], exportCapacity: number): ResourceThroughput[] {
+  const excessAmount = roundToOneDecimal(sumThroughputValues(exports) - exportCapacity);
+  if (excessAmount <= 0) return exports;
+  const cropAmount = findCropAmount(exports.map(exportThroughput => exportThroughput.value), excessAmount);
+  return exports.map(exportThroughput => ({
+    name: exportThroughput.name,
+    value: floorToOneDecimal(Math.max(0, exportThroughput.value - cropAmount)),
+  }));
+}
+
+// The exports are gone through from the smallest up: while the excess left is more than the
+// exports still left can give up before the smallest of them runs out, they all give up that much
+// and the smallest is done with.
+function findCropAmount(exportValues: number[], excessAmount: number): number {
+  const ascendingExportValues = exportValues.filter(value => value > 0).sort((first, second) => first - second);
+  let cropAmount = 0;
+  let remainingExcessAmount = excessAmount;
+  for (const [exportIndex, exportValue] of ascendingExportValues.entries()) {
+    const remainingExportCount = ascendingExportValues.length - exportIndex;
+    const amountUntilExportRunsOut = exportValue - cropAmount;
+    if (amountUntilExportRunsOut * remainingExportCount >= remainingExcessAmount) {
+      return cropAmount + remainingExcessAmount / remainingExportCount;
+    }
+    remainingExcessAmount -= amountUntilExportRunsOut * remainingExportCount;
+    cropAmount = exportValue;
+  }
+  return cropAmount;
+}
+
+function findCroppedExports(uncroppedExports: ResourceThroughput[], croppedExports: ResourceThroughput[]): string[] {
+  return uncroppedExports
+    .filter((uncroppedExport, exportIndex) => croppedExports[exportIndex].value < uncroppedExport.value)
+    .map(uncroppedExport => uncroppedExport.name);
+}
+
+function sumThroughputValues(throughputs: ResourceThroughput[]): number {
+  return roundToOneDecimal(throughputs.reduce((total, throughput) => total + throughput.value, 0));
+}
+
 function includesLocation(locations: BuildingLocation[], location: BuildingLocation): boolean {
   return locations.some(otherLocation => otherLocation.x === location.x && otherLocation.y === location.y);
 }
@@ -614,4 +657,10 @@ function isHabitat(buildingDefinition: BuildingDefinition): boolean {
 // noise out of the amounts and scores added up from them.
 function roundToOneDecimal(value: number): number {
   return Math.round(value * 10) / 10;
+}
+
+// Cropped exports are rounded down, so that rounding never lets them add up to more than the hubs
+// can carry. The small addition keeps floating point noise from rounding a whole tenth away.
+function floorToOneDecimal(value: number): number {
+  return Math.floor(value * 10 + 1e-9) / 10;
 }
