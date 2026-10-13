@@ -1,0 +1,13 @@
+Some buildings have functions which inputs & outputs represent a unit of functionality.
+This unit can be multiplied. This means the function inputs & outputs are multiplied by an integer.
+There is a "pool" value which specifies how much a function can be multiplied.
+The multiplier can be from 0 to that max pool value.
+However, multiple functions in a building can be like that.
+Unit multiplication for all functions uses the same pool. The total sum of all multipliers cannpt be greater then the pool value.
+
+#1 A building function can be specified to be multipliable
+- if a building function has property multiply=true in it's description before input & output amounts
+    - player can increase a multiplier for this function
+    - multiplier is an integer between 0 and maxMultiplication which is a property of the whole building in Properties section
+- in building panel below function inputs & outputs there is a function multiplication widget
+    -
