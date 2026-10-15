@@ -30,7 +30,7 @@ Imports and exports are limited separately:
         - recalculate imports & exports without including marked buildings
     - repeat until import amount not greater than import capacity
     - exports are not considered when disabling buildings
-- exports are cropped to export capacity
+- [done] exports are cropped to export capacity
     - exports are cropped after buildings are disabled, from the exports of the remaining buildings
     - sum up the total amount of exports = "export amount"
     - if export amount is not greater than export capacity, exports are left as they are

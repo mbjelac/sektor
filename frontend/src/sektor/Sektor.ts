@@ -600,36 +600,20 @@ function includesFunction(buildingFunctionLocations: BuildingFunctionLocation[],
   );
 }
 
-// What a sektor makes beyond what its hubs can carry out is wasted. Every export gives up the same
-// amount, but none can give up more than it has, so what an export runs out of is taken equally
-// from the exports still left.
+// What a sektor makes beyond what its hubs can carry out is wasted. The exports give up 1 each in
+// turn, an export that has run out giving up no more, until what is left fits through the hubs.
 function cropExports(exports: ResourceThroughput[], exportCapacity: number): ResourceThroughput[] {
-  const excessAmount = roundToOneDecimal(sumThroughputValues(exports) - exportCapacity);
-  if (excessAmount <= 0) return exports;
-  const cropAmount = findCropAmount(exports.map(exportThroughput => exportThroughput.value), excessAmount);
-  return exports.map(exportThroughput => ({
-    name: exportThroughput.name,
-    value: floorToOneDecimal(Math.max(0, exportThroughput.value - cropAmount)),
-  }));
-}
-
-// The exports are gone through from the smallest up: while the excess left is more than the
-// exports still left can give up before the smallest of them runs out, they all give up that much
-// and the smallest is done with.
-function findCropAmount(exportValues: number[], excessAmount: number): number {
-  const ascendingExportValues = exportValues.filter(value => value > 0).sort((first, second) => first - second);
-  let cropAmount = 0;
-  let remainingExcessAmount = excessAmount;
-  for (const [exportIndex, exportValue] of ascendingExportValues.entries()) {
-    const remainingExportCount = ascendingExportValues.length - exportIndex;
-    const amountUntilExportRunsOut = exportValue - cropAmount;
-    if (amountUntilExportRunsOut * remainingExportCount >= remainingExcessAmount) {
-      return cropAmount + remainingExcessAmount / remainingExportCount;
+  const croppedExports = exports.map(exportThroughput => ({ ...exportThroughput }));
+  let excessAmount = sumThroughputValues(exports) - exportCapacity;
+  while (excessAmount > 0) {
+    for (const croppedExport of croppedExports) {
+      if (excessAmount === 0) break;
+      if (croppedExport.value === 0) continue;
+      croppedExport.value -= 1;
+      excessAmount -= 1;
     }
-    remainingExcessAmount -= amountUntilExportRunsOut * remainingExportCount;
-    cropAmount = exportValue;
   }
-  return cropAmount;
+  return croppedExports;
 }
 
 function findCroppedExports(uncroppedExports: ResourceThroughput[], croppedExports: ResourceThroughput[]): string[] {
@@ -657,10 +641,4 @@ function isHabitat(buildingDefinition: BuildingDefinition): boolean {
 // noise out of the amounts and scores added up from them.
 function roundToOneDecimal(value: number): number {
   return Math.round(value * 10) / 10;
-}
-
-// Cropped exports are rounded down, so that rounding never lets them add up to more than the hubs
-// can carry. The small addition keeps floating point noise from rounding a whole tenth away.
-function floorToOneDecimal(value: number): number {
-  return Math.floor(value * 10 + 1e-9) / 10;
 }

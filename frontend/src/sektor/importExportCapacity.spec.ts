@@ -87,6 +87,7 @@ const middleMillLocation: BuildingLocation = { x: 2, y: 2 };
 const wellLocation: BuildingLocation = { x: 3, y: 3 };
 const quarryLocation: BuildingLocation = { x: 3, y: 0 };
 const mineLocation: BuildingLocation = { x: 0, y: 3 };
+const otherWellLocation: BuildingLocation = { x: 2, y: 4 };
 
 describe("a sektor without a hub", () => {
   it("disables every importing building, in the order they were built", () => {
@@ -196,7 +197,7 @@ describe("a sektor with hubs", () => {
     });
   });
 
-  it("takes an equal amount from every export, until exports fit through its hubs", () => {
+  it("takes 1 from every export in turn, until exports fit through its hubs", () => {
     const sektor = sektorWithBuildings([
       { type: "Hub", location: hubLocation },
       { type: "Quarry", location: quarryLocation },
@@ -211,7 +212,7 @@ describe("a sektor with hubs", () => {
     });
   });
 
-  it("takes what an export runs out of equally from the exports left", () => {
+  it("skips an export that has run out, taking the rest from the exports left", () => {
     const sektor = sektorWithBuildings([
       { type: "Hub", location: hubLocation },
       { type: "Quarry", location: quarryLocation },
@@ -223,6 +224,24 @@ describe("a sektor with hubs", () => {
       exports: [{ name: "Stone", value: 4 }, { name: "Water", value: 0 }],
       disabledBuildings: [],
       croppedExports: ["Stone", "Water"],
+    });
+  });
+
+  it("stops taking in the middle of a turn, once exports fit through its hubs", () => {
+    const sektor = sektorWithBuildings([
+      { type: "Hub", location: hubLocation },
+      { type: "Hub", location: otherHubLocation },
+      { type: "Well", location: wellLocation },
+      { type: "Well", location: otherWellLocation },
+      { type: "Quarry", location: quarryLocation },
+      { type: "Mine", location: mineLocation },
+    ]);
+
+    expect(importsExportsAndDisabledBuildings(sektor)).toEqual({
+      imports: [],
+      exports: [{ name: "Water", value: 0 }, { name: "Stone", value: 5 }, { name: "Ore", value: 3 }],
+      disabledBuildings: [],
+      croppedExports: ["Water", "Stone", "Ore"],
     });
   });
 });
