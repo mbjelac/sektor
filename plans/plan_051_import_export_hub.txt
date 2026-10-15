@@ -30,31 +30,18 @@ Imports and exports are limited separately:
         - recalculate imports & exports without including marked buildings
     - repeat until import amount not greater than import capacity
     - exports are not considered when disabling buildings
-- [done] exports are cropped to export capacity
+- exports are cropped to export capacity
     - exports are cropped after buildings are disabled, from the exports of the remaining buildings
     - sum up the total amount of exports = "export amount"
     - if export amount is not greater than export capacity, exports are left as they are
     - if export amount is greater than export capacity
-        - excess = export amount - export capacity
-        - crop exports: take an equal amount ("crop amount") from every export, so that the cropped exports add up to export capacity
-        - an export cannot go below 0
-            - an export smaller than the crop amount is cropped to 0
-            - what it could not give up is taken equally from the remaining exports, which raises the crop amount
-        - finding the crop amount:
-            - go through exports with amount above 0, from smallest to biggest
-            - if all remaining exports can give up the rest of the excess before the current (smallest) one reaches 0
-                - divide the rest of the excess equally among them - done
-            - otherwise
-                - all remaining exports give up as much as the current one has left
-                - subtract that from the excess and continue with the next export
-        - cropped export amounts are rounded down to one decimal, so their sum never goes above export capacity
-        - no buildings are disabled, excess exports are wasted
+        - crop exports: for each export, decrease by 1 until export capacity is not exceeded
+            - repeat until export capacity is not exceeded
+            - skip exports that have reached zero in this way
         - example: export capacity 4, exports Stone 6 and Water 1 (export amount 7, excess 3)
-            - Water gives up its 1, Stone gives up 1 - excess left 1
-            - only Stone remains, it gives up the last 1
             - result: Stone 4, Water 0
     - "cropped exports" are the exports whose amount was reduced by cropping
-        - their number is the X in the export warning message
+        - their total number is the X in the export warning message
     - the sektor state lists the cropped exports by resource name
 - [done] buildings with no inputs are filtered out of the disabling algorithm - they do not need imports
 - [done] disabled buildings do not consume inputs nor produce outputs
@@ -73,3 +60,15 @@ Imports and exports are limited separately:
 - [done] player is notified with a warning message when exports are cropped
     - text: "Export capacity exceeded: X exports wasted. Optimize sektor or build more transport hubs."
         - X is the number of cropped exports
+
+#2 Player sees current & maximum imports & exports more clearly
+- move sektor import & export totals from top stats bar into import export panel
+    - total imports below the imports column
+    - total exports below the exports column
+    - text white, bold, same size as import & export numbers
+    - also display import & export capacities:
+        - current import / importCapacity
+        - current export / exportCapacity
+    - display non-cropped values of current import & export
+    - if import capacity is exceeded, display current import with red background
+    - if export capacity is exceeded, display current export with red background
