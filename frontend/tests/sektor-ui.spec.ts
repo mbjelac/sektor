@@ -170,8 +170,6 @@ test("names every stat beside the sektor name by the same tooltip the list names
   expect(stats).toEqual([
     { tooltip: "Difficulty", value: "1" },
     { tooltip: "Buildings", value: "2" },
-    { tooltip: "Imports", value: "4" },
-    { tooltip: "Exports", value: "6" },
     { tooltip: "Hapiness", value: "0 / 0 (0 %)" },
     { tooltip: "Damage to ecosystem", value: "0 / 0 (0 %)" },
   ]);
@@ -763,6 +761,17 @@ test("displays what the sektor imports and exports", async ({ page }) => {
           { name: "Work", value: 3 },
         ],
         starvedFunctions: [],
+        croppedExports: ["Food", "Ore", "Work"],
+        uncroppedImports: [
+          { name: "Water", value: 4 },
+          { name: "Energy", value: 9 },
+        ],
+        uncroppedExports: [
+          { name: "Food", value: 6 },
+          { name: "Ore", value: 4 },
+          { name: "Work", value: 4 },
+        ],
+        importExportCapacity: 11,
       },
       {
         imports: [{ name: "Energy", value: 20 }, { name: "Food", value: 8 }, { name: "Work", value: 6 }],
@@ -772,6 +781,43 @@ test("displays what the sektor imports and exports", async ({ page }) => {
   });
 
   await expectScreenshot(page, "sektor-state-panel", "#sektor-state-panel");
+});
+
+// An import cut down by disabled buildings, and an export cut short, are told by what is moved and
+// what would have been, as are the totals against what the hubs can carry; whichever of them the
+// hubs fall short of stands out. An import raised by disabling the building which made it is not
+// cut down, and is told like any other.
+test("marks the imports and exports which exceed the capacity of the hubs", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.evaluate(() => {
+    (window as any).updateSektorStatePanel(
+      {
+        imports: [{ name: "Water", value: 4 }, { name: "Energy", value: 2 }],
+        exports: [{ name: "Food", value: 3 }],
+        starvedFunctions: [],
+        croppedExports: [],
+        uncroppedImports: [{ name: "Water", value: 6 }, { name: "Energy", value: 0 }],
+        uncroppedExports: [{ name: "Food", value: 3 }],
+        importExportCapacity: 4,
+      },
+      { imports: [], exports: [] },
+    );
+  });
+
+  expect(await page.locator("#sektor-state-panel .ss-row:not(.ss-header) .ss-cell-value").evaluateAll(cells => cells.map(cell => ({
+    text: cell.textContent,
+    exceeded: cell.classList.contains("ss-capacity-exceeded"),
+  })))).toEqual([
+    { text: "2", exceeded: false },
+    { text: "", exceeded: false },
+    { text: "", exceeded: false },
+    { text: "3", exceeded: false },
+    { text: "4 (6)", exceeded: true },
+    { text: "", exceeded: false },
+    { text: "6 / 4", exceeded: true },
+    { text: "3 / 4", exceeded: false },
+  ]);
 });
 
 test("highlights buildings importing hovered resource", async ({ page }) => {
@@ -1372,8 +1418,6 @@ test("says how happy the sektor's people are", async ({ page }) => {
   })))).toEqual([
     { tooltip: "Difficulty", value: "1" },
     { tooltip: "Buildings", value: "3" },
-    { tooltip: "Imports", value: "1" },
-    { tooltip: "Exports", value: "0" },
     { tooltip: "Hapiness", value: "5 / 5 (100 %)" },
     { tooltip: "Damage to ecosystem", value: "0 / 0 (0 %)" },
   ]);

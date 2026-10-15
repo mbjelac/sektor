@@ -62,11 +62,14 @@ function createResourceList(sektorState: SektorState, planetImportsAndExports: I
 
   list.appendChild(createHeaderRow());
 
-  for (const resourceName of listedResourceNames(sektorState)) {
+  for (const resourceName of listedResourceNames({
+    imports: [...sektorState.imports, ...sektorState.uncroppedImports],
+    exports: [...sektorState.exports, ...sektorState.uncroppedExports],
+  })) {
     list.appendChild(createResourceRow(resourceName, sektorState, planetImportsAndExports));
   }
 
-  list.appendChild(createTotalScoreRow(sektorState, planetImportsAndExports));
+  list.appendChild(createTotalRow(sektorState, planetImportsAndExports));
 
   return list;
 }
@@ -115,8 +118,14 @@ function createResourceRow(
   nameCell.textContent = resourceNameText(resourceName);
   row.appendChild(nameCell);
 
-  row.appendChild(createValueCell(findThroughputValue(sektorState.imports, resourceName)));
-  row.appendChild(createValueCell(findThroughputValue(sektorState.exports, resourceName)));
+  row.appendChild(createValueCell(
+    findThroughputValue(sektorState.imports, resourceName),
+    findThroughputValue(sektorState.uncroppedImports, resourceName),
+  ));
+  row.appendChild(createValueCell(
+    findThroughputValue(sektorState.exports, resourceName),
+    findThroughputValue(sektorState.uncroppedExports, resourceName),
+  ));
   row.appendChild(createScoreCell(
     currentResourceScore(resourceName, sektorState, planetImportsAndExports, getNegativeScoringResources()),
     "ss-cell-score",
@@ -125,19 +134,28 @@ function createResourceRow(
   return row;
 }
 
-function createTotalScoreRow(sektorState: SektorState, planetImportsAndExports: ImportsAndExports): HTMLElement {
+function createTotalRow(sektorState: SektorState, planetImportsAndExports: ImportsAndExports): HTMLElement {
   const row = document.createElement("div");
   row.className = "ss-row ss-total";
 
   row.appendChild(document.createElement("span"));
-  row.appendChild(document.createElement("span"));
-  row.appendChild(document.createElement("span"));
+  row.appendChild(createAmountCell(sumThroughputValues(sektorState.uncroppedImports), sektorState.importExportCapacity));
+  row.appendChild(createAmountCell(sumThroughputValues(sektorState.uncroppedExports), sektorState.importExportCapacity));
   row.appendChild(createScoreCell(
     currentScore(sektorState, planetImportsAndExports, getNegativeScoringResources()),
     "ss-cell-score ss-total-score",
   ));
 
   return row;
+}
+
+// All the sektor would import or export is told against what its hubs can carry, and stands out
+// when it is more than that, as then buildings are disabled or exports wasted.
+function createAmountCell(amount: number, capacity: number): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = amount > capacity ? "ss-cell-value ss-total-amount ss-capacity-exceeded" : "ss-cell-value ss-total-amount";
+  cell.textContent = `${formatNumber(amount)} / ${formatNumber(capacity)}`;
+  return cell;
 }
 
 function createScoreCell(score: number, className: string): HTMLElement {
@@ -148,9 +166,20 @@ function createScoreCell(score: number, className: string): HTMLElement {
   return cell;
 }
 
-function createValueCell(value: number): HTMLElement {
+// An import cut down by disabling the buildings taking it in, or an export cut short because the
+// hubs cannot carry it all out, is told by what is moved, followed by what would have been, and
+// stands out as the import or export total over capacity does. Disabling a building can also raise
+// an import, of what it made for the buildings left running, which is no cutting down at all.
+function createValueCell(value: number, uncroppedValue: number): HTMLElement {
+  const isCropped = uncroppedValue > value;
   const cell = document.createElement("span");
-  cell.className = "ss-cell-value";
-  cell.textContent = throughputText(value);
+  cell.className = isCropped ? "ss-cell-value ss-capacity-exceeded" : "ss-cell-value";
+  cell.textContent = isCropped
+    ? `${formatNumber(value)} (${formatNumber(uncroppedValue)})`
+    : throughputText(value);
   return cell;
+}
+
+function sumThroughputValues(throughputs: { value: number }[]): number {
+  return throughputs.reduce((total, throughput) => total + throughput.value, 0);
 }

@@ -42,6 +42,13 @@ export interface SektorState {
   disabledBuildings: BuildingLocation[];
   // The exports cut short because the sektor cannot ship out all it makes.
   croppedExports: string[];
+  // What the sektor would import were none of its buildings disabled, which is what its hubs fall
+  // short of when buildings are disabled.
+  uncroppedImports: ResourceThroughput[];
+  // What the sektor would export were none of its exports cropped.
+  uncroppedExports: ResourceThroughput[];
+  // How much the sektor's hubs can carry in, and as much again out.
+  importExportCapacity: number;
 }
 
 // The resource a sektor's people give off while they are content, which no other resource is
@@ -180,7 +187,8 @@ export class Sektor {
     const starvedFunctions = this.findStarvedFunctions(disabledFunctions);
     const { totalInputs, totalOutputs } = this.aggregateSektorThroughputs([...disabledFunctions, ...starvedFunctions]);
     const { imports, exports: uncroppedExports } = this.findImportsAndExports(totalInputs, totalOutputs);
-    const exports = cropExports(uncroppedExports, this.findThroughputValue(totalOutputs, IMPORT_EXPORT_RESOURCE));
+    const importExportCapacity = this.findThroughputValue(totalOutputs, IMPORT_EXPORT_RESOURCE);
+    const exports = cropExports(uncroppedExports, importExportCapacity);
 
     return {
       imports,
@@ -195,6 +203,9 @@ export class Sektor {
       starvedFunctions,
       disabledBuildings,
       croppedExports: findCroppedExports(uncroppedExports, exports),
+      uncroppedImports: this.findImports(this.findStarvedFunctions([])),
+      uncroppedExports,
+      importExportCapacity,
     };
   }
 
@@ -216,9 +227,13 @@ export class Sektor {
   }
 
   private isImportCapacityExceeded(stoppedFunctions: BuildingFunctionLocation[]): boolean {
+    const { totalOutputs } = this.aggregateSektorThroughputs(stoppedFunctions);
+    return sumThroughputValues(this.findImports(stoppedFunctions)) > this.findThroughputValue(totalOutputs, IMPORT_EXPORT_RESOURCE);
+  }
+
+  private findImports(stoppedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
     const { totalInputs, totalOutputs } = this.aggregateSektorThroughputs(stoppedFunctions);
-    const { imports } = this.findImportsAndExports(totalInputs, totalOutputs);
-    return sumThroughputValues(imports) > this.findThroughputValue(totalOutputs, IMPORT_EXPORT_RESOURCE);
+    return this.findImportsAndExports(totalInputs, totalOutputs).imports;
   }
 
   // Buildings equally far from a hub are disabled in the order they were built, and in a sektor

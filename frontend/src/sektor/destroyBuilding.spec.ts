@@ -101,6 +101,13 @@ describe("destroyBuilding", () => {
       starvedFunctions: [],
       disabledBuildings: [],
       croppedExports: [],
+      uncroppedImports: [
+        { name: "Water", value: 2 },
+      ],
+      uncroppedExports: [
+        { name: "Wheat", value: 5 },
+      ],
+      importExportCapacity: 100,
     });
   });
 });

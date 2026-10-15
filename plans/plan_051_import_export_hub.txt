@@ -61,8 +61,8 @@ Imports and exports are limited separately:
     - text: "Export capacity exceeded: X exports wasted. Optimize sektor or build more transport hubs."
         - X is the number of cropped exports
 
-#2 Player sees current & maximum imports & exports more clearly
-- move sektor import & export totals from top stats bar into import export panel
+#2 [done] Player sees current & maximum imports & exports more clearly
+- [done] move sektor import & export totals from top stats bar into import export panel
     - total imports below the imports column
     - total exports below the exports column
     - text white, bold, same size as import & export numbers
@@ -70,5 +70,14 @@ Imports and exports are limited separately:
         - current import / importCapacity
         - current export / exportCapacity
     - display non-cropped values of current import & export
+        - current import includes the imports of buildings disabled due to exceeded import capacity
+    - imports of every resource in the panel are shown in full, even if buildings are disabled
+        - the import of a resource whose import was reduced by disabling buildings (due to exceeded import capacity) is marked
+            - marked import is displayed with red background
+            - marked import is displayed as: "<current import after disabling> (<original import, which exceeds capacity>)"
+    - exports of every resource in the panel are shown in full, even if they are cropped
+        - a cropped export is marked
+            - marked export is displayed with red background
+            - marked export is displayed as: "<current cropped export> (<original export, which exceeds capacity>)"
     - if import capacity is exceeded, display current import with red background
     - if export capacity is exceeded, display current export with red background

@@ -246,6 +246,30 @@ describe("a sektor with hubs", () => {
   });
 });
 
+describe("a sektor's uncropped imports and exports", () => {
+  it("are what it would import and export were nothing disabled or cropped", () => {
+    const sektor = sektorWithBuildings([
+      { type: "Hub", location: hubLocation },
+      { type: "Mill", location: nearMillLocation },
+      { type: "Mill", location: farMillLocation },
+      { type: "Quarry", location: quarryLocation },
+    ]);
+    const sektorState = sektor.getSektorState();
+
+    expect({
+      imports: sektorState.imports,
+      uncroppedImports: sektorState.uncroppedImports,
+      exports: sektorState.exports,
+      uncroppedExports: sektorState.uncroppedExports,
+    }).toEqual({
+      imports: [{ name: "Wheat", value: 3 }],
+      uncroppedImports: [{ name: "Wheat", value: 6 }],
+      exports: [{ name: "Flour", value: 0 }, { name: "Stone", value: 4 }],
+      uncroppedExports: [{ name: "Flour", value: 1 }, { name: "Stone", value: 6 }],
+    });
+  });
+});
+
 describe("a disabled building", () => {
   it("is told apart from a running one by its building state", () => {
     const sektor = sektorWithBuildings([

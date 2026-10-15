@@ -51,6 +51,9 @@ describe("getSektorState", () => {
       starvedFunctions: [],
       disabledBuildings: [],
       croppedExports: [],
+      uncroppedImports: [],
+      uncroppedExports: [],
+      importExportCapacity: 0,
     });
   });
 
@@ -75,6 +78,14 @@ describe("getSektorState", () => {
       starvedFunctions: [],
       disabledBuildings: [],
       croppedExports: [],
+      uncroppedImports: [
+        { name: "Energy", value: 8 },
+        { name: "Work", value: 3 },
+      ],
+      uncroppedExports: [
+        { name: "Water", value: 4 },
+      ],
+      importExportCapacity: 100,
     });
   });
 
@@ -107,6 +118,16 @@ describe("getSektorState", () => {
       starvedFunctions: [],
       disabledBuildings: [],
       croppedExports: [],
+      uncroppedImports: [
+        { name: "Energy", value: 9 },
+        { name: "Work", value: 8 },
+        { name: "Water", value: 0 },
+      ],
+      uncroppedExports: [
+        { name: "Water", value: 1 },
+        { name: "Food", value: 5 },
+      ],
+      importExportCapacity: 100,
     });
   });
 });
@@ -323,6 +344,15 @@ describe("outputs named after a location property", () => {
       starvedFunctions: [],
       disabledBuildings: [],
       croppedExports: [],
+      uncroppedImports: [
+        { name: "Work", value: 2 },
+        { name: "Energy", value: 0 },
+      ],
+      uncroppedExports: [
+        { name: "Energy", value: 1 },
+        { name: "Ore", value: 5 },
+      ],
+      importExportCapacity: 100,
     });
   });
 });

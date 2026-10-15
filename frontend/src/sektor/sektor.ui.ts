@@ -20,7 +20,7 @@ import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, propertyValueColor } from "../properties";
 import { getLocalResources } from "../resources";
-import { arrowDownTrayIcon, arrowLeftIcon, arrowUpTrayIcon, buildingOfficeIcon, ecosystemDamage as ecosystemDamageIcon, faceSmileIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
+import { arrowLeftIcon, buildingOfficeIcon, ecosystemDamage as ecosystemDamageIcon, faceSmileIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
 import { ecosystemDamage } from "./ecosystemDamage";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
@@ -380,8 +380,10 @@ function refreshOpenBuildingPanel() {
 }
 
 // A player looking at a sektor from the outside is told the same things about it as the list tells
-// them, by the same icons in the same order, so the two read as one. What the sektor is worth is
-// left out: a sektor being built on is scored resource by resource in the panel on the right.
+// them, by the same icons in the same order, so the two read as one. What the sektor is worth and
+// how much it imports and exports are left out: a sektor being built on is scored resource by
+// resource in the panel on the right, which also totals what it imports and exports against what
+// its hubs can carry.
 function showSektorStats(sektorState: SektorState) {
   document.getElementById("sektor-stats")?.remove();
 
@@ -389,8 +391,6 @@ function showSektorStats(sektorState: SektorState) {
   stats.id = "sektor-stats";
   stats.appendChild(createStat(puzzlePieceIcon, "Difficulty", `${sektorLevel}`));
   stats.appendChild(createStat(buildingOfficeIcon, "Buildings", formatNumber(sektor.getState().buildings.length)));
-  stats.appendChild(createStat(arrowDownTrayIcon, "Imports", formatNumber(sumThroughputs(sektorState.imports))));
-  stats.appendChild(createStat(arrowUpTrayIcon, "Exports", formatNumber(sumThroughputs(sektorState.exports))));
   stats.appendChild(createStat(faceSmileIcon, "Hapiness", formatHapiness(sektorState)));
   stats.appendChild(createStat(ecosystemDamageIcon, "Damage to ecosystem", formatEcosystemDamage(sektorState)));
 
@@ -428,10 +428,6 @@ function createStat(icon: string, tooltip: string, value: string): HTMLElement {
   stat.appendChild(valueElement);
 
   return stat;
-}
-
-function sumThroughputs(throughputs: { value: number }[]): number {
-  return throughputs.reduce((total, throughput) => total + throughput.value, 0);
 }
 
 function loadSavedState() {
