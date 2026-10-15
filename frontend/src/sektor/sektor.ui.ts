@@ -1014,11 +1014,11 @@ const DOUBLECLICK_PIXELS = 5;
 const sektorUi = (p: p5) => {
   let camAngleY = Math.PI / 4;
   let camElevation = CAM_ELEVATION;
-  // How far the map has been dragged is kept in screen pixels rather than in world units, so that
-  // the map follows the mouse by as many pixels as the mouse moved, whatever angle it is looked at
-  // from and however far it is zoomed in.
-  let panScreenX = 0;
-  let panScreenY = 0;
+  // The spot on the floor in the middle of the screen. It is kept on the floor rather than in screen
+  // pixels so that turning the map turns it around whatever the player has dragged into the middle
+  // of the screen, not around the middle of the map, which may be off the screen by then.
+  let lookedAtWorldX = 0;
+  let lookedAtWorldZ = 0;
   let dragMode: "rotate" | "pan" | null = null;
   let isSpacePressed = false;
   let didDrag = false;
@@ -1101,14 +1101,13 @@ const sektorUi = (p: p5) => {
       lastMouseX = event.clientX;
       lastMouseY = event.clientY;
       if (dragMode === "pan") {
-        panScreenX += dx;
-        panScreenY += dy;
+        panMap(dx, dy);
+        keepMapWithinReach();
       } else {
         camAngleY -= dx * 0.005;
         camElevation += dy * 0.005;
         camElevation = Math.max(0.05, Math.min(Math.PI / 2 - 0.05, camElevation));
       }
-      keepMapWithinReach();
       updateCamera(p);
     });
     canvas.elt.addEventListener("wheel", (e: WheelEvent) => {
@@ -1116,50 +1115,38 @@ const sektorUi = (p: p5) => {
       zoom *= e.deltaY > 0 ? 1.05 : 0.95;
       zoom = Math.max(0.3, Math.min(3, zoom));
       updateOrtho();
-      keepMapWithinReach();
       updateCamera(p);
     }, { passive: false });
   };
 
-  // The map is never dragged off the screen: however far it is pushed, the middle of the screen
-  // stays over it, so the corner square the map is being dragged away from comes to rest there.
-  // Turning the map or zooming it moves the corners on the screen too, so the same limit is put on
-  // the map after those as after a drag.
-  function keepMapWithinReach() {
-    const cornersAcrossScreen = cornerSquaresOnScreen();
-    panScreenX = Math.max(
-      -Math.max(...cornersAcrossScreen.map(corner => corner.screenX)),
-      Math.min(-Math.min(...cornersAcrossScreen.map(corner => corner.screenX)), panScreenX),
-    );
-    panScreenY = Math.max(
-      -Math.max(...cornersAcrossScreen.map(corner => corner.screenY)),
-      Math.min(-Math.min(...cornersAcrossScreen.map(corner => corner.screenY)), panScreenY),
-    );
+  // The map follows the mouse by as many pixels as the mouse moved, whatever angle it is looked at
+  // from and however far it is zoomed in, so the camera moves the other way along the floor. A pixel
+  // across the screen is a pixel's worth of floor, but a pixel down the screen is more floor the
+  // flatter the map is looked at, since the floor runs away from the camera.
+  function panMap(mouseMovedX: number, mouseMovedY: number) {
+    const right = screenRightAxis();
+    const awayAlongFloor = { x: Math.sin(camAngleY), z: Math.cos(camAngleY) };
+    const floorAcross = mouseMovedX * zoom;
+    const floorAway = mouseMovedY * zoom / Math.sin(camElevation);
+    lookedAtWorldX -= right.x * floorAcross + awayAlongFloor.x * floorAway;
+    lookedAtWorldZ -= right.z * floorAcross + awayAlongFloor.z * floorAway;
   }
 
-  // Where the four corner squares of the map sit on the screen, in pixels away from the middle of
-  // the screen, as they would sit with the map not dragged at all.
-  function cornerSquaresOnScreen(): { screenX: number; screenY: number }[] {
-    const right = screenRightAxis();
-    const down = screenDownAxis();
-    const lastLocation = SEKTOR_SIZE - 1;
-    return [
-      gridToWorld(0, 0),
-      gridToWorld(lastLocation, 0),
-      gridToWorld(0, lastLocation),
-      gridToWorld(lastLocation, lastLocation),
-    ].map(({ wx, wz }) => ({
-      screenX: (right.x * wx + right.z * wz) / zoom,
-      screenY: (down.x * wx + down.z * wz) / zoom,
-    }));
+  // The map is never dragged off the screen: however far it is pushed, the middle of the screen
+  // stays over it, so the corner square the map is being dragged away from comes to rest there.
+  function keepMapWithinReach() {
+    const firstCorner = gridToWorld(0, 0);
+    const lastCorner = gridToWorld(SEKTOR_SIZE - 1, SEKTOR_SIZE - 1);
+    lookedAtWorldX = Math.max(firstCorner.wx, Math.min(lastCorner.wx, lookedAtWorldX));
+    lookedAtWorldZ = Math.max(firstCorner.wz, Math.min(lastCorner.wz, lookedAtWorldZ));
   }
 
   // The map goes back to sitting in the middle of the screen, looked at from the same side and
   // from as near as before: a player who has dragged themselves into a corner is given the whole
   // map back without losing the angle and the zoom they had picked.
   function centreMap() {
-    panScreenX = 0;
-    panScreenY = 0;
+    lookedAtWorldX = 0;
+    lookedAtWorldZ = 0;
     updateCamera(p);
   }
 
@@ -1186,39 +1173,16 @@ const sektorUi = (p: p5) => {
   }
 
   function updateCamera(p: p5) {
-    const lookedAt = pannedCentre();
-    const camX = lookedAt.wx + CAM_DIST * Math.sin(camAngleY) * Math.cos(camElevation);
-    const camY = lookedAt.wy - CAM_DIST * Math.sin(camElevation);
-    const camZ = lookedAt.wz + CAM_DIST * Math.cos(camAngleY) * Math.cos(camElevation);
-    p.camera(camX, camY, camZ, lookedAt.wx, lookedAt.wy, lookedAt.wz, 0, 1, 0);
-  }
-
-  // The point the camera is pointed at. The map is to move with the mouse, so the camera moves
-  // against it: the dragged pixels are laid out along the screen axes in world space and subtracted.
-  function pannedCentre(): { wx: number; wy: number; wz: number } {
-    const right = screenRightAxis();
-    const down = screenDownAxis();
-    return {
-      wx: -(right.x * panScreenX + down.x * panScreenY) * zoom,
-      wy: -(right.y * panScreenX + down.y * panScreenY) * zoom,
-      wz: -(right.z * panScreenX + down.z * panScreenY) * zoom,
-    };
+    const camX = lookedAtWorldX + CAM_DIST * Math.sin(camAngleY) * Math.cos(camElevation);
+    const camY = -CAM_DIST * Math.sin(camElevation);
+    const camZ = lookedAtWorldZ + CAM_DIST * Math.cos(camAngleY) * Math.cos(camElevation);
+    p.camera(camX, camY, camZ, lookedAtWorldX, 0, lookedAtWorldZ, 0, 1, 0);
   }
 
   // The world direction a pixel to the right on the screen goes in. The camera is never rolled, so
   // screen right stays level with the floor.
   function screenRightAxis(): { x: number; y: number; z: number } {
     return { x: Math.cos(camAngleY), y: 0, z: -Math.sin(camAngleY) };
-  }
-
-  // The world direction a pixel down the screen goes in. Y grows downwards in p5's world, so the
-  // more the map is looked at from above, the more screen-down runs along the floor.
-  function screenDownAxis(): { x: number; y: number; z: number } {
-    return {
-      x: Math.sin(camAngleY) * Math.sin(camElevation),
-      y: Math.cos(camElevation),
-      z: Math.cos(camAngleY) * Math.sin(camElevation),
-    };
   }
 
   p.mouseReleased = (event?: MouseEvent) => {
