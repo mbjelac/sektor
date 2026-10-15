@@ -18,6 +18,7 @@ import { createListTitle } from "../listTitle.ui";
 import { currentScore } from "../currentScore";
 import { getNegativeScoringResources } from "../resources";
 import { ImportsAndExports } from "../globalImportsAndExports";
+import { showPlanetBackground } from "./planetBackground.ui";
 
 function renderList() {
   const container = document.getElementById("sektor-list")!;
@@ -222,6 +223,7 @@ function createScore(score: number): HTMLElement {
 
 requireLogin();
 showUser();
+showPlanetBackground();
 // A list which fills by itself cannot be looked at, as a sektor may appear on it at any moment. A
 // test therefore lays this out before the page loads and makes the sektors it wants by hand, one
 // call at a time, rather than sitting out the second between one round of making them and the next.

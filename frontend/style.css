@@ -764,7 +764,19 @@ body > main {
 
 /* The three lists of the page side by side: the sektors a player can work on, the standing of all
    the players, and what the whole planet brings in and sends out. */
+/* The planet stands across the whole window, behind the lists. */
+#planet-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+}
+
 #list-page {
+    /* The lists float above the planet, and only they take the pointer, so that dragging between
+       them turns the planet. */
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
     display: grid;
     /* Each column is given the width its side asks for. The sektors are scrolled through, and a
        column sized by what it holds would have nothing to go by, as what is scrolled counts for
@@ -791,6 +803,10 @@ body > main {
     font-size: 10px;
     font-weight: normal;
     margin-bottom: 18px;
+}
+
+#list-page > * {
+    pointer-events: auto;
 }
 
 #sektor-list {
