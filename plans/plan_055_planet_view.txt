@@ -187,3 +187,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
             - tropical forest: "Jungle"
             - tropical grassland: "Savanna"
             - desert: "Desert"
+
+#7 Player can rotate planet to vertical axis
+- when player doubleclicks the planet canvas
+    - rotate planet so that it's poles are "vertical", i.e. both poles are equally distant from view port
