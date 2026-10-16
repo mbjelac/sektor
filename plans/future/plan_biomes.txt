@@ -47,4 +47,4 @@ So, except for the Desert, all biome groups have sub-groups:
 - when generating a sektor
     - if the sektor's area (i.e. planet triangle, see plan 55) is non-land
     - amount of sea squares in the sektor is random between 70% and 90%
-
+    - no rivers
