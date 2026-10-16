@@ -129,9 +129,10 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - triangles in sub-tropical zones are marked by tropical & temperate biome types randomly
 - [done] each biome has it's own random color range
     - color ranges per biome
-        - polar: #ffffff-#9efcff
+        - polar: #9cffd6-#00ff95
         - temperate: #009e00-#00e000
         - tropical: #55c400-#b2ed00
+    - exception: all triangles in the polar climate zones have to use this color range: #ffffff-#9efcff
     - apply random colors to land triangles according to their biome
 
 #4 [done] Planet has forested zones
@@ -152,3 +153,6 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - temperate: #0a6900-#11ab00
         - tropical: #367300-#50ab00
     - apply random colors to forested land triangles according to their biome type
+
+#5 Planet has deserts
+- on land there are zones with desert biome sub-type
