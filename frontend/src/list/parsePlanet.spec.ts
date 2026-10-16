@@ -39,10 +39,11 @@ describe("parsePlanetColors", () => {
       "## Ring 0",
       "#ffea00 L temperate",
       "#0a6900 L F temperate",
+      "#f5e198 L D tropical",
       "#006eff polar",
     ].join("\n");
 
-    expect(parsePlanetColors(planetMarkdown)).toEqual([["#ffea00", "#0a6900", "#006eff"]]);
+    expect(parsePlanetColors(planetMarkdown)).toEqual([["#ffea00", "#0a6900", "#f5e198", "#006eff"]]);
   });
 
   it("does not take a ring's climate zone for a triangle", () => {
