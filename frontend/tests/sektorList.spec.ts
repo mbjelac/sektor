@@ -520,6 +520,61 @@ function createSektorNow(page: Page) {
   return page.evaluate(() => (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded());
 }
 
+// A sektor is made on a triangle of the planet where it can be lived on, which is never in the
+// polar zones: the five rings around either pole.
+test("makes a new sektor on a triangle outside the polar zones", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await createSektorNow(page);
+
+  const { location } = (await getStoredSektors(page)).at(-1);
+  expect({ isOutsidePolarZones: location.ring >= 5 && location.ring <= 42 }).toEqual({ isOutsidePolarZones: true });
+});
+
+// Ring 23, place 112 is the triangle in the middle of the planet as the page opens.
+async function storeSektorInMiddleOfPlanet(page: Page) {
+  await page.evaluate(() => {
+    const sektors = JSON.parse(localStorage.getItem("sektors")!);
+    localStorage.setItem("sektors", JSON.stringify([...sektors, { id: "Delta", name: "Delta", owner: null, location: { ring: 23, index: 112 } }]));
+  });
+  await page.reload();
+}
+
+// The square of a sektor's mark stands on the triangle the sektor lies on, as the mouse over it
+// tells.
+test("marks a sektor where it lies on the planet, with its name", async ({ page }) => {
+  await storeSektorInMiddleOfPlanet(page);
+
+  const square = await page.locator(".sektor-marker-square").boundingBox();
+  await page.mouse.move(square!.x + square!.width / 2, square!.y + square!.height / 2);
+
+  expect({
+    names: await page.locator(".sektor-marker-name").allTextContents(),
+    triangleUnderSquare: await page.locator("#planet-region-info span").first().textContent(),
+  }).toEqual({
+    names: ["Delta"],
+    triangleUnderSquare: "23 : 112",
+  });
+});
+
+test("marks a sektor where it lies on the planet", async ({ page }) => {
+  await storeSektorInMiddleOfPlanet(page);
+
+  await expect(page.locator(".sektor-marker")).toHaveScreenshot("sektor-marker.png", { maxDiffPixelRatio: 0 });
+});
+
+// Half a turn takes the sektor round to the far side of the planet, where it is out of sight.
+test("hides the mark of a sektor on the far side of the planet", async ({ page }) => {
+  await storeSektorInMiddleOfPlanet(page);
+
+  await page.mouse.move(480, 600);
+  await page.mouse.down();
+  await page.mouse.move(480 + Math.round(Math.PI / 0.01), 600, { steps: 10 });
+  await page.mouse.up();
+
+  expect(await page.locator(".sektor-marker").count()).toEqual(0);
+});
+
 test("makes a new sektor and puts it on the list", async ({ page }) => {
   await page.goto("/?test=true");
 

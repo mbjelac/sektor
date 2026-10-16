@@ -202,7 +202,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 - [done] when player doubleclicks the planet canvas
     - rotate planet so that it's poles are "vertical", i.e. both poles are equally distant from view port
 
-#8 Created sektors are located on the planet
+#8 [done] Created sektors are located on the planet
 - [done] when creating a sektor, pick a habitable triangle at random
     - habitable triangle:
         - ring is not in polar climate zone

@@ -799,6 +799,42 @@ body > main {
     gap: 30px;
 }
 
+/* The sektors marked where they lie on the planet: over it, under the lists, taking no part in the
+   mouse so that the planet under them can still be dragged and hovered. */
+#sektor-markers {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* A mark stands with the middle of its square on the middle of its sektor's triangle. */
+.sektor-marker {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translate(-50%, -5px);
+}
+
+.sektor-marker-square {
+    width: 10px;
+    height: 10px;
+    box-sizing: border-box;
+    border: 1.5px solid #fff;
+}
+
+/* The name stands on a half-see-through black ground, so that it reads over land, sea and ice. */
+.sektor-marker-name {
+    margin-top: 3px;
+    padding: 1px 4px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
 #list-page {
     /* The lists float above the planet, and only they take the pointer, so that dragging between
        them turns the planet. */

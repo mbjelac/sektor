@@ -1,25 +1,30 @@
 import p5 from "p5";
-import { createPlanetGrid, PlanetGrid, PlanetTriangle, TriangleCoordinate } from "./planetGrid";
-import planetMd from "../assets/planet.md?raw";
-import { parsePlanet, PlanetRegion } from "./parsePlanet";
-import { findTriangleAt, planetPointAt } from "./planetPicking";
+import { PlanetGrid, PlanetTriangle, TriangleCoordinate } from "./planetGrid";
+import { PlanetRegion } from "./parsePlanet";
+import { getPlanet, Planet } from "./planet";
+import { findTriangleAt, planetPointAt, screenSpotOf } from "./planetPicking";
 import { dragRotation, Rotation, UNTURNED, uprightRotation } from "./planetRotation";
 import { createPlanetRegionInfo } from "./planetRegionInfo.ui";
+import { createSektorMarkers, SpotOfTriangle } from "./sektorMarkers.ui";
+import { SektorListItem } from "./sektorList.api";
 
-const EDGE_DIVISIONS = 16;
 const RADIUS_SHARE_OF_SHORTER_SIDE = 0.35;
 
 type ColoredTriangle = { triangle: PlanetTriangle; region: PlanetRegion; color: p5.Color };
 
 // The planet stands behind the lists, across the whole of the window, and is turned by dragging
-// wherever the lists leave it showing, or stood upright by a double click. Nothing on it moves of itself, so it is drawn only when it
-// is dragged or the window changes size. Wherever the mouse is over it, what lies there is told
-// along the bottom of the page.
-export function showPlanetBackground() {
-  new p5(planetSketch);
+// wherever the lists leave it showing, or stood upright by a double click. Nothing on it moves of
+// itself, so it is drawn only when it is dragged or the window changes size. Wherever the mouse is
+// over it, what lies there is told along the bottom of the page. The sektors are marked where they
+// lie on it, and whoever shows the planet says which sektors there are, and again whenever they
+// change.
+export function showPlanetBackground(): (sektors: SektorListItem[]) => void {
+  const sektorMarkers = createSektorMarkers();
+  new p5(p => planetSketch(p, sektorMarkers.followPlanet));
+  return sektorMarkers.showSektors;
 }
 
-function planetSketch(p: p5) {
+function planetSketch(p: p5, followPlanet: (spotOfTriangle: SpotOfTriangle) => void) {
   let grid: PlanetGrid;
   let coloredTriangles: ColoredTriangle[] = [];
   let rotation: Rotation = UNTURNED;
@@ -34,8 +39,9 @@ function planetSketch(p: p5) {
     p.noLoop();
     p.noStroke();
 
-    grid = createPlanetGrid(EDGE_DIVISIONS);
-    coloredTriangles = colorTriangles(p, grid);
+    const planet = getPlanet();
+    grid = planet.grid;
+    coloredTriangles = colorTriangles(p, planet);
     const showRegionInfo = createPlanetRegionInfo();
 
     canvas.elt.addEventListener("pointerdown", (event: PointerEvent) => {
@@ -78,6 +84,11 @@ function planetSketch(p: p5) {
       for (const [x, y, z] of triangle.corners) p.vertex(x, y, z);
     }
     p.endShape();
+
+    followPlanet(location => {
+      const spot = screenSpotOf(grid.rings[location.ring]![location.index]!.center, planetRadius(), rotation);
+      return spot && { x: p.width / 2 + spot.x, y: p.height / 2 + spot.y };
+    });
   };
 
   function regionAt(clientX: number, clientY: number): { coordinate: TriangleCoordinate; region: PlanetRegion } | null {
@@ -93,23 +104,12 @@ function planetSketch(p: p5) {
   }
 }
 
-// The planet looks the same on every visit, every triangle coloured as planet.md has it. A file
-// shaped for another planet is said rather than coloured wrongly.
-function colorTriangles(p: p5, grid: PlanetGrid): ColoredTriangle[] {
-  const regionRings = parsePlanet(planetMd);
-  if (regionRings.length !== grid.rings.length) {
-    throw new Error(`planet.md has ${regionRings.length} rings, but the planet has ${grid.rings.length}`);
-  }
-  return grid.rings.flatMap((ring, ringIndex) => {
-    const regionRing = regionRings[ringIndex] ?? [];
-    if (regionRing.length !== ring.length) {
-      throw new Error(`planet.md has ${regionRing.length} triangles on ring ${ringIndex}, but the ring has ${ring.length}`);
-    }
-    return ring.map(triangle => {
-      const region = regionRing[triangle.coordinate.index]!;
-      return { triangle, region, color: p.color(region.color) };
-    });
-  });
+// Every triangle is coloured as the planet has it.
+function colorTriangles(p: p5, planet: Planet): ColoredTriangle[] {
+  return planet.grid.rings.flatMap((ring, ringIndex) => ring.map(triangle => {
+    const region = planet.regionRings[ringIndex]![triangle.coordinate.index]!;
+    return { triangle, region, color: p.color(region.color) };
+  }));
 }
 
 // p5 takes the sixteen numbers of a 3D matrix a column at a time.

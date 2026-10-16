@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { createPlanetGrid, Point } from "./planetGrid";
-import { findTriangleAt, planetPointAt } from "./planetPicking";
-import { UNTURNED } from "./planetRotation";
+import { findTriangleAt, planetPointAt, screenSpotOf } from "./planetPicking";
+import { dragRotation, UNTURNED } from "./planetRotation";
 const RADIUS = 100;
 
 describe("planetPointAt", () => {
@@ -16,6 +16,22 @@ describe("planetPointAt", () => {
       middle: [0, 0, -1],
       top: [0, 0.967, -0.253],
       beside: null,
+    });
+  });
+});
+
+describe("screenSpotOf", () => {
+  it("is where the point is seen again, and nowhere for a point on the far side", () => {
+    const turned = dragRotation(70, -40, UNTURNED);
+    const seen = planetPointAt(30, -55, RADIUS, turned)!;
+    const spot = screenSpotOf(seen, RADIUS, turned)!;
+
+    expect({
+      spot: [Math.round(spot.x * 1e6) / 1e6, Math.round(spot.y * 1e6) / 1e6],
+      farSide: screenSpotOf([-seen[0], -seen[1], -seen[2]], RADIUS, turned),
+    }).toEqual({
+      spot: [30, -55],
+      farSide: null,
     });
   });
 });

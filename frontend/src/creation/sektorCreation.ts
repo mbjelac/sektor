@@ -5,6 +5,7 @@ import { getPlayers } from "../players";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { createSektor } from "./createSektor";
 import { generateSektorName } from "./sektorName.api";
+import { pickSektorLocation } from "./sektorLocation";
 
 const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Sektors nobody has taken up pile up if they are made faster than they are claimed, so no more are
@@ -44,7 +45,7 @@ export async function createSektorIfNeeded(): Promise<boolean> {
   const sektorId = `${nextSektorId()}`;
 
   saveSektorData(sektorId, sektorData);
-  addSektorToList(sektorId, sektorName);
+  addSektorToList(sektorId, sektorName, pickSektorLocation());
 
   return true;
 }

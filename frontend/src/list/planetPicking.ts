@@ -25,6 +25,17 @@ export function planetPointAt(screenX: number, screenY: number, radius: number, 
   return [x, -y, -z];
 }
 
+// Where on the screen a point of the planet is seen, from the middle of the canvas, x to the right
+// and y downwards: the way back of the spot a point is seen at. A point on the side turned away from
+// the camera, or behind the planet's edge as the camera sees it, is not seen at all.
+export function screenSpotOf(point: Point, radius: number, rotation: Rotation): { x: number; y: number } | null {
+  const turnedOver: Point = [point[0], -point[1], -point[2]];
+  const [x, y, z] = rotation.map(row => radius * dot(row, turnedOver)) as Point;
+  if (z <= radius * radius / CAMERA_DISTANCE) return null;
+  const perspective = CAMERA_DISTANCE / (CAMERA_DISTANCE - z);
+  return { x: x * perspective, y: y * perspective };
+}
+
 // The triangle a point of the sphere lies in: the one whose three edges all have the point on the
 // same side as the triangle itself.
 export function findTriangleAt(grid: PlanetGrid, point: Point): PlanetTriangle | undefined {

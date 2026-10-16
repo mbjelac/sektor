@@ -223,7 +223,7 @@ function createScore(score: number): HTMLElement {
 
 requireLogin();
 showUser();
-showPlanetBackground();
+const showSektorsOnPlanet = showPlanetBackground();
 // A list which fills by itself cannot be looked at, as a sektor may appear on it at any moment. A
 // test therefore lays this out before the page loads and makes the sektors it wants by hand, one
 // call at a time, rather than sitting out the second between one round of making them and the next.
@@ -231,6 +231,7 @@ showPlanetBackground();
 const areSektorsMadeByHand = (window as unknown as { makeSektorsByHand?: boolean }).makeSektorsByHand === true;
 
 renderList();
+showSektorsOnPlanet(getSektorList());
 showPurgeButton();
 if (areSektorsMadeByHand) {
   (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded = createSektorIfNeeded;
@@ -242,5 +243,6 @@ renderLeaderboard();
 // The standings are worked out from the sektors, so they are drawn anew whenever the sektors change.
 function refreshPage() {
   renderList();
+  showSektorsOnPlanet(getSektorList());
   renderLeaderboard();
 }

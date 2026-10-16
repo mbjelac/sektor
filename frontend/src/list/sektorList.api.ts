@@ -1,10 +1,14 @@
+import { TriangleCoordinate } from "./planetGrid";
+
 // Everything known about a sektor apart from what stands in it: the id its data is stored under,
-// the name it carries, and the player who owns it. A sektor is made with a name and keeps it when
-// abandoned, but has no owner until somebody claims it.
+// the name it carries, the player who owns it, and the triangle of the planet it lies on. A sektor
+// is made with a name and keeps it when abandoned, but has no owner until somebody claims it. A
+// sektor made before sektors were put on the planet lies nowhere on it.
 export interface SektorListItem {
   id: string;
   name: string | null;
   owner: string | null;
+  location?: TriangleCoordinate;
 }
 
 const SEKTORS_STORAGE_KEY = "sektors";
@@ -41,8 +45,8 @@ function getSektor(sektorId: string): SektorListItem | null {
   return getSektorList().find(sektor => sektor.id === sektorId) ?? null;
 }
 
-export function addSektorToList(sektorId: string, name: string | null): void {
-  saveSektorList([...getSektorList(), { id: sektorId, name, owner: null }]);
+export function addSektorToList(sektorId: string, name: string | null, location: TriangleCoordinate): void {
+  saveSektorList([...getSektorList(), { id: sektorId, name, owner: null, location }]);
 }
 
 export function clearSektorList(): void {
@@ -60,6 +64,7 @@ export function getSektorList(): SektorListItem[] {
     id: sektor.id,
     name: sektor.name ?? null,
     owner: sektor.owner ?? null,
+    ...(sektor.location ? { location: sektor.location } : {}),
   }));
 }
 
