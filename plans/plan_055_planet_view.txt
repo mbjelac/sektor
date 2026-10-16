@@ -98,6 +98,6 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - starting points
             - pick 8 starting points all equally distant from each other (approximately)
             - move each starting point in random direction & distance
-- [done] if triangle is land, modify color to be from range #ffea00-#00d100
-- [done] if triangle is not land, modify color to be from range #70a6e0-#006eff
+- [done] if triangle is land, modify color to be from range #58d10d-#88c947
+- [done] if triangle is not land, modify color to be from range #5195f5-#006eff
 
