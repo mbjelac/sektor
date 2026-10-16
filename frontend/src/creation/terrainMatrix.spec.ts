@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createTerrainMatrix, ELEVATION_SQUARE_COUNTS, SEA_SQUARE_COUNTS } from "./terrainMatrix";
+import { createTerrainMatrix, ELEVATION_SQUARE_COUNTS, FEWEST_SEA_SQUARES, MOST_SEA_SQUARES } from "./terrainMatrix";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import {
   ELEVATION,
@@ -20,46 +20,54 @@ describe("createTerrainMatrix", () => {
   // The terrain covers the map and no more of it: a matrix wider than the sektor describes ground
   // which is not there.
   it("lays the terrain out over the whole of the sektor's map and no further", () => {
-    const terrain = createTerrainMatrix(Math.random);
+    const terrain = createTerrainMatrix(false, Math.random);
 
     expect({ rows: terrain.length, rowLengths: [...new Set(terrain.map(row => row.length))] })
       .toEqual({ rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] });
   });
 
-  it("leaves the whole map dry when the draw asks for no sea at all", () => {
-    const terrain = createTerrainMatrix(() => 0);
+  // A sektor standing on the planet's land is inland, however the draws fall.
+  it("lays no sea on any map of a sektor standing on land", () => {
+    const seaSquareCounts = landMapsDrawn()
+      .map(terrain => squaresOfSea(terrain).length)
+      .filter(seaSquareCount => seaSquareCount > 0);
 
-    expect(terrain).toEqual(Array.from({ length: SEKTOR_SIZE }, () =>
-      Array.from({ length: SEKTOR_SIZE }, () => GROUND)
-    ));
+    expect(seaSquareCounts).toEqual([]);
   });
 
-  // A sektor is land with a coast on it, so whatever sea a map is given is one body of water which
-  // runs in from the rim rather than a scattering of pools in the middle.
-  it("makes the sea of every map one body of water touching the edge of the map", () => {
+  // A sektor on the sea is sea with a coast on it, so its sea is one body of water which runs in
+  // from the rim rather than a scattering of pools.
+  it("makes the sea of every map of a sektor on the sea one body of water touching the edge of the map", () => {
     expect(mapsWhoseSeaIsNotOneBodyComingInFromTheEdge()).toEqual([]);
   });
 
-  // The sea comes in helpings rather than in any amount at all: none of the map, a quarter of it,
-  // or half of it.
-  it("gives every map one of the helpings of sea there are", () => {
-    expect(mapsWithSeaOfNoHelping()).toEqual([]);
+  it("covers 70% to 90% of every map of a sektor on the sea with sea", () => {
+    expect(seaMapsWithSeaOutsideTheRange()).toEqual([]);
   });
 
-  // Rock stands on dry land, so the helping of elevation a map is given is counted out of the
-  // squares the sea has left rather than out of the map as a whole.
-  it("gives every map one of the helpings of elevation there are", () => {
+  // A sektor on the sea has too little land left for a river to run through.
+  it("runs no river through any map of a sektor on the sea", () => {
+    const riverSquareCounts = seaMapsDrawn()
+      .map(terrain => squaresOfRiver(terrain).length)
+      .filter(riverSquareCount => riverSquareCount > 0);
+
+    expect(riverSquareCounts).toEqual([]);
+  });
+
+  // A sektor on land is dry throughout, so the helping of elevation it is given always has the room
+  // to stand.
+  it("gives every map of a sektor on land one of the helpings of elevation there are", () => {
     expect(mapsWithElevationOfNoHelping()).toEqual([]);
   });
 
-  it("raises no rock out of the sea", () => {
+  it("raises no rock out of the sea of a sektor on the sea", () => {
     expect(mapsWithRockStandingInTheSea()).toEqual([]);
   });
 
-  // Whether a sektor has a river is a toss of a coin, so among many maps there are some with a
-  // river and some without.
-  it("runs a river through some maps and not through others", () => {
-    const riverSquareCounts = mapsDrawn().map(terrain => squaresOfRiver(terrain).length);
+  // Whether a sektor on land has a river is a toss of a coin, so among many maps there are some
+  // with a river and some without.
+  it("runs a river through some maps of sektors on land and not through others", () => {
+    const riverSquareCounts = landMapsDrawn().map(terrain => squaresOfRiver(terrain).length);
 
     expect({
       someWithRiver: riverSquareCounts.some(count => count > 0),
@@ -108,7 +116,7 @@ const FLOWED_IN_FROM: { [riverSquare: number]: [number, number] } = {
 // has more than one square flowed into from over the rim, or has a square flowed out of into
 // more than one other.
 function mapsWhoseRiverIsNotOneLineFromTheRim(): object[] {
-  return mapsDrawn().flatMap(terrain => {
+  return landMapsDrawn().flatMap(terrain => {
     const riverSquares = squaresOfRiver(terrain);
     if (riverSquares.length === 0) return [];
 
@@ -127,7 +135,7 @@ function mapsWhoseRiverIsNotOneLineFromTheRim(): object[] {
 }
 
 function mapsWhoseRiverComesInFromTheCoast(): object[] {
-  return mapsDrawn().flatMap(terrain => {
+  return landMapsDrawn().flatMap(terrain => {
     const source = squaresOfRiver(terrain).find(square => !isOnTheMap(squareBefore(terrain, square)));
     if (!source) return [];
 
@@ -136,7 +144,7 @@ function mapsWhoseRiverComesInFromTheCoast(): object[] {
 }
 
 function mapsWithRiverShorterThanEightSquares(): object[] {
-  return mapsDrawn().flatMap(terrain => {
+  return landMapsDrawn().flatMap(terrain => {
     const riverSquares = squaresOfRiver(terrain);
     return riverSquares.length === 0 || riverSquares.length >= 8 ? [] : [{ riverSquares }];
   });
@@ -144,7 +152,7 @@ function mapsWithRiverShorterThanEightSquares(): object[] {
 
 // The last square of a river is the one no other square of it was flowed into from.
 function mapsWhoseRiverEndsInTheLand(): object[] {
-  return mapsDrawn().flatMap(terrain => {
+  return landMapsDrawn().flatMap(terrain => {
     const riverSquares = squaresOfRiver(terrain);
     if (riverSquares.length === 0) return [];
 
@@ -156,7 +164,7 @@ function mapsWhoseRiverEndsInTheLand(): object[] {
 }
 
 function mapsWhoseRiverTouchesItself(): object[] {
-  return mapsDrawn().flatMap(terrain => {
+  return landMapsDrawn().flatMap(terrain => {
     const riverSquares = squaresOfRiver(terrain);
 
     const touchingItself = riverSquares.filter(square => {
@@ -199,10 +207,9 @@ function squaresOfRiver(terrain: number[][]): [number, number][] {
   );
 }
 
-// Every map drawn whose sea is in more than one piece, or which has sea nowhere on its rim. A map
-// with no sea at all has nothing to answer for, so it is not among them.
+// Every map drawn whose sea is in more than one piece, or which has sea nowhere on its rim.
 function mapsWhoseSeaIsNotOneBodyComingInFromTheEdge(): object[] {
-  return mapsDrawn().flatMap(terrain => {
+  return seaMapsDrawn().flatMap(terrain => {
     const seaSquares = squaresOfSea(terrain);
     if (seaSquares.length === 0) return [];
 
@@ -215,15 +222,15 @@ function mapsWhoseSeaIsNotOneBodyComingInFromTheEdge(): object[] {
   });
 }
 
-function mapsWithSeaOfNoHelping(): object[] {
-  return mapsDrawn()
+function seaMapsWithSeaOutsideTheRange(): object[] {
+  return seaMapsDrawn()
     .map(terrain => squaresOfSea(terrain).length)
-    .filter(seaSquareCount => !SEA_SQUARE_COUNTS.includes(seaSquareCount))
+    .filter(seaSquareCount => seaSquareCount < FEWEST_SEA_SQUARES || seaSquareCount > MOST_SEA_SQUARES)
     .map(seaSquareCount => ({ seaSquareCount }));
 }
 
 function mapsWithElevationOfNoHelping(): object[] {
-  return mapsDrawn()
+  return landMapsDrawn()
     .map(terrain => squaresOf(terrain, ELEVATION).length)
     .filter(elevationSquareCount => !ELEVATION_SQUARE_COUNTS.includes(elevationSquareCount))
     .map(elevationSquareCount => ({ elevationSquareCount }));
@@ -233,7 +240,7 @@ function mapsWithElevationOfNoHelping(): object[] {
 // square is one thing or the other, so a map whose squares add up to more than the map holds has
 // let the rock stand in the water. A square of river is neither, and is counted on its own.
 function mapsWithRockStandingInTheSea(): object[] {
-  return mapsDrawn().flatMap(terrain => {
+  return seaMapsDrawn().flatMap(terrain => {
     const squareCount = SEKTOR_SIZE * SEKTOR_SIZE;
     const counted = squaresOf(terrain, GROUND).length
       + squaresOf(terrain, SEA).length
@@ -244,8 +251,12 @@ function mapsWithRockStandingInTheSea(): object[] {
   });
 }
 
-function mapsDrawn(): number[][][] {
-  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(Math.random));
+function landMapsDrawn(): number[][][] {
+  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(true, Math.random));
+}
+
+function seaMapsDrawn(): number[][][] {
+  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(false, Math.random));
 }
 
 function squaresOfSea(terrain: number[][]): [number, number][] {

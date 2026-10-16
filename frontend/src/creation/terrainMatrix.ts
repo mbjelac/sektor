@@ -1,11 +1,11 @@
-// A sektor is not all dry land: a piece of it is sea. The sea is one body of water rather than a
-// scattering of puddles, and it runs in from an edge of the map rather than sitting in the middle
-// of it, so that the water a sektor has reads as a coast. How much of the map it takes is drawn
-// anew for every sektor, out of the few helpings there are.
+// A sektor on the planet's land is dry land throughout. One on the sea is mostly sea, with a little
+// land left over. The sea is one body of water rather than a scattering of puddles, and it runs in
+// from an edge of the map rather than sitting in the middle of it, so that the water a sektor has
+// reads as a coast. How much of the map it takes is drawn anew for every sektor.
 //
-// Half of all sektors have a river running through them. It comes in over the rim of the map where
-// the land meets it, wanders across the land a square at a time, and runs out again into the sea or
-// over the rim.
+// Half of all sektors on land have a river running through them. It comes in over the rim of the
+// map, wanders across the land a square at a time, and runs out again over the rim. A sektor on the
+// sea has too little land for a river, and has none.
 //
 // What is left over is not all flat either: rock stands out of the dry land here and there, which
 // a player builds around as they do the sea.
@@ -29,13 +29,10 @@ interface Square {
   z: number;
 }
 
-// How much of the map the sea takes, each helping as likely as the next: a sektor is dry land
-// throughout, has a quarter of it under water, or half of it.
-export const SEA_SQUARE_COUNTS = [
-  0,
-  Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 4),
-  Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 2),
-];
+// How much of the map the sea of a sektor on the sea takes: anywhere from the fewest squares to the
+// most, each count as likely as the next.
+export const FEWEST_SEA_SQUARES = Math.round(SEKTOR_SIZE * SEKTOR_SIZE * 0.7);
+export const MOST_SEA_SQUARES = Math.round(SEKTOR_SIZE * SEKTOR_SIZE * 0.9);
 
 // How much of the map stands up as rock, each helping as likely as the next: none of it, a tenth
 // of it, or a fifth.
@@ -45,17 +42,19 @@ export const ELEVATION_SQUARE_COUNTS = [
   Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 5),
 ];
 
-export function createTerrainMatrix(randomNumber: RandomNumber): number[][] {
+export function createTerrainMatrix(isOnLand: boolean, randomNumber: RandomNumber): number[][] {
   const terrain = allGround();
-  floodWithSea(terrain, randomNumber);
-  runRiver(terrain, randomNumber);
+  if (isOnLand) {
+    runRiver(terrain, randomNumber);
+  } else {
+    floodWithSea(terrain, randomNumber);
+  }
   raiseElevations(terrain, randomNumber);
   return terrain;
 }
 
 function floodWithSea(terrain: number[][], randomNumber: RandomNumber) {
   const seaSquareCount = randomSeaSquareCount(randomNumber);
-  if (seaSquareCount === 0) return;
 
   // The sea starts on an edge of the map and spreads a square at a time into the ground touching
   // it, so however far it reaches it stays one body of water with a coastline on the rim.
@@ -223,7 +222,7 @@ function allGround(): number[][] {
 }
 
 function randomSeaSquareCount(randomNumber: RandomNumber): number {
-  return SEA_SQUARE_COUNTS[Math.floor(randomNumber() * SEA_SQUARE_COUNTS.length)];
+  return FEWEST_SEA_SQUARES + Math.floor(randomNumber() * (MOST_SEA_SQUARES - FEWEST_SEA_SQUARES + 1));
 }
 
 function randomElevationSquareCount(randomNumber: RandomNumber): number {

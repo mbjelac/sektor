@@ -13,9 +13,10 @@ export type { RandomNumber };
 export function createSektor(
   level: number,
   locationPropertyNames: string[],
+  isOnLand: boolean,
   randomNumber: RandomNumber = Math.random,
 ): SektorData {
-  const terrain = createTerrainMatrix(randomNumber);
+  const terrain = createTerrainMatrix(isOnLand, randomNumber);
   const forests = plantForests(terrain, randomNumber);
   return {
     level,
