@@ -203,7 +203,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - rotate planet so that it's poles are "vertical", i.e. both poles are equally distant from view port
 
 #8 Created sektors are located on the planet
-- when creating a sektor, pick a habitable triangle at random
+- [done] when creating a sektor, pick a habitable triangle at random
     - habitable triangle:
         - ring is not in polar climate zone
         - triangle either
@@ -211,4 +211,5 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
             - sea next to land or 1 sea triangle away from land
     - mark the sektor on the triangle as a small white hollow square
     - render sektor name hovering under the square
+        - background rectangle, fill black 50% transparent
     - both the square and the label move if the player rotates the planet
