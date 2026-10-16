@@ -102,13 +102,13 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 - [done] if triangle is not land, modify color to be from range #5195f5-#006eff
 
 #3 Planet has climate zones
-- there are 5 climate zones:
+- [done] there are 5 climate zones:
     - polar
     - sub-polar
     - temperate
     - sub-tropical
     - tropical
-- each ring in planet.md is marked by climate zone below ## Ring <index> section: "Climate: <climate zone>"
+- [done] each ring in planet.md is marked by climate zone below ## Ring <index> section: "Climate: <climate zone>"
     - rings through 0 to 47 are marked by zones in this order (<zone>: <number of rings>)
         - polar: 5
         - sub-polar: 5
@@ -119,7 +119,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - temperate: 5
         - sub-polar: 5
         - polar: 5
-- each triangle within a ring is marked with one of 3 main biome types:
+- [done] each triangle within a ring is marked with one of 3 main biome types:
     - types
         - polar
         - temperate
@@ -134,4 +134,4 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - temperate: #30c774-#4bc955
         - sub-tropical: #40c73e-#6fe362
         - tropical: #6cf007-#a7f76a
-    - apply random colors to triangles according to the climate zone of their ring
+    - apply random colors to land triangles according to the climate zone of their ring
