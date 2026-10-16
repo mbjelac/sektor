@@ -99,9 +99,9 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
             - pick 8 starting points all equally distant from each other (approximately)
             - move each starting point in random direction & distance
 - [done] if triangle is land, modify color to be from range #58d10d-#88c947
-- [done] if triangle is not land, modify color to be from range #5195f5-#006eff
+- [done] if triangle is not land, modify color to be from range #2482e0-#4a99e8
 
-#3 Planet has climate zones
+#3 [done] Planet has climate zones
 - [done] there are 5 climate zones:
     - polar
     - sub-polar
@@ -127,11 +127,9 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - triangles in polar, temperate & tropical climate zones are marked by those same biome types
     - triangles in sub-polar zones are marked by polar & temperate biome types randomly
     - triangles in sub-tropical zones are marked by tropical & temperate biome types randomly
-- each climate zone has it's own random color range
-    - color ranges per climate zone
+- [done] each biome has it's own random color range
+    - color ranges per biome
         - polar: #ffffff-#d9feff
-        - sub-polar: #7fe3c5-#3ec994
         - temperate: #30c774-#4bc955
-        - sub-tropical: #40c73e-#6fe362
         - tropical: #6cf007-#a7f76a
-    - apply random colors to land triangles according to the climate zone of their ring
+    - apply random colors to land triangles according to their biome

@@ -1,7 +1,9 @@
 // The planet is written down as markdown. Under its Topology heading every ring has a heading of its
 // own, numbered from the north pole down, and under that a line for every triangle of the ring, in
-// order eastwards, holding the triangle's colour, followed by an L if the triangle is land. Whatever
-// stands outside the Topology section is not read here.
+// order eastwards, holding the triangle's colour, followed by an L if the triangle is land and by
+// the triangle's biome. Only the colour is read here. The
+// ring's climate zone stands on a line of its own and is not read here, nor is whatever stands
+// outside the Topology section.
 export function parsePlanetColors(planetMarkdown: string): string[][] {
   const colorRings: string[][] = [];
   let isInTopology = false;
@@ -21,7 +23,7 @@ export function parsePlanetColors(planetMarkdown: string): string[][] {
       colorRings[Number(ringHeading[1])] = currentRing;
       continue;
     }
-    if (currentRing && line !== "") currentRing.push(line.split(/\s+/)[0]!);
+    if (currentRing && line !== "" && !line.startsWith("Climate:")) currentRing.push(line.split(/\s+/)[0]!);
   }
 
   return colorRings;

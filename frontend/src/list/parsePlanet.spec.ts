@@ -43,4 +43,15 @@ describe("parsePlanetColors", () => {
 
     expect(parsePlanetColors(planetMarkdown)).toEqual([["#ffea00", "#006eff"]]);
   });
+
+  it("does not take a ring's climate zone for a triangle", () => {
+    const planetMarkdown = [
+      "# Topology",
+      "## Ring 0",
+      "Climate: polar",
+      "#ffffff",
+    ].join("\n");
+
+    expect(parsePlanetColors(planetMarkdown)).toEqual([["#ffffff"]]);
+  });
 });
