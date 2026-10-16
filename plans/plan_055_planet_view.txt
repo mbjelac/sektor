@@ -156,3 +156,15 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 
 #5 Planet has deserts
 - on land there are zones with desert biome sub-type
+- a desert is a land triangle marked with D (after L)
+- grow deserts on the planet
+    - one desert has random size of 3-20 triangles
+    - chances of deserts by climate zone
+        - polar: 0%
+        - subpolar: 0%
+        - temperate: 15%
+        - subtropical: 30%
+        - tropical: 25%
+- desert triangles are colored by biome type:
+    - temperate: #f5ce9a-#e0d3c1
+    - tropical: #f5e198-#e0dac1
