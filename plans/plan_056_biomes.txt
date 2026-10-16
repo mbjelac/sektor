@@ -50,5 +50,6 @@ So, except for the Desert, all biome groups have sub-groups:
     - no rivers
 
 #3 Tropical sektors look tropical
+- soil color is from range: #e3c286 - #99eb73
 - if a sektor's area is in a tropical biome
     - use elevation & forest rendering SGLs from folder frontend/src/assets/terrain/tropical
