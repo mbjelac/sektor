@@ -169,7 +169,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - temperate: #f5ce9a-#e0d3c1
     - tropical: #f5e198-#e0dac1
 
-#6 Player sees data for a specific region
+#6 [done] Player sees data for a specific region
 - [done] when player hovers with mouse over a triangle on the visible part of the sphere
     - player sees data for that triangle on the bottom of the screen
         - row of text

@@ -238,6 +238,20 @@ test("shows the whole list page with the leaderboard beside the sektors", async 
   await expect(page.locator("#list-page")).toHaveScreenshot("list-page.png", { maxDiffPixelRatio: 0 });
 });
 
+// The middle of the window is the middle of the planet, which the lists leave showing.
+test("tells what lies under the mouse on the planet", async ({ page }) => {
+  await page.mouse.move(640, 360);
+
+  await expect(page.locator("#planet-region-info")).toHaveScreenshot("planet-region-info.png", { maxDiffPixelRatio: 0 });
+});
+
+test("tells nothing once the mouse leaves the planet", async ({ page }) => {
+  await page.mouse.move(640, 360);
+  await page.mouse.move(1100, 600);
+
+  expect(await page.locator("#planet-region-info").isVisible()).toEqual(false);
+});
+
 // A sektor of mines, one on every piece of ore given, which the mines turn into an export the
 // sektor scores for — the more ore, the higher the score its player brings to the leaderboard. A
 // hub stands beside them to ship the ore out.

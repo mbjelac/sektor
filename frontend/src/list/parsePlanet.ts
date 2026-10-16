@@ -1,13 +1,23 @@
+// What the planet is like at one triangle.
+export type PlanetRegion = {
+  color: string;
+  climate: string;
+  biome: string;
+  isLand: boolean;
+  isForest: boolean;
+  isDesert: boolean;
+};
+
 // The planet is written down as markdown. Under its Topology heading every ring has a heading of its
-// own, numbered from the north pole down, and under that a line for every triangle of the ring, in
-// order eastwards, holding the triangle's colour, followed by an L if the triangle is land, an F if
-// the land is forest or a D if it is desert, and the triangle's biome. Only the colour is read here.
-// The ring's climate zone stands on a line of its own and is not read here, nor is whatever stands
-// outside the Topology section.
-export function parsePlanetColors(planetMarkdown: string): string[][] {
-  const colorRings: string[][] = [];
+// own, numbered from the north pole down, then its climate zone on a line of its own, then a line for
+// every triangle of the ring, in order eastwards, holding the triangle's colour, followed by an L if
+// the triangle is land, an F if the land is forest or a D if it is desert, and the triangle's biome.
+// Whatever stands outside the Topology section is not read here.
+export function parsePlanet(planetMarkdown: string): PlanetRegion[][] {
+  const regionRings: PlanetRegion[][] = [];
   let isInTopology = false;
-  let currentRing: string[] | null = null;
+  let currentRing: PlanetRegion[] | null = null;
+  let currentClimate = "";
 
   for (const line of planetMarkdown.split("\n").map(line => line.trim())) {
     if (line.startsWith("# ")) {
@@ -20,11 +30,29 @@ export function parsePlanetColors(planetMarkdown: string): string[][] {
     const ringHeading = line.match(/^## Ring (\d+)$/);
     if (ringHeading) {
       currentRing = [];
-      colorRings[Number(ringHeading[1])] = currentRing;
+      currentClimate = "";
+      regionRings[Number(ringHeading[1])] = currentRing;
       continue;
     }
-    if (currentRing && line !== "" && !line.startsWith("Climate:")) currentRing.push(line.split(/\s+/)[0]!);
+    const climate = line.match(/^Climate: (.+)$/);
+    if (climate) {
+      currentClimate = climate[1]!;
+      continue;
+    }
+    if (currentRing && line !== "") currentRing.push(parseRegion(line, currentClimate));
   }
 
-  return colorRings;
+  return regionRings;
+}
+
+function parseRegion(line: string, climate: string): PlanetRegion {
+  const [color, ...markers] = line.split(/\s+/);
+  return {
+    color: color!,
+    climate,
+    biome: markers.find(marker => !["L", "F", "D"].includes(marker)) ?? "",
+    isLand: markers.includes("L"),
+    isForest: markers.includes("F"),
+    isDesert: markers.includes("D"),
+  };
 }
