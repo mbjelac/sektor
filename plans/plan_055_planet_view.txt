@@ -129,7 +129,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - triangles in sub-tropical zones are marked by tropical & temperate biome types randomly
 - [done] each biome has it's own random color range
     - color ranges per biome
-        - polar: #ffffff-#d9feff
-        - temperate: #30c774-#4bc955
-        - tropical: #6cf007-#a7f76a
+        - polar: #ffffff-#9efcff
+        - temperate: #009e00-#00e000
+        - tropical: #55c400-#b2ed00
     - apply random colors to land triangles according to their biome

@@ -129,15 +129,15 @@ Climate: polar
 #4697e7 polar
 #2884e1 polar
 #4495e7 polar
-#e7feff L polar
+#dcfeff L polar
 #378ee4 polar
 #4998e8 polar
-#d9feff L polar
-#f2ffff L polar
+#c5fdff L polar
+#b8fdff L polar
 #4495e7 polar
 #2683e0 polar
-#eafeff L polar
-#e3feff L polar
+#c2fdff L polar
+#e1feff L polar
 #388ee4 polar
 #3f92e6 polar
 #338be3 polar
@@ -180,22 +180,22 @@ Climate: sub-polar
 #378ee4 temperate
 #4294e6 temperate
 #3c91e5 polar
-#f3ffff L polar
+#a5fcff L polar
 #2a86e1 polar
 #4998e8 temperate
 #4596e7 polar
 #4696e7 temperate
-#41c861 L temperate
+#00a400 L temperate
 #4495e7 polar
 #3d91e5 temperate
 #2683e0 temperate
 #2d87e2 temperate
-#e6feff L polar
+#cffeff L polar
 #4395e6 polar
-#36c76d L temperate
+#00de00 L temperate
 #2985e1 polar
-#dcfeff L polar
-#e0feff L polar
+#c3fdff L polar
+#ccfdff L polar
 #3a8fe5 temperate
 #2b86e2 temperate
 #4495e7 polar
@@ -243,27 +243,27 @@ Climate: sub-polar
 #4093e6 temperate
 #3a8fe5 polar
 #4898e8 polar
-#ebfeff L polar
+#e6feff L polar
 #4696e7 polar
 #398fe4 temperate
-#fdffff L polar
-#41c860 L temperate
-#dafeff L polar
+#f1ffff L polar
+#00c800 L temperate
+#b7fdff L polar
 #3a8fe5 temperate
 #2e88e2 polar
 #4394e6 temperate
-#39c86a L temperate
-#dbfeff L polar
-#33c771 L temperate
-#38c86a L temperate
-#defeff L polar
-#48c959 L temperate
+#00d800 L temperate
+#c7fdff L polar
+#00c700 L temperate
+#00ae00 L temperate
+#eefeff L polar
+#00d600 L temperate
 #2985e1 temperate
-#f0ffff L polar
-#ecfeff L polar
-#38c86b L temperate
-#47c959 L temperate
-#37c86b L temperate
+#dbfeff L polar
+#cffeff L polar
+#00d500 L temperate
+#00ab00 L temperate
+#00db00 L temperate
 #328be3 temperate
 #378de4 polar
 #2683e0 temperate
@@ -321,25 +321,25 @@ Climate: sub-polar
 #4495e7 temperate
 #358ce4 temperate
 #3c91e5 polar
-#f0ffff L polar
-#fcffff L polar
-#37c86c L temperate
+#feffff L polar
+#a8fcff L polar
+#00af00 L temperate
 #318ae3 polar
-#37c86c L temperate
-#3bc867 L temperate
-#33c771 L temperate
-#48c958 L temperate
-#dafeff L polar
-#49c957 L temperate
+#00c900 L temperate
+#00b000 L temperate
+#00b800 L temperate
+#00b900 L temperate
+#a2fcff L polar
+#00d400 L temperate
 #3089e2 temperate
 #4696e7 polar
-#3bc867 L temperate
-#38c86b L temperate
-#dffeff L polar
-#3ec864 L temperate
-#34c770 L temperate
-#e5feff L polar
-#49c958 L temperate
+#00d000 L temperate
+#00ab00 L temperate
+#e9feff L polar
+#009e00 L temperate
+#00c200 L temperate
+#e7feff L polar
+#00bc00 L temperate
 #2985e1 polar
 #2a85e1 temperate
 #2583e0 polar
@@ -404,29 +404,29 @@ Climate: sub-polar
 #2a86e1 polar
 #378de4 temperate
 #368de4 polar
-#e6feff L polar
-#f2ffff L polar
-#4bc955 L temperate
-#e5feff L polar
-#faffff L polar
-#efffff L polar
-#ffffff L polar
-#34c76f L temperate
-#34c770 L temperate
-#43c85e L temperate
-#ddfeff L polar
-#36c76d L temperate
-#fdffff L polar
+#f6ffff L polar
+#c1fdff L polar
+#00b100 L temperate
+#c4fdff L polar
+#f9ffff L polar
+#a6fcff L polar
+#d6feff L polar
+#00b700 L temperate
+#00dd00 L temperate
+#00b700 L temperate
+#a9fcff L polar
+#00d200 L temperate
+#a2fcff L polar
 #2c87e2 temperate
-#f4ffff L polar
-#eeffff L polar
-#44c85d L temperate
-#34c76f L temperate
-#3ec864 L temperate
-#46c95b L temperate
-#e5feff L polar
-#49c958 L temperate
-#e2feff L polar
+#ddfeff L polar
+#d7feff L polar
+#00d700 L temperate
+#00df00 L temperate
+#00cb00 L temperate
+#00c500 L temperate
+#b0fdff L polar
+#00bb00 L temperate
+#acfcff L polar
 #3f92e6 temperate
 #4998e8 polar
 #4093e6 polar
@@ -496,35 +496,35 @@ Climate: sub-polar
 #2e88e2 temperate
 #4093e6 polar
 #4898e8 temperate
-#e5feff L polar
-#45c95c L temperate
-#31c773 L temperate
-#ecffff L polar
-#f2ffff L polar
-#41c861 L temperate
-#f6ffff L polar
-#f9ffff L polar
-#4ac956 L temperate
-#34c76f L temperate
-#f9ffff L polar
-#dcfeff L polar
+#fbffff L polar
+#00c200 L temperate
+#00d900 L temperate
+#eafeff L polar
+#b8fdff L polar
+#00ca00 L temperate
+#cffeff L polar
+#cffeff L polar
+#00dc00 L temperate
+#009f00 L temperate
+#d0feff L polar
+#e0feff L polar
 #3f93e6 polar
 #4999e8 polar
 #3089e3 temperate
-#f6ffff L polar
-#4697e7 temperate
 #dcfeff L polar
-#35c76e L temperate
-#3ec864 L temperate
-#ebfeff L polar
+#4697e7 temperate
+#e8feff L polar
+#00c500 L temperate
+#00ad00 L temperate
+#a2fcff L polar
 #4998e8 polar
-#eafeff L polar
-#44c85d L temperate
-#fdffff L polar
-#31c773 L temperate
-#35c76e L temperate
-#3dc865 L temperate
-#4ac956 L temperate
+#b1fdff L polar
+#00de00 L temperate
+#edfeff L polar
+#00c700 L temperate
+#00bb00 L temperate
+#00cc00 L temperate
+#00a500 L temperate
 #348ce3 temperate
 #4998e8 polar
 #4496e7 polar
@@ -588,7 +588,7 @@ Climate: temperate
 #368de4 temperate
 #3089e2 temperate
 #2683e0 temperate
-#3ec863 L temperate
+#00c700 L temperate
 #4697e7 temperate
 #388ee4 temperate
 #4294e6 temperate
@@ -597,21 +597,21 @@ Climate: temperate
 #338be3 temperate
 #4395e7 temperate
 #2582e0 temperate
-#4bc955 L temperate
-#3dc865 L temperate
-#49c958 L temperate
+#00c900 L temperate
+#00ae00 L temperate
+#00c600 L temperate
 #2884e1 temperate
-#35c76e L temperate
-#33c770 L temperate
-#37c76d L temperate
-#4ac956 L temperate
-#3dc865 L temperate
-#4ac956 L temperate
-#3fc863 L temperate
-#39c869 L temperate
-#3bc868 L temperate
-#47c95a L temperate
-#48c958 L temperate
+#00dd00 L temperate
+#00c000 L temperate
+#00a400 L temperate
+#00bb00 L temperate
+#00a100 L temperate
+#00c100 L temperate
+#00a000 L temperate
+#00c700 L temperate
+#00d900 L temperate
+#00b900 L temperate
+#00db00 L temperate
 #2d87e2 temperate
 #3a8fe5 temperate
 #4998e8 temperate
@@ -627,15 +627,15 @@ Climate: temperate
 #4194e6 temperate
 #2784e1 temperate
 #3089e2 temperate
-#31c773 L temperate
+#00d900 L temperate
 #3d91e5 temperate
-#30c774 L temperate
-#46c95a L temperate
+#00cc00 L temperate
+#00d100 L temperate
 #338be3 temperate
 #3d91e5 temperate
 #3b90e5 temperate
-#32c772 L temperate
-#48c958 L temperate
+#00db00 L temperate
+#00a200 L temperate
 #2683e0 temperate
 #4093e6 temperate
 #348be3 temperate
@@ -658,7 +658,7 @@ Climate: temperate
 #4898e8 temperate
 #2582e0 temperate
 #2683e0 temperate
-#3ec864 L temperate
+#00af00 L temperate
 #2a86e1 temperate
 #4395e6 temperate
 #388ee4 temperate
@@ -692,40 +692,40 @@ Climate: temperate
 #3e92e6 temperate
 #3f92e6 temperate
 #4898e8 temperate
-#36c76d L temperate
+#00c800 L temperate
 #3d91e5 temperate
 #2683e1 temperate
 #2d87e2 temperate
 #2985e1 temperate
 #318ae3 temperate
 #4a99e8 temperate
-#46c95b L temperate
-#44c95d L temperate
-#32c772 L temperate
-#3fc863 L temperate
+#00dc00 L temperate
+#00d500 L temperate
+#00d800 L temperate
+#00c100 L temperate
 #4093e6 temperate
 #338be3 temperate
-#37c86c L temperate
+#00ab00 L temperate
 #4898e8 temperate
 #368de4 temperate
 #4999e8 temperate
-#40c861 L temperate
+#00a100 L temperate
 #398fe4 temperate
 #2f89e2 temperate
-#42c85f L temperate
-#33c771 L temperate
-#3fc863 L temperate
-#32c772 L temperate
-#4bc955 L temperate
-#36c76d L temperate
-#46c95b L temperate
-#42c860 L temperate
-#47c95a L temperate
-#43c85e L temperate
-#3ac868 L temperate
-#3dc865 L temperate
-#44c85e L temperate
-#32c771 L temperate
+#00cf00 L temperate
+#00db00 L temperate
+#00a200 L temperate
+#00d000 L temperate
+#00ab00 L temperate
+#00ca00 L temperate
+#00b300 L temperate
+#00b400 L temperate
+#00c400 L temperate
+#00da00 L temperate
+#00d000 L temperate
+#00a800 L temperate
+#00b600 L temperate
+#00c200 L temperate
 #2985e1 temperate
 #3b90e5 temperate
 #3b90e5 temperate
@@ -742,21 +742,21 @@ Climate: temperate
 #388ee4 temperate
 #2784e1 temperate
 #318ae3 temperate
-#3fc863 L temperate
-#3cc867 L temperate
-#32c772 L temperate
-#49c957 L temperate
-#33c771 L temperate
-#3dc865 L temperate
+#00a400 L temperate
+#00a700 L temperate
+#00dd00 L temperate
+#00d400 L temperate
+#00bc00 L temperate
+#00ca00 L temperate
 #4596e7 temperate
-#34c770 L temperate
-#3ac868 L temperate
-#48c958 L temperate
-#41c860 L temperate
-#37c86c L temperate
+#00af00 L temperate
+#00cf00 L temperate
+#00a100 L temperate
+#009f00 L temperate
+#00cb00 L temperate
 #3d91e5 temperate
-#46c95b L temperate
-#3ac869 L temperate
+#00af00 L temperate
+#00b300 L temperate
 #398fe4 temperate
 #2884e1 temperate
 #4194e6 temperate
@@ -771,15 +771,15 @@ Climate: temperate
 #4998e8 temperate
 #398fe5 temperate
 #4294e6 temperate
-#33c771 L temperate
-#3bc867 L temperate
+#00c700 L temperate
+#00cb00 L temperate
 #4898e8 temperate
-#33c771 L temperate
+#00d100 L temperate
 #398fe5 temperate
-#36c76d L temperate
-#4ac956 L temperate
-#33c770 L temperate
-#44c85d L temperate
+#00a600 L temperate
+#00cc00 L temperate
+#00b300 L temperate
+#00a400 L temperate
 #4999e8 temperate
 #368de4 temperate
 #4294e6 temperate
@@ -800,7 +800,7 @@ Climate: temperate
 
 #2784e1 temperate
 #2e88e2 temperate
-#33c770 L temperate
+#00c800 L temperate
 #4496e7 temperate
 #4495e7 temperate
 #4495e7 temperate
@@ -813,43 +813,43 @@ Climate: temperate
 #3089e3 temperate
 #4395e7 temperate
 #2583e0 temperate
-#45c95c L temperate
-#38c86a L temperate
+#00bd00 L temperate
+#00d100 L temperate
 #348ce3 temperate
 #3a90e5 temperate
 #2d87e2 temperate
-#3fc863 L temperate
-#40c862 L temperate
-#31c773 L temperate
-#38c86b L temperate
-#32c772 L temperate
-#35c76e L temperate
+#00ae00 L temperate
+#00a400 L temperate
+#00c600 L temperate
+#00ac00 L temperate
+#00d000 L temperate
+#00db00 L temperate
 #2683e0 temperate
-#47c959 L temperate
-#46c95b L temperate
-#3cc866 L temperate
-#31c773 L temperate
-#32c772 L temperate
-#3ec864 L temperate
-#3ac868 L temperate
-#49c957 L temperate
-#3dc865 L temperate
+#00c600 L temperate
+#00bf00 L temperate
+#00cf00 L temperate
+#00b500 L temperate
+#00d700 L temperate
+#00a200 L temperate
+#00d600 L temperate
+#00ba00 L temperate
+#00de00 L temperate
 #4596e7 temperate
-#30c774 L temperate
-#45c95c L temperate
-#42c85f L temperate
-#3ec864 L temperate
-#31c772 L temperate
-#33c770 L temperate
-#31c773 L temperate
-#3ac868 L temperate
-#4bc955 L temperate
-#47c959 L temperate
-#35c76f L temperate
-#47c959 L temperate
-#3dc865 L temperate
-#33c770 L temperate
-#4ac956 L temperate
+#00a400 L temperate
+#00a900 L temperate
+#00ac00 L temperate
+#00db00 L temperate
+#00d900 L temperate
+#00d900 L temperate
+#00c900 L temperate
+#00b500 L temperate
+#00b100 L temperate
+#00a300 L temperate
+#00d300 L temperate
+#00bf00 L temperate
+#00c600 L temperate
+#00a400 L temperate
+#00c700 L temperate
 #348ce3 temperate
 #2a86e1 temperate
 #4495e7 temperate
@@ -864,25 +864,25 @@ Climate: temperate
 #4294e6 temperate
 #3089e3 temperate
 #328be3 temperate
-#32c772 L temperate
-#46c95a L temperate
-#34c76f L temperate
-#41c861 L temperate
+#00be00 L temperate
+#00a900 L temperate
+#00da00 L temperate
+#00ae00 L temperate
 #3c91e5 temperate
 #4797e7 temperate
 #3089e3 temperate
 #4596e7 temperate
-#45c95c L temperate
-#37c86c L temperate
-#37c86c L temperate
-#3cc867 L temperate
-#4bc955 L temperate
-#42c85f L temperate
-#44c85d L temperate
-#36c76d L temperate
-#35c76e L temperate
-#36c76d L temperate
-#35c76e L temperate
+#00d200 L temperate
+#00b300 L temperate
+#00d100 L temperate
+#00ab00 L temperate
+#00d800 L temperate
+#00af00 L temperate
+#00bb00 L temperate
+#009f00 L temperate
+#00dc00 L temperate
+#00bb00 L temperate
+#00c000 L temperate
 #4596e7 temperate
 #2a86e1 temperate
 #2683e1 temperate
@@ -900,17 +900,17 @@ Climate: temperate
 #4294e6 temperate
 #4999e8 temperate
 #4596e7 temperate
-#35c76f L temperate
-#44c85d L temperate
-#40c862 L temperate
-#41c861 L temperate
-#46c95b L temperate
-#41c861 L temperate
-#33c771 L temperate
-#44c85d L temperate
-#32c772 L temperate
-#40c862 L temperate
-#4ac956 L temperate
+#00d200 L temperate
+#00c300 L temperate
+#00b100 L temperate
+#00a400 L temperate
+#00db00 L temperate
+#00d600 L temperate
+#00ac00 L temperate
+#00c900 L temperate
+#009f00 L temperate
+#00b200 L temperate
+#00c000 L temperate
 #388ee4 temperate
 #2885e1 temperate
 #4696e7 temperate
@@ -922,7 +922,7 @@ Climate: temperate
 #328ae3 temperate
 #2885e1 temperate
 #4898e8 temperate
-#34c76f L temperate
+#00c100 L temperate
 
 ## Ring 13
 
@@ -932,61 +932,61 @@ Climate: temperate
 #3c91e5 temperate
 #3b90e5 temperate
 #2a85e1 temperate
-#35c76e L temperate
+#00a200 L temperate
 #2a85e1 temperate
 #4696e7 temperate
 #3b90e5 temperate
 #3b90e5 temperate
 #388ee4 temperate
-#3dc866 L temperate
+#00c800 L temperate
 #3a90e5 temperate
 #4596e7 temperate
 #3c90e5 temperate
-#38c86b L temperate
+#00be00 L temperate
 #2784e1 temperate
-#37c86c L temperate
+#00b200 L temperate
 #2683e0 temperate
 #2a85e1 temperate
-#47c95a L temperate
-#4ac957 L temperate
-#34c76f L temperate
-#3ac868 L temperate
-#45c95c L temperate
-#45c95c L temperate
-#34c76f L temperate
-#3fc863 L temperate
-#32c771 L temperate
-#4ac956 L temperate
-#36c76d L temperate
-#3fc862 L temperate
-#30c774 L temperate
-#3ec864 L temperate
-#49c958 L temperate
-#31c773 L temperate
-#40c862 L temperate
-#32c772 L temperate
-#3bc867 L temperate
-#30c774 L temperate
-#33c770 L temperate
-#45c95b L temperate
-#42c85f L temperate
-#49c957 L temperate
-#48c958 L temperate
-#3fc863 L temperate
-#32c772 L temperate
-#3bc867 L temperate
-#4bc955 L temperate
-#3bc868 L temperate
-#37c76c L temperate
-#39c86a L temperate
-#3cc867 L temperate
-#32c772 L temperate
-#43c85e L temperate
-#44c95d L temperate
-#44c95d L temperate
-#4ac956 L temperate
-#43c85e L temperate
-#3cc867 L temperate
+#00d000 L temperate
+#00bd00 L temperate
+#00d800 L temperate
+#00c500 L temperate
+#00c200 L temperate
+#00a200 L temperate
+#00a600 L temperate
+#00d600 L temperate
+#00b400 L temperate
+#00c000 L temperate
+#00d500 L temperate
+#00c000 L temperate
+#00a000 L temperate
+#00a100 L temperate
+#00a400 L temperate
+#00d600 L temperate
+#00bd00 L temperate
+#00de00 L temperate
+#00a600 L temperate
+#00db00 L temperate
+#00ca00 L temperate
+#00c000 L temperate
+#00d500 L temperate
+#00b200 L temperate
+#00ab00 L temperate
+#00af00 L temperate
+#00c500 L temperate
+#00a700 L temperate
+#00ac00 L temperate
+#00a500 L temperate
+#00a900 L temperate
+#00dc00 L temperate
+#00b100 L temperate
+#00a100 L temperate
+#00d700 L temperate
+#00d300 L temperate
+#00a600 L temperate
+#009f00 L temperate
+#00a900 L temperate
+#00a800 L temperate
 #348ce3 temperate
 #348be3 temperate
 #2d87e2 temperate
@@ -994,37 +994,37 @@ Climate: temperate
 #4898e8 temperate
 #4395e7 temperate
 #338be3 temperate
-#33c771 L temperate
+#00a600 L temperate
 #4294e6 temperate
 #368de4 temperate
-#4ac956 L temperate
-#4ac956 L temperate
-#43c85e L temperate
-#3ac868 L temperate
-#34c76f L temperate
+#00c900 L temperate
+#00be00 L temperate
+#00a000 L temperate
+#00bc00 L temperate
+#00ca00 L temperate
 #378de4 temperate
 #338be3 temperate
 #4193e6 temperate
 #4999e8 temperate
 #2683e0 temperate
-#43c85e L temperate
-#38c86b L temperate
-#44c85d L temperate
-#33c770 L temperate
-#3ec864 L temperate
-#31c773 L temperate
-#39c869 L temperate
-#3fc862 L temperate
-#39c869 L temperate
-#39c869 L temperate
-#39c86a L temperate
-#37c86c L temperate
-#39c86a L temperate
+#00a400 L temperate
+#00d000 L temperate
+#00bd00 L temperate
+#00b100 L temperate
+#00cb00 L temperate
+#00dd00 L temperate
+#00dd00 L temperate
+#00b500 L temperate
+#00ad00 L temperate
+#00b600 L temperate
+#00c600 L temperate
+#00d400 L temperate
+#00de00 L temperate
 #2a86e1 temperate
 #398ee4 temperate
 #2985e1 temperate
-#31c773 L temperate
-#31c773 L temperate
+#00b100 L temperate
+#00b100 L temperate
 #2a86e1 temperate
 #3b90e5 temperate
 #4898e8 temperate
@@ -1039,29 +1039,29 @@ Climate: temperate
 #348ce3 temperate
 #3d91e5 temperate
 #4a99e8 temperate
-#46c95a L temperate
+#00c500 L temperate
 #2985e1 temperate
-#44c85e L temperate
-#43c85e L temperate
-#3fc863 L temperate
-#34c76f L temperate
+#00c400 L temperate
+#00a600 L temperate
+#00bb00 L temperate
+#00d400 L temperate
 #2683e0 temperate
 #2a86e1 temperate
-#47c959 L temperate
-#35c76e L temperate
-#35c76f L temperate
-#37c86c L temperate
-#35c76e L temperate
-#39c86a L temperate
+#00bb00 L temperate
+#00a400 L temperate
+#00c000 L temperate
+#00dd00 L temperate
+#00a700 L temperate
+#00cf00 L temperate
 #3f92e6 temperate
-#38c86b L temperate
+#00dc00 L temperate
 #2f89e2 temperate
 #388ee4 temperate
 #3089e3 temperate
 #4596e7 temperate
 #2a85e1 temperate
-#31c773 L temperate
-#34c76f L temperate
+#00db00 L temperate
+#00ce00 L temperate
 #4998e8 temperate
 
 ## Ring 14
@@ -1070,66 +1070,66 @@ Climate: temperate
 
 #2683e1 temperate
 #4194e6 temperate
-#39c86a L temperate
+#00ad00 L temperate
 #3e92e6 temperate
 #328be3 temperate
-#3dc866 L temperate
+#00a800 L temperate
 #3d91e5 temperate
 #398fe4 temperate
-#3cc866 L temperate
-#43c85e L temperate
+#00c800 L temperate
+#00d400 L temperate
 #2d88e2 temperate
-#3ec864 L temperate
-#37c86c L temperate
+#00a600 L temperate
+#00cc00 L temperate
 #368de4 temperate
-#37c86b L temperate
+#00d200 L temperate
 #2c87e2 temperate
-#3bc868 L temperate
+#00d300 L temperate
 #388ee4 temperate
 #328be3 temperate
-#41c861 L temperate
+#00af00 L temperate
 #308ae3 temperate
-#34c76f L temperate
-#39c869 L temperate
-#41c860 L temperate
-#4bc955 L temperate
+#00cf00 L temperate
+#00aa00 L temperate
+#00d600 L temperate
+#00dd00 L temperate
 #2583e0 temperate
-#32c772 L temperate
-#3dc865 L temperate
-#3ec864 L temperate
-#42c85f L temperate
-#43c85f L temperate
-#43c85f L temperate
-#38c86b L temperate
-#43c85f L temperate
-#4ac956 L temperate
+#00af00 L temperate
+#00d400 L temperate
+#00b700 L temperate
+#00c000 L temperate
+#00d300 L temperate
+#00bd00 L temperate
+#00ad00 L temperate
+#00ad00 L temperate
+#00ba00 L temperate
 #398fe4 temperate
-#3dc865 L temperate
-#44c85e L temperate
-#45c95c L temperate
-#3ec864 L temperate
-#32c771 L temperate
+#00da00 L temperate
+#00d700 L temperate
+#00d100 L temperate
+#00dd00 L temperate
+#00df00 L temperate
 #368de4 temperate
-#47c959 L temperate
+#00a900 L temperate
 #4294e6 temperate
-#46c95b L temperate
+#00d700 L temperate
 #3e91e5 temperate
 #4596e7 temperate
 #388ee4 temperate
 #4496e7 temperate
-#32c772 L temperate
-#39c86a L temperate
-#38c86b L temperate
-#31c773 L temperate
-#3ec864 L temperate
-#49c957 L temperate
-#31c772 L temperate
-#35c76e L temperate
+#009f00 L temperate
+#00b200 L temperate
+#00bf00 L temperate
+#00df00 L temperate
+#00a500 L temperate
+#00d700 L temperate
+#00d300 L temperate
+#00b900 L temperate
 #2a86e1 temperate
-#46c95a L temperate
-#46c95b L temperate
-#3dc865 L temperate
-#45c95c L temperate
+#00d700 L temperate
+#00c500 L temperate
+#00dc00 L temperate
+#00c100 L temperate
 #3c90e5 temperate
 #2482e0 temperate
 #388ee4 temperate
@@ -1138,14 +1138,14 @@ Climate: temperate
 #2985e1 temperate
 #4697e7 temperate
 #4294e6 temperate
-#35c76f L temperate
-#34c76f L temperate
-#37c86c L temperate
-#38c86b L temperate
-#35c76e L temperate
-#48c959 L temperate
-#41c861 L temperate
-#3ec864 L temperate
+#00a300 L temperate
+#00a400 L temperate
+#00a600 L temperate
+#00c500 L temperate
+#00ad00 L temperate
+#00c700 L temperate
+#00af00 L temperate
+#00d300 L temperate
 #4797e7 temperate
 #3f92e6 temperate
 #2784e1 temperate
@@ -1157,25 +1157,25 @@ Climate: temperate
 #4998e8 temperate
 #2985e1 temperate
 #4999e8 temperate
-#47c959 L temperate
-#44c85d L temperate
-#40c862 L temperate
-#48c958 L temperate
-#47c95a L temperate
-#42c85f L temperate
-#39c86a L temperate
-#3bc867 L temperate
+#00de00 L temperate
+#00c000 L temperate
+#00c100 L temperate
+#00cb00 L temperate
+#00d500 L temperate
+#00b900 L temperate
+#00a500 L temperate
+#00be00 L temperate
 #2b86e2 temperate
-#49c957 L temperate
+#00cf00 L temperate
 #3d91e5 temperate
-#3cc866 L temperate
+#00a100 L temperate
 #3c90e5 temperate
-#32c771 L temperate
+#00bf00 L temperate
 #2582e0 temperate
 #3a8fe5 temperate
-#48c959 L temperate
-#39c869 L temperate
-#49c958 L temperate
+#00b200 L temperate
+#009f00 L temperate
+#00d700 L temperate
 #2683e0 temperate
 #4294e6 temperate
 #378de4 temperate
@@ -1189,21 +1189,21 @@ Climate: temperate
 #4193e6 temperate
 #3d91e5 temperate
 #2b86e1 temperate
-#3cc867 L temperate
-#43c85e L temperate
-#34c770 L temperate
-#30c774 L temperate
-#3dc865 L temperate
-#42c85f L temperate
-#46c95b L temperate
-#32c772 L temperate
-#3ec864 L temperate
-#32c772 L temperate
-#45c95c L temperate
-#45c95c L temperate
-#34c76f L temperate
-#3dc866 L temperate
-#3dc865 L temperate
+#00af00 L temperate
+#00a000 L temperate
+#00bf00 L temperate
+#00c900 L temperate
+#00c200 L temperate
+#00c200 L temperate
+#00da00 L temperate
+#00be00 L temperate
+#00b100 L temperate
+#00d600 L temperate
+#00b000 L temperate
+#00bc00 L temperate
+#00af00 L temperate
+#00b500 L temperate
+#00ba00 L temperate
 #4797e7 temperate
 #4998e8 temperate
 #348ce3 temperate
@@ -1220,45 +1220,45 @@ Climate: sub-tropical
 
 #398ee4 temperate
 #328be3 temperate
-#a0f65e L tropical
-#a3f663 L tropical
-#35c76f L temperate
-#a2f661 L tropical
-#99f552 L tropical
+#5bc700 L tropical
+#a0e500 L tropical
+#00e000 L temperate
+#9de400 L tropical
+#88da00 L tropical
 #4294e6 tropical
-#3fc863 L temperate
-#9cf658 L tropical
+#00bb00 L temperate
+#59c600 L tropical
 #4495e7 temperate
 #388ee4 tropical
-#8df43e L tropical
+#6bce00 L tropical
 #2d88e2 temperate
-#4ac957 L temperate
-#a2f661 L tropical
+#00ba00 L temperate
+#8adc00 L tropical
 #2885e1 temperate
-#93f548 L tropical
-#8df43f L tropical
-#7af21f L tropical
-#a1f660 L tropical
-#84f32f L tropical
-#39c86a L temperate
+#a5e700 L tropical
+#68cc00 L tropical
+#8edd00 L tropical
+#7cd500 L tropical
+#9be300 L tropical
+#00a800 L temperate
 #2985e1 tropical
 #2582e0 temperate
-#75f117 L tropical
+#66cb00 L tropical
 #2f88e2 tropical
 #328be3 temperate
-#95f54d L tropical
-#7cf222 L tropical
-#a1f660 L tropical
-#38c86b L temperate
+#a4e700 L tropical
+#6dcf00 L tropical
+#92df00 L tropical
+#00be00 L temperate
 #4998e8 tropical
-#46c95b L temperate
-#37c86c L temperate
+#00b500 L temperate
+#00e000 L temperate
 #378de4 tropical
-#6ef00b L tropical
+#96e100 L tropical
 #4495e7 temperate
 #388ee4 tropical
-#4bc955 L temperate
-#a2f661 L tropical
+#00a100 L temperate
+#a0e500 L tropical
 #348ce3 tropical
 #3a8fe5 tropical
 #4093e6 tropical
@@ -1271,16 +1271,16 @@ Climate: sub-tropical
 #4495e7 temperate
 #4495e7 temperate
 #4797e7 temperate
-#7cf223 L tropical
-#45c95c L temperate
+#78d400 L tropical
+#00cb00 L temperate
 #388ee4 temperate
-#4ac956 L temperate
-#35c76e L temperate
-#40c862 L temperate
-#95f54c L tropical
-#9bf657 L tropical
-#a4f765 L tropical
-#79f21d L tropical
+#00c200 L temperate
+#00b900 L temperate
+#00d300 L temperate
+#59c600 L tropical
+#6fcf00 L tropical
+#83d800 L tropical
+#a6e800 L tropical
 #4797e7 temperate
 #368de4 tropical
 #3b90e5 temperate
@@ -1293,12 +1293,12 @@ Climate: sub-tropical
 #2d87e2 tropical
 #3f93e6 temperate
 #3e92e5 temperate
-#3bc868 L temperate
-#45c95c L temperate
-#a0f65e L tropical
-#3cc867 L temperate
-#3dc865 L temperate
-#a7f76a L tropical
+#00cd00 L temperate
+#00bd00 L temperate
+#6bce00 L tropical
+#00cc00 L temperate
+#00ba00 L temperate
+#abea00 L tropical
 #4999e8 tropical
 #378de4 tropical
 #368de4 temperate
@@ -1313,33 +1313,33 @@ Climate: sub-tropical
 #2683e0 tropical
 #2884e1 temperate
 #4697e7 tropical
-#81f32a L tropical
-#3dc865 L temperate
-#4bc955 L temperate
-#85f331 L tropical
-#3cc866 L temperate
-#37c86c L temperate
-#8bf43b L tropical
-#79f21d L tropical
-#3ac869 L temperate
-#92f446 L tropical
+#72d100 L tropical
+#009f00 L temperate
+#00af00 L temperate
+#5bc700 L tropical
+#00be00 L temperate
+#00d000 L temperate
+#68cc00 L tropical
+#abea00 L tropical
+#00aa00 L temperate
+#a3e600 L tropical
 #368de4 temperate
 #3089e2 temperate
-#3bc867 L temperate
-#31c773 L temperate
+#00da00 L temperate
+#00df00 L temperate
 #3089e2 tropical
-#80f229 L tropical
-#75f117 L tropical
-#78f11a L tropical
-#48c959 L temperate
-#72f112 L tropical
-#45c95b L temperate
-#7bf221 L tropical
-#36c76e L temperate
+#76d300 L tropical
+#71d000 L tropical
+#57c500 L tropical
+#00c500 L temperate
+#86da00 L tropical
+#009f00 L temperate
+#80d700 L tropical
+#00d600 L temperate
 #318ae3 tropical
-#37c86c L temperate
-#a4f765 L tropical
-#4ac956 L temperate
+#00d400 L temperate
+#7ad400 L tropical
+#00b100 L temperate
 #2885e1 tropical
 #2784e1 temperate
 #348ce3 temperate
@@ -1350,24 +1350,24 @@ Climate: sub-tropical
 #378ee4 temperate
 #2683e0 tropical
 #2583e0 temperate
-#92f547 L tropical
-#45c95c L temperate
-#3dc865 L temperate
-#a4f765 L tropical
-#3bc867 L temperate
-#a6f768 L tropical
-#98f551 L tropical
-#3bc867 L temperate
-#38c86b L temperate
-#3ac869 L temperate
-#37c86c L temperate
-#a6f768 L tropical
-#3ac868 L temperate
-#42c85f L temperate
+#6fcf00 L tropical
+#00c200 L temperate
+#00c200 L temperate
+#97e100 L tropical
+#00b800 L temperate
+#69cd00 L tropical
+#5ac600 L tropical
+#00ce00 L temperate
+#00ae00 L temperate
+#00b600 L temperate
+#00c900 L temperate
+#9ae200 L tropical
+#00bd00 L temperate
+#00bb00 L temperate
 #3d91e5 temperate
 #3d91e5 temperate
-#3dc865 L temperate
-#6cf007 L tropical
+#00aa00 L temperate
+#a8e800 L tropical
 #4294e6 tropical
 #2583e0 tropical
 #2885e1 temperate
@@ -1381,46 +1381,46 @@ Climate: sub-tropical
 #388ee4 tropical
 #4697e7 tropical
 #2d87e2 tropical
-#79f21d L tropical
+#a7e800 L tropical
 #2583e0 tropical
-#73f112 L tropical
-#49c958 L temperate
-#a3f763 L tropical
-#3ec864 L temperate
+#aeeb00 L tropical
+#00a000 L temperate
+#5fc800 L tropical
+#00d600 L temperate
 #2985e1 temperate
-#44c85d L temperate
-#44c85e L temperate
+#00d200 L temperate
+#00af00 L temperate
 #348ce3 tropical
-#3dc865 L temperate
+#00df00 L temperate
 #4898e8 tropical
 #2683e0 tropical
-#39c869 L temperate
-#42c85f L temperate
-#47c95a L temperate
-#8ff442 L tropical
-#32c771 L temperate
-#43c85f L temperate
-#36c76d L temperate
-#31c773 L temperate
-#3fc863 L temperate
-#80f229 L tropical
-#77f119 L tropical
-#6df009 L tropical
-#42c85f L temperate
+#00aa00 L temperate
+#00c400 L temperate
+#00c600 L temperate
+#93df00 L tropical
+#00da00 L temperate
+#00c100 L temperate
+#00d500 L temperate
+#00d300 L temperate
+#00d200 L temperate
+#89db00 L tropical
+#57c500 L tropical
+#8cdc00 L tropical
+#00c100 L temperate
 #3b90e5 tropical
-#6df008 L tropical
-#85f330 L tropical
-#80f229 L tropical
-#92f446 L tropical
-#40c862 L temperate
-#9af554 L tropical
-#71f10f L tropical
+#64cb00 L tropical
+#69cd00 L tropical
+#5bc700 L tropical
+#7cd500 L tropical
+#00a400 L temperate
+#72d100 L tropical
+#6dcf00 L tropical
 #4898e8 tropical
 #318ae3 temperate
-#3cc866 L temperate
+#00a800 L temperate
 #388ee4 temperate
 #358ce4 temperate
-#8af439 L tropical
+#82d800 L tropical
 #3e91e5 temperate
 #348be3 temperate
 #328ae3 temperate
@@ -1433,19 +1433,19 @@ Climate: sub-tropical
 #4898e8 temperate
 #2a85e1 temperate
 #4496e7 temperate
-#9cf658 L tropical
+#70d000 L tropical
 #388ee4 tropical
 #398fe4 temperate
-#33c771 L temperate
-#7cf221 L tropical
-#9ff65d L tropical
-#41c861 L temperate
-#95f54b L tropical
-#40c861 L temperate
-#44c85d L temperate
-#94f54a L tropical
-#9cf658 L tropical
-#49c957 L temperate
+#00af00 L temperate
+#56c500 L tropical
+#a9e900 L tropical
+#00ca00 L temperate
+#7bd500 L tropical
+#00a500 L temperate
+#00a900 L temperate
+#88da00 L tropical
+#94e000 L tropical
+#00c800 L temperate
 #318ae3 tropical
 #2683e0 temperate
 #358ce4 temperate
@@ -1454,12 +1454,12 @@ Climate: sub-tropical
 #3e92e6 temperate
 #4395e7 temperate
 #3d91e5 tropical
-#86f333 L tropical
-#82f32c L tropical
-#8bf43b L tropical
-#6df008 L tropical
+#96e100 L tropical
+#96e100 L tropical
+#74d200 L tropical
+#6acd00 L tropical
 #4999e8 temperate
-#38c86b L temperate
+#00ad00 L temperate
 #3f92e6 tropical
 #368de4 temperate
 #4596e7 temperate
@@ -1477,35 +1477,35 @@ Climate: sub-tropical
 #2784e1 tropical
 #4194e6 tropical
 #398fe5 temperate
-#9af554 L tropical
-#80f229 L tropical
-#40c861 L temperate
-#86f333 L tropical
-#36c76e L temperate
-#6df008 L tropical
-#37c76d L temperate
-#32c771 L temperate
-#39c86a L temperate
-#9ef65b L tropical
+#abea00 L tropical
+#95e000 L tropical
+#009f00 L temperate
+#74d200 L tropical
+#00d300 L temperate
+#64ca00 L tropical
+#00db00 L temperate
+#00ba00 L temperate
+#00a900 L temperate
+#6ecf00 L tropical
 #2d88e2 tropical
 #328be3 temperate
 #348ce3 temperate
-#86f333 L tropical
+#89db00 L tropical
 #3b90e5 tropical
-#82f32d L tropical
-#9df65a L tropical
-#46c95b L temperate
-#3ac869 L temperate
-#a6f769 L tropical
-#8af43a L tropical
-#43c85e L temperate
-#7ef225 L tropical
-#4bc955 L temperate
-#9af554 L tropical
-#35c76e L temperate
-#37c86c L temperate
-#8ef440 L tropical
-#40c862 L temperate
+#82d800 L tropical
+#a7e800 L tropical
+#00a100 L temperate
+#00c000 L temperate
+#80d700 L tropical
+#85d900 L tropical
+#00a000 L temperate
+#a7e800 L tropical
+#00d200 L temperate
+#a4e700 L tropical
+#00b500 L temperate
+#00ad00 L temperate
+#6ecf00 L tropical
+#00a900 L temperate
 #4496e7 temperate
 #3089e2 temperate
 #328ae3 tropical
@@ -1514,24 +1514,24 @@ Climate: sub-tropical
 #388ee4 temperate
 #3b90e5 tropical
 #328ae3 temperate
-#4ac957 L temperate
-#44c85d L temperate
-#3cc866 L temperate
-#3cc866 L temperate
-#72f111 L tropical
-#9ff65d L tropical
-#35c76e L temperate
-#35c76e L temperate
-#39c86a L temperate
-#9ef65a L tropical
-#40c862 L temperate
-#75f116 L tropical
-#3dc865 L temperate
-#99f553 L tropical
-#8df43e L tropical
-#32c771 L temperate
+#00b900 L temperate
+#00d400 L temperate
+#00d300 L temperate
+#00a500 L temperate
+#8bdc00 L tropical
+#6ecf00 L tropical
+#00dd00 L temperate
+#00ab00 L temperate
+#00b900 L temperate
+#87da00 L tropical
+#00cf00 L temperate
+#8ddd00 L tropical
+#00a600 L temperate
+#8bdc00 L tropical
+#5ac600 L tropical
+#00bb00 L temperate
 #348ce3 tropical
-#9ef65a L tropical
+#83d800 L tropical
 #4294e6 temperate
 #4294e6 temperate
 #2885e1 tropical
@@ -1545,38 +1545,38 @@ Climate: sub-tropical
 
 #388ee4 tropical
 #348ce3 temperate
-#3dc865 L temperate
-#a1f65f L tropical
-#a2f662 L tropical
+#00ad00 L temperate
+#67cc00 L tropical
+#abea00 L tropical
 #2d88e2 temperate
-#47c959 L temperate
-#35c76f L temperate
-#39c86a L temperate
-#39c869 L temperate
-#9cf657 L tropical
-#38c86b L temperate
-#7ff227 L tropical
-#32c772 L temperate
-#3dc865 L temperate
-#31c773 L temperate
-#7ff227 L tropical
-#3ac869 L temperate
-#7ff227 L tropical
-#a3f763 L tropical
-#9af555 L tropical
-#33c770 L temperate
-#3bc868 L temperate
-#97f54f L tropical
-#a4f765 L tropical
-#48c958 L temperate
-#35c76e L temperate
+#00bb00 L temperate
+#00da00 L temperate
+#00c000 L temperate
+#00b800 L temperate
+#98e200 L tropical
+#00a600 L temperate
+#9de400 L tropical
+#00c400 L temperate
+#00b000 L temperate
+#00ce00 L temperate
+#6cce00 L tropical
+#00de00 L temperate
+#7cd500 L tropical
+#74d200 L tropical
+#64cb00 L tropical
+#00e000 L temperate
+#00c900 L temperate
+#83d800 L tropical
+#7ad500 L tropical
+#00a100 L temperate
+#00b600 L temperate
 #2f89e2 tropical
-#a5f766 L tropical
-#48c959 L temperate
-#31c772 L temperate
-#31c773 L temperate
-#47c95a L temperate
-#36c76d L temperate
+#68cc00 L tropical
+#00c900 L temperate
+#00a000 L temperate
+#009e00 L temperate
+#00d800 L temperate
+#00df00 L temperate
 #4898e8 tropical
 #2a86e1 tropical
 #358ce4 tropical
@@ -1589,9 +1589,9 @@ Climate: sub-tropical
 #2c87e2 tropical
 #348ce3 tropical
 #2f89e2 tropical
-#46c95b L temperate
+#00bc00 L temperate
 #2e88e2 tropical
-#a5f767 L tropical
+#9ee400 L tropical
 #2c87e2 temperate
 #3d91e5 tropical
 #4395e7 temperate
@@ -1601,26 +1601,26 @@ Climate: sub-tropical
 #3b90e5 temperate
 #2884e1 tropical
 #358ce4 temperate
-#45c95b L temperate
-#45c95c L temperate
+#00a300 L temperate
+#00cd00 L temperate
 #4294e6 temperate
-#47c959 L temperate
-#3ec864 L temperate
-#96f54e L tropical
+#00dc00 L temperate
+#00af00 L temperate
+#7cd500 L tropical
 #2582e0 temperate
-#3cc867 L temperate
+#00c800 L temperate
 #2a86e1 temperate
-#83f32d L tropical
-#8ef440 L tropical
+#86da00 L tropical
+#a2e600 L tropical
 #4495e7 tropical
 #4194e6 tropical
 #338be3 temperate
 #3b90e5 temperate
 #338be3 temperate
-#3cc866 L temperate
-#3ac868 L temperate
-#72f111 L tropical
-#80f228 L tropical
+#00c500 L temperate
+#00b600 L temperate
+#b2ed00 L tropical
+#afec00 L tropical
 #3089e2 tropical
 #2d88e2 temperate
 #358ce4 tropical
@@ -1641,8 +1641,8 @@ Climate: sub-tropical
 #378de4 temperate
 #2683e1 tropical
 #4998e8 tropical
-#6ef00a L tropical
-#3cc866 L temperate
+#97e100 L tropical
+#00c200 L temperate
 #4395e7 tropical
 #338be3 tropical
 #4999e8 temperate
@@ -1650,57 +1650,57 @@ Climate: sub-tropical
 #338be3 temperate
 #4898e8 tropical
 #348ce3 temperate
-#38c86b L temperate
-#87f334 L tropical
-#6ef00b L tropical
-#47c959 L temperate
-#92f547 L tropical
+#00d500 L temperate
+#73d100 L tropical
+#afec00 L tropical
+#00ab00 L temperate
+#98e200 L tropical
 #4294e6 temperate
-#3ec864 L temperate
-#33c771 L temperate
-#30c774 L temperate
-#33c770 L temperate
-#48c958 L temperate
-#46c95b L temperate
-#31c773 L temperate
-#86f332 L tropical
-#3ac868 L temperate
-#92f547 L tropical
-#82f32c L tropical
-#37c86c L temperate
-#48c959 L temperate
-#85f332 L tropical
-#7ef226 L tropical
-#a1f660 L tropical
-#42c85f L temperate
+#00b500 L temperate
+#00bd00 L temperate
+#00dd00 L temperate
+#00ac00 L temperate
+#00aa00 L temperate
+#00d900 L temperate
+#00ae00 L temperate
+#76d200 L tropical
+#00b200 L temperate
+#58c500 L tropical
+#9ce300 L tropical
+#00c400 L temperate
+#00d500 L temperate
+#96e100 L tropical
+#aae900 L tropical
+#66cc00 L tropical
+#00ba00 L temperate
 #388ee4 temperate
 #2985e1 temperate
 #2583e0 temperate
 #4495e7 temperate
 #378de4 tropical
-#38c86b L temperate
-#7ff227 L tropical
-#98f551 L tropical
-#8ff442 L tropical
-#6ef00a L tropical
-#95f54b L tropical
-#32c772 L temperate
-#46c95b L temperate
-#76f118 L tropical
+#00b100 L temperate
+#77d300 L tropical
+#a1e500 L tropical
+#6cce00 L tropical
+#59c600 L tropical
+#94e000 L tropical
+#00af00 L temperate
+#00d000 L temperate
+#78d300 L tropical
 #2482e0 temperate
-#9ef65a L tropical
-#42c85f L temperate
-#7ff226 L tropical
-#3ac868 L temperate
-#31c772 L temperate
-#87f335 L tropical
-#9af554 L tropical
-#98f551 L tropical
+#56c500 L tropical
+#00ca00 L temperate
+#a8e900 L tropical
+#00c100 L temperate
+#00b800 L temperate
+#93df00 L tropical
+#99e200 L tropical
+#89db00 L tropical
 #3f92e6 tropical
-#48c958 L temperate
+#00cb00 L temperate
 #4495e7 temperate
-#3dc865 L temperate
-#44c95d L temperate
+#00dd00 L temperate
+#00bf00 L temperate
 #2884e1 temperate
 #2a85e1 temperate
 
@@ -1708,53 +1708,53 @@ Climate: sub-tropical
 
 Climate: sub-tropical
 
-#3bc867 L temperate
-#42c85f L temperate
-#3fc863 L temperate
+#00aa00 L temperate
+#00c500 L temperate
+#00dd00 L temperate
 #378ee4 tropical
 #2a86e1 tropical
 #3089e2 tropical
-#a5f767 L tropical
+#62ca00 L tropical
 #348ce3 temperate
-#6df009 L tropical
-#36c76d L temperate
-#8df43e L tropical
-#94f549 L tropical
-#a6f768 L tropical
-#39c869 L temperate
-#8bf43b L tropical
-#a0f65e L tropical
-#38c86b L temperate
-#7bf221 L tropical
-#8af439 L tropical
-#3dc866 L temperate
-#82f32c L tropical
-#76f117 L tropical
-#3fc863 L temperate
-#46c95b L temperate
-#7ff227 L tropical
-#4ac956 L temperate
+#93df00 L tropical
+#00d400 L temperate
+#b0ec00 L tropical
+#64cb00 L tropical
+#a1e500 L tropical
+#00a300 L temperate
+#81d700 L tropical
+#afeb00 L tropical
+#00d000 L temperate
+#5dc700 L tropical
+#69cd00 L tropical
+#00ce00 L temperate
+#a7e800 L tropical
+#a2e600 L tropical
+#00c500 L temperate
+#00da00 L temperate
+#5ec800 L tropical
+#00be00 L temperate
 #2482e0 tropical
-#33c770 L temperate
-#6df009 L tropical
-#70f00e L tropical
-#a4f765 L tropical
-#34c770 L temperate
-#a0f65e L tropical
-#9df65a L tropical
+#00d600 L temperate
+#5ec800 L tropical
+#a3e600 L tropical
+#5fc800 L tropical
+#00b800 L temperate
+#85d900 L tropical
+#90de00 L tropical
 #3c90e5 temperate
 #2683e0 temperate
 #2583e0 temperate
 #4696e7 tropical
 #2c87e2 temperate
 #4696e7 temperate
-#36c76d L temperate
-#a5f767 L tropical
+#00a700 L temperate
+#5cc700 L tropical
 #2683e0 temperate
 #3d91e5 temperate
 #4898e8 tropical
-#88f336 L tropical
-#8cf43d L tropical
+#5fc800 L tropical
+#55c400 L tropical
 #3089e2 temperate
 #2d88e2 tropical
 #328ae3 temperate
@@ -1763,26 +1763,26 @@ Climate: sub-tropical
 #4395e7 tropical
 #2583e0 temperate
 #2784e1 temperate
-#80f229 L tropical
-#46c95a L temperate
-#3dc865 L temperate
+#87da00 L tropical
+#00a900 L temperate
+#00c100 L temperate
 #2884e1 temperate
-#85f331 L tropical
+#93df00 L tropical
 #3b90e5 tropical
-#81f32b L tropical
+#99e200 L tropical
 #368de4 tropical
-#48c958 L temperate
+#00b000 L temperate
 #4898e7 temperate
 #2683e0 tropical
 #3f93e6 temperate
-#47c95a L temperate
+#009f00 L temperate
 #2683e0 temperate
 #318ae3 temperate
 #2884e1 tropical
 #338be3 temperate
 #318ae3 tropical
 #2c87e2 tropical
-#44c85d L temperate
+#00da00 L temperate
 #3f92e6 tropical
 #338be3 tropical
 #4294e6 tropical
@@ -1814,42 +1814,42 @@ Climate: sub-tropical
 #4596e7 temperate
 #2784e1 temperate
 #2d87e2 tropical
-#72f112 L tropical
-#a4f766 L tropical
+#72d100 L tropical
+#93df00 L tropical
 #3a8fe5 temperate
-#93f548 L tropical
-#35c76f L temperate
-#77f11a L tropical
-#8af43a L tropical
+#56c500 L tropical
+#00d400 L temperate
+#a7e800 L tropical
+#a3e600 L tropical
 #2884e1 temperate
 #4194e6 temperate
-#34c770 L temperate
+#00da00 L temperate
 #318ae3 temperate
 #2885e1 temperate
-#49c958 L temperate
-#6cf008 L tropical
-#87f335 L tropical
-#44c85d L temperate
-#7ef226 L tropical
-#3bc867 L temperate
-#a5f766 L tropical
+#00af00 L temperate
+#85d900 L tropical
+#91de00 L tropical
+#00c700 L temperate
+#a0e500 L tropical
+#00b900 L temperate
+#78d300 L tropical
 #2a86e1 tropical
-#46c95b L temperate
+#00c200 L temperate
 #3c91e5 tropical
 #4395e6 temperate
 #2683e0 tropical
 #2b86e1 tropical
-#a5f767 L tropical
-#8cf43c L tropical
-#45c95c L temperate
-#99f553 L tropical
-#34c76f L temperate
-#a1f660 L tropical
-#81f22a L tropical
-#a4f766 L tropical
-#7cf221 L tropical
-#80f229 L tropical
-#7bf220 L tropical
+#7ad400 L tropical
+#62ca00 L tropical
+#00a300 L temperate
+#65cb00 L tropical
+#00d800 L temperate
+#adeb00 L tropical
+#a8e900 L tropical
+#77d300 L tropical
+#aaea00 L tropical
+#8ddd00 L tropical
+#abea00 L tropical
 #378de4 temperate
 #2f89e2 temperate
 #398fe4 tropical
@@ -1859,52 +1859,52 @@ Climate: sub-tropical
 #2d87e2 temperate
 #328be3 temperate
 #2c87e2 tropical
-#34c76f L temperate
-#74f115 L tropical
-#87f334 L tropical
-#74f114 L tropical
-#33c771 L temperate
-#77f119 L tropical
-#73f113 L tropical
+#00ab00 L temperate
+#91df00 L tropical
+#a6e800 L tropical
+#68cc00 L tropical
+#00cf00 L temperate
+#57c500 L tropical
+#6bce00 L tropical
 #368de4 tropical
-#a3f764 L tropical
+#81d800 L tropical
 
 ## Ring 19
 
 Climate: sub-tropical
 
-#86f333 L tropical
-#93f548 L tropical
-#a3f663 L tropical
-#45c95c L temperate
-#42c85f L temperate
-#3cc867 L temperate
-#3ac868 L temperate
+#aeeb00 L tropical
+#86da00 L tropical
+#a9e900 L tropical
+#00cc00 L temperate
+#00cd00 L temperate
+#00b800 L temperate
+#00d800 L temperate
 #2683e0 temperate
-#87f334 L tropical
-#9df65a L tropical
+#5dc800 L tropical
+#67cc00 L tropical
 #3b90e5 tropical
-#92f447 L tropical
-#3ac869 L temperate
-#41c861 L temperate
-#a1f660 L tropical
-#48c959 L temperate
-#3dc865 L temperate
-#9ef65a L tropical
-#48c958 L temperate
-#3fc863 L temperate
+#89db00 L tropical
+#00c900 L temperate
+#00ce00 L temperate
+#81d700 L tropical
+#00cd00 L temperate
+#00d200 L temperate
+#7bd500 L tropical
+#00bb00 L temperate
+#00a100 L temperate
 #368de4 temperate
-#72f110 L tropical
-#7cf221 L tropical
-#3bc867 L temperate
+#9fe500 L tropical
+#89db00 L tropical
+#00a900 L temperate
 #2c87e2 temperate
-#92f446 L tropical
-#78f11c L tropical
-#35c76f L temperate
+#58c500 L tropical
+#8adb00 L tropical
+#00a000 L temperate
 #4797e7 tropical
-#38c86b L temperate
-#8af439 L tropical
-#a5f766 L tropical
+#00af00 L temperate
+#58c500 L tropical
+#adeb00 L tropical
 #328ae3 tropical
 #4294e6 tropical
 #388ee4 tropical
@@ -1914,13 +1914,13 @@ Climate: sub-tropical
 #3089e2 temperate
 #348ce3 temperate
 #2f89e2 temperate
-#82f32c L tropical
-#47c959 L temperate
+#97e100 L tropical
+#00ac00 L temperate
 #2f89e2 temperate
 #2784e1 temperate
-#a5f766 L tropical
+#7ad400 L tropical
 #4898e8 tropical
-#49c957 L temperate
+#00b700 L temperate
 #398fe4 tropical
 #2f88e2 temperate
 #3089e2 temperate
@@ -1928,25 +1928,25 @@ Climate: sub-tropical
 #2885e1 temperate
 #4194e6 temperate
 #2784e1 tropical
-#95f54c L tropical
-#3bc867 L temperate
-#31c772 L temperate
-#a5f767 L tropical
-#7cf222 L tropical
-#39c869 L temperate
+#62ca00 L tropical
+#00a600 L temperate
+#00db00 L temperate
+#6fd000 L tropical
+#9de400 L tropical
+#00b200 L temperate
 #2f88e2 tropical
 #4998e8 tropical
 #4294e6 temperate
 #3c90e5 temperate
-#98f550 L tropical
-#48c958 L temperate
+#7ad500 L tropical
+#00a400 L temperate
 #3d91e5 temperate
 #388ee4 tropical
-#41c861 L temperate
+#00d700 L temperate
 #4898e8 temperate
-#97f550 L tropical
-#98f550 L tropical
-#3bc867 L temperate
+#a9e900 L tropical
+#99e200 L tropical
+#00d100 L temperate
 #328ae3 temperate
 #2583e0 temperate
 #4696e7 tropical
@@ -1980,41 +1980,41 @@ Climate: sub-tropical
 #2c87e2 temperate
 #3b90e5 temperate
 #3e91e5 temperate
-#3fc863 L temperate
-#88f337 L tropical
-#82f32b L tropical
-#46c95a L temperate
-#39c86a L temperate
-#30c774 L temperate
-#9af553 L tropical
-#44c95d L temperate
-#49c957 L temperate
-#3dc865 L temperate
+#00de00 L temperate
+#99e200 L tropical
+#7dd600 L tropical
+#00da00 L temperate
+#00a300 L temperate
+#00c400 L temperate
+#8bdc00 L tropical
+#00ac00 L temperate
+#00a100 L temperate
+#00a200 L temperate
 #4797e7 temperate
-#34c76f L temperate
+#00d500 L temperate
 #4093e6 tropical
-#38c86b L temperate
-#89f338 L tropical
-#9ff65d L tropical
-#42c85f L temperate
-#98f551 L tropical
-#45c95c L temperate
+#00d900 L temperate
+#b0ec00 L tropical
+#8fdd00 L tropical
+#00ad00 L temperate
+#96e100 L tropical
+#00cc00 L temperate
 #4998e8 temperate
 #2683e1 temperate
 #3089e2 temperate
 #2884e1 tropical
 #2582e0 temperate
-#33c770 L temperate
-#99f553 L tropical
-#9ff65d L tropical
-#90f443 L tropical
-#32c772 L temperate
-#4bc956 L temperate
-#9af554 L tropical
-#32c771 L temperate
-#41c861 L temperate
-#a4f765 L tropical
-#3ec864 L temperate
+#00da00 L temperate
+#7dd600 L tropical
+#abea00 L tropical
+#a7e800 L tropical
+#00c700 L temperate
+#00bd00 L temperate
+#75d200 L tropical
+#00de00 L temperate
+#00a200 L temperate
+#b0ec00 L tropical
+#00c000 L temperate
 #338be3 temperate
 #4697e7 temperate
 #2d88e2 temperate
@@ -2024,47 +2024,47 @@ Climate: sub-tropical
 #358ce4 tropical
 #2b86e2 tropical
 #4898e8 tropical
-#96f54d L tropical
-#46c95b L temperate
+#64cb00 L tropical
+#00d100 L temperate
 #4596e7 tropical
-#a4f765 L tropical
-#84f32f L tropical
-#44c85d L temperate
-#40c861 L temperate
-#36c76d L temperate
-#86f333 L tropical
+#80d700 L tropical
+#adeb00 L tropical
+#00dd00 L temperate
+#00a600 L temperate
+#00c300 L temperate
+#64cb00 L tropical
 
 ## Ring 20
 
 Climate: tropical
 
-#88f336 L tropical
-#9af554 L tropical
-#84f330 L tropical
-#9df659 L tropical
-#73f112 L tropical
-#77f119 L tropical
+#99e200 L tropical
+#abea00 L tropical
+#99e200 L tropical
+#adeb00 L tropical
+#79d400 L tropical
+#6fcf00 L tropical
 #2b86e1 tropical
 #4898e8 tropical
-#73f113 L tropical
-#98f550 L tropical
+#a0e500 L tropical
+#9be300 L tropical
 #4797e7 tropical
-#9ef65b L tropical
-#9af554 L tropical
-#81f22a L tropical
-#a6f768 L tropical
-#7ff227 L tropical
-#9bf655 L tropical
+#60c900 L tropical
+#69cd00 L tropical
+#8adb00 L tropical
+#a1e600 L tropical
+#98e200 L tropical
+#6bce00 L tropical
 #4998e8 tropical
-#9af554 L tropical
-#70f00d L tropical
+#85d900 L tropical
+#5fc800 L tropical
 #388ee4 tropical
-#9ef65b L tropical
+#88da00 L tropical
 #4294e6 tropical
-#76f117 L tropical
+#a5e700 L tropical
 #2a86e1 tropical
-#9bf655 L tropical
-#9ef65a L tropical
+#5fc800 L tropical
+#83d800 L tropical
 #378de4 tropical
 #318ae3 tropical
 #2b86e2 tropical
@@ -2079,10 +2079,10 @@ Climate: tropical
 #4395e6 tropical
 #368de4 tropical
 #4999e8 tropical
-#89f338 L tropical
-#7ff227 L tropical
+#9be300 L tropical
+#5fc800 L tropical
 #2784e1 tropical
-#95f54c L tropical
+#89db00 L tropical
 #4797e7 tropical
 #4999e8 tropical
 #4998e8 tropical
@@ -2092,12 +2092,12 @@ Climate: tropical
 #2d87e2 tropical
 #2d87e2 tropical
 #4898e8 tropical
-#8af439 L tropical
-#73f112 L tropical
-#79f21c L tropical
+#a1e500 L tropical
+#62ca00 L tropical
+#6dcf00 L tropical
 #4193e6 tropical
-#a1f661 L tropical
-#6cf007 L tropical
+#a0e500 L tropical
+#adeb00 L tropical
 #2f88e2 tropical
 #2583e0 tropical
 #3089e2 tropical
@@ -2145,41 +2145,41 @@ Climate: tropical
 #2a86e1 tropical
 #2a86e1 tropical
 #398fe4 tropical
-#75f116 L tropical
+#82d800 L tropical
 #4193e6 tropical
-#84f32f L tropical
-#7cf222 L tropical
-#8af43a L tropical
-#a5f767 L tropical
-#84f32f L tropical
-#a4f764 L tropical
-#9df659 L tropical
+#82d800 L tropical
+#a8e800 L tropical
+#6bce00 L tropical
+#92df00 L tropical
+#afec00 L tropical
+#9fe500 L tropical
+#76d200 L tropical
 #2985e1 tropical
-#82f32c L tropical
-#94f549 L tropical
+#56c400 L tropical
+#71d000 L tropical
 #2582e0 tropical
-#73f113 L tropical
-#7af21e L tropical
-#a3f763 L tropical
-#9ef65b L tropical
-#7ef226 L tropical
+#90de00 L tropical
+#66cb00 L tropical
+#86da00 L tropical
+#9ce300 L tropical
+#91df00 L tropical
 #4998e8 tropical
 #4194e6 tropical
-#84f330 L tropical
-#78f11b L tropical
-#a4f764 L tropical
+#a4e700 L tropical
+#93df00 L tropical
+#78d300 L tropical
 #3a8fe5 tropical
 #338be3 tropical
 #4395e6 tropical
-#86f333 L tropical
-#77f119 L tropical
-#8ef440 L tropical
-#92f547 L tropical
+#8fde00 L tropical
+#68cc00 L tropical
+#90de00 L tropical
+#94e000 L tropical
 #348ce3 tropical
 #4596e7 tropical
-#7bf220 L tropical
-#93f549 L tropical
-#7af21e L tropical
+#61c900 L tropical
+#63ca00 L tropical
+#6acd00 L tropical
 #4495e7 tropical
 #4596e7 tropical
 #2f89e2 tropical
@@ -2191,11 +2191,11 @@ Climate: tropical
 #2d88e2 tropical
 #2e88e2 tropical
 #2683e0 tropical
-#92f446 L tropical
+#5fc900 L tropical
 #4193e6 tropical
-#a0f65f L tropical
-#88f337 L tropical
-#77f11a L tropical
+#a6e800 L tropical
+#9fe500 L tropical
+#80d700 L tropical
 #4093e6 tropical
 #2985e1 tropical
 
@@ -2203,30 +2203,30 @@ Climate: tropical
 
 Climate: tropical
 
-#8cf43d L tropical
-#97f550 L tropical
-#a0f65e L tropical
+#b0ec00 L tropical
+#89db00 L tropical
+#a3e600 L tropical
 #3a8fe5 tropical
-#8af439 L tropical
-#a5f767 L tropical
+#8adb00 L tropical
+#8ddd00 L tropical
 #3b90e5 tropical
 #378ee4 tropical
-#a0f65e L tropical
-#78f11c L tropical
-#a0f65e L tropical
-#a0f65e L tropical
-#7ef225 L tropical
-#a4f765 L tropical
-#72f112 L tropical
-#72f112 L tropical
-#9af554 L tropical
+#5fc800 L tropical
+#6fcf00 L tropical
+#a5e700 L tropical
+#59c600 L tropical
+#6ecf00 L tropical
+#67cc00 L tropical
+#b0ec00 L tropical
+#8edd00 L tropical
+#69cd00 L tropical
 #3089e2 tropical
 #3e92e6 tropical
-#87f335 L tropical
-#8bf43c L tropical
-#81f22a L tropical
+#acea00 L tropical
+#acea00 L tropical
+#5dc700 L tropical
 #3e92e5 tropical
-#7af21f L tropical
+#6ecf00 L tropical
 #2482e0 tropical
 #3e92e5 tropical
 #4797e7 tropical
@@ -2245,8 +2245,8 @@ Climate: tropical
 #2d87e2 tropical
 #4093e6 tropical
 #328be3 tropical
-#79f21d L tropical
-#95f54b L tropical
+#61c900 L tropical
+#61c900 L tropical
 #2985e1 tropical
 #2c87e2 tropical
 #318ae3 tropical
@@ -2255,15 +2255,15 @@ Climate: tropical
 #3d91e5 tropical
 #3f92e6 tropical
 #3089e2 tropical
-#a7f76a L tropical
-#81f32b L tropical
-#87f334 L tropical
-#94f54b L tropical
-#9ef65b L tropical
-#79f21c L tropical
-#94f54a L tropical
-#7df224 L tropical
-#7df223 L tropical
+#87da00 L tropical
+#92df00 L tropical
+#a0e500 L tropical
+#5fc900 L tropical
+#90de00 L tropical
+#8ddd00 L tropical
+#7ed600 L tropical
+#8adb00 L tropical
+#a7e800 L tropical
 #4596e7 tropical
 #358ce4 tropical
 #4294e6 tropical
@@ -2312,31 +2312,31 @@ Climate: tropical
 #4998e8 tropical
 #4093e6 tropical
 #3089e2 tropical
-#75f116 L tropical
-#88f336 L tropical
-#77f11a L tropical
-#8af43a L tropical
+#96e100 L tropical
+#70d000 L tropical
+#81d700 L tropical
+#77d300 L tropical
 #4194e6 tropical
 #4194e6 tropical
 #2683e0 tropical
-#99f552 L tropical
+#8edd00 L tropical
 #328be3 tropical
-#98f551 L tropical
+#73d100 L tropical
 #2b86e1 tropical
-#91f444 L tropical
-#86f332 L tropical
-#9df65a L tropical
-#81f32b L tropical
-#7ef225 L tropical
+#7ad400 L tropical
+#86da00 L tropical
+#56c400 L tropical
+#94e000 L tropical
+#64cb00 L tropical
 #2683e0 tropical
 #4898e8 tropical
-#79f21c L tropical
-#98f551 L tropical
+#76d300 L tropical
+#a6e800 L tropical
 #2d87e2 tropical
 #4294e6 tropical
 #4193e6 tropical
 #4596e7 tropical
-#a7f769 L tropical
+#b1ec00 L tropical
 #318ae3 tropical
 #2e88e2 tropical
 #2583e0 tropical
@@ -2369,30 +2369,30 @@ Climate: tropical
 Climate: tropical
 
 #328be3 tropical
-#84f32f L tropical
+#77d300 L tropical
 #4998e8 tropical
 #3b90e5 tropical
-#6ef00a L tropical
+#86da00 L tropical
 #4a99e8 tropical
-#a3f763 L tropical
-#8bf43c L tropical
-#75f117 L tropical
-#a6f769 L tropical
-#79f21d L tropical
-#6ff00d L tropical
-#88f336 L tropical
-#a1f661 L tropical
-#85f332 L tropical
-#8af43a L tropical
+#79d400 L tropical
+#58c500 L tropical
+#66cc00 L tropical
+#8cdc00 L tropical
+#b1ed00 L tropical
+#73d100 L tropical
+#64cb00 L tropical
+#99e200 L tropical
+#75d200 L tropical
+#61c900 L tropical
 #3d91e5 tropical
-#7af21f L tropical
+#6fcf00 L tropical
 #368de4 tropical
-#7df224 L tropical
+#93df00 L tropical
 #2683e0 tropical
-#78f11c L tropical
+#5dc700 L tropical
 #4697e7 tropical
-#6ff00c L tropical
-#80f229 L tropical
+#77d300 L tropical
+#9be300 L tropical
 #4697e7 tropical
 #4696e7 tropical
 #2683e0 tropical
@@ -2412,20 +2412,20 @@ Climate: tropical
 #2784e1 tropical
 #2582e0 tropical
 #4898e7 tropical
-#83f32d L tropical
+#67cc00 L tropical
 #348ce3 tropical
 #3a8fe5 tropical
 #2e88e2 tropical
 #4495e7 tropical
 #2f89e2 tropical
 #4998e8 tropical
-#a1f660 L tropical
-#9bf657 L tropical
-#9df659 L tropical
-#a7f76a L tropical
-#92f446 L tropical
+#6bce00 L tropical
+#66cb00 L tropical
+#95e000 L tropical
+#5fc800 L tropical
+#7ad400 L tropical
 #4395e6 tropical
-#81f22a L tropical
+#71d000 L tropical
 #4797e7 tropical
 #2e88e2 tropical
 #3e92e6 tropical
@@ -2477,25 +2477,25 @@ Climate: tropical
 #2d87e2 tropical
 #2683e0 tropical
 #2683e0 tropical
-#89f337 L tropical
-#82f32c L tropical
+#5ec800 L tropical
+#61ca00 L tropical
 #4797e7 tropical
 #4596e7 tropical
 #4a99e8 tropical
 #4194e6 tropical
 #3c91e5 tropical
 #4294e6 tropical
-#77f11a L tropical
+#6dcf00 L tropical
 #2583e0 tropical
-#86f333 L tropical
-#a0f65e L tropical
-#95f54b L tropical
-#7cf222 L tropical
-#9af554 L tropical
-#93f548 L tropical
+#74d200 L tropical
+#9be300 L tropical
+#80d700 L tropical
+#a5e700 L tropical
+#83d800 L tropical
+#88db00 L tropical
 #4a99e8 tropical
-#93f548 L tropical
-#9df659 L tropical
+#8ddd00 L tropical
+#97e100 L tropical
 #4898e8 tropical
 #2683e0 tropical
 #2b86e1 tropical
@@ -2534,29 +2534,29 @@ Climate: tropical
 Climate: tropical
 
 #4596e7 tropical
-#6ff00c L tropical
-#78f11b L tropical
+#59c600 L tropical
+#59c600 L tropical
 #2e88e2 tropical
 #3f92e6 tropical
-#8cf43d L tropical
-#86f332 L tropical
-#7cf222 L tropical
-#87f335 L tropical
-#9bf655 L tropical
-#77f11a L tropical
-#a4f765 L tropical
-#7af21f L tropical
-#77f11a L tropical
-#9af554 L tropical
-#76f117 L tropical
+#9de400 L tropical
+#a7e800 L tropical
+#5ac600 L tropical
+#64cb00 L tropical
+#afec00 L tropical
+#8fde00 L tropical
+#59c600 L tropical
+#7dd600 L tropical
+#6acd00 L tropical
+#92df00 L tropical
+#afec00 L tropical
 #368de4 tropical
-#82f32c L tropical
-#8cf43e L tropical
+#9ae200 L tropical
+#9de400 L tropical
 #2d87e2 tropical
-#81f32a L tropical
-#91f444 L tropical
+#77d300 L tropical
+#8bdc00 L tropical
 #3b90e5 tropical
-#83f32d L tropical
+#8adb00 L tropical
 #378de4 tropical
 #2c87e2 tropical
 #2583e0 tropical
@@ -2574,36 +2574,36 @@ Climate: tropical
 #4999e8 tropical
 #2683e0 tropical
 #348ce3 tropical
-#77f119 L tropical
-#88f337 L tropical
-#9df65a L tropical
+#a0e500 L tropical
+#8adb00 L tropical
+#92df00 L tropical
 #4596e7 tropical
 #2985e1 tropical
 #388ee4 tropical
 #4294e6 tropical
 #2583e0 tropical
 #4294e6 tropical
-#98f550 L tropical
-#83f32e L tropical
+#92df00 L tropical
+#6cce00 L tropical
 #3b90e5 tropical
-#8ef440 L tropical
+#8cdc00 L tropical
 #2784e1 tropical
 #358ce4 tropical
 #388ee4 tropical
 #4697e7 tropical
-#a5f766 L tropical
+#acea00 L tropical
 #2683e1 tropical
 #3b90e5 tropical
 #358ce4 tropical
 #2d88e2 tropical
 #368de4 tropical
-#9bf656 L tropical
-#a6f768 L tropical
+#7ed600 L tropical
+#57c500 L tropical
 #4998e8 tropical
 #358de4 tropical
 #338be3 tropical
 #2e88e2 tropical
-#a2f662 L tropical
+#7ad400 L tropical
 #4394e6 tropical
 #4696e7 tropical
 #4294e6 tropical
@@ -2649,19 +2649,19 @@ Climate: tropical
 #3f92e6 tropical
 #2c87e2 tropical
 #3089e3 tropical
-#79f21d L tropical
-#a0f65e L tropical
-#94f549 L tropical
+#79d400 L tropical
+#75d200 L tropical
+#87da00 L tropical
 #2b87e2 tropical
-#a6f768 L tropical
-#9bf656 L tropical
+#95e000 L tropical
+#99e200 L tropical
 #4496e7 tropical
-#7ff226 L tropical
-#6ef00b L tropical
-#91f445 L tropical
-#77f119 L tropical
-#8af439 L tropical
-#9cf657 L tropical
+#76d200 L tropical
+#6ecf00 L tropical
+#97e100 L tropical
+#62ca00 L tropical
+#7bd500 L tropical
+#5ec800 L tropical
 #3c91e5 tropical
 #2c87e2 tropical
 #348be3 tropical
@@ -2701,26 +2701,26 @@ Climate: tropical
 #318ae3 tropical
 #2885e1 tropical
 #3a8fe5 tropical
-#9df65a L tropical
-#8ff442 L tropical
+#7ad400 L tropical
+#a2e600 L tropical
 #398fe4 tropical
-#9cf658 L tropical
-#9ef65b L tropical
-#84f330 L tropical
-#8df43e L tropical
-#6ef00b L tropical
-#81f22a L tropical
-#7af21f L tropical
-#9df659 L tropical
-#8df43f L tropical
-#70f00e L tropical
+#66cb00 L tropical
+#5ac600 L tropical
+#57c500 L tropical
+#8adb00 L tropical
+#96e100 L tropical
+#b2ed00 L tropical
+#92df00 L tropical
+#73d100 L tropical
+#72d100 L tropical
+#67cc00 L tropical
 #3a8fe5 tropical
-#96f54e L tropical
+#afec00 L tropical
 #388ee4 tropical
 #2e88e2 tropical
-#99f552 L tropical
-#89f337 L tropical
-#8df43e L tropical
+#71d100 L tropical
+#81d700 L tropical
+#aeeb00 L tropical
 #2d87e2 tropical
 #2c87e2 tropical
 #2683e1 tropical
@@ -2731,17 +2731,17 @@ Climate: tropical
 #3a8fe5 tropical
 #3f92e6 tropical
 #388ee4 tropical
-#88f336 L tropical
-#8bf43b L tropical
-#8af439 L tropical
-#a1f660 L tropical
+#90de00 L tropical
+#89db00 L tropical
+#95e000 L tropical
+#89db00 L tropical
 #4093e6 tropical
-#8cf43c L tropical
-#96f54d L tropical
-#8cf43d L tropical
-#90f444 L tropical
-#82f32c L tropical
-#89f338 L tropical
+#a5e700 L tropical
+#88da00 L tropical
+#9ae200 L tropical
+#8cdc00 L tropical
+#a4e700 L tropical
+#a5e700 L tropical
 #3089e3 tropical
 #4194e6 tropical
 #2f89e2 tropical
@@ -2755,19 +2755,19 @@ Climate: tropical
 #3b90e5 tropical
 #4496e7 tropical
 #3f92e6 tropical
-#8cf43c L tropical
+#62ca00 L tropical
 #2c87e2 tropical
 #2e88e2 tropical
-#78f11b L tropical
+#58c500 L tropical
 #4395e6 tropical
-#77f11a L tropical
-#79f21d L tropical
+#87da00 L tropical
+#aaea00 L tropical
 #3d91e5 tropical
-#8ff441 L tropical
-#9bf655 L tropical
+#72d100 L tropical
+#88da00 L tropical
 #2a85e1 tropical
-#70f10f L tropical
-#a2f662 L tropical
+#acea00 L tropical
+#76d300 L tropical
 #368de4 tropical
 #2f89e2 tropical
 #2e88e2 tropical
@@ -2815,17 +2815,17 @@ Climate: tropical
 #2b86e2 tropical
 #3a8fe5 tropical
 #378de4 tropical
-#91f444 L tropical
+#9ee400 L tropical
 #3089e3 tropical
 #328ae3 tropical
 #4596e7 tropical
-#86f332 L tropical
+#b0ec00 L tropical
 #4194e6 tropical
-#a6f768 L tropical
-#7df224 L tropical
-#6ff00c L tropical
-#6ff00c L tropical
-#9af554 L tropical
+#afec00 L tropical
+#6acd00 L tropical
+#5cc700 L tropical
+#67cc00 L tropical
+#8fde00 L tropical
 #4797e7 tropical
 #2985e1 tropical
 #3089e3 tropical
@@ -2863,49 +2863,49 @@ Climate: tropical
 
 Climate: tropical
 
-#7ef225 L tropical
+#73d100 L tropical
 #2e88e2 tropical
-#a2f661 L tropical
-#9cf658 L tropical
+#6cce00 L tropical
+#b1ed00 L tropical
 #3e92e6 tropical
-#9ff65d L tropical
-#82f32b L tropical
-#83f32d L tropical
-#a5f767 L tropical
-#9cf657 L tropical
-#7cf223 L tropical
-#a3f763 L tropical
-#77f11a L tropical
-#a0f65f L tropical
-#7af21e L tropical
-#6ef00b L tropical
-#71f110 L tropical
-#8cf43c L tropical
-#88f336 L tropical
-#8df43e L tropical
-#7af21f L tropical
-#85f331 L tropical
-#6ef00b L tropical
-#75f116 L tropical
-#72f111 L tropical
-#98f550 L tropical
-#a7f76a L tropical
+#78d300 L tropical
+#63ca00 L tropical
+#a5e700 L tropical
+#68cc00 L tropical
+#a8e900 L tropical
+#81d700 L tropical
+#77d300 L tropical
+#84d900 L tropical
+#75d200 L tropical
+#77d300 L tropical
+#89db00 L tropical
+#78d300 L tropical
+#6acd00 L tropical
+#a0e500 L tropical
+#6acd00 L tropical
+#aae900 L tropical
+#7bd500 L tropical
+#99e200 L tropical
+#b1ed00 L tropical
+#9de400 L tropical
+#6ecf00 L tropical
+#9ae200 L tropical
 #4495e7 tropical
 #2b86e2 tropical
 #2884e1 tropical
 #338be3 tropical
 #2985e1 tropical
 #358ce4 tropical
-#7ff227 L tropical
+#8bdc00 L tropical
 #388ee4 tropical
-#70f00d L tropical
-#7cf221 L tropical
-#81f22a L tropical
-#7bf221 L tropical
-#6ff00d L tropical
-#9bf656 L tropical
-#a0f65e L tropical
-#8cf43d L tropical
+#b0ec00 L tropical
+#86da00 L tropical
+#75d200 L tropical
+#59c600 L tropical
+#92df00 L tropical
+#afec00 L tropical
+#7ed600 L tropical
+#78d400 L tropical
 #378de4 tropical
 #4696e7 tropical
 #4395e6 tropical
@@ -2923,14 +2923,14 @@ Climate: tropical
 #2985e1 tropical
 #2683e0 tropical
 #4898e8 tropical
-#9ff65d L tropical
+#73d100 L tropical
 #4998e8 tropical
-#9af553 L tropical
+#5cc700 L tropical
 #2683e0 tropical
-#a2f661 L tropical
+#60c900 L tropical
 #4596e7 tropical
 #328ae3 tropical
-#77f11a L tropical
+#67cc00 L tropical
 #3b90e5 tropical
 #4898e8 tropical
 #4093e6 tropical
@@ -2983,13 +2983,13 @@ Climate: tropical
 #4998e8 tropical
 #4093e6 tropical
 #2784e1 tropical
-#99f553 L tropical
+#86da00 L tropical
 #348be3 tropical
-#6ff00b L tropical
+#88da00 L tropical
 #4294e6 tropical
-#98f551 L tropical
-#7af21f L tropical
-#90f444 L tropical
+#97e100 L tropical
+#66cb00 L tropical
+#5ac600 L tropical
 #3f93e6 tropical
 #4898e8 tropical
 #2e88e2 tropical
@@ -3019,10 +3019,10 @@ Climate: tropical
 #2f89e2 tropical
 #3f92e6 tropical
 #4697e7 tropical
-#79f21d L tropical
+#64cb00 L tropical
 #2884e1 tropical
-#8df43f L tropical
-#a7f769 L tropical
+#8fdd00 L tropical
+#87da00 L tropical
 
 ## Ring 26
 
@@ -3030,29 +3030,29 @@ Climate: tropical
 
 #2985e1 tropical
 #4998e8 tropical
-#87f334 L tropical
-#92f446 L tropical
-#8df43e L tropical
-#a1f660 L tropical
-#8ff441 L tropical
-#84f330 L tropical
-#72f112 L tropical
-#9df659 L tropical
-#70f00e L tropical
-#73f112 L tropical
-#a0f65e L tropical
-#a4f765 L tropical
-#79f21e L tropical
-#7bf221 L tropical
-#8ef43f L tropical
-#87f334 L tropical
-#8df43f L tropical
+#6cce00 L tropical
+#84d900 L tropical
+#a8e900 L tropical
+#69cd00 L tropical
+#7fd600 L tropical
+#69cd00 L tropical
+#b0ec00 L tropical
+#a5e700 L tropical
+#a9e900 L tropical
+#8cdc00 L tropical
+#8fde00 L tropical
+#a4e700 L tropical
+#a3e600 L tropical
+#6fcf00 L tropical
+#a4e700 L tropical
+#57c500 L tropical
+#82d800 L tropical
 #3d91e5 tropical
 #4395e7 tropical
-#a4f764 L tropical
-#a0f65d L tropical
-#a7f76a L tropical
-#8af439 L tropical
+#afec00 L tropical
+#6acd00 L tropical
+#a5e700 L tropical
+#6dce00 L tropical
 #328be3 tropical
 #2683e0 tropical
 #358ce3 tropical
@@ -3062,17 +3062,17 @@ Climate: tropical
 #388ee4 tropical
 #2482e0 tropical
 #2e88e2 tropical
-#7ef225 L tropical
-#79f11c L tropical
-#97f54e L tropical
-#92f446 L tropical
-#98f552 L tropical
-#70f10e L tropical
-#7df224 L tropical
-#73f112 L tropical
-#7ef225 L tropical
+#a3e600 L tropical
+#9de400 L tropical
+#6ecf00 L tropical
+#6dce00 L tropical
+#afec00 L tropical
+#93df00 L tropical
+#a1e600 L tropical
+#78d300 L tropical
+#63ca00 L tropical
 #2c87e2 tropical
-#a3f764 L tropical
+#6bce00 L tropical
 #3b90e5 tropical
 #388ee4 tropical
 #4294e6 tropical
@@ -3082,21 +3082,21 @@ Climate: tropical
 #3f93e6 tropical
 #4495e7 tropical
 #3b90e5 tropical
-#90f444 L tropical
-#a4f765 L tropical
+#a5e700 L tropical
+#89db00 L tropical
 #3c90e5 tropical
-#9af554 L tropical
+#a1e600 L tropical
 #2f88e2 tropical
-#97f54f L tropical
+#8fde00 L tropical
 #378ee4 tropical
 #4395e6 tropical
 #3c90e5 tropical
-#87f334 L tropical
-#7bf220 L tropical
-#84f32f L tropical
+#56c400 L tropical
+#97e100 L tropical
+#7bd500 L tropical
 #2784e1 tropical
-#8cf43d L tropical
-#a3f663 L tropical
+#6fcf00 L tropical
+#68cc00 L tropical
 #3a8fe5 tropical
 #348ce3 tropical
 #2f89e2 tropical
@@ -3120,8 +3120,8 @@ Climate: tropical
 #4999e8 tropical
 #3e92e6 tropical
 #4093e6 tropical
-#a2f662 L tropical
-#80f228 L tropical
+#a1e600 L tropical
+#acea00 L tropical
 #328be3 tropical
 #328ae3 tropical
 #3a8fe5 tropical
@@ -3146,21 +3146,21 @@ Climate: tropical
 #2c87e2 tropical
 #3e92e6 tropical
 #328be3 tropical
-#6ef00b L tropical
+#9ee400 L tropical
 #4998e8 tropical
-#89f338 L tropical
+#89db00 L tropical
 #348ce3 tropical
-#9ff65c L tropical
-#92f547 L tropical
-#74f114 L tropical
-#8bf43b L tropical
+#5ec800 L tropical
+#a3e600 L tropical
+#6acd00 L tropical
+#6cce00 L tropical
 #4496e7 tropical
 #3c90e5 tropical
-#a4f766 L tropical
-#83f32d L tropical
+#58c600 L tropical
+#65cb00 L tropical
 #2683e0 tropical
 #4093e6 tropical
-#74f114 L tropical
+#86d900 L tropical
 #3e92e5 tropical
 #2f89e2 tropical
 #2c87e2 tropical
@@ -3182,42 +3182,42 @@ Climate: tropical
 #4496e7 tropical
 #3c91e5 tropical
 #318ae3 tropical
-#91f446 L tropical
-#7af21f L tropical
-#77f11a L tropical
+#63ca00 L tropical
+#8cdc00 L tropical
+#b2ed00 L tropical
 #328ae3 tropical
 #4294e6 tropical
-#6ff00d L tropical
+#a4e700 L tropical
 
 ## Ring 27
 
 Climate: tropical
 
-#8bf43a L tropical
-#92f547 L tropical
-#78f11a L tropical
-#86f333 L tropical
-#7df224 L tropical
-#6ef00a L tropical
-#76f118 L tropical
-#a6f768 L tropical
-#75f116 L tropical
-#78f11b L tropical
-#9df659 L tropical
-#99f553 L tropical
-#99f553 L tropical
-#76f118 L tropical
-#82f32c L tropical
-#91f445 L tropical
+#a4e700 L tropical
+#75d200 L tropical
+#83d800 L tropical
+#57c500 L tropical
+#80d700 L tropical
+#aae900 L tropical
+#7dd600 L tropical
+#6acd00 L tropical
+#72d100 L tropical
+#8fde00 L tropical
+#75d200 L tropical
+#6dcf00 L tropical
+#97e100 L tropical
+#81d700 L tropical
+#6ecf00 L tropical
+#a9e900 L tropical
 #4a99e8 tropical
-#9bf656 L tropical
+#b1ed00 L tropical
 #3b90e5 tropical
 #3f92e6 tropical
 #368de4 tropical
 #2683e0 tropical
 #348ce3 tropical
-#9ef65b L tropical
-#7cf222 L tropical
+#9ae300 L tropical
+#5ac600 L tropical
 #2885e1 tropical
 #368de4 tropical
 #4495e7 tropical
@@ -3226,17 +3226,17 @@ Climate: tropical
 #348ce3 tropical
 #4093e6 tropical
 #3c91e5 tropical
-#79f21e L tropical
+#b1ed00 L tropical
 #4596e7 tropical
-#72f110 L tropical
-#83f32e L tropical
+#8ddd00 L tropical
+#6ecf00 L tropical
 #318ae3 tropical
-#6df009 L tropical
-#70f10f L tropical
-#88f335 L tropical
-#92f547 L tropical
-#89f338 L tropical
-#88f336 L tropical
+#7cd500 L tropical
+#76d300 L tropical
+#aeeb00 L tropical
+#aeeb00 L tropical
+#6fd000 L tropical
+#a1e500 L tropical
 #358ce4 tropical
 #2f89e2 tropical
 #2985e1 tropical
@@ -3248,19 +3248,19 @@ Climate: tropical
 #4a99e8 tropical
 #348ce3 tropical
 #4294e6 tropical
-#91f445 L tropical
+#5fc800 L tropical
 #3e92e5 tropical
-#9bf655 L tropical
+#61c900 L tropical
 #4696e7 tropical
-#88f336 L tropical
+#7ed600 L tropical
 #3089e2 tropical
 #3b90e5 tropical
-#78f11b L tropical
+#aeeb00 L tropical
 #3f93e6 tropical
 #4596e7 tropical
 #3a8fe5 tropical
 #2b86e2 tropical
-#8bf43b L tropical
+#97e100 L tropical
 #338be3 tropical
 #4898e8 tropical
 #3a8fe5 tropical
@@ -3284,10 +3284,10 @@ Climate: tropical
 #4193e6 tropical
 #338be3 tropical
 #388ee4 tropical
-#7ef225 L tropical
-#84f32f L tropical
-#9af554 L tropical
-#a0f65e L tropical
+#66cc00 L tropical
+#82d800 L tropical
+#58c500 L tropical
+#92df00 L tropical
 #2c87e2 tropical
 #2985e1 tropical
 #3d91e5 tropical
@@ -3310,21 +3310,21 @@ Climate: tropical
 #4194e6 tropical
 #4596e7 tropical
 #358ce4 tropical
-#84f330 L tropical
+#60c900 L tropical
 #338be3 tropical
-#95f54c L tropical
+#97e100 L tropical
 #3c91e5 tropical
-#74f115 L tropical
-#9af555 L tropical
-#7df224 L tropical
-#95f54c L tropical
-#7ef225 L tropical
-#a7f76a L tropical
-#a2f662 L tropical
-#71f110 L tropical
-#98f551 L tropical
-#75f116 L tropical
-#a1f660 L tropical
+#6acd00 L tropical
+#91de00 L tropical
+#aaea00 L tropical
+#63ca00 L tropical
+#96e100 L tropical
+#6cce00 L tropical
+#77d300 L tropical
+#7ad400 L tropical
+#a8e800 L tropical
+#6dcf00 L tropical
+#9de400 L tropical
 #388ee4 tropical
 #2985e1 tropical
 #4999e8 tropical
@@ -3344,36 +3344,36 @@ Climate: tropical
 #2e88e2 tropical
 #4294e6 tropical
 #3b90e5 tropical
-#6ef00a L tropical
-#87f334 L tropical
-#94f54a L tropical
-#7af21f L tropical
-#9df659 L tropical
-#79f11c L tropical
-#84f330 L tropical
-#7ff227 L tropical
-#90f443 L tropical
+#9be300 L tropical
+#74d200 L tropical
+#61c900 L tropical
+#77d300 L tropical
+#b0ec00 L tropical
+#a8e800 L tropical
+#8adb00 L tropical
+#6bce00 L tropical
+#72d100 L tropical
 
 ## Ring 28
 
 Climate: sub-tropical
 
-#44c85d L temperate
+#00c100 L temperate
 #4194e6 tropical
-#96f54d L tropical
+#8edd00 L tropical
 #4797e7 temperate
-#41c860 L temperate
+#00b400 L temperate
 #348ce3 temperate
 #4998e8 temperate
-#40c861 L temperate
-#7cf222 L tropical
+#00b800 L temperate
+#6fd000 L tropical
 #2784e1 tropical
-#47c959 L temperate
+#00d700 L temperate
 #4596e7 tropical
 #2b86e2 tropical
 #2c87e2 temperate
-#7ff227 L tropical
-#42c85f L temperate
+#acea00 L tropical
+#00d400 L temperate
 #4194e6 temperate
 #3b90e5 tropical
 #4998e8 tropical
@@ -3381,7 +3381,7 @@ Climate: sub-tropical
 #398fe4 temperate
 #358ce4 tropical
 #3d91e5 tropical
-#34c76f L temperate
+#00b800 L temperate
 #4596e7 tropical
 #4998e8 temperate
 #3d91e5 temperate
@@ -3398,9 +3398,9 @@ Climate: sub-tropical
 #4998e8 temperate
 #398fe4 temperate
 #378ee4 temperate
-#a1f660 L tropical
-#78f11b L tropical
-#a4f765 L tropical
+#63ca00 L tropical
+#63ca00 L tropical
+#5ac600 L tropical
 #368de4 temperate
 #368de4 temperate
 #2683e0 temperate
@@ -3408,23 +3408,23 @@ Climate: sub-tropical
 #2a86e1 tropical
 #2884e1 temperate
 #348ce3 tropical
-#89f337 L tropical
-#46c95b L temperate
-#3cc866 L temperate
-#34c76f L temperate
-#8cf43d L tropical
-#74f115 L tropical
+#7ed600 L tropical
+#00e000 L temperate
+#00cb00 L temperate
+#00a400 L temperate
+#abea00 L tropical
+#92df00 L tropical
 #4697e7 temperate
-#31c773 L temperate
-#3ec864 L temperate
+#00af00 L temperate
+#00ae00 L temperate
 #4495e7 tropical
-#37c86c L temperate
+#00c400 L temperate
 #3e92e6 tropical
 #4797e7 temperate
-#97f54f L tropical
+#9ae200 L tropical
 #2784e1 temperate
 #338be3 temperate
-#43c85f L temperate
+#00d300 L temperate
 #4395e6 tropical
 #4395e7 tropical
 #388ee4 tropical
@@ -3443,15 +3443,15 @@ Climate: sub-tropical
 #2985e1 temperate
 #4093e6 tropical
 #378de4 temperate
-#8bf43b L tropical
-#75f116 L tropical
-#46c95b L temperate
-#9af554 L tropical
-#39c86a L temperate
-#47c959 L temperate
-#3ac868 L temperate
-#95f54c L tropical
-#42c85f L temperate
+#9be300 L tropical
+#9fe400 L tropical
+#00d600 L temperate
+#a3e600 L tropical
+#00c900 L temperate
+#00da00 L temperate
+#00cd00 L temperate
+#99e200 L tropical
+#00ce00 L temperate
 #2c87e2 tropical
 #4596e7 temperate
 #3d91e5 temperate
@@ -3472,22 +3472,22 @@ Climate: sub-tropical
 #388ee4 temperate
 #4797e7 temperate
 #2a86e1 temperate
-#a5f766 L tropical
-#33c771 L temperate
+#94e000 L tropical
+#00bd00 L temperate
 #2482e0 tropical
-#a1f660 L tropical
+#8bdc00 L tropical
 #4294e6 temperate
-#4bc955 L temperate
+#00a500 L temperate
 #4395e7 tropical
-#a7f76a L tropical
-#71f10f L tropical
-#43c85e L temperate
-#41c861 L temperate
-#9bf656 L tropical
-#9cf658 L tropical
-#37c86c L temperate
-#3cc866 L temperate
-#38c86b L temperate
+#6fd000 L tropical
+#84d900 L tropical
+#00b900 L temperate
+#00ce00 L temperate
+#6ecf00 L tropical
+#aeeb00 L tropical
+#00ad00 L temperate
+#00a500 L temperate
+#00ca00 L temperate
 #2b86e2 temperate
 #338be3 tropical
 #4294e6 temperate
@@ -3509,35 +3509,35 @@ Climate: sub-tropical
 #2c87e2 tropical
 #318ae3 tropical
 #318ae3 temperate
-#38c86a L temperate
-#30c774 L temperate
-#9bf655 L tropical
-#39c86a L temperate
-#74f115 L tropical
-#a3f663 L tropical
-#31c773 L temperate
-#39c86a L temperate
+#00bd00 L temperate
+#00d400 L temperate
+#86da00 L tropical
+#009f00 L temperate
+#62ca00 L tropical
+#72d100 L tropical
+#00c800 L temperate
+#00da00 L temperate
 #3f92e6 tropical
 
 ## Ring 29
 
 Climate: sub-tropical
 
-#74f114 L tropical
-#31c773 L temperate
-#a3f764 L tropical
-#77f11a L tropical
-#31c773 L temperate
-#81f32b L tropical
+#73d100 L tropical
+#00bb00 L temperate
+#5bc700 L tropical
+#89db00 L tropical
+#00be00 L temperate
+#84d900 L tropical
 #3d91e5 tropical
 #4093e6 tropical
-#33c770 L temperate
-#3dc865 L temperate
-#47c959 L temperate
+#00d900 L temperate
+#00a200 L temperate
+#00c100 L temperate
 #2a86e1 temperate
 #4495e7 tropical
-#6ff00d L tropical
-#a3f663 L tropical
+#8cdc00 L tropical
+#8fdd00 L tropical
 #2d87e2 temperate
 #328ae3 temperate
 #3e92e6 temperate
@@ -3563,37 +3563,37 @@ Climate: sub-tropical
 #398ee4 tropical
 #3089e2 temperate
 #3d91e5 temperate
-#7af21e L tropical
-#44c85d L temperate
-#36c76d L temperate
+#72d100 L tropical
+#00a000 L temperate
+#00be00 L temperate
 #2784e1 tropical
-#90f443 L tropical
+#a8e900 L tropical
 #2d88e2 tropical
 #4697e7 tropical
 #388ee4 temperate
 #318ae3 temperate
 #378ee4 tropical
-#82f32c L tropical
-#6cf008 L tropical
-#a2f661 L tropical
-#35c76e L temperate
+#75d200 L tropical
+#7fd600 L tropical
+#a4e700 L tropical
+#00de00 L temperate
 #368de4 temperate
 #3d91e5 tropical
 #2f88e2 tropical
 #4093e6 tropical
 #4797e7 tropical
 #368de4 temperate
-#3ac869 L temperate
-#71f110 L tropical
+#00dc00 L temperate
+#66cb00 L tropical
 #2b86e1 temperate
-#79f21d L tropical
-#3ac868 L temperate
-#8af43a L tropical
-#34c76f L temperate
+#a4e700 L tropical
+#00dc00 L temperate
+#abea00 L tropical
+#00c600 L temperate
 #4193e6 tropical
-#40c862 L temperate
+#00a500 L temperate
 #3e92e5 temperate
-#34c770 L temperate
+#00d100 L temperate
 #2f88e2 tropical
 #2985e1 temperate
 #2e88e2 tropical
@@ -3606,16 +3606,16 @@ Climate: sub-tropical
 #2583e0 tropical
 #2985e1 temperate
 #318ae3 tropical
-#99f552 L tropical
-#43c85f L temperate
-#44c95d L temperate
-#95f54d L tropical
-#31c773 L temperate
-#81f32b L tropical
-#47c95a L temperate
-#3ac868 L temperate
-#3bc867 L temperate
-#37c86b L temperate
+#79d400 L tropical
+#00c900 L temperate
+#00ce00 L temperate
+#a2e600 L tropical
+#00a900 L temperate
+#b0ec00 L tropical
+#00b400 L temperate
+#00d000 L temperate
+#00cf00 L temperate
+#00a100 L temperate
 #4395e6 temperate
 #2d88e2 tropical
 #398fe4 tropical
@@ -3630,34 +3630,34 @@ Climate: sub-tropical
 #2884e1 tropical
 #318ae3 temperate
 #4495e7 temperate
-#8df43f L tropical
-#43c85e L temperate
-#86f332 L tropical
+#7cd500 L tropical
+#00b500 L temperate
+#7dd600 L tropical
 #2b86e1 tropical
 #4093e6 tropical
-#3fc862 L temperate
-#7ef224 L tropical
-#33c771 L temperate
+#00a400 L temperate
+#90de00 L tropical
+#00c400 L temperate
 #2c87e2 tropical
 #4596e7 temperate
-#8cf43c L tropical
+#79d400 L tropical
 #2985e1 tropical
-#31c773 L temperate
+#00cd00 L temperate
 #2c87e2 temperate
-#3fc863 L temperate
-#9cf658 L tropical
-#86f333 L tropical
-#3fc863 L temperate
-#a6f768 L tropical
-#48c958 L temperate
-#8df43f L tropical
-#95f54b L tropical
-#a6f768 L tropical
-#42c85f L temperate
+#00c600 L temperate
+#59c600 L tropical
+#81d800 L tropical
+#00c400 L temperate
+#87da00 L tropical
+#00ca00 L temperate
+#77d300 L tropical
+#57c500 L tropical
+#7ed600 L tropical
+#00d200 L temperate
 #2b86e2 tropical
-#81f32b L tropical
-#33c770 L temperate
-#9df658 L tropical
+#a1e500 L tropical
+#00bc00 L temperate
+#58c500 L tropical
 #4898e8 tropical
 #378ee4 temperate
 #2e88e2 temperate
@@ -3671,38 +3671,38 @@ Climate: sub-tropical
 #378de4 tropical
 #2d88e2 temperate
 #3d91e5 temperate
-#32c772 L temperate
-#31c773 L temperate
-#46c95a L temperate
-#45c95c L temperate
+#00c200 L temperate
+#00c200 L temperate
+#00c400 L temperate
+#00bc00 L temperate
 #2f89e2 temperate
-#92f547 L tropical
-#31c772 L temperate
-#33c771 L temperate
+#8edd00 L tropical
+#00d700 L temperate
+#00c100 L temperate
 #2d87e2 tropical
 #2482e0 tropical
-#3bc868 L temperate
-#90f444 L tropical
+#00d100 L temperate
+#97e100 L tropical
 
 ## Ring 30
 
 Climate: sub-tropical
 
-#87f334 L tropical
-#71f110 L tropical
-#6ef00b L tropical
-#91f445 L tropical
-#84f32f L tropical
-#3ac868 L temperate
-#41c860 L temperate
-#70f00e L tropical
-#3dc865 L temperate
-#9bf656 L tropical
-#85f331 L tropical
-#79f11c L tropical
-#9cf657 L tropical
-#a3f764 L tropical
-#a2f661 L tropical
+#9ee400 L tropical
+#b1ec00 L tropical
+#92df00 L tropical
+#a4e700 L tropical
+#88db00 L tropical
+#00c300 L temperate
+#00ac00 L temperate
+#59c600 L tropical
+#00ab00 L temperate
+#97e100 L tropical
+#55c400 L tropical
+#a0e500 L tropical
+#8ddd00 L tropical
+#aaea00 L tropical
+#56c400 L tropical
 #2a85e1 temperate
 #2b87e2 temperate
 #4797e7 temperate
@@ -3710,8 +3710,8 @@ Climate: sub-tropical
 #378ee4 tropical
 #2884e1 tropical
 #368de4 temperate
-#7cf221 L tropical
-#8bf43b L tropical
+#7bd500 L tropical
+#79d400 L tropical
 #3a8fe5 temperate
 #4a99e8 temperate
 #4093e6 temperate
@@ -3729,57 +3729,57 @@ Climate: sub-tropical
 #3a8fe5 tropical
 #4696e7 tropical
 #338be3 tropical
-#8af439 L tropical
-#37c86c L temperate
-#84f330 L tropical
-#3dc865 L temperate
+#6bce00 L tropical
+#00ab00 L temperate
+#91df00 L tropical
+#00b700 L temperate
 #4596e7 tropical
 #4395e7 temperate
 #2683e1 temperate
-#85f331 L tropical
-#78f11b L tropical
-#3cc867 L temperate
-#8cf43d L tropical
-#3cc867 L temperate
-#47c959 L temperate
-#99f553 L tropical
-#49c958 L temperate
-#31c773 L temperate
-#a4f765 L tropical
+#a0e500 L tropical
+#b2ed00 L tropical
+#00ca00 L temperate
+#a5e700 L tropical
+#00d000 L temperate
+#00b200 L temperate
+#59c600 L tropical
+#00d600 L temperate
+#00cc00 L temperate
+#aeeb00 L tropical
 #4596e7 tropical
-#41c861 L temperate
-#49c958 L temperate
+#00d500 L temperate
+#00b500 L temperate
 #4194e6 tropical
-#9ff65c L tropical
-#48c959 L temperate
-#3ac868 L temperate
-#8af43a L tropical
-#84f330 L tropical
-#3ac868 L temperate
-#9df659 L tropical
-#82f32c L tropical
-#41c861 L temperate
+#a8e900 L tropical
+#00ae00 L temperate
+#00d500 L temperate
+#8cdc00 L tropical
+#9de400 L tropical
+#00ba00 L temperate
+#a5e700 L tropical
+#a4e700 L tropical
+#00ae00 L temperate
 #4294e6 tropical
-#3ec864 L temperate
-#83f32e L tropical
+#00da00 L temperate
+#a2e600 L tropical
 #348ce3 temperate
 #338be3 tropical
 #3f93e6 tropical
 #3c90e5 temperate
 #3b90e5 tropical
-#73f114 L tropical
-#85f331 L tropical
-#76f117 L tropical
-#72f111 L tropical
+#89db00 L tropical
+#63ca00 L tropical
+#b1ed00 L tropical
+#87da00 L tropical
 #2f89e2 temperate
-#43c85e L temperate
-#40c862 L temperate
-#3fc863 L temperate
-#8bf43b L tropical
-#8bf43c L tropical
-#93f549 L tropical
-#6cf007 L tropical
-#38c86b L temperate
+#00db00 L temperate
+#00ac00 L temperate
+#00da00 L temperate
+#86da00 L tropical
+#abea00 L tropical
+#70d000 L tropical
+#5bc700 L tropical
+#00a300 L temperate
 #3e92e5 tropical
 #3f93e6 temperate
 #2e88e2 tropical
@@ -3792,36 +3792,36 @@ Climate: sub-tropical
 #4998e8 temperate
 #4496e7 tropical
 #4495e7 tropical
-#38c86b L temperate
-#33c771 L temperate
-#49c957 L temperate
-#3cc866 L temperate
-#3fc862 L temperate
+#00cd00 L temperate
+#00c300 L temperate
+#00a900 L temperate
+#00b200 L temperate
+#00b400 L temperate
 #2b86e2 tropical
-#6ef00b L tropical
-#43c85f L temperate
-#47c959 L temperate
-#35c76e L temperate
-#80f229 L tropical
-#75f116 L tropical
-#34c770 L temperate
+#86da00 L tropical
+#00ad00 L temperate
+#00c700 L temperate
+#00b000 L temperate
+#a3e600 L tropical
+#75d200 L tropical
+#00c700 L temperate
 #4093e6 temperate
-#4ac956 L temperate
-#41c860 L temperate
-#78f11a L tropical
-#71f10f L tropical
-#36c76d L temperate
-#93f548 L tropical
-#71f10f L tropical
-#7cf222 L tropical
-#a3f663 L tropical
-#a3f763 L tropical
-#4bc955 L temperate
-#38c86a L temperate
-#48c959 L temperate
-#71f10f L tropical
-#3cc866 L temperate
-#75f116 L tropical
+#00d200 L temperate
+#00b400 L temperate
+#a4e700 L tropical
+#6ecf00 L tropical
+#00ae00 L temperate
+#80d700 L tropical
+#aae900 L tropical
+#78d300 L tropical
+#88db00 L tropical
+#5ac600 L tropical
+#00b400 L temperate
+#00c100 L temperate
+#00c600 L temperate
+#81d800 L tropical
+#00c500 L temperate
+#8adc00 L tropical
 #2884e1 tropical
 #398fe4 temperate
 #4395e7 temperate
@@ -3839,43 +3839,43 @@ Climate: sub-tropical
 #388ee4 tropical
 #388ee4 tropical
 #2f89e2 temperate
-#8cf43d L tropical
-#3fc863 L temperate
+#59c600 L tropical
+#00c100 L temperate
 #338be3 tropical
 #2d87e2 tropical
-#8bf43b L tropical
-#98f551 L tropical
-#34c76f L temperate
+#abea00 L tropical
+#afec00 L tropical
+#00d700 L temperate
 #3b90e5 temperate
-#31c773 L temperate
+#00d400 L temperate
 
 ## Ring 31
 
 Climate: sub-tropical
 
-#a4f765 L tropical
-#3ac869 L temperate
-#39c86a L temperate
-#3dc865 L temperate
-#97f550 L tropical
-#95f54b L tropical
-#73f113 L tropical
-#7df223 L tropical
-#9ef65a L tropical
-#8ef43f L tropical
-#94f54a L tropical
-#40c862 L temperate
-#99f553 L tropical
-#3fc863 L temperate
-#42c85f L temperate
+#5ec800 L tropical
+#00d900 L temperate
+#00af00 L temperate
+#00ba00 L temperate
+#9ae200 L tropical
+#80d700 L tropical
+#8adb00 L tropical
+#a0e500 L tropical
+#5cc700 L tropical
+#70d000 L tropical
+#64cb00 L tropical
+#00cb00 L temperate
+#afec00 L tropical
+#00cc00 L temperate
+#00a300 L temperate
 #2884e1 temperate
 #3b90e5 tropical
 #4194e6 temperate
-#4ac956 L temperate
-#7cf223 L tropical
-#6ff00d L tropical
-#7cf221 L tropical
-#48c958 L temperate
+#00b900 L temperate
+#77d300 L tropical
+#a4e700 L tropical
+#91de00 L tropical
+#00b800 L temperate
 #338be3 temperate
 #308ae3 tropical
 #2884e1 temperate
@@ -3895,57 +3895,57 @@ Climate: sub-tropical
 #318ae3 temperate
 #2884e1 tropical
 #4294e6 tropical
-#43c85e L temperate
-#95f54c L tropical
-#85f330 L tropical
+#00b000 L temperate
+#9be300 L tropical
+#7cd500 L tropical
 #2d88e2 temperate
 #368de4 tropical
-#32c771 L temperate
-#46c95a L temperate
-#74f114 L tropical
-#48c958 L temperate
-#6cf008 L tropical
-#44c85d L temperate
-#90f443 L tropical
-#99f552 L tropical
-#94f54b L tropical
-#94f549 L tropical
-#91f444 L tropical
-#95f54c L tropical
+#00be00 L temperate
+#00a800 L temperate
+#7ad400 L tropical
+#00c500 L temperate
+#9fe500 L tropical
+#00dd00 L temperate
+#88db00 L tropical
+#63ca00 L tropical
+#9ee400 L tropical
+#78d300 L tropical
+#9ce300 L tropical
+#76d200 L tropical
 #388ee4 tropical
-#34c770 L temperate
-#8ef441 L tropical
-#9ff65d L tropical
-#9df65a L tropical
-#78f11c L tropical
-#40c861 L temperate
-#8bf43b L tropical
-#37c86c L temperate
-#89f337 L tropical
-#9bf655 L tropical
-#32c771 L temperate
-#4ac956 L temperate
-#a6f768 L tropical
-#6ef00b L tropical
-#94f54b L tropical
-#43c85f L temperate
-#96f54e L tropical
-#35c76f L temperate
-#8ff441 L tropical
-#31c773 L temperate
-#94f54a L tropical
-#6df008 L tropical
-#9cf658 L tropical
-#a4f765 L tropical
-#92f547 L tropical
-#37c86c L temperate
-#40c862 L temperate
-#77f11a L tropical
-#a4f764 L tropical
-#32c772 L temperate
-#77f119 L tropical
-#38c86b L temperate
-#7ef226 L tropical
+#00a600 L temperate
+#5ec800 L tropical
+#a5e700 L tropical
+#8bdc00 L tropical
+#8edd00 L tropical
+#00d000 L temperate
+#6ecf00 L tropical
+#00b300 L temperate
+#91de00 L tropical
+#a9e900 L tropical
+#00a500 L temperate
+#00af00 L temperate
+#79d400 L tropical
+#acea00 L tropical
+#afec00 L tropical
+#00d600 L temperate
+#98e200 L tropical
+#00de00 L temperate
+#69cd00 L tropical
+#00b400 L temperate
+#56c500 L tropical
+#7bd500 L tropical
+#6ecf00 L tropical
+#63ca00 L tropical
+#6ecf00 L tropical
+#00bc00 L temperate
+#00c900 L temperate
+#a2e600 L tropical
+#7ad400 L tropical
+#00b600 L temperate
+#61c900 L tropical
+#00af00 L temperate
+#8adc00 L tropical
 #398ee4 temperate
 #348ce3 temperate
 #4294e6 temperate
@@ -3955,36 +3955,36 @@ Climate: sub-tropical
 #3d91e5 temperate
 #2a85e1 temperate
 #328be3 temperate
-#89f337 L tropical
+#81d800 L tropical
 #368de4 temperate
-#7cf223 L tropical
-#3ac868 L temperate
-#33c770 L temperate
-#38c86a L temperate
-#3bc867 L temperate
-#87f334 L tropical
-#32c771 L temperate
-#34c76f L temperate
-#40c861 L temperate
-#9ef65a L tropical
-#98f550 L tropical
-#36c76d L temperate
-#9cf657 L tropical
+#5dc800 L tropical
+#00bb00 L temperate
+#00be00 L temperate
+#00ad00 L temperate
+#00b200 L temperate
+#a9e900 L tropical
+#00c600 L temperate
+#00bf00 L temperate
+#00c700 L temperate
+#8edd00 L tropical
+#99e200 L tropical
+#00d500 L temperate
+#6ecf00 L tropical
 #4294e6 temperate
 #3089e3 temperate
-#71f110 L tropical
-#a1f660 L tropical
-#44c85d L temperate
-#92f547 L tropical
-#a0f65f L tropical
-#30c773 L temperate
-#91f445 L tropical
-#6ff00c L tropical
-#91f444 L tropical
-#42c85f L temperate
-#37c76c L temperate
-#38c86b L temperate
-#71f10f L tropical
+#afec00 L tropical
+#62ca00 L tropical
+#00a900 L temperate
+#72d100 L tropical
+#62ca00 L tropical
+#00ac00 L temperate
+#5cc700 L tropical
+#acea00 L tropical
+#5dc800 L tropical
+#00c800 L temperate
+#00d800 L temperate
+#00d900 L temperate
+#7bd500 L tropical
 #4495e7 temperate
 #4998e8 temperate
 #368de4 temperate
@@ -4002,41 +4002,41 @@ Climate: sub-tropical
 #318ae3 tropical
 #4395e7 temperate
 #2985e1 temperate
-#3cc867 L temperate
-#92f446 L tropical
-#80f228 L tropical
+#00df00 L temperate
+#90de00 L tropical
+#75d200 L tropical
 #3a8fe5 tropical
 #4294e6 temperate
-#80f229 L tropical
-#77f119 L tropical
-#4ac956 L temperate
-#79f21c L tropical
-#6ef00b L tropical
-#89f338 L tropical
+#72d100 L tropical
+#6cce00 L tropical
+#00cb00 L temperate
+#6ecf00 L tropical
+#83d800 L tropical
+#8fde00 L tropical
 
 ## Ring 32
 
 Climate: sub-tropical
 
-#94f54a L tropical
-#40c862 L temperate
-#43c85f L temperate
-#40c862 L temperate
-#44c85d L temperate
-#44c95d L temperate
-#3dc865 L temperate
-#36c76d L temperate
-#93f549 L tropical
-#39c86a L temperate
-#35c76e L temperate
+#67cc00 L tropical
+#00b300 L temperate
+#00d500 L temperate
+#00d600 L temperate
+#00a700 L temperate
+#00a700 L temperate
+#00b800 L temperate
+#00d400 L temperate
+#62ca00 L tropical
+#00bf00 L temperate
+#00bd00 L temperate
 #4898e8 temperate
-#34c76f L temperate
-#8ef441 L tropical
-#34c76f L temperate
-#32c772 L temperate
-#4ac957 L temperate
-#31c773 L temperate
-#99f552 L tropical
+#00a700 L temperate
+#86da00 L tropical
+#00c800 L temperate
+#00b900 L temperate
+#00a000 L temperate
+#00c700 L temperate
+#66cb00 L tropical
 #4999e8 temperate
 #4294e6 tropical
 #328ae3 temperate
@@ -4056,95 +4056,95 @@ Climate: sub-tropical
 #2784e1 tropical
 #2784e1 tropical
 #4697e7 temperate
-#35c76e L temperate
-#73f113 L tropical
+#00c500 L temperate
+#85d900 L tropical
 #4093e6 tropical
-#8ef441 L tropical
-#6df009 L tropical
-#39c869 L temperate
-#45c95c L temperate
-#8df43e L tropical
-#a5f766 L tropical
-#75f115 L tropical
-#6ff00c L tropical
-#47c95a L temperate
-#88f335 L tropical
-#37c86c L temperate
+#6fd000 L tropical
+#a8e900 L tropical
+#00be00 L temperate
+#00cd00 L temperate
+#7dd600 L tropical
+#93df00 L tropical
+#89db00 L tropical
+#65cb00 L tropical
+#00b100 L temperate
+#74d200 L tropical
+#00d600 L temperate
 #2a85e1 tropical
 #398fe4 tropical
-#36c76d L temperate
-#49c958 L temperate
+#00a400 L temperate
+#00dc00 L temperate
 #318ae3 temperate
-#37c76c L temperate
-#82f32d L tropical
-#7ef224 L tropical
-#41c860 L temperate
-#42c85f L temperate
-#8ef441 L tropical
-#45c95b L temperate
-#9df659 L tropical
-#7df223 L tropical
-#94f54a L tropical
-#48c959 L temperate
-#9bf656 L tropical
+#00ba00 L temperate
+#9de400 L tropical
+#67cc00 L tropical
+#00d600 L temperate
+#00b400 L temperate
+#68cd00 L tropical
+#00cf00 L temperate
+#81d800 L tropical
+#58c600 L tropical
+#7cd500 L tropical
+#00c500 L temperate
+#63ca00 L tropical
 #4495e7 temperate
-#9df65a L tropical
-#42c85f L temperate
-#a7f769 L tropical
-#a1f65f L tropical
+#abea00 L tropical
+#00ae00 L temperate
+#6fcf00 L tropical
+#5fc800 L tropical
 #2e88e2 tropical
 #3e92e5 tropical
-#49c957 L temperate
-#39c86a L temperate
-#47c959 L temperate
-#71f110 L tropical
-#79f11c L tropical
-#7af21e L tropical
-#8ef440 L tropical
-#98f551 L tropical
-#77f119 L tropical
-#4bc955 L temperate
-#9af554 L tropical
-#49c958 L temperate
-#43c85e L temperate
-#3ac869 L temperate
-#47c95a L temperate
+#00a300 L temperate
+#00d200 L temperate
+#00c400 L temperate
+#85d900 L tropical
+#64ca00 L tropical
+#58c500 L tropical
+#7dd600 L tropical
+#7ed600 L tropical
+#63ca00 L tropical
+#00c500 L temperate
+#9ce300 L tropical
+#00c800 L temperate
+#00ca00 L temperate
+#00c200 L temperate
+#00a100 L temperate
 #2c87e2 tropical
 #2885e1 tropical
 #4395e7 temperate
 #4596e7 temperate
 #2a85e1 tropical
-#4ac956 L temperate
-#6ef00a L tropical
-#a5f767 L tropical
-#72f112 L tropical
-#3dc865 L temperate
-#9df659 L tropical
-#39c86a L temperate
-#85f330 L tropical
-#75f117 L tropical
-#7cf222 L tropical
-#7ff227 L tropical
-#7af21f L tropical
-#42c85f L temperate
-#45c95c L temperate
-#49c957 L temperate
-#33c770 L temperate
+#00c100 L temperate
+#adeb00 L tropical
+#61c900 L tropical
+#75d200 L tropical
+#00cc00 L temperate
+#8ddd00 L tropical
+#00d200 L temperate
+#59c600 L tropical
+#99e200 L tropical
+#79d400 L tropical
+#acea00 L tropical
+#68cc00 L tropical
+#00df00 L temperate
+#00a900 L temperate
+#00d000 L temperate
+#00b300 L temperate
 #4898e8 temperate
 #338be3 temperate
-#99f553 L tropical
-#77f11a L tropical
-#47c95a L temperate
-#3bc868 L temperate
-#70f00e L tropical
-#91f445 L tropical
-#92f547 L tropical
-#99f553 L tropical
-#7af21e L tropical
-#48c959 L temperate
-#7af21f L tropical
-#36c76d L temperate
-#37c86c L temperate
+#9ae200 L tropical
+#8cdc00 L tropical
+#00de00 L temperate
+#00cd00 L temperate
+#9fe500 L tropical
+#56c400 L tropical
+#66cc00 L tropical
+#59c600 L tropical
+#8adb00 L tropical
+#00d200 L temperate
+#62ca00 L tropical
+#00b000 L temperate
+#00af00 L temperate
 #3a8fe5 temperate
 #2a86e1 temperate
 #4395e7 tropical
@@ -4160,17 +4160,17 @@ Climate: sub-tropical
 #2784e1 tropical
 #398fe4 temperate
 #4898e8 temperate
-#7df223 L tropical
-#7ef225 L tropical
-#7ef225 L tropical
-#49c957 L temperate
+#85d900 L tropical
+#8cdc00 L tropical
+#a4e700 L tropical
+#00b300 L temperate
 #3e92e5 temperate
-#75f115 L tropical
-#73f112 L tropical
-#7cf223 L tropical
-#4ac957 L temperate
-#99f552 L tropical
-#72f110 L tropical
+#abea00 L tropical
+#7bd500 L tropical
+#a8e900 L tropical
+#00a500 L temperate
+#59c600 L tropical
+#6acd00 L tropical
 #4395e7 tropical
 #3b90e5 tropical
 
@@ -4178,24 +4178,24 @@ Climate: sub-tropical
 
 Climate: temperate
 
-#3bc868 L temperate
-#38c86b L temperate
-#30c774 L temperate
-#41c860 L temperate
-#31c773 L temperate
-#4ac956 L temperate
-#3ac869 L temperate
-#4ac956 L temperate
-#39c86a L temperate
-#36c76d L temperate
+#00c000 L temperate
+#00b300 L temperate
+#00d100 L temperate
+#00da00 L temperate
+#00c400 L temperate
+#00af00 L temperate
+#00ca00 L temperate
+#00b400 L temperate
+#00c300 L temperate
+#00b600 L temperate
 #3e92e5 temperate
-#41c861 L temperate
-#47c959 L temperate
-#36c76e L temperate
-#3fc863 L temperate
-#44c85d L temperate
-#3ec864 L temperate
-#3cc867 L temperate
+#00ce00 L temperate
+#00cc00 L temperate
+#00a100 L temperate
+#00c200 L temperate
+#00ba00 L temperate
+#00d700 L temperate
+#00a100 L temperate
 #3c91e5 temperate
 #2b86e1 temperate
 #4193e6 temperate
@@ -4214,88 +4214,88 @@ Climate: temperate
 #3e92e6 temperate
 #2784e1 temperate
 #378de4 temperate
-#33c771 L temperate
+#00a000 L temperate
 #2a86e1 temperate
-#3ac868 L temperate
-#36c76d L temperate
-#37c86c L temperate
-#31c772 L temperate
-#40c862 L temperate
-#44c85d L temperate
-#46c95a L temperate
-#40c861 L temperate
-#3ec864 L temperate
-#41c861 L temperate
+#00b000 L temperate
+#009f00 L temperate
+#00b700 L temperate
+#00c600 L temperate
+#00a100 L temperate
+#00d700 L temperate
+#00c200 L temperate
+#00dd00 L temperate
+#00a800 L temperate
+#00b400 L temperate
 #2985e1 temperate
 #3a8fe5 temperate
 #328be3 temperate
 #2884e1 temperate
 #3089e3 temperate
-#3ac869 L temperate
-#3bc868 L temperate
-#3ac869 L temperate
-#3ac869 L temperate
-#45c95c L temperate
-#44c85d L temperate
-#33c771 L temperate
-#49c957 L temperate
-#3bc867 L temperate
-#31c773 L temperate
-#41c861 L temperate
-#33c771 L temperate
-#45c95c L temperate
-#4ac957 L temperate
+#009e00 L temperate
+#00c000 L temperate
+#00b000 L temperate
+#00d200 L temperate
+#00b000 L temperate
+#00db00 L temperate
+#00be00 L temperate
+#00a400 L temperate
+#00be00 L temperate
+#00d000 L temperate
+#00d800 L temperate
+#00a400 L temperate
+#00bb00 L temperate
+#00c500 L temperate
 #2d88e2 temperate
 #2582e0 temperate
 #3d91e5 temperate
 #378de4 temperate
-#32c772 L temperate
-#4bc955 L temperate
-#31c773 L temperate
-#47c95a L temperate
-#3cc866 L temperate
-#48c959 L temperate
-#31c772 L temperate
-#44c85d L temperate
-#43c85e L temperate
-#44c85d L temperate
-#3cc866 L temperate
-#33c770 L temperate
+#00dd00 L temperate
+#009f00 L temperate
+#00ae00 L temperate
+#00ad00 L temperate
+#00c200 L temperate
+#00de00 L temperate
+#00d800 L temperate
+#00ce00 L temperate
+#00d400 L temperate
+#00ce00 L temperate
+#00c800 L temperate
+#00c500 L temperate
 #3b90e5 temperate
-#3bc867 L temperate
-#3cc866 L temperate
+#00a200 L temperate
+#00d000 L temperate
 #2985e1 temperate
-#49c957 L temperate
-#42c85f L temperate
-#37c86c L temperate
-#3cc867 L temperate
-#43c85e L temperate
+#00be00 L temperate
+#00aa00 L temperate
+#00a500 L temperate
+#00a500 L temperate
+#00c200 L temperate
 #2683e0 temperate
-#36c76d L temperate
-#42c85f L temperate
-#3bc867 L temperate
+#00dd00 L temperate
+#00b800 L temperate
+#00d000 L temperate
 #2985e1 temperate
-#32c772 L temperate
-#45c95c L temperate
-#49c957 L temperate
-#33c770 L temperate
-#43c85e L temperate
-#3ac869 L temperate
-#39c869 L temperate
+#00a800 L temperate
+#00c000 L temperate
+#00cf00 L temperate
+#00b600 L temperate
+#00a800 L temperate
+#00df00 L temperate
+#00b800 L temperate
 #348ce3 temperate
 #2a86e1 temperate
 #3c91e5 temperate
 #4495e7 temperate
-#40c862 L temperate
-#3ec864 L temperate
-#45c95c L temperate
-#44c95d L temperate
-#34c770 L temperate
-#34c76f L temperate
-#4bc955 L temperate
+#00af00 L temperate
+#00de00 L temperate
+#00ad00 L temperate
+#00db00 L temperate
+#00de00 L temperate
+#00cf00 L temperate
+#00c400 L temperate
 #4998e8 temperate
-#47c95a L temperate
-#3fc863 L temperate
+#00cf00 L temperate
+#00c100 L temperate
 #2c87e2 temperate
 #338be3 temperate
 #3089e2 temperate
@@ -4310,39 +4310,39 @@ Climate: temperate
 #4093e6 temperate
 #4395e7 temperate
 #318ae3 temperate
-#3cc866 L temperate
-#49c957 L temperate
-#41c861 L temperate
-#33c770 L temperate
-#33c771 L temperate
-#3ec864 L temperate
-#49c957 L temperate
-#44c85d L temperate
-#36c76d L temperate
-#32c771 L temperate
-#3cc866 L temperate
-#46c95b L temperate
-#3ec863 L temperate
+#00da00 L temperate
+#00d600 L temperate
+#00bd00 L temperate
+#00d100 L temperate
+#00da00 L temperate
+#00ca00 L temperate
+#00cf00 L temperate
+#00c800 L temperate
+#00ba00 L temperate
+#00b500 L temperate
+#00d900 L temperate
+#00de00 L temperate
+#00ca00 L temperate
 
 ## Ring 34
 
 Climate: temperate
 
-#45c95c L temperate
-#37c86c L temperate
-#38c86b L temperate
-#49c957 L temperate
-#4ac956 L temperate
-#3fc863 L temperate
-#4bc955 L temperate
-#45c95c L temperate
-#3bc867 L temperate
-#3fc863 L temperate
-#31c773 L temperate
-#4bc955 L temperate
-#43c85e L temperate
-#3cc867 L temperate
-#41c861 L temperate
+#00a400 L temperate
+#00da00 L temperate
+#00ae00 L temperate
+#00b300 L temperate
+#00d000 L temperate
+#00c800 L temperate
+#00be00 L temperate
+#00ab00 L temperate
+#00ca00 L temperate
+#00a700 L temperate
+#00a400 L temperate
+#00b000 L temperate
+#00d400 L temperate
+#00d400 L temperate
+#00d700 L temperate
 #338be3 temperate
 #3089e2 temperate
 #368de4 temperate
@@ -4359,67 +4359,67 @@ Climate: temperate
 #2583e0 temperate
 #338be3 temperate
 #2e88e2 temperate
-#32c771 L temperate
-#32c771 L temperate
-#31c773 L temperate
-#3ac868 L temperate
+#00de00 L temperate
+#00d500 L temperate
+#00cc00 L temperate
+#00c100 L temperate
 #2f89e2 temperate
-#47c95a L temperate
-#45c95b L temperate
-#42c85f L temperate
-#45c95c L temperate
-#3ec863 L temperate
-#3ac869 L temperate
-#3dc865 L temperate
-#44c85d L temperate
-#42c85f L temperate
-#37c86c L temperate
-#3ac869 L temperate
-#3dc865 L temperate
-#44c85d L temperate
+#00ab00 L temperate
+#00db00 L temperate
+#00b500 L temperate
+#00b600 L temperate
+#00ce00 L temperate
+#00a600 L temperate
+#00b900 L temperate
+#00ca00 L temperate
+#00ce00 L temperate
+#00ca00 L temperate
+#00c700 L temperate
+#00b700 L temperate
+#009f00 L temperate
 #4797e7 temperate
-#30c774 L temperate
-#39c869 L temperate
-#3bc868 L temperate
-#3ac869 L temperate
-#3cc866 L temperate
-#30c774 L temperate
-#36c76d L temperate
+#00a800 L temperate
+#00c200 L temperate
+#00bf00 L temperate
+#00b100 L temperate
+#00a800 L temperate
+#00a800 L temperate
+#00c200 L temperate
 #4a99e8 temperate
-#49c958 L temperate
+#00da00 L temperate
 #2a86e1 temperate
-#42c85f L temperate
+#00ba00 L temperate
 #2582e0 temperate
 #3b90e5 temperate
 #4797e7 temperate
 #2d88e2 temperate
 #4797e7 temperate
 #348ce3 temperate
-#42c860 L temperate
+#009f00 L temperate
 #378de4 temperate
 #4697e7 temperate
-#48c958 L temperate
-#3cc866 L temperate
-#3ec864 L temperate
-#3cc866 L temperate
-#30c774 L temperate
-#47c95a L temperate
-#41c860 L temperate
-#3ac868 L temperate
+#00ad00 L temperate
+#00be00 L temperate
+#00a600 L temperate
+#00db00 L temperate
+#00b100 L temperate
+#00aa00 L temperate
+#00dd00 L temperate
+#00cb00 L temperate
 #4797e7 temperate
 #3f92e6 temperate
-#47c959 L temperate
-#42c860 L temperate
-#34c770 L temperate
-#37c76d L temperate
-#39c869 L temperate
-#36c76d L temperate
+#00ce00 L temperate
+#00c100 L temperate
+#00b700 L temperate
+#00d200 L temperate
+#00b300 L temperate
+#00a300 L temperate
 #328ae3 temperate
 #358de4 temperate
 #2d87e2 temperate
 #2c87e2 temperate
 #338be3 temperate
-#3bc867 L temperate
+#00a000 L temperate
 #2884e1 temperate
 #3b90e5 temperate
 #2683e1 temperate
@@ -4428,15 +4428,15 @@ Climate: temperate
 #4294e6 temperate
 #4496e7 temperate
 #2683e0 temperate
-#3bc868 L temperate
-#44c85d L temperate
+#00b300 L temperate
+#00cf00 L temperate
 #2884e1 temperate
-#41c860 L temperate
-#35c76e L temperate
-#3fc863 L temperate
+#00d400 L temperate
+#00b400 L temperate
+#00af00 L temperate
 #2784e1 temperate
-#3cc866 L temperate
-#34c76f L temperate
+#00ae00 L temperate
+#00df00 L temperate
 #2e88e2 temperate
 #4395e6 temperate
 #2f88e2 temperate
@@ -4451,37 +4451,37 @@ Climate: temperate
 #378de4 temperate
 #2a86e1 temperate
 #388ee4 temperate
-#35c76f L temperate
-#3dc865 L temperate
-#47c95a L temperate
-#42c85f L temperate
-#4bc955 L temperate
-#4ac956 L temperate
-#31c773 L temperate
-#42c85f L temperate
-#34c770 L temperate
-#49c958 L temperate
-#3fc862 L temperate
-#44c85d L temperate
+#00e000 L temperate
+#00b500 L temperate
+#00b400 L temperate
+#00ca00 L temperate
+#00b700 L temperate
+#00d700 L temperate
+#009f00 L temperate
+#00c800 L temperate
+#00c800 L temperate
+#00c500 L temperate
+#00cf00 L temperate
+#00c100 L temperate
 
 ## Ring 35
 
 Climate: temperate
 
-#3dc865 L temperate
-#45c95c L temperate
-#31c772 L temperate
-#37c86c L temperate
-#3cc867 L temperate
-#48c959 L temperate
-#41c860 L temperate
-#3bc867 L temperate
-#34c76f L temperate
-#4bc955 L temperate
+#00d700 L temperate
+#00a400 L temperate
+#00dd00 L temperate
+#00ad00 L temperate
+#00ac00 L temperate
+#00c700 L temperate
+#00ca00 L temperate
+#00c300 L temperate
+#00a800 L temperate
+#00a400 L temperate
 #2a86e1 temperate
-#44c85d L temperate
-#3cc867 L temperate
-#3cc866 L temperate
+#00d200 L temperate
+#00b300 L temperate
+#00b500 L temperate
 #2884e1 temperate
 #2b86e1 temperate
 #4797e7 temperate
@@ -4497,28 +4497,28 @@ Climate: temperate
 #378ee4 temperate
 #4395e6 temperate
 #4596e7 temperate
-#47c95a L temperate
-#47c95a L temperate
-#45c95c L temperate
-#38c86b L temperate
-#3cc866 L temperate
-#3bc868 L temperate
-#3cc866 L temperate
-#36c76d L temperate
-#44c85e L temperate
-#4bc956 L temperate
-#34c770 L temperate
-#36c76d L temperate
-#35c76e L temperate
+#009f00 L temperate
+#00d600 L temperate
+#00a700 L temperate
+#00ad00 L temperate
+#00ce00 L temperate
+#00b600 L temperate
+#00af00 L temperate
+#00cf00 L temperate
+#00a000 L temperate
+#00b300 L temperate
+#00a200 L temperate
+#00a600 L temperate
+#00af00 L temperate
 #2d87e2 temperate
 #2c87e2 temperate
 #4395e6 temperate
 #3a8fe5 temperate
-#42c860 L temperate
-#3bc867 L temperate
-#32c771 L temperate
-#49c958 L temperate
-#49c957 L temperate
+#00d500 L temperate
+#00a800 L temperate
+#00bb00 L temperate
+#00dd00 L temperate
+#00a500 L temperate
 #4898e8 temperate
 #2d88e2 temperate
 #4697e7 temperate
@@ -4529,21 +4529,21 @@ Climate: temperate
 #2a86e1 temperate
 #2c87e2 temperate
 #4998e8 temperate
-#4ac956 L temperate
-#49c957 L temperate
-#43c85f L temperate
-#39c86a L temperate
-#39c869 L temperate
-#31c773 L temperate
-#33c771 L temperate
+#00a800 L temperate
+#00c300 L temperate
+#00a400 L temperate
+#00ab00 L temperate
+#00c600 L temperate
+#00d800 L temperate
+#00b700 L temperate
 #2583e0 temperate
-#35c76f L temperate
-#32c771 L temperate
-#31c773 L temperate
+#00c000 L temperate
+#00c000 L temperate
+#00ae00 L temperate
 #3d91e5 temperate
 #318ae3 temperate
 #338be3 temperate
-#4bc955 L temperate
+#00a300 L temperate
 #358ce4 temperate
 #388ee4 temperate
 #2a86e1 temperate
@@ -4561,11 +4561,11 @@ Climate: temperate
 #4495e7 temperate
 #3c91e5 temperate
 #4797e7 temperate
-#3ac869 L temperate
+#009f00 L temperate
 #3d91e5 temperate
 #4697e7 temperate
-#3ec864 L temperate
-#34c76f L temperate
+#00b900 L temperate
+#00c400 L temperate
 #3b90e5 temperate
 #3089e2 temperate
 #328be3 temperate
@@ -4582,38 +4582,38 @@ Climate: temperate
 #4797e7 temperate
 #328be3 temperate
 #4496e7 temperate
-#3ec864 L temperate
-#41c860 L temperate
-#30c774 L temperate
+#00bc00 L temperate
+#00a500 L temperate
+#00a100 L temperate
 #4294e6 temperate
-#3ec863 L temperate
-#3ec864 L temperate
-#33c771 L temperate
-#34c76f L temperate
-#37c86c L temperate
-#42c85f L temperate
-#39c869 L temperate
+#009f00 L temperate
+#00c700 L temperate
+#00b000 L temperate
+#00ce00 L temperate
+#00d300 L temperate
+#00c400 L temperate
+#00ce00 L temperate
 
 ## Ring 36
 
 Climate: temperate
 
-#3ec864 L temperate
-#4bc955 L temperate
-#37c76d L temperate
-#3fc863 L temperate
-#3ec863 L temperate
-#49c957 L temperate
-#3fc863 L temperate
-#34c770 L temperate
-#37c86c L temperate
-#41c861 L temperate
+#00c700 L temperate
+#00bd00 L temperate
+#00bc00 L temperate
+#00aa00 L temperate
+#00cb00 L temperate
+#00cc00 L temperate
+#00b300 L temperate
+#00d200 L temperate
+#00de00 L temperate
+#00b900 L temperate
 #3089e3 temperate
-#41c860 L temperate
+#00b700 L temperate
 #318ae3 temperate
 #3089e3 temperate
-#41c861 L temperate
-#3bc868 L temperate
+#00af00 L temperate
+#00b700 L temperate
 #2583e0 temperate
 #2a86e1 temperate
 #2a86e1 temperate
@@ -4625,25 +4625,25 @@ Climate: temperate
 #3e92e6 temperate
 #2583e0 temperate
 #4093e6 temperate
-#38c86b L temperate
-#43c85e L temperate
-#49c958 L temperate
-#30c774 L temperate
-#3cc866 L temperate
-#45c95c L temperate
-#33c771 L temperate
-#38c86a L temperate
-#43c85e L temperate
-#3fc862 L temperate
+#00d900 L temperate
+#00c500 L temperate
+#00c800 L temperate
+#00c300 L temperate
+#00a800 L temperate
+#00ba00 L temperate
+#00aa00 L temperate
+#00d000 L temperate
+#00dc00 L temperate
+#00ba00 L temperate
 #368de4 temperate
-#44c85d L temperate
+#00a400 L temperate
 #2a85e1 temperate
 #2f89e2 temperate
 #2784e1 temperate
 #2482e0 temperate
-#46c95b L temperate
-#31c773 L temperate
-#37c86c L temperate
+#00ba00 L temperate
+#009f00 L temperate
+#00c500 L temperate
 #2f89e2 temperate
 #2a86e1 temperate
 #4395e7 temperate
@@ -4657,11 +4657,11 @@ Climate: temperate
 #4194e6 temperate
 #3c91e5 temperate
 #4898e8 temperate
-#46c95b L temperate
-#46c95b L temperate
+#00c300 L temperate
+#00d300 L temperate
 #4797e7 temperate
-#3bc867 L temperate
-#31c772 L temperate
+#00a300 L temperate
+#00af00 L temperate
 #328be3 temperate
 #4495e7 temperate
 #4596e7 temperate
@@ -4706,56 +4706,56 @@ Climate: temperate
 #3c91e5 temperate
 #4395e7 temperate
 #2784e1 temperate
-#35c76f L temperate
-#4ac956 L temperate
+#00d900 L temperate
+#00b800 L temperate
 #308ae3 temperate
-#40c862 L temperate
-#34c770 L temperate
-#43c85e L temperate
-#3cc866 L temperate
+#00c500 L temperate
+#00bd00 L temperate
+#00d000 L temperate
+#00d200 L temperate
 
 ## Ring 37
 
 Climate: temperate
 
-#38c86a L temperate
-#45c95c L temperate
-#3bc867 L temperate
-#48c958 L temperate
-#3cc867 L temperate
-#40c861 L temperate
-#47c959 L temperate
+#00c400 L temperate
+#00ca00 L temperate
+#00dc00 L temperate
+#00d700 L temperate
+#00cc00 L temperate
+#00d400 L temperate
+#00b700 L temperate
 #3f92e6 temperate
 #2885e1 temperate
-#47c95a L temperate
-#3cc867 L temperate
-#43c85e L temperate
-#3ac868 L temperate
-#33c770 L temperate
-#3bc867 L temperate
-#3bc867 L temperate
-#49c958 L temperate
-#3dc865 L temperate
+#00d700 L temperate
+#00cb00 L temperate
+#00df00 L temperate
+#00db00 L temperate
+#00ba00 L temperate
+#00a100 L temperate
+#00ce00 L temperate
+#00af00 L temperate
+#00c200 L temperate
 #2a86e1 temperate
-#3fc863 L temperate
+#00a400 L temperate
 #3e92e5 temperate
 #2482e0 temperate
 #338be3 temperate
 #2b86e1 temperate
-#34c770 L temperate
-#41c861 L temperate
+#00c600 L temperate
+#00bf00 L temperate
 #4898e8 temperate
 #2d87e2 temperate
-#33c771 L temperate
-#46c95b L temperate
-#3cc866 L temperate
+#00a400 L temperate
+#00b100 L temperate
+#00db00 L temperate
 #2b86e1 temperate
 #378ee4 temperate
-#3dc865 L temperate
-#41c860 L temperate
-#47c95a L temperate
-#42c85f L temperate
-#3ac869 L temperate
+#00ce00 L temperate
+#00c300 L temperate
+#00aa00 L temperate
+#00d200 L temperate
+#00db00 L temperate
 #4495e7 temperate
 #318ae3 temperate
 #2582e0 temperate
@@ -4771,8 +4771,8 @@ Climate: temperate
 #348ce3 temperate
 #398fe4 temperate
 #368de4 temperate
-#41c861 L temperate
-#3cc866 L temperate
+#00b100 L temperate
+#00a300 L temperate
 #3d91e5 temperate
 #398ee4 temperate
 #4093e6 temperate
@@ -4815,53 +4815,53 @@ Climate: temperate
 #2884e1 temperate
 #2884e1 temperate
 #2885e1 temperate
-#3dc865 L temperate
-#43c85e L temperate
-#38c86b L temperate
+#00db00 L temperate
+#00cf00 L temperate
+#00b400 L temperate
 #3089e3 temperate
-#37c86c L temperate
+#00d400 L temperate
 #2e88e2 temperate
-#3ec864 L temperate
-#3ac869 L temperate
+#00b300 L temperate
+#00be00 L temperate
 
 ## Ring 38
 
 Climate: sub-polar
 
-#e7feff L polar
-#f4ffff L polar
-#39c869 L temperate
+#a3fcff L polar
+#fbffff L polar
+#00d200 L temperate
 #388ee4 polar
 #2985e1 polar
-#40c861 L temperate
-#ffffff L polar
-#f9ffff L polar
-#46c95a L temperate
-#3bc867 L temperate
-#30c774 L temperate
-#3ec864 L temperate
-#41c860 L temperate
-#e6feff L polar
-#dcfeff L polar
-#38c86b L temperate
-#faffff L polar
-#f2ffff L polar
-#43c85e L temperate
-#37c86c L temperate
-#39c869 L temperate
-#e8feff L polar
+#00c600 L temperate
+#eafeff L polar
+#b8fdff L polar
+#00a800 L temperate
+#00c800 L temperate
+#00d200 L temperate
+#00c300 L temperate
+#00b100 L temperate
+#b0fdff L polar
+#c7fdff L polar
+#00b700 L temperate
+#b4fdff L polar
+#d5feff L polar
+#00a900 L temperate
+#00d100 L temperate
+#00a000 L temperate
+#d5feff L polar
 #4395e7 temperate
 #2c87e2 temperate
 #2683e0 temperate
-#e9feff L polar
+#defeff L polar
 #388ee4 temperate
 #2a86e1 polar
 #338be3 polar
 #3f92e6 polar
-#41c860 L temperate
-#dffeff L polar
-#40c862 L temperate
-#ddfeff L polar
+#00a500 L temperate
+#a7fcff L polar
+#00bd00 L temperate
+#a2fcff L polar
 #4294e6 temperate
 #2c87e2 temperate
 #388ee4 polar
@@ -4875,8 +4875,8 @@ Climate: sub-polar
 #3b90e5 temperate
 #2a86e1 temperate
 #378de4 temperate
-#edffff L polar
-#faffff L polar
+#e9feff L polar
+#b3fdff L polar
 #4797e7 polar
 #348be3 polar
 #2e88e2 polar
@@ -4892,10 +4892,10 @@ Climate: sub-polar
 #2b86e1 polar
 #3b90e5 polar
 #2885e1 polar
-#defeff L polar
+#abfcff L polar
 #3f92e6 temperate
 #2e88e2 temperate
-#e4feff L polar
+#c5fdff L polar
 #3f92e6 polar
 #4a99e8 polar
 #4697e7 temperate
@@ -4917,12 +4917,12 @@ Climate: sub-polar
 #4697e7 polar
 #3089e2 polar
 #338be3 temperate
-#e2feff L polar
+#dcfeff L polar
 #3d91e5 temperate
-#38c86b L temperate
+#00ae00 L temperate
 #368de4 polar
 #3d91e5 polar
-#47c95a L temperate
+#00d600 L temperate
 
 ## Ring 39
 
@@ -4930,21 +4930,21 @@ Climate: sub-polar
 
 #4093e6 temperate
 #328be3 temperate
-#3dc866 L temperate
-#37c76c L temperate
-#d9feff L polar
-#f6ffff L polar
-#49c957 L temperate
-#edffff L polar
-#eeffff L polar
+#00d100 L temperate
+#00ce00 L temperate
+#dafeff L polar
+#d4feff L polar
+#00b300 L temperate
+#a5fcff L polar
+#b8fdff L polar
 #2c87e2 temperate
-#eeffff L polar
-#eeffff L polar
-#fcffff L polar
-#3fc863 L temperate
-#3cc866 L temperate
-#3ac869 L temperate
-#36c76d L temperate
+#d2feff L polar
+#c4fdff L polar
+#f2ffff L polar
+#00b300 L temperate
+#00ae00 L temperate
+#00d300 L temperate
+#00de00 L temperate
 #4395e7 temperate
 #2582e0 polar
 #3089e3 polar
@@ -4956,9 +4956,9 @@ Climate: sub-polar
 #348ce3 temperate
 #398fe4 polar
 #3e92e5 temperate
-#f9ffff L polar
-#39c86a L temperate
-#e0feff L polar
+#bcfdff L polar
+#00ab00 L temperate
+#bdfdff L polar
 #3a8fe5 polar
 #4093e6 temperate
 #2e88e2 temperate
@@ -4988,7 +4988,7 @@ Climate: sub-polar
 #4998e8 polar
 #2884e1 temperate
 #4294e6 temperate
-#42c85f L temperate
+#00d300 L temperate
 #2a86e1 temperate
 #348ce3 temperate
 #328be3 temperate
@@ -5007,12 +5007,12 @@ Climate: sub-polar
 #2784e1 temperate
 #4093e6 polar
 #368de4 temperate
-#e6feff L polar
-#3ac868 L temperate
+#aefcff L polar
+#00da00 L temperate
 #4696e7 polar
-#ddfeff L polar
-#45c95c L temperate
-#41c861 L temperate
+#9ffcff L polar
+#00bc00 L temperate
+#00c700 L temperate
 
 ## Ring 40
 
@@ -5022,18 +5022,18 @@ Climate: sub-polar
 #3e92e5 temperate
 #2482e0 temperate
 #2a86e1 polar
-#feffff L polar
-#dcfeff L polar
+#edfeff L polar
+#a0fcff L polar
 #328ae3 temperate
 #2583e0 polar
 #2583e0 polar
 #2f89e2 temperate
-#37c76c L temperate
-#3ec864 L temperate
-#36c76d L temperate
-#f2ffff L polar
-#f1ffff L polar
-#dcfeff L polar
+#00b600 L temperate
+#00ba00 L temperate
+#00bb00 L temperate
+#eefeff L polar
+#b5fdff L polar
+#defeff L polar
 #4999e8 polar
 #2a86e1 temperate
 #3d91e5 temperate
@@ -5041,15 +5041,15 @@ Climate: sub-polar
 #4797e7 temperate
 #368de4 polar
 #2b86e1 temperate
-#31c773 L temperate
-#32c772 L temperate
-#3ec863 L temperate
-#e4feff L polar
-#31c773 L temperate
-#f2ffff L polar
-#e2feff L polar
-#f0ffff L polar
-#e9feff L polar
+#00ba00 L temperate
+#00dc00 L temperate
+#00b300 L temperate
+#dafeff L polar
+#00cb00 L temperate
+#a0fcff L polar
+#a5fcff L polar
+#cbfdff L polar
+#feffff L polar
 #358ce3 temperate
 #2c87e2 polar
 #4495e7 temperate
@@ -5068,8 +5068,8 @@ Climate: sub-polar
 #4495e7 polar
 #4294e6 temperate
 #2d88e2 polar
-#42c860 L temperate
-#fbffff L polar
+#00d500 L temperate
+#d9feff L polar
 #3f92e6 temperate
 #2a86e1 temperate
 #318ae3 temperate
@@ -5088,7 +5088,7 @@ Climate: sub-polar
 #4194e6 polar
 #2482e0 temperate
 #358ce4 temperate
-#36c76d L temperate
+#00a700 L temperate
 #3d91e5 polar
 #4898e8 temperate
 #4395e7 temperate
@@ -5108,7 +5108,7 @@ Climate: sub-polar
 #2784e1 polar
 #368de4 polar
 #2b86e1 temperate
-#3ac869 L temperate
+#00bd00 L temperate
 #2f88e2 temperate
 #2d88e2 polar
 #3e91e5 temperate
@@ -5118,18 +5118,18 @@ Climate: sub-polar
 #4797e7 temperate
 #4696e7 polar
 #378ee4 temperate
-#38c86b L temperate
-#41c860 L temperate
+#00ba00 L temperate
+#00d800 L temperate
+#eefeff L polar
 #e8feff L polar
-#edffff L polar
 #348be3 temperate
-#eeffff L polar
+#b8fdff L polar
 #4797e7 polar
 #378de4 temperate
 #2b86e2 polar
 #338be3 polar
 #338be3 polar
-#46c95b L temperate
+#00a600 L temperate
 #2683e1 polar
 #3f92e6 polar
 #328ae3 temperate
@@ -5141,11 +5141,11 @@ Climate: sub-polar
 #338be3 temperate
 #318ae3 polar
 #2f89e2 polar
-#eafeff L polar
+#f6ffff L polar
 #2f88e2 temperate
-#eafeff L polar
-#3ec864 L temperate
-#e7feff L polar
+#a0fcff L polar
+#00d300 L temperate
+#f4ffff L polar
 #348ce3 temperate
 #2683e0 polar
 #358ce3 polar
@@ -5162,7 +5162,7 @@ Climate: sub-polar
 #2985e1 temperate
 #3a8fe5 temperate
 #4193e6 polar
-#f0ffff L polar
+#c0fdff L polar
 
 ## Ring 42
 
@@ -5186,27 +5186,27 @@ Climate: sub-polar
 #2784e1 temperate
 #318ae3 polar
 #2784e1 temperate
-#defeff L polar
-#eafeff L polar
-#40c862 L temperate
-#f6ffff L polar
-#f4ffff L polar
+#ecfeff L polar
+#e3feff L polar
+#00a200 L temperate
+#c8fdff L polar
+#f9ffff L polar
 #4294e6 temperate
-#44c85d L temperate
-#edffff L polar
-#e6feff L polar
-#33c771 L temperate
+#00b800 L temperate
+#aafcff L polar
+#9ffcff L polar
+#00a800 L temperate
 #358ce4 polar
 #3c91e5 polar
 #328be3 temperate
 #2e88e2 temperate
 #2f89e2 temperate
 #388ee4 polar
-#46c95b L temperate
-#36c76e L temperate
+#00a600 L temperate
+#00a500 L temperate
 #2e88e2 temperate
-#e5feff L polar
-#f3ffff L polar
+#d1feff L polar
+#d7feff L polar
 #368de4 polar
 #3089e3 polar
 #368de4 polar
@@ -5240,20 +5240,20 @@ Climate: polar
 #4395e7 polar
 #3089e2 polar
 #2a86e1 polar
-#fcffff L polar
-#eafeff L polar
-#faffff L polar
-#fcffff L polar
-#e7feff L polar
-#e0feff L polar
-#f1ffff L polar
-#f5ffff L polar
-#f0ffff L polar
-#f4ffff L polar
+#fbffff L polar
+#a0fcff L polar
+#cffeff L polar
+#c1fdff L polar
+#a4fcff L polar
+#b2fdff L polar
+#adfcff L polar
+#d6feff L polar
+#b3fdff L polar
+#bafdff L polar
 #4596e7 polar
-#edffff L polar
-#efffff L polar
-#e2feff L polar
+#b2fdff L polar
+#dffeff L polar
+#cafdff L polar
 #4395e6 polar
 #2784e1 polar
 #e7feff L polar
@@ -5288,18 +5288,18 @@ Climate: polar
 #2884e1 polar
 #2f89e2 polar
 #2985e1 polar
-#faffff L polar
-#f4ffff L polar
+#cdfdff L polar
+#bbfdff L polar
 #4495e7 polar
 #2c87e2 polar
-#f1ffff L polar
+#a0fcff L polar
 #3f92e6 polar
 #2583e0 polar
 #358de4 polar
 #3c90e5 polar
 #3089e3 polar
 #388ee4 polar
-#defeff L polar
+#f7ffff L polar
 #328ae3 polar
 #2885e1 polar
 #2a86e1 polar
@@ -5325,8 +5325,8 @@ Climate: polar
 #4294e6 polar
 #2885e1 polar
 #348ce3 polar
-#e8feff L polar
-#fcffff L polar
+#f5ffff L polar
+#d6feff L polar
 #4093e6 polar
 #2482e0 polar
 #2885e1 polar
@@ -5353,7 +5353,7 @@ Climate: polar
 #2985e1 polar
 #398fe5 polar
 #3f92e6 polar
-#faffff L polar
+#bdfdff L polar
 #2e88e2 polar
 #3e92e5 polar
 #3d91e5 polar
