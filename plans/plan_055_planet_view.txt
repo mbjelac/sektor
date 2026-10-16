@@ -186,3 +186,4 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
             - temperate forest: "Forest"
             - tropical forest: "Jungle"
             - tropical grassland: "Savanna"
+            - desert: "Desert"
