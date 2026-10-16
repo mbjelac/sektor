@@ -46,7 +46,7 @@ Every triangle shares an edge with exactly three others:
 `createPlanetGrid()` works these out once, together with every triangle's corners and centre, so
 looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 
-#1 [done] Planet behind the lists
+#1 [done] Planet view
 - [done] put a full-screen p5.js canvas behind the lists of the list page
     - the lists float on top of it
     - only the lists take the pointer, so dragging between them reaches the canvas
@@ -80,3 +80,5 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - an # About section at the top of planet.md: coordinates, ring lengths, where index 0 is, which way triangles point, neighbours
     - a pointer in frontend/CLAUDE.md
 - [done] update the list page snapshots
+
+#2 Planet is divided into land & sea
