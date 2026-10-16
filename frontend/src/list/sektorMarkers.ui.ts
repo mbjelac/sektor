@@ -7,8 +7,10 @@ export type SpotOfTriangle = (location: TriangleCoordinate) => { x: number; y: n
 // Every sektor lying on the planet is marked where it lies: a small hollow square, its name under
 // it. The marks lie over the planet, under the lists, and go round with the planet as it is turned,
 // out of sight while their sektor is on the far side of it. They are placed afresh whenever the
-// planet is drawn and whenever the sektors change.
-export function createSektorMarkers(): { showSektors: (sektors: SektorListItem[]) => void; followPlanet: (spotOfTriangle: SpotOfTriangle) => void } {
+// planet is drawn and whenever the sektors change. Clicking a mark chooses its sektor.
+export function createSektorMarkers(
+  onSektorChosen: (sektorId: string) => void,
+): { showSektors: (sektors: SektorListItem[]) => void; followPlanet: (spotOfTriangle: SpotOfTriangle) => void } {
   const layer = document.createElement("div");
   layer.id = "sektor-markers";
   document.getElementById("planet-background")!.appendChild(layer);
@@ -19,7 +21,7 @@ export function createSektorMarkers(): { showSektors: (sektors: SektorListItem[]
   const placeMarkers = () => {
     layer.replaceChildren(...sektors.flatMap(sektor => {
       const spot = sektor.location && spotOfTriangle?.(sektor.location);
-      return spot ? [createMarker(sektor, spot)] : [];
+      return spot ? [createMarker(sektor, spot, onSektorChosen)] : [];
     }));
   };
 
@@ -35,7 +37,7 @@ export function createSektorMarkers(): { showSektors: (sektors: SektorListItem[]
   };
 }
 
-function createMarker(sektor: SektorListItem, spot: { x: number; y: number }): HTMLElement {
+function createMarker(sektor: SektorListItem, spot: { x: number; y: number }, onSektorChosen: (sektorId: string) => void): HTMLElement {
   const marker = document.createElement("div");
   marker.className = "sektor-marker";
   marker.style.left = `${spot.x}px`;
@@ -49,5 +51,6 @@ function createMarker(sektor: SektorListItem, spot: { x: number; y: number }): H
   name.textContent = (sektor.name ?? "").trim() || "No name";
 
   marker.append(square, name);
+  marker.addEventListener("click", () => onSektorChosen(sektor.id));
   return marker;
 }

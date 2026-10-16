@@ -811,6 +811,10 @@ body > main {
 /* A mark stands with the middle of its square on the middle of its sektor's triangle. */
 .sektor-marker {
     position: absolute;
+    /* The layer takes no part in the mouse, but a mark does: clicking it finds its sektor on the
+       list. */
+    pointer-events: auto;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -881,7 +885,7 @@ body > main {
     width: 100%;
     justify-self: center;
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto;
     align-content: start;
     gap: 8px 12px;
     /* More sektors than the window holds are scrolled through on their own, so that the standings
@@ -1031,6 +1035,31 @@ body > main {
 }
 
 .sektor-list-go:hover {
+    color: #fff;
+}
+
+/* A row chosen on the planet flashes white and fades back to its own colour. */
+.sektor-list-item-flash {
+    animation: sektor-list-item-flash 1s ease-out;
+}
+
+@keyframes sektor-list-item-flash {
+    from {
+        background: #fff;
+    }
+}
+
+.sektor-list-locate {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.sektor-list-locate:hover {
     color: #fff;
 }
 

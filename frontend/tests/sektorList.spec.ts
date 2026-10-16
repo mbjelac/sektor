@@ -575,6 +575,65 @@ test("hides the mark of a sektor on the far side of the planet", async ({ page }
   expect(await page.locator(".sektor-marker").count()).toEqual(0);
 });
 
+// Ring 15, place 40 starts out on the far side of the planet.
+async function storeSektorOnFarSideOfPlanet(page: Page) {
+  await page.evaluate(() => {
+    const sektors = JSON.parse(localStorage.getItem("sektors")!);
+    localStorage.setItem("sektors", JSON.stringify([...sektors, { id: "Echo", name: "Echo", owner: null, location: { ring: 15, index: 40 } }]));
+  });
+  await page.reload();
+}
+
+test("shows the button for finding a sektor on the planet first in its row", async ({ page }) => {
+  await storeSektorOnFarSideOfPlanet(page);
+
+  await expect(page.locator(".sektor-list-item", { hasText: "Echo" })).toHaveScreenshot("sektor-list-locate.png", { maxDiffPixelRatio: 0 });
+});
+
+// The middle of the window is the middle of the planet, which the lists leave showing.
+test("turns the planet to show a sektor in the middle of it", async ({ page }) => {
+  await storeSektorOnFarSideOfPlanet(page);
+
+  await page.locator(".sektor-list-item", { hasText: "Echo" }).locator(".sektor-list-locate").click();
+
+  // The planet takes a second to turn, and the mouse is moved off the middle and back on to it
+  // until the middle shows the sektor's triangle.
+  await expect.poll(async () => {
+    await page.mouse.move(641, 360);
+    await page.mouse.move(640, 360);
+    return page.locator("#planet-region-info span").first().textContent();
+  }, { timeout: 3000 }).toEqual("15 : 40");
+});
+
+// The last of more sektors than the window holds lies in the middle of the planet, out of sight on
+// the list until the list is scrolled to it.
+test("brings a sektor clicked on the planet into view on the list, flashing", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify(Array.from({ length: 40 }, (_, sektorIndex) => ({
+      id: `sektor${sektorIndex}`, name: `sektor-${sektorIndex}`, owner: null,
+      ...(sektorIndex === 39 ? { location: { ring: 23, index: 112 } } : {}),
+    }))));
+  });
+  await page.reload();
+
+  await page.locator(".sektor-marker", { hasText: "sektor-39" }).click();
+
+  const item = page.locator(".sektor-list-item", { hasText: "sektor-39" });
+
+  const list = (await page.locator("#sektor-list").boundingBox())!;
+  const header = (await page.locator(".sektor-list-header").boundingBox())!;
+  const row = (await item.boundingBox())!;
+  expect({
+    isBelowHeader: row.y >= header.y + header.height,
+    isWithinList: row.y + row.height <= list.y + list.height,
+    isFlashing: await item.evaluate(listItem => listItem.classList.contains("sektor-list-item-flash")),
+  }).toEqual({
+    isBelowHeader: true,
+    isWithinList: true,
+    isFlashing: true,
+  });
+});
+
 test("makes a new sektor and puts it on the list", async ({ page }) => {
   await page.goto("/?test=true");
 

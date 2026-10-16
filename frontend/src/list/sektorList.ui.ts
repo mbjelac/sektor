@@ -1,7 +1,7 @@
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, removeSektorOwner, SektorListItem, setSektorOwner } from "./sektorList.api";
-import { arrowDownTrayIcon, arrowRightIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, userIcon } from "../icons";
+import { arrowDownTrayIcon, arrowRightIcon, arrowsPointingInIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, userIcon } from "../icons";
 import { showClaimDialog } from "../claimDialog.ui";
 import { createClaimButton } from "../claimButton.ui";
 import { showAbandonDialog } from "./abandonDialog.ui";
@@ -19,6 +19,8 @@ import { currentScore } from "../currentScore";
 import { getNegativeScoringResources } from "../resources";
 import { ImportsAndExports } from "../globalImportsAndExports";
 import { showPlanetBackground } from "./planetBackground.ui";
+
+const LIST_ROW_GAP_PIXELS = 8;
 
 function renderList() {
   const container = document.getElementById("sektor-list")!;
@@ -46,6 +48,9 @@ function createHeader(): HTMLElement {
   header.className = "sektor-list-header";
 
   header.appendChild(createListTitle("Sektors"));
+
+  // The column of buttons for finding a sektor on the planet needs no heading, as the buttons say it.
+  header.appendChild(document.createElement("span"));
 
   const name = document.createElement("span");
   name.className = "sektor-list-name";
@@ -90,6 +95,9 @@ function createListItem(
 ): HTMLElement {
   const item = document.createElement("div");
   item.className = "sektor-list-item";
+  item.dataset.sektorId = sektorListItem.id;
+
+  item.appendChild(createLocateButton(sektorListItem));
 
   item.appendChild(createName(sektorListItem));
   item.appendChild(createLevel(summary.level));
@@ -101,6 +109,37 @@ function createListItem(
   item.appendChild(createClaimOrAbandonButton(sektorListItem));
 
   return item;
+}
+
+// The way to a sektor on the planet: the planet turns to show the sektor in the middle of it. A
+// sektor made before sektors were put on the planet lies nowhere on it, and has no such way.
+function createLocateButton(sektorListItem: SektorListItem): HTMLElement {
+  const location = sektorListItem.location;
+  if (!location) return document.createElement("span");
+
+  const locateButton = document.createElement("button");
+  locateButton.className = "sektor-list-locate";
+  locateButton.innerHTML = arrowsPointingInIcon;
+  locateButton.title = "Show on the planet";
+  locateButton.addEventListener("click", () => planetBackground.turnToTriangle(location));
+  return locateButton;
+}
+
+// A sektor chosen on the planet is brought into view on the list, below the header standing over
+// the list, and its row flashes white for a moment so that the eye finds it. The list jumps rather
+// than glides there, or the flash would be over before the row came into view.
+function revealSektorInList(sektorId: string) {
+  const item = [...document.querySelectorAll<HTMLElement>(".sektor-list-item")].find(listItem => listItem.dataset.sektorId === sektorId);
+  if (!item) return;
+
+  const header = document.querySelector<HTMLElement>(".sektor-list-header");
+  item.style.scrollMarginTop = `${(header?.offsetHeight ?? 0) + LIST_ROW_GAP_PIXELS}px`;
+  item.scrollIntoView({ block: "nearest" });
+
+  // Taken off and put back, so that a row chosen twice in a row flashes the second time too.
+  item.classList.remove("sektor-list-item-flash");
+  void item.offsetWidth;
+  item.classList.add("sektor-list-item-flash");
 }
 
 // The way into a sektor stands against the name of the sektor it leads to, rather than in a column
@@ -223,7 +262,7 @@ function createScore(score: number): HTMLElement {
 
 requireLogin();
 showUser();
-const showSektorsOnPlanet = showPlanetBackground();
+const planetBackground = showPlanetBackground(revealSektorInList);
 // A list which fills by itself cannot be looked at, as a sektor may appear on it at any moment. A
 // test therefore lays this out before the page loads and makes the sektors it wants by hand, one
 // call at a time, rather than sitting out the second between one round of making them and the next.
@@ -231,7 +270,7 @@ const showSektorsOnPlanet = showPlanetBackground();
 const areSektorsMadeByHand = (window as unknown as { makeSektorsByHand?: boolean }).makeSektorsByHand === true;
 
 renderList();
-showSektorsOnPlanet(getSektorList());
+planetBackground.showSektors(getSektorList());
 showPurgeButton();
 if (areSektorsMadeByHand) {
   (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded = createSektorIfNeeded;
@@ -243,6 +282,6 @@ renderLeaderboard();
 // The standings are worked out from the sektors, so they are drawn anew whenever the sektors change.
 function refreshPage() {
   renderList();
-  showSektorsOnPlanet(getSektorList());
+  planetBackground.showSektors(getSektorList());
   renderLeaderboard();
 }

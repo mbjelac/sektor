@@ -214,7 +214,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - background rectangle, fill black 50% transparent
     - both the square and the label move if the player rotates the planet
 
-#9 Sektor list & planet are linked
+#9 [done] Sektor list & planet are linked
 - [done] sektor items in list are linked to planet
     - item has button
         - first item in list row
