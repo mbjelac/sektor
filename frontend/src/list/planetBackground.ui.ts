@@ -1,12 +1,13 @@
 import p5 from "p5";
-import { createIcosphere, Triangle } from "./icosphere";
-import planetColorsTxt from "../assets/planet-colors.txt?raw";
+import { createPlanetGrid, PlanetGrid, PlanetTriangle } from "./planetGrid";
+import planetMd from "../assets/planet.md?raw";
+import { parsePlanetColors } from "./parsePlanet";
 
 const EDGE_DIVISIONS = 16;
 const RADIUS_SHARE_OF_SHORTER_SIDE = 0.35;
 const RADIANS_PER_DRAGGED_PIXEL = 0.01;
 
-type ColoredTriangle = { triangle: Triangle; color: p5.Color };
+type ColoredTriangle = { triangle: PlanetTriangle; color: p5.Color };
 // Rows of the matrix the sphere is turned by, the turns of every drag gathered into it.
 type Rotation = [[number, number, number], [number, number, number], [number, number, number]];
 
@@ -31,7 +32,7 @@ function planetSketch(p: p5) {
     p.noLoop();
     p.noStroke();
 
-    coloredTriangles = colorTriangles(p, createIcosphere(EDGE_DIVISIONS));
+    coloredTriangles = colorTriangles(p, createPlanetGrid(EDGE_DIVISIONS));
 
     canvas.elt.addEventListener("pointerdown", (event: PointerEvent) => {
       isDragging = true;
@@ -53,26 +54,34 @@ function planetSketch(p: p5) {
     p.clear();
     const radius = Math.min(p.width, p.height) * RADIUS_SHARE_OF_SHORTER_SIDE;
     p.applyMatrix(...rotationColumns(rotation));
+    // The planet's north is up its y axis, while the screen's y runs downwards, so it is turned
+    // over to stand with its north pole at the top.
+    p.rotateX(Math.PI);
     p.scale(radius);
 
     p.beginShape(p.TRIANGLES);
     for (const { triangle, color } of coloredTriangles) {
       p.fill(color);
-      for (const [x, y, z] of triangle) p.vertex(x, y, z);
+      for (const [x, y, z] of triangle.corners) p.vertex(x, y, z);
     }
     p.endShape();
   };
 }
 
-// The planet looks the same on every visit: each triangle takes its colour from its own line of the
-// colours file, in the order the sphere is built. A file with more or fewer colours than the sphere
-// has triangles was made for another sphere, which is said rather than coloured wrongly.
-function colorTriangles(p: p5, triangles: Triangle[]): ColoredTriangle[] {
-  const planetColors = planetColorsTxt.split("\n").map(line => line.trim()).filter(line => line !== "");
-  if (planetColors.length !== triangles.length) {
-    throw new Error(`planet-colors.txt has ${planetColors.length} colours, but the planet has ${triangles.length} triangles`);
+// The planet looks the same on every visit, every triangle coloured as planet.md has it. A file
+// shaped for another planet is said rather than coloured wrongly.
+function colorTriangles(p: p5, grid: PlanetGrid): ColoredTriangle[] {
+  const colorRings = parsePlanetColors(planetMd);
+  if (colorRings.length !== grid.rings.length) {
+    throw new Error(`planet.md has ${colorRings.length} rings, but the planet has ${grid.rings.length}`);
   }
-  return triangles.map((triangle, triangleIndex) => ({ triangle, color: p.color(planetColors[triangleIndex]!) }));
+  return grid.rings.flatMap((ring, ringIndex) => {
+    const colorRing = colorRings[ringIndex] ?? [];
+    if (colorRing.length !== ring.length) {
+      throw new Error(`planet.md has ${colorRing.length} colours on ring ${ringIndex}, but the ring has ${ring.length} triangles`);
+    }
+    return ring.map(triangle => ({ triangle, color: p.color(colorRing[triangle.coordinate.index]!) }));
+  });
 }
 
 // The sphere turns the way it is dragged, whichever way it has already been turned: a drag sideways
