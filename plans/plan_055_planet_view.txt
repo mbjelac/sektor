@@ -82,14 +82,21 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 - [done] update the list page snapshots
 
 #2 Planet is divided into land & sea
-- modify planet.md: mark a triangle as land by putting "L" to the triangle line, space-separated from color
+- [done] modify planet.md: mark a triangle as land by putting "L" to the triangle line, space-separated from color
     - form continents
         - huge groups of neighbouring triangles are land
         - create 8 continents
         - each continent should be "grown" from it's starting location
+        - growing is not uniform in a circle
+            - for each continent, pick a random number between 1 and 4 "offshoots"
+            - bigger continents have larger chance of getting more offshoots
+            - for each offshoot, pick a random "angle" (direction from starting coordinate)
+            - grow continent approximately in that direction
+            - nearing end of each offshoot skip triangles so the next land is separated from the rest by 1 sea triangle
+            - at the very end of the offshoot (a couple of triangles left) skip by 2 sea triangles
         - each continent should have a random size between 150 & 350 triangles
         - starting points
             - pick 8 starting points all equally distant from each other (approximately)
             - move each starting point in random direction & distance
-- if triangle is land, modify color to be from range #ffea00-#00d100
+- [done] if triangle is land, modify color to be from range #ffea00-#00d100
 - if triangle is not land, modify color to be from range #00ffe1-#006eff
