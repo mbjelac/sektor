@@ -215,12 +215,13 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - both the square and the label move if the player rotates the planet
 
 #9 Sektor list & planet are linked
-- sektor items in list are linked to planet
+- [done] sektor items in list are linked to planet
     - item has button
         - first item in list row
         - icon: heroicons arrows-pointing-in
     - when clicked, planet rotates so that the sektor's triangle is in the center of the view port
-- sektors on planet are linked to list
+        - rotation is animated - rotate the planet gradually, in duration of 1 second
+- [done] sektors on planet are linked to list
     - when player clicks sektor square or label on planet
         - scroll list so that sektor is visible
         - flash list item background
