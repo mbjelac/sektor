@@ -168,3 +168,21 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 - [done] desert triangles are colored by biome type:
     - temperate: #f5ce9a-#e0d3c1
     - tropical: #f5e198-#e0dac1
+
+#6 Player sees data for a specific region
+- when player hovers with mouse over a triangle on the visible part of the sphere
+    - player sees data for that triangle on the bottom of the screen
+        - row of text
+        - centered horizontally but not changing x coordinate depending on text width
+        - font: white small normal
+    - data:
+        - coordinates: "<ring index> : <triangle index>"
+        - spacing of 50px
+        - climate zone, biome type:
+            - polar: "Polar"
+            - sub-polar, temperate grassland: "Tundra"
+            - sub-polar, temperate forest: "Taiga"
+            - temperate grassland: "Grassland"
+            - temperate forest: "Forest"
+            - tropical forest: "Jungle"
+            - tropical grassland: "Savanna"
