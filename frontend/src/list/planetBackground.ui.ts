@@ -2,17 +2,17 @@ import p5 from "p5";
 import { createPlanetGrid, PlanetGrid, PlanetTriangle, TriangleCoordinate } from "./planetGrid";
 import planetMd from "../assets/planet.md?raw";
 import { parsePlanet, PlanetRegion } from "./parsePlanet";
-import { findTriangleAt, planetPointAt, Rotation } from "./planetPicking";
+import { findTriangleAt, planetPointAt } from "./planetPicking";
+import { dragRotation, Rotation, UNTURNED, uprightRotation } from "./planetRotation";
 import { createPlanetRegionInfo } from "./planetRegionInfo.ui";
 
 const EDGE_DIVISIONS = 16;
 const RADIUS_SHARE_OF_SHORTER_SIDE = 0.35;
-const RADIANS_PER_DRAGGED_PIXEL = 0.01;
 
 type ColoredTriangle = { triangle: PlanetTriangle; region: PlanetRegion; color: p5.Color };
 
 // The planet stands behind the lists, across the whole of the window, and is turned by dragging
-// wherever the lists leave it showing. Nothing on it moves of itself, so it is drawn only when it
+// wherever the lists leave it showing, or stood upright by a double click. Nothing on it moves of itself, so it is drawn only when it
 // is dragged or the window changes size. Wherever the mouse is over it, what lies there is told
 // along the bottom of the page.
 export function showPlanetBackground() {
@@ -22,7 +22,7 @@ export function showPlanetBackground() {
 function planetSketch(p: p5) {
   let grid: PlanetGrid;
   let coloredTriangles: ColoredTriangle[] = [];
-  let rotation: Rotation = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+  let rotation: Rotation = UNTURNED;
   let lastPointerX = 0;
   let lastPointerY = 0;
   let isDragging = false;
@@ -54,6 +54,12 @@ function planetSketch(p: p5) {
       showRegionInfo(event.target === canvas.elt ? regionAt(event.clientX, event.clientY) : null);
     });
     canvas.elt.addEventListener("pointerleave", () => showRegionInfo(null));
+    // A double click stands a planet turned every which way back upright.
+    canvas.elt.addEventListener("dblclick", (event: MouseEvent) => {
+      rotation = uprightRotation(rotation);
+      p.redraw();
+      showRegionInfo(regionAt(event.clientX, event.clientY));
+    });
     window.addEventListener("pointerup", () => { isDragging = false; });
     window.addEventListener("resize", () => p.resizeCanvas(window.innerWidth, window.innerHeight));
   };
@@ -104,31 +110,6 @@ function colorTriangles(p: p5, grid: PlanetGrid): ColoredTriangle[] {
       return { triangle, region, color: p.color(region.color) };
     });
   });
-}
-
-// The sphere turns the way it is dragged, whichever way it has already been turned: a drag sideways
-// turns it about the upright of the screen and a drag up or down about the level of the screen, the
-// screen's y running downwards. The turn of the drag is put before the turns already gathered.
-function dragRotation(draggedX: number, draggedY: number, rotation: Rotation): Rotation {
-  const aboutUpright = draggedX * RADIANS_PER_DRAGGED_PIXEL;
-  const aboutLevel = -draggedY * RADIANS_PER_DRAGGED_PIXEL;
-  const turnAboutUpright: Rotation = [
-    [Math.cos(aboutUpright), 0, Math.sin(aboutUpright)],
-    [0, 1, 0],
-    [-Math.sin(aboutUpright), 0, Math.cos(aboutUpright)],
-  ];
-  const turnAboutLevel: Rotation = [
-    [1, 0, 0],
-    [0, Math.cos(aboutLevel), -Math.sin(aboutLevel)],
-    [0, Math.sin(aboutLevel), Math.cos(aboutLevel)],
-  ];
-  return multiply(turnAboutLevel, multiply(turnAboutUpright, rotation));
-}
-
-function multiply(left: Rotation, right: Rotation): Rotation {
-  return [0, 1, 2].map(row =>
-    [0, 1, 2].map(column => left[row]![0] * right[0]![column]! + left[row]![1] * right[1]![column]! + left[row]![2] * right[2]![column]!),
-  ) as Rotation;
 }
 
 // p5 takes the sixteen numbers of a 3D matrix a column at a time.

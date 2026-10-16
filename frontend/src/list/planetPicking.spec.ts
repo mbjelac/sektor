@@ -1,8 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { createPlanetGrid, Point } from "./planetGrid";
-import { findTriangleAt, planetPointAt, Rotation } from "./planetPicking";
-
-const UNTURNED: Rotation = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+import { findTriangleAt, planetPointAt } from "./planetPicking";
+import { UNTURNED } from "./planetRotation";
 const RADIUS = 100;
 
 describe("planetPointAt", () => {

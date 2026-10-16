@@ -198,6 +198,6 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - for <spacing> use 30px
         - non-land: "Sea"
 
-#7 Player can rotate planet to vertical axis
-- when player doubleclicks the planet canvas
+#7 [done] Player can rotate planet to vertical axis
+- [done] when player doubleclicks the planet canvas
     - rotate planet so that it's poles are "vertical", i.e. both poles are equally distant from view port

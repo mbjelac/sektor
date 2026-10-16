@@ -245,6 +245,19 @@ test("tells what lies under the mouse on the planet", async ({ page }) => {
   await expect(page.locator("#planet-region-info")).toHaveScreenshot("planet-region-info.png", { maxDiffPixelRatio: 0 });
 });
 
+// Tilting the planet towards the viewer leaves the same longitude facing them, so standing it back
+// upright brings back the page as it opened.
+test("stands a tilted planet back upright on a double click", async ({ page }) => {
+  await page.mouse.move(640, 500);
+  await page.mouse.down();
+  await page.mouse.move(640, 400, { steps: 5 });
+  await page.mouse.up();
+  await page.mouse.dblclick(640, 400);
+  await page.mouse.move(1100, 600);
+
+  await expect(page.locator("#list-page")).toHaveScreenshot("list-page.png", { maxDiffPixelRatio: 0 });
+});
+
 test("tells nothing once the mouse leaves the planet", async ({ page }) => {
   await page.mouse.move(640, 360);
   await page.mouse.move(1100, 600);

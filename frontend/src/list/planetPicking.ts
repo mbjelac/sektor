@@ -1,7 +1,5 @@
 import { PlanetGrid, PlanetTriangle, Point } from "./planetGrid";
-
-// Rows of the matrix the sphere is turned by, the turns of every drag gathered into it.
-export type Rotation = [[number, number, number], [number, number, number], [number, number, number]];
+import { Rotation } from "./planetRotation";
 
 // Where p5's default camera stands: on the z axis, looking at the middle of the canvas, from as far
 // away as makes a pixel of the canvas a unit of its space at z = 0.
