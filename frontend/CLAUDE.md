@@ -10,4 +10,4 @@ Renders 3D scenes using shapes defined in the architect module. Uses shared rend
 - Run unit tests: `npm run test:unit`
 - When the plan references heroicons, use inline SVG copied from the [heroicons website](https://heroicons.com/) — there is no heroicons package installed.
 - All icons live in `src/icons.ts`. Check there first before adding a new one — it may already exist.
-- The planet on the list page is a 5120-triangle sphere addressed by (ring, index) coordinates. Its colours live in `src/assets/planet.md`, whose About section explains the coordinates, the ring lengths and the neighbour rules. The grid is built in `src/list/planetGrid.ts`.
+- The planet on the list page is a 5120-triangle sphere addressed by (ring, index) coordinates. Its colours live in `src/assets/planet.md`. The ring layout, ring lengths and neighbour rules are described in the introduction of `plans/plan_055_planet_view.txt`. The grid is built in `src/list/planetGrid.ts`.

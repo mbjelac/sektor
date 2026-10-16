@@ -1,65 +1,12 @@
 # About
 
-The planet on the list page: a sphere of 5120 triangles, every one of them coloured by a line of
-the Topology section below. The grid is built in `src/list/planetGrid.ts` (with `EDGE_DIVISIONS` =
-16 in `src/list/planetBackground.ui.ts`); this file only gives the colours, and must have exactly
-the shape described here.
-
-## Coordinates
+The planet on the list page: a sphere of 5120 triangles, described in the Topology section below.
 
 A triangle is pinpointed by **(ring, index)**:
 
 - **ring**: 0–47, counted from the north pole southwards. Ring N is the section `## Ring N`.
 - **index**: the triangle's place along its ring, counted eastwards from 0. Index I is the
   (I + 1)-th colour line of the ring's section.
-
-The planet is an icosahedron standing on a corner, so a corner sits on each pole. Around the north
-pole are 5 faces (the northern cap), around the middle 10 faces (the band), and around the south
-pole 5 faces (the southern cap). Each icosahedron edge is cut into 16 steps, which gives each part
-16 rings:
-
-| Rings   | Part          | Triangles in ring N |
-|---------|---------------|---------------------|
-| 0–15    | northern cap  | 5 · (2N + 1): 5, 15, 25, … 155 |
-| 16–31   | band          | 160 each |
-| 32–47   | southern cap  | 5 · (2 · (47 − N) + 1): 155, 145, … 5 |
-
-The equator runs between ring 23 and ring 24. Near the poles the rings are pentagons rather than
-circles, as they follow the five faces around the pole.
-
-## Where index 0 is
-
-Every ring starts at the same seam: the icosahedron edges running from the north pole down to one
-of the five corners next to it (longitude 0°), from there half a sector (36°) east across the band
-to a corner next to the south pole, and from there down to the south pole. In the caps, index 0 is
-the first triangle east of the seam. In the band, index 0 has its tip on the seam and lies just west
-of it; index 1 is the first triangle east of it. In the view the page opens with, north is up, the
-northern part of the seam is at the right-hand edge of the sphere, and the index grows from left to
-right across the side facing the viewer.
-
-## Which way a triangle points
-
-A triangle points north (its tip towards the north pole, its base to the south) or south.
-
-- **Northern cap**, ring N: the ring is 5 sectors of 2N + 1 triangles, one per face, in order
-  eastwards. Within a sector the triangles alternate, starting and ending with one pointing north,
-  so where two sectors meet two north-pointing triangles stand side by side. Ring 0 is the 5
-  north-pointing triangles around the pole.
-- **Band**: even indexes point north, odd ones south.
-- **Southern cap**: the northern cap upside down. Ring N is 5 sectors of 2 · (47 − N) + 1
-  triangles, each starting and ending with one pointing south. Ring 47 is the 5 south-pointing
-  triangles around the pole.
-
-## Neighbours
-
-Every triangle shares an edge with exactly three others:
-
-- the one **before** it on its ring: index − 1 (index 0's is the last of the ring)
-- the one **after** it on its ring: index + 1 (the last one's is index 0)
-- the one **across its base**: in ring + 1 if it points north, in ring − 1 if it points south
-
-`createPlanetGrid()` works these out once, together with every triangle's corners and centre, so
-looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 
 # Topology
 
