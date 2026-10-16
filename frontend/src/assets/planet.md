@@ -8,5268 +8,5270 @@ A triangle is pinpointed by **(ring, index)**:
 - **index**: the triangle's place along its ring, counted eastwards from 0. Index I is the
   (I + 1)-th colour line of the ring's section.
 
+A triangle line holds the triangle's colour, followed by `L` (space-separated) if the triangle is land.
+
 # Topology
 
 ## Ring 0
 
-#00ffe1
-#4cd800
-#3cd700
-#46d800
-#00f6e3
+#1a7bfc
+#3b8af8
+#2680fa
+#227ffb
+#0771fe
 
 ## Ring 1
 
-#2ed600
-#cde500
-#00d2ea
-#96e000
-#b1e200
-#00c3ed
-#00a6f3
-#c6e400
-#5cda00
-#00fbe2
-#8fdf00
-#fbea00
-#93df00
-#bde400
-#8fdf00
+#2680fa
+#458ff7
+#438ef7
+#3f8cf7
+#4e94f5
+#0973fe
+#3889f8
+#4b92f6
+#4790f6
+#4d93f6
+#4b92f6
+#4b92f6
+#3286f9
+#1276fd
+#0370ff
 
 ## Ring 2
 
-#5cda00
-#00baef
-#0092f8
-#afe200
-#5fda00
-#008ef8
-#00fbe2
-#00a7f3
-#3ad700
-#00b0f1
-#00fbe2
-#00b4f1
-#05d200
-#7bdd00
-#c3e400
-#31d600
-#0088fa
-#d4e600
-#00adf2
-#e9e800
-#8fdf00
-#00e5e6
-#18d300
-#11d300
-#e8e800
+#1377fd
+#3085f9
+#3487f9
+#2c83fa
+#1276fd
+#3989f8
+#4f94f5
+#4d93f5
+#3788f8
+#4991f6
+#2c83fa
+#3e8cf7
+#4e94f5
+#026fff
+#0b73fe
+#0772fe
+#2681fa
+#3789f8
+#0a73fe
+#1076fd
+#3185f9
+#0e75fd
+#4a92f6
+#448ff7
+#1176fd
 
 ## Ring 3
 
-#00a2f4
-#00adf2
-#f7e900
-#a7e100
-#d7e600
-#00b6f0
-#00c1ee
-#00d4ea
-#dce700
-#49d800
-#21d400
-#65db00
-#0071fe
-#35d600
-#0ed200
-#43d800
-#00dbe8
-#0093f7
-#d8e600
-#00bdef
-#9fe100
-#fdea00
-#0087fa
-#eae800
-#00b2f1
-#59da00
-#71dc00
-#92df00
-#86de00
-#00c1ee
-#eee800
-#ade200
-#008ff8
-#00e9e6
-#00beee
+#3b8bf8
+#3c8bf8
+#0470fe
+#3b8bf8
+#4891f6
+#4690f6
+#428ef7
+#438ef7
+#1679fc
+#3c8bf8
+#006eff
+#3186f9
+#3286f9
+#207dfb
+#1076fd
+#0d74fd
+#2b83fa
+#227efb
+#418df7
+#2a82fa
+#0470ff
+#1779fc
+#3989f8
+#448ff7
+#3286f9
+#0872fe
+#3487f9
+#3d8cf7
+#1076fd
+#0a73fe
+#1f7dfb
+#2881fa
+#0a73fe
+#0f75fd
+#3d8bf7
 
 ## Ring 4
 
-#007cfc
-#0079fd
-#79dd00
-#51d900
-#24d500
-#00ceeb
-#00f8e3
-#64db00
-#00caec
-#03d100
-#4ed900
-#ebe800
-#c9e500
-#85de00
-#0086fa
-#00a8f3
-#0076fd
-#00a7f3
-#0079fd
-#e7e800
-#00f6e3
-#6fdc00
-#c8e500
-#0070ff
-#00ccec
-#1ad400
-#00f0e4
-#0078fd
-#03d100
-#00ede5
-#fcea00
-#008df9
-#00ede5
-#0073fe
-#faea00
-#30d600
-#4ad800
-#bbe300
-#a4e100
-#0088fa
-#00b2f1
-#00a7f3
-#7add00
-#53d900
-#00cdeb
+#2881fa
+#3789f8
+#1377fd
+#0972fe
+#1176fd
+#227efb
+#1679fc
+#3688f8
+#1879fc
+#2a82fa
+#3588f8
+#7acb36 L
+#3c8bf8
+#4e93f5
+#73cd2d L
+#60d016 L
+#4c93f6
+#3085f9
+#60d017 L
+#60d016 L
+#3b8af8
+#418ef7
+#0c74fd
+#2a82fa
+#187afc
+#0872fe
+#0570fe
+#2b82fa
+#0671fe
+#2a82fa
+#5195f5
+#3889f8
+#026fff
+#408df7
+#4b92f6
+#2680fa
+#0872fe
+#2982fa
+#1d7cfb
+#1e7cfb
+#3e8cf7
+#0f75fd
+#3a8af8
+#026fff
+#207dfb
 
 ## Ring 5
 
-#00f5e3
-#009df5
-#9de000
-#04d100
-#00dde8
-#e0e700
-#0074fe
-#dee700
-#40d700
-#08d200
-#20d400
-#a2e100
-#b9e300
-#008ff8
-#00d6ea
-#aee200
-#00aff1
-#2ad500
-#00eae5
-#45d800
-#00d1eb
-#00bfee
-#00dfe8
-#e4e700
-#008df9
-#39d700
-#00abf2
-#faea00
-#00d1ea
-#cbe500
-#00e0e7
-#0074fe
-#04d100
-#57d900
-#00ece5
-#a3e100
-#7cdd00
-#00ece5
-#00adf2
-#00c0ee
-#90df00
-#97e000
-#5dda00
-#00c5ed
-#00d8e9
-#a2e100
-#00dae9
-#00f4e3
-#36d600
-#d3e600
-#32d600
-#87de00
-#86de00
-#00a0f5
-#c7e500
+#4c93f6
+#2d84f9
+#428ef7
+#4c93f6
+#4790f6
+#036fff
+#2680fa
+#5095f5
+#4991f6
+#1679fc
+#0d74fd
+#3c8bf8
+#6bce24 L
+#3a8af8
+#418df7
+#3387f9
+#2e84f9
+#69ce22 L
+#3386f9
+#2b83fa
+#1e7dfb
+#4a92f6
+#88c946 L
+#0a73fe
+#5ed014 L
+#4a92f6
+#7fcb3c L
+#66cf1e L
+#0e75fd
+#408df7
+#0a73fe
+#2c83fa
+#1076fd
+#0c74fe
+#0470fe
+#0771fe
+#1477fd
+#0c74fe
+#418df7
+#207efb
+#3889f8
+#4c92f6
+#0c74fe
+#036fff
+#1f7dfb
+#4b92f6
+#1d7cfb
+#0872fe
+#428ef7
+#2c83fa
+#4d93f6
+#1d7cfb
+#0972fe
+#458ff6
+#3f8cf7
 
 ## Ring 6
 
-#009ef5
-#0097f7
-#00eee5
-#00bcef
-#97e000
-#0084fa
-#8bdf00
-#75dc00
-#c7e400
-#5bda00
-#00a3f4
-#00e7e6
-#b4e300
-#00acf2
-#008ef8
-#2bd500
-#00c0ee
-#3dd700
-#b8e300
-#ace200
-#2cd500
-#0094f7
-#ffea00
-#007ffb
-#00b0f1
-#c2e400
-#00c7ec
-#9fe100
-#e6e800
-#79dd00
-#0094f7
-#8fdf00
-#52d900
-#02d100
-#00b7f0
-#15d300
-#d2e600
-#ebe800
-#03d100
-#0083fb
-#05d100
-#00cfeb
-#7ddd00
-#e7e800
-#00b5f0
-#00b8f0
-#00c0ee
-#0095f7
-#00f9e2
-#1bd400
-#66db00
-#7ddd00
-#00dbe8
-#cde500
-#90df00
-#00e7e6
-#0079fd
-#bde300
-#00eae5
-#95e000
-#008ff8
-#90df00
-#00f5e3
-#00b8f0
-#48d800
+#408df7
+#1c7bfc
+#448ff7
+#3085f9
+#4c92f6
+#2881fa
+#0370ff
+#0972fe
+#1578fc
+#0671fe
+#1277fd
+#3186f9
+#1176fd
+#3d8cf7
+#3085f9
+#63cf1a L
+#4991f6
+#4991f6
+#76cc31 L
+#7ccb38 L
+#7ccb38 L
+#4a91f6
+#2680fa
+#0c74fd
+#7dcb39 L
+#81ca3f L
+#63cf1a L
+#65cf1d L
+#69ce21 L
+#6fcd29 L
+#4a91f6
+#7acb36 L
+#72cd2c L
+#5cd012 L
+#5dd013 L
+#59d10e L
+#448ff7
+#006eff
+#4890f6
+#418df7
+#217efb
+#3186f9
+#458ff7
+#3688f8
+#006eff
+#1a7bfc
+#2e84f9
+#0a73fe
+#2f85f9
+#016fff
+#1879fc
+#3386f9
+#1b7bfc
+#1d7cfb
+#0d74fd
+#1879fc
+#1176fd
+#4a91f6
+#3487f9
+#217efb
+#0d74fd
+#0972fe
+#237ffb
+#448ff7
+#418df7
 
 ## Ring 7
 
-#009ef5
-#00a7f3
-#00e7e6
-#52d900
-#007efc
-#0089f9
-#dee700
-#00f4e3
-#eae800
-#00a6f3
-#9ee000
-#00f5e3
-#00d7e9
-#009df5
-#00dde8
-#9fe100
-#00d3ea
-#00fce2
-#00d4ea
-#00aef2
-#05d200
-#5cda00
-#d4e600
-#00a8f3
-#00e7e6
-#00beee
-#0097f6
-#02d100
-#0086fa
-#b6e300
-#00a8f3
-#19d300
-#0088fa
-#7bdd00
-#b6e300
-#00c3ed
-#00f9e2
-#cce500
-#00d0eb
-#dce700
-#00d1eb
-#3fd700
-#00dae9
-#97e000
-#e5e700
-#007ffb
-#0074fe
-#91df00
-#3cd700
-#d2e600
-#00aaf3
-#2dd500
-#007dfc
-#bde300
-#93df00
-#00ceeb
-#58da00
-#d2e600
-#bde300
-#007cfc
-#41d700
-#00e4e6
-#00b2f1
-#a9e200
-#0077fd
-#bbe300
-#a2e100
-#00c7ed
-#c4e400
-#fcea00
-#00a7f3
-#007cfc
-#00bcef
-#11d300
-#cee500
+#2881fa
+#2e84f9
+#1779fc
+#207dfb
+#0872fe
+#408df7
+#0771fe
+#408df7
+#3d8bf7
+#438ef7
+#4690f6
+#3085f9
+#0470fe
+#408df7
+#448ff7
+#458ff6
+#2680fa
+#1578fc
+#3c8bf8
+#0b73fe
+#1779fc
+#458ff7
+#3b8af8
+#74cc2e L
+#6bce24 L
+#6fcd29 L
+#0e75fd
+#69ce22 L
+#7acb36 L
+#75cc30 L
+#86c945 L
+#7dcb3a L
+#80ca3e L
+#4790f6
+#1176fd
+#73cd2d L
+#71cd2c L
+#88c947 L
+#86c944 L
+#78cc33 L
+#77cc32 L
+#7ccb39 L
+#3c8bf8
+#247ffb
+#1176fd
+#237ffb
+#3085f9
+#4a92f6
+#4e94f5
+#1d7cfb
+#2f85f9
+#217efb
+#3487f9
+#0771fe
+#3c8bf8
+#187afc
+#3085f9
+#1377fd
+#4991f6
+#1578fc
+#4891f6
+#4b92f6
+#1b7bfc
+#4e94f5
+#5195f5
+#1d7cfb
+#408df7
+#016eff
+#0b73fe
+#2881fa
+#418df7
+#0370ff
+#4991f6
+#4b92f6
+#2881fa
 
 ## Ring 8
 
-#00eee5
-#54d900
-#00dee8
-#f6e900
-#00dde8
-#17d300
-#99e000
-#77dd00
-#00b6f0
-#00a4f4
-#82de00
-#00c4ed
-#2dd500
-#46d800
-#aee200
-#00b6f0
-#0085fa
-#a1e100
-#00bbef
-#0077fd
-#009df5
-#fbea00
-#009cf5
-#0089f9
-#00e5e6
-#00a0f5
-#b5e300
-#00c5ed
-#76dd00
-#47d800
-#3ed700
-#54d900
-#cde500
-#00d5ea
-#009df5
-#0093f7
-#c1e400
-#47d800
-#1bd400
-#00ceeb
-#00dce8
-#1bd400
-#76dd00
-#00ece5
-#0084fa
-#00eee5
-#39d700
-#62db00
-#fdea00
-#b9e300
-#abe200
-#00f3e4
-#00d4ea
-#a4e100
-#9ce000
-#43d800
-#1ad400
-#009df5
-#ede800
-#0090f8
-#dbe600
-#0071fe
-#3ed700
-#8ddf00
-#0074fe
-#efe800
-#abe200
-#00c9ec
-#00f4e3
-#008cf9
-#b3e300
-#00d100
-#25d500
-#fdea00
-#00cfeb
-#007efc
-#c8e500
-#a0e100
-#18d300
-#20d400
-#98e000
-#00efe4
-#91df00
-#00ebe5
-#00ffe1
+#4991f6
+#3185f9
+#1779fc
+#2781fa
+#0b73fe
+#2580fa
+#237ffb
+#3688f8
+#2b83fa
+#237ffb
+#4991f6
+#006eff
+#4f94f5
+#398af8
+#2e84f9
+#3286f9
+#2580fa
+#2b83fa
+#4f94f5
+#1d7cfb
+#0671fe
+#448ff7
+#3c8bf8
+#016fff
+#5195f5
+#3387f9
+#6cce26 L
+#6ecd28 L
+#7dcb3a L
+#7ecb3b L
+#60d017 L
+#6cce25 L
+#81ca3e L
+#5dd013 L
+#5ad10f L
+#87c946 L
+#7acb37 L
+#60d017 L
+#7dcb3a L
+#0671fe
+#74cc2f L
+#83ca41 L
+#84ca43 L
+#84ca42 L
+#86c944 L
+#6cce25 L
+#76cc31 L
+#85ca43 L
+#64cf1b L
+#1779fc
+#3487f9
+#1477fd
+#1f7dfb
+#1b7bfc
+#5195f5
+#4b92f6
+#2e84f9
+#247ffb
+#438ef7
+#3286f9
+#2c83fa
+#197afc
+#2881fa
+#1678fc
+#3085f9
+#0f75fd
+#1a7afc
+#4891f6
+#4790f6
+#458ff6
+#1c7bfc
+#3889f8
+#0671fe
+#0872fe
+#1779fc
+#036fff
+#3a8af8
+#026fff
+#1f7dfb
+#408df7
+#1377fd
+#3487f9
+#1277fd
+#3688f8
+#1e7dfb
 
 ## Ring 9
 
-#00e5e6
-#14d300
-#0086fa
-#0089f9
-#55d900
-#44d800
-#00a1f5
-#0095f7
-#00abf2
-#5eda00
-#a5e100
-#00f0e4
-#00b4f1
-#3ed700
-#5eda00
-#afe200
-#efe800
-#65db00
-#36d600
-#47d800
-#ade200
-#96e000
-#9de000
-#d0e500
-#b3e300
-#00b9ef
-#00d7e9
-#41d700
-#05d100
-#00abf2
-#f3e900
-#efe800
-#00d1eb
-#00a0f5
-#dae600
-#bce300
-#2fd600
-#007ffb
-#00cdeb
-#b1e200
-#00efe4
-#45d800
-#0076fd
-#00acf2
-#d9e600
-#97e000
-#0081fb
-#00dae9
-#91df00
-#009ef5
-#00a0f5
-#00f5e3
-#00cfeb
-#00a9f3
-#84de00
-#0099f6
-#0ed200
-#00eee5
-#dbe600
-#00b7f0
-#00ccec
-#06d200
-#aee200
-#01d100
-#00a8f3
-#0093f7
-#00dfe8
-#e2e700
-#55d900
-#c1e400
-#f2e900
-#00beef
-#00acf2
-#d6e600
-#00b1f1
-#01d100
-#16d300
-#b1e200
-#00f9e2
-#00cdeb
-#00dfe8
-#47d800
-#cee500
-#00e3e7
-#00c8ec
-#4ad800
-#007afd
-#00eae5
-#53d900
-#0090f8
-#a6e100
-#4ed900
-#11d300
-#00b2f1
-#3ed700
+#1a7bfc
+#006eff
+#3e8cf7
+#3788f8
+#1f7dfb
+#1879fc
+#398af8
+#3286f9
+#3387f9
+#1779fc
+#4c93f6
+#1f7dfb
+#3f8cf7
+#398af8
+#3387f9
+#1679fc
+#3186f9
+#247ffb
+#3d8cf7
+#3789f8
+#247ffb
+#3487f9
+#2f84f9
+#3789f8
+#016fff
+#0d74fd
+#1176fd
+#0a73fe
+#78cc33 L
+#58d10d L
+#6fcd28 L
+#69ce22 L
+#60d017 L
+#71cd2b L
+#85ca43 L
+#66cf1e L
+#68ce20 L
+#61cf18 L
+#7acb37 L
+#61d018 L
+#016fff
+#0671fe
+#0671fe
+#72cd2c L
+#1779fc
+#86c944 L
+#6bce24 L
+#7dcb3a L
+#87c946 L
+#3085f9
+#7acb36 L
+#61d017 L
+#7ecb3b L
+#85c943 L
+#63cf1b L
+#70cd2a L
+#6cce25 L
+#3c8bf8
+#1277fd
+#1b7bfc
+#1377fd
+#3a8af8
+#2580fa
+#3f8cf7
+#0c74fe
+#4991f6
+#3588f8
+#1478fd
+#3b8bf8
+#4991f6
+#0972fe
+#2e84f9
+#458ff7
+#2e84f9
+#0570fe
+#2e84f9
+#1d7cfb
+#3588f8
+#1377fd
+#4d93f5
+#3386f9
+#2982fa
+#0872fe
+#2f85f9
+#3688f8
+#2982fa
+#3588f8
+#4690f6
+#3e8cf7
+#3085f9
+#207dfb
+#2680fa
+#3889f8
+#0771fe
+#418df7
 
 ## Ring 10
 
-#c3e400
-#00d3ea
-#74dc00
-#f9e900
-#007efc
-#d5e600
-#03d100
-#7edd00
-#00adf2
-#80de00
-#2cd500
-#c2e400
-#00beee
-#4fd900
-#00d9e9
-#00adf2
-#0ed200
-#fcea00
-#0dd200
-#bde300
-#0077fd
-#53d900
-#0094f7
-#00baef
-#3cd700
-#00cbec
-#fdea00
-#fdea00
-#0076fd
-#00f1e4
-#00c6ed
-#00e7e6
-#9be000
-#0097f6
-#62db00
-#00dbe8
-#84de00
-#8bdf00
-#00d0eb
-#0077fd
-#05d100
-#0095f7
-#ace200
-#00abf2
-#2cd500
-#41d700
-#00eae5
-#48d800
-#00c9ec
-#00ebe5
-#00a4f4
-#0090f8
-#00f1e4
-#00d7e9
-#dbe600
-#00c3ed
-#0072fe
-#0081fb
-#dde700
-#b6e300
-#0dd200
-#0082fb
-#17d300
-#0070ff
-#cce500
-#a2e100
-#f0e800
-#00a7f3
-#00d8e9
-#00beef
-#58da00
-#00a5f4
-#9be000
-#00dce8
-#00b3f1
-#cfe500
-#31d600
-#04d100
-#0087fa
-#dbe600
-#0dd200
-#00e7e6
-#00a2f4
-#60da00
-#00dce8
-#00aff2
-#6adb00
-#10d300
-#8ddf00
-#f3e900
-#31d600
-#fbea00
-#16d300
-#e4e700
-#52d900
-#00a0f5
-#9de000
-#008df9
-#51d900
-#2ad500
-#00b3f1
-#eee800
-#00beee
-#00cbec
-#52d900
+#0c74fe
+#1176fd
+#2881fa
+#2680fa
+#4e93f5
+#1d7cfb
+#2480fb
+#0570fe
+#4f94f5
+#1478fc
+#197afc
+#2781fa
+#4e94f5
+#0972fe
+#1277fd
+#1f7dfb
+#3b8af8
+#3487f9
+#418df7
+#207dfb
+#58d10d L
+#2c83fa
+#398af8
+#0a73fe
+#4a92f6
+#1b7bfc
+#1277fd
+#1d7cfb
+#4991f6
+#7ecb3b L
+#76cc32 L
+#62cf19 L
+#0570fe
+#59d10e L
+#7fca3c L
+#59d10e L
+#78cc33 L
+#69ce21 L
+#60d017 L
+#76cc31 L
+#5fd016 L
+#75cc31 L
+#58d10d L
+#82ca40 L
+#1076fd
+#2d84f9
+#1d7cfb
+#1478fd
+#1c7cfc
+#227ffb
+#227efb
+#3487f9
+#1a7bfc
+#3c8bf8
+#1f7dfb
+#237ffb
+#207efb
+#207dfb
+#1d7cfb
+#7bcb37 L
+#1176fd
+#86c945 L
+#6cce25 L
+#187afc
+#1277fd
+#428ef7
+#7ccb39 L
+#82ca3f L
+#5094f5
+#2e84f9
+#458ff7
+#187afc
+#036fff
+#3286f9
+#0370ff
+#026fff
+#1b7bfc
+#016eff
+#4d93f6
+#3b8bf8
+#3989f8
+#3386f9
+#3889f8
+#2982fa
+#026fff
+#1e7dfb
+#1176fd
+#2781fa
+#3e8cf7
+#2e84f9
+#6fcd29 L
+#2580fa
+#1377fd
+#1076fd
+#197afc
+#0370ff
+#3387f9
+#0671fe
+#1176fd
+#0972fe
+#3889f8
+#0671fe
+#4e94f5
+#0a73fe
+#4991f6
 
 ## Ring 11
 
-#84de00
-#00dbe9
-#d3e600
-#d0e500
-#27d500
-#79dd00
-#00a8f3
-#aee200
-#dde700
-#009df5
-#00e2e7
-#0080fb
-#95e000
-#6fdc00
-#0dd200
-#00a5f4
-#008bf9
-#f1e900
-#e3e700
-#00b6f0
-#8cdf00
-#e7e800
-#e5e700
-#00ffe1
-#007cfc
-#abe200
-#e1e700
-#00b2f1
-#00c4ed
-#0097f6
-#20d400
-#bfe400
-#94df00
-#00dfe8
-#d3e600
-#fcea00
-#0075fd
-#00f9e2
-#00b5f0
-#008cf9
-#007ffc
-#00d8e9
-#d7e600
-#0084fa
-#f8e900
-#00f2e4
-#a8e100
-#00c5ed
-#71dc00
-#00fae2
-#39d700
-#00f8e2
-#00a7f3
-#00b0f1
-#03d100
-#81de00
-#c8e500
-#00e0e7
-#0082fb
-#52d900
-#9ee000
-#00a7f3
-#00ebe5
-#77dd00
-#00ceeb
-#00e6e6
-#bbe300
-#00e2e7
-#92df00
-#00dfe8
-#007cfc
-#0072fe
-#a0e100
-#4bd800
-#009ef5
-#d6e600
-#1bd400
-#00fee1
-#0095f7
-#0096f7
-#00dae9
-#01d100
-#7edd00
-#39d700
-#a9e200
-#00b1f1
-#1ad400
-#c2e400
-#007dfc
-#cbe500
-#52d900
-#3bd700
-#00c4ed
-#d6e600
-#30d600
-#008af9
-#00a1f4
-#69db00
-#4fd900
-#dbe600
-#0072fe
-#3ad700
-#42d800
-#a5e100
-#c3e400
-#99e000
-#0089f9
-#8edf00
-#9ce000
-#b4e300
-#5fda00
-#006eff
-#00c1ee
-#00ffe1
-#9fe100
+#227ffb
+#1679fc
+#2982fa
+#438ef7
+#3688f8
+#3b8af8
+#237ffb
+#428ef7
+#2c83fa
+#438ef7
+#2e84f9
+#2e84f9
+#3085f9
+#1f7dfb
+#61cf18 L
+#3286f9
+#3b8af8
+#1276fd
+#5195f5
+#4a92f6
+#197afc
+#5fd015 L
+#64cf1b L
+#59d10f L
+#84ca42 L
+#1578fc
+#3487f9
+#5dd013 L
+#3f8cf7
+#1277fd
+#0772fe
+#67cf1f L
+#0e75fd
+#2b83fa
+#71cd2b L
+#77cc32 L
+#87c946 L
+#78cc33 L
+#77cc32 L
+#6ace23 L
+#5cd011 L
+#6fcd29 L
+#6ecd28 L
+#5bd111 L
+#76cc31 L
+#87c946 L
+#6cce26 L
+#71cd2c L
+#036fff
+#4a92f6
+#3688f8
+#2781fa
+#3a8af8
+#3085f9
+#1779fc
+#0972fe
+#3f8cf7
+#398af8
+#3b8af8
+#458ff6
+#0671fe
+#2881fa
+#398af8
+#438ef7
+#5bd011 L
+#84ca43 L
+#77cc32 L
+#70cd29 L
+#5cd012 L
+#73cd2e L
+#016fff
+#7bcb37 L
+#85ca43 L
+#73cd2d L
+#6ace23 L
+#87c946 L
+#4b92f6
+#83ca41 L
+#6ecd28 L
+#3688f8
+#0771fe
+#1d7cfb
+#0f75fd
+#2982fa
+#0470ff
+#1e7dfb
+#1f7dfb
+#3286f9
+#4d93f6
+#0d74fd
+#3a8af8
+#4891f6
+#448ff7
+#69ce21 L
+#70cd2a L
+#1277fd
+#7bcb38 L
+#0470ff
+#6ecd27 L
+#7acb36 L
+#5cd012 L
+#63cf1b L
+#187afc
+#197afc
+#4790f6
+#3e8cf7
+#1277fd
+#3b8af8
+#418df7
+#0972fe
+#1076fd
+#448ff7
+#016fff
+#3a8af8
+#3a8af8
 
 ## Ring 12
 
-#29d500
-#009ef5
-#00e5e6
-#ece800
-#00f2e4
-#00f7e3
-#c7e400
-#00d5ea
-#0cd200
-#00f6e3
-#00fae2
-#0dd200
-#0082fb
-#00e1e7
-#4cd800
-#0fd200
-#5cda00
-#b2e200
-#bee400
-#9ce000
-#00dde8
-#c5e400
-#ebe800
-#00b7f0
-#99e000
-#00f7e3
-#36d600
-#71dc00
-#00d4ea
-#00c8ec
-#2fd600
-#00f8e2
-#00b5f0
-#00f8e2
-#00f8e3
-#1dd400
-#55d900
-#00adf2
-#cee500
-#d7e600
-#eae800
-#0074fe
-#00b4f1
-#00f3e3
-#00dee8
-#feea00
-#51d900
-#00dde8
-#0089f9
-#0076fd
-#0083fb
-#c9e500
-#00dee8
-#45d800
-#00c9ec
-#00d4ea
-#9ae000
-#00efe4
-#49d800
-#0074fe
-#00c3ed
-#0092f7
-#00fde1
-#0087fa
-#00baef
-#00ebe5
-#d5e600
-#007efc
-#00bbef
-#00d4ea
-#00d4ea
-#009ff5
-#2bd500
-#44d800
-#40d700
-#94df00
-#17d300
-#cce500
-#00fce2
-#c5e400
-#009ef5
-#faea00
-#00c8ec
-#76dd00
-#00d0eb
-#89de00
-#00dfe8
-#e9e800
-#00efe4
-#00abf2
-#f7e900
-#31d600
-#8bdf00
-#66db00
-#5bda00
-#00adf2
-#00d1eb
-#00dae9
-#2ad500
-#00d8e9
-#008ef8
-#0076fd
-#00c2ee
-#009ff5
-#00c5ed
-#bce300
-#2ad500
-#00fee1
-#74dc00
-#68db00
-#00d3ea
-#04d100
-#00a5f4
-#2bd500
-#32d600
-#aee200
-#65db00
-#a6e100
-#00f0e4
-#28d500
-#0fd200
-#c2e400
-#55d900
-#00e8e6
-#27d500
+#1b7bfc
+#3387f9
+#5bd011 L
+#0671fe
+#1f7dfb
+#0e75fd
+#408df7
+#408df7
+#2881fa
+#3f8cf7
+#4f94f5
+#0b73fe
+#3587f8
+#2781fa
+#2781fa
+#5ad110 L
+#76cc31 L
+#1d7cfb
+#4891f6
+#0872fe
+#7fca3c L
+#83ca40 L
+#7acb36 L
+#77cc32 L
+#63cf1b L
+#76cc31 L
+#3286f9
+#80ca3d L
+#61d018 L
+#78cc34 L
+#70cd2a L
+#5fd015 L
+#63cf1a L
+#81ca3f L
+#69ce21 L
+#7bcb37 L
+#4c93f6
+#7acb36 L
+#85ca43 L
+#59d10f L
+#66cf1d L
+#69ce21 L
+#5bd110 L
+#6bce25 L
+#71cd2b L
+#82ca40 L
+#63cf1a L
+#74cc2e L
+#82ca40 L
+#66cf1e L
+#6cce26 L
+#67ce1f L
+#3688f8
+#0e75fd
+#026fff
+#3889f8
+#217efb
+#2982fa
+#3c8bf8
+#4991f6
+#4d93f6
+#227efb
+#3386f9
+#1076fd
+#1578fc
+#0972fe
+#70cd2a L
+#79cc35 L
+#86c944 L
+#7ccb39 L
+#0671fe
+#1176fd
+#4b92f6
+#2d83f9
+#7acb37 L
+#82ca3f L
+#71cd2b L
+#5dd013 L
+#68ce20 L
+#69ce21 L
+#6cce26 L
+#71cd2b L
+#7bcb37 L
+#7dcb3a L
+#83ca41 L
+#3688f8
+#1076fd
+#0f75fd
+#227efb
+#2a82fa
+#398af8
+#187afc
+#3889f8
+#4f94f5
+#1679fc
+#418df7
+#0d74fd
+#1f7dfb
+#026fff
+#227ffb
+#1377fd
+#2a82fa
+#6ace23 L
+#83ca41 L
+#81ca3f L
+#6ecd28 L
+#6ecd28 L
+#86c944 L
+#73cd2d L
+#58d10d L
+#81ca3f L
+#62cf19 L
+#6fcd28 L
+#0671fe
+#4891f6
+#2b83fa
+#1277fd
+#036fff
+#3c8bf8
+#1c7cfb
+#016fff
+#2f85f9
+#4f94f5
+#3d8bf7
+#75cc30 L
 
 ## Ring 13
 
-#008af9
-#007bfc
-#d0e500
-#00ffe1
-#15d300
-#7fdd00
-#41d700
-#0084fa
-#19d300
-#00b5f0
-#00aff1
-#0090f8
-#4fd900
-#00a6f4
-#d4e600
-#00c5ed
-#0078fd
-#009bf6
-#d8e600
-#00f3e4
-#b6e300
-#17d300
-#c8e500
-#00a9f3
-#009af6
-#6edc00
-#00aef2
-#0073fe
-#006eff
-#bfe400
-#00e4e7
-#0078fd
-#27d500
-#00cfeb
-#fdea00
-#5eda00
-#66db00
-#00b3f1
-#00e4e7
-#7edd00
-#dde700
-#76dd00
-#00b0f1
-#00f5e3
-#00beee
-#0084fa
-#feea00
-#009df5
-#006fff
-#0081fb
-#4fd900
-#81de00
-#0098f6
-#d2e600
-#00a7f3
-#d5e600
-#fbea00
-#33d600
-#00aff1
-#00b1f1
-#c1e400
-#00aef2
-#00e0e7
-#00c0ee
-#57da00
-#00fbe2
-#eee800
-#009ef5
-#00b1f1
-#00e3e7
-#0099f6
-#0078fd
-#00d5ea
-#0096f7
-#94e000
-#6ddc00
-#008ef8
-#bde400
-#a2e100
-#d5e600
-#87de00
-#00e1e7
-#0071fe
-#00aff1
-#4ad800
-#00f1e4
-#00b2f1
-#c4e400
-#d9e600
-#b9e300
-#66db00
-#00aaf3
-#53d900
-#0081fb
-#c2e400
-#007dfc
-#00caec
-#0099f6
-#e7e800
-#b3e300
-#00d3ea
-#dfe700
-#dbe600
-#c6e400
-#41d700
-#76dd00
-#23d400
-#dbe600
-#00a1f4
-#bfe400
-#ebe800
-#0086fa
-#009cf5
-#7add00
-#feea00
-#00d8e9
-#58da00
-#0071fe
-#e0e700
-#007efc
-#98e000
-#1fd400
-#00beee
-#00e2e7
-#00b3f1
-#bde400
-#00a6f3
-#3ed700
-#75dc00
-#bfe400
-#9ce000
-#00b9ef
-#00c3ed
-#b0e200
-#00e7e6
+#3387f9
+#428ef7
+#1d7cfb
+#0973fe
+#5fd016 L
+#4891f6
+#0e75fd
+#227efb
+#408df7
+#3b8bf8
+#65cf1d L
+#428ef7
+#2a82fa
+#227efb
+#83ca40 L
+#1176fd
+#78cc34 L
+#016eff
+#4a92f6
+#6ace23 L
+#6bce24 L
+#81ca3f L
+#86c944 L
+#5fd016 L
+#5ed014 L
+#5bd110 L
+#73cd2e L
+#7acb36 L
+#62cf19 L
+#5ed014 L
+#7ecb3b L
+#70cd2a L
+#7dcb3a L
+#71cd2c L
+#66cf1e L
+#69ce21 L
+#88c947 L
+#85ca43 L
+#73cc2e L
+#73cd2d L
+#7dcb39 L
+#6fcd29 L
+#85c943 L
+#65cf1d L
+#62cf19 L
+#5bd011 L
+#83ca41 L
+#71cd2b L
+#71cd2b L
+#7fcb3c L
+#66cf1d L
+#78cc34 L
+#63cf1a L
+#5ad110 L
+#86c945 L
+#76cc31 L
+#5ad10f L
+#82ca40 L
+#66cf1e L
+#1377fd
+#3f8cf7
+#197afc
+#036fff
+#3789f8
+#3587f9
+#2781fa
+#62cf19 L
+#187afc
+#4790f6
+#7dcb3a L
+#60d016 L
+#5ed015 L
+#78cc34 L
+#62cf19 L
+#5095f5
+#408df7
+#2781fa
+#428ef7
+#3387f9
+#5bd011 L
+#6ecd27 L
+#76cc31 L
+#73cd2e L
+#7ccb39 L
+#76cc32 L
+#69ce21 L
+#70cd2a L
+#7ccb39 L
+#5fd015 L
+#6cce25 L
+#74cc2f L
+#66cf1d L
+#0671fe
+#2680fa
+#1a7afc
+#5fd016 L
+#5dd012 L
+#1779fc
+#2f84f9
+#227ffb
+#3588f8
+#4d93f6
+#036fff
+#026fff
+#3386f9
+#438ef7
+#4f94f5
+#2580fa
+#0c74fe
+#207dfb
+#0c74fe
+#74cc2f L
+#247ffb
+#72cd2c L
+#64cf1b L
+#6ecd28 L
+#84ca43 L
+#0d74fd
+#3b8af8
+#7dcb39 L
+#80ca3e L
+#5dd013 L
+#7bcb37 L
+#7bcb38 L
+#5ed015 L
+#3f8cf7
+#70cd2a L
+#1075fd
+#4c93f6
+#2b83fa
+#1a7afc
+#3788f8
+#6bce24 L
+#5ad10f L
+#2781fa
 
 ## Ring 14
 
-#d2e600
-#b9e300
-#0099f6
-#00e9e6
-#d3e600
-#20d400
-#e9e800
-#4ed900
-#00ebe5
-#bee400
-#0ad200
-#00ede5
-#0070ff
-#00a5f4
-#9ee000
-#2ed600
-#95e000
-#00a0f5
-#00adf2
-#c6e400
-#5dda00
-#0074fe
-#0075fe
-#33d600
-#28d500
-#91df00
-#00fde1
-#00e0e7
-#008ff8
-#6ddc00
-#00c3ed
-#00cdeb
-#87de00
-#2cd500
-#00fae2
-#007ffb
-#cce500
-#00d1eb
-#00efe4
-#8ade00
-#0092f8
-#fae900
-#00ede5
-#12d300
-#0085fa
-#62db00
-#39d700
-#ede800
-#00d2ea
-#0075fe
-#00e4e7
-#00f6e3
-#00fde1
-#d1e500
-#c4e400
-#feea00
-#61db00
-#f3e900
-#00ece5
-#00f1e4
-#00d1ea
-#6cdc00
-#60da00
-#0085fa
-#3cd700
-#88de00
-#60da00
-#74dc00
-#00a1f4
-#0cd200
-#00a2f4
-#14d300
-#d1e500
-#52d900
-#04d100
-#fae900
-#35d600
-#0089f9
-#00dbe8
-#cbe500
-#23d400
-#cae500
-#00a9f3
-#00f4e3
-#7add00
-#98e000
-#f2e900
-#0099f6
-#d9e600
-#00c3ed
-#00d7e9
-#dfe700
-#28d500
-#00bcef
-#00c3ed
-#e8e800
-#00cdeb
-#00e2e7
-#11d300
-#00dce8
-#78dd00
-#40d700
-#06d200
-#00f8e2
-#00bdef
-#00a6f3
-#dee700
-#f7e900
-#b2e200
-#0077fd
-#0085fa
-#0082fb
-#f6e900
-#00c9ec
-#00ebe5
-#4bd800
-#00d5ea
-#00fee1
-#5bda00
-#009ef5
-#00a7f3
-#f3e900
-#00b5f0
-#00f5e3
-#c0e400
-#49d800
-#008cf9
-#11d300
-#a0e100
-#00dee8
-#4fd900
-#006eff
-#00fce2
-#008ef8
-#30d600
-#82de00
-#08d200
-#00a6f3
-#00c0ee
-#00e4e7
-#b9e300
-#eee800
-#00a5f4
-#0080fb
-#00fae2
+#448ff7
+#2d83fa
+#6bce24 L
+#0872fe
+#2d84f9
+#6fcd29 L
+#1377fd
+#3f8cf7
+#85ca43 L
+#5ed014 L
+#1076fd
+#79cb35 L
+#71cd2b L
+#3085f9
+#72cd2c L
+#2982fa
+#7bcb37 L
+#4e94f5
+#0e75fd
+#6ecd28 L
+#3688f8
+#5bd110 L
+#6fcd29 L
+#7acb36 L
+#67cf1f L
+#3085f9
+#60d017 L
+#5dd014 L
+#75cc30 L
+#64cf1c L
+#5ad10f L
+#80ca3e L
+#61d018 L
+#6ecd28 L
+#76cc31 L
+#3b8af8
+#5cd012 L
+#81ca3f L
+#6bce24 L
+#74cc2f L
+#87c945 L
+#0772fe
+#7ccb39 L
+#2781fa
+#70cd2a L
+#4690f6
+#1779fc
+#1c7cfc
+#227efb
+#75cc30 L
+#71cd2c L
+#5fd016 L
+#66cf1e L
+#6ecd27 L
+#6bce24 L
+#5ed015 L
+#6cce26 L
+#4991f6
+#79cb35 L
+#84ca43 L
+#6ace23 L
+#58d10e L
+#2781fa
+#0771fe
+#3286f9
+#2982fa
+#4b92f6
+#1b7bfc
+#0d74fd
+#3788f8
+#68ce21 L
+#73cd2d L
+#62cf19 L
+#75cc30 L
+#62cf19 L
+#59d10f L
+#6ace23 L
+#59d10f L
+#016eff
+#0a73fe
+#4991f6
+#2982fa
+#237ffb
+#0d74fd
+#3d8bf7
+#5195f5
+#1478fc
+#4d93f6
+#2881fa
+#83ca41 L
+#66cf1e L
+#67cf1f L
+#80ca3d L
+#5cd012 L
+#7ecb3b L
+#67ce1f L
+#81ca3f L
+#1d7cfb
+#66cf1e L
+#237ffb
+#5ad10f L
+#4a92f6
+#7fcb3c L
+#2d83f9
+#217efb
+#77cc33 L
+#7dcb39 L
+#63cf1a L
+#1478fc
+#4c92f6
+#3789f8
+#418df7
+#3a8af8
+#5195f5
+#1b7bfc
+#2580fa
+#2781fa
+#1377fd
+#4690f6
+#1a7bfc
+#1478fd
+#84ca43 L
+#80ca3d L
+#83ca41 L
+#85c944 L
+#78cc34 L
+#82ca40 L
+#5ad110 L
+#5cd012 L
+#58d10d L
+#81ca3f L
+#82ca40 L
+#63cf1b L
+#61cf18 L
+#61d017 L
+#67ce1f L
+#458ff7
+#2982fa
+#1075fd
+#3f8cf7
+#1277fd
+#0e75fd
+#2781fa
+#207efb
+#438ef7
 
 ## Ring 15
 
-#00caec
-#16d300
-#8ddf00
-#cde500
-#feea00
-#0081fb
-#3fd700
-#5bda00
-#2ad500
-#08d200
-#00f2e4
-#00d3ea
-#5fda00
-#0074fe
-#009bf6
-#41d700
-#84de00
-#00a0f5
-#0087fa
-#00c8ec
-#43d800
-#8ade00
-#0098f6
-#9fe100
-#00ebe5
-#3dd700
-#00a7f3
-#00e0e7
-#0078fd
-#b8e300
-#00ffe1
-#0095f7
-#2cd500
-#00a4f4
-#0098f6
-#f0e800
-#22d400
-#9ce000
-#00a0f5
-#008cf9
-#49d800
-#d3e600
-#84de00
-#92df00
-#00a0f5
-#59da00
-#00a1f5
-#0fd200
-#00f1e4
-#007bfc
-#0092f8
-#00a1f4
-#dfe700
-#008ef8
-#10d300
-#00b7f0
-#007cfc
-#68db00
-#0073fe
-#0086fa
-#00d1eb
-#00e0e7
-#46d800
-#0076fd
-#00e9e6
-#00d5ea
-#59da00
-#49d800
-#0079fd
-#d0e500
-#007efc
-#00d8e9
-#a6e100
-#00b5f0
-#fcea00
-#cde500
-#0078fd
-#009ef5
-#27d500
-#00fae2
-#00e9e6
-#00bdef
-#4bd800
-#c5e400
-#99e000
-#c2e400
-#eae800
-#00e6e6
-#00adf2
-#d0e500
-#82de00
-#00fce2
-#00c6ed
-#eae800
-#00a4f4
-#009cf5
-#0095f7
-#fdea00
-#009ef5
-#30d600
-#00e5e6
-#5bda00
-#65db00
-#b0e200
-#58da00
-#5ada00
-#0098f6
-#09d200
-#00f4e3
-#00fae2
-#00f6e3
-#0070ff
-#d8e600
-#dae600
-#0075fe
-#1cd400
-#bde400
-#00a0f5
-#00b3f1
-#00f3e3
-#f3e900
-#00caec
-#00c2ee
-#61da00
-#00aef2
-#e3e700
-#2ed500
-#006fff
-#00b1f1
-#00b1f1
-#5eda00
-#00ece5
-#a7e100
-#2bd500
-#00b8f0
-#45d800
-#63db00
-#00efe4
-#fcea00
-#42d800
-#2ed600
-#62db00
-#00d0eb
-#00adf2
-#84de00
-#f8e900
-#9ee100
-#0089f9
-#0091f8
-#3ed700
-#b8e300
-#00beee
-#cfe500
-#31d600
-#16d300
+#1879fc
+#0872fe
+#6ecd27 L
+#6cce25 L
+#60d016 L
+#82ca40 L
+#65cf1d L
+#2881fa
+#75cc30 L
+#62cf19 L
+#0571fe
+#0c74fe
+#65cf1d L
+#3989f8
+#69ce21 L
+#65cf1d L
+#1a7afc
+#58d10d L
+#6ecd28 L
+#7bcb37 L
+#70cd2a L
+#5ad110 L
+#83ca41 L
+#3588f8
+#428ef7
+#70cd2a L
+#0d74fd
+#4a92f6
+#74cc2f L
+#72cd2d L
+#7bcb37 L
+#68ce21 L
+#217efb
+#7fca3c L
+#88c947 L
+#0972fe
+#66cf1e L
+#3085f9
+#4b92f6
+#6bce24 L
+#5fd016 L
+#0872fe
+#1678fc
+#4e94f5
+#458ff6
+#016fff
+#438ef7
+#3e8cf7
+#4b92f6
+#1779fc
+#5094f5
+#0570fe
+#1276fd
+#60d017 L
+#63cf1a L
+#1d7cfb
+#76cc31 L
+#73cd2d L
+#63cf1a L
+#61d018 L
+#6bce24 L
+#5cd012 L
+#7acb36 L
+#3889f8
+#187afc
+#1578fc
+#3487f9
+#3688f8
+#3788f8
+#1a7bfc
+#4991f6
+#2b83fa
+#1c7cfb
+#0e75fd
+#217efb
+#58d10d L
+#62cf19 L
+#67cf1f L
+#69ce22 L
+#68ce21 L
+#78cc34 L
+#1c7cfb
+#0b73fe
+#3c8bf8
+#4891f6
+#2b83fa
+#2982fa
+#0370ff
+#2a82fa
+#3a8af8
+#247ffb
+#006eff
+#1c7cfb
+#2d84f9
+#1176fd
+#76cc31 L
+#81ca3e L
+#5ed015 L
+#74cc2f L
+#69ce21 L
+#88c946 L
+#5bd110 L
+#61d018 L
+#5bd011 L
+#7ccb39 L
+#0f75fd
+#0f75fd
+#68ce20 L
+#60d016 L
+#2982fa
+#84ca43 L
+#68ce20 L
+#80ca3e L
+#68ce21 L
+#5ed015 L
+#72cd2c L
+#78cc33 L
+#88c947 L
+#3d8cf7
+#68ce21 L
+#78cc33 L
+#79cb35 L
+#3e8cf7
+#1377fd
+#4d93f5
+#0c74fe
+#0671fe
+#3688f8
+#0771fe
+#3c8bf8
+#0b73fe
+#1e7dfb
+#70cd2a L
+#59d10f L
+#78cc34 L
+#79cc34 L
+#61d018 L
+#74cc2e L
+#73cc2e L
+#7dcb3a L
+#77cc33 L
+#5dd013 L
+#59d10e L
+#75cc30 L
+#81ca3e L
+#70cd2a L
+#3c8bf8
+#4e93f5
+#76cc31 L
+#59d10e L
+#4891f6
+#2f85f9
+#3788f8
+#0c74fe
+#4e93f5
 
 ## Ring 16
 
-#c9e500
-#00c6ed
-#54d900
-#0075fd
-#b5e300
-#00f6e3
-#00bdef
-#00a6f3
-#63db00
-#007ffc
-#007dfc
-#3fd700
-#00dbe9
-#90df00
-#c9e500
-#0fd200
-#00baef
-#0074fe
-#39d700
-#6fdc00
-#0090f8
-#54d900
-#00dce8
-#bde300
-#0092f7
-#00cbec
-#009bf6
-#4ad800
-#00e8e6
-#008df9
-#feea00
-#00f8e3
-#00dce8
-#007afc
-#76dd00
-#feea00
-#2ad500
-#008bf9
-#0098f6
-#0091f8
-#00c8ec
-#d2e600
-#00e6e6
-#e0e700
-#72dc00
-#00bbef
-#00c4ed
-#b5e300
-#0085fa
-#0081fb
-#b6e300
-#44d800
-#00d2ea
-#0097f7
-#d3e600
-#66db00
-#3ad700
-#56d900
-#00dae9
-#00f9e2
-#37d600
-#0085fa
-#0073fe
-#7fdd00
-#00c3ed
-#00c4ed
-#c3e400
-#00ccec
-#c0e400
-#006fff
-#3fd700
-#abe200
-#009cf6
-#b4e300
-#84de00
-#0080fb
-#dbe600
-#009af6
-#71dc00
-#84de00
-#3dd700
-#52d900
-#d2e600
-#00f2e4
-#e9e800
-#0097f7
-#00a3f4
-#99e000
-#89de00
-#0080fb
-#a1e100
-#83de00
-#e9e800
-#f3e900
-#bfe400
-#00c3ed
-#0097f7
-#cce500
-#6cdc00
-#0074fe
-#00fae2
-#00ffe1
-#00b1f1
-#48d800
-#22d400
-#d2e600
-#dfe700
-#00c8ec
-#00a8f3
-#009af6
-#00b0f1
-#d0e500
-#e0e700
-#00beee
-#4bd800
-#7edd00
-#009ef5
-#00c6ed
-#00e9e5
-#47d800
-#2ed600
-#f1e900
-#14d300
-#00b6f0
-#00a2f4
-#c1e400
-#00f7e3
-#eae800
-#6fdc00
-#00e4e7
-#87de00
-#009cf5
-#6cdc00
-#0072fe
-#00e3e7
-#00aaf3
-#00d8e9
-#00e1e7
-#3dd700
-#00a2f4
-#4fd900
-#00a5f4
-#0085fa
-#a2e100
-#d1e500
-#00d5ea
-#35d600
-#04d100
-#6bdc00
-#06d200
-#17d300
-#87de00
-#00f8e2
-#00f7e3
-#efe800
-#83de00
-#0085fa
-#e7e800
-#00e9e6
-#25d500
+#1377fd
+#0470fe
+#2f85f9
+#85c944 L
+#0872fe
+#7bcb37 L
+#5bd011 L
+#88c947 L
+#58d10d L
+#4e94f5
+#5bd011 L
+#67ce1f L
+#438ef7
+#7bcb37 L
+#3889f8
+#3085f9
+#7ccb38 L
+#6bce24 L
+#79cb35 L
+#66cf1e L
+#69ce21 L
+#73cd2d L
+#87c946 L
+#68ce20 L
+#71cd2b L
+#7bcb37 L
+#5fd015 L
+#64cf1b L
+#76cc32 L
+#0972fe
+#83ca41 L
+#7fca3c L
+#5fd015 L
+#6ecd27 L
+#81ca3e L
+#81ca3e L
+#72cd2c L
+#4e93f5
+#3186f9
+#67cf1f L
+#1e7dfb
+#1f7dfb
+#73cd2d L
+#3788f8
+#1d7cfb
+#3789f8
+#3688f8
+#197afc
+#217efb
+#3889f8
+#0872fe
+#2f85f9
+#1578fc
+#3f8cf7
+#3186f9
+#71cd2c L
+#1779fc
+#2881fa
+#76cc32 L
+#79cb35 L
+#7acb36 L
+#83ca41 L
+#5ed015 L
+#7fca3c L
+#7fcb3c L
+#7fcb3c L
+#7bcb38 L
+#5ed015 L
+#0872fe
+#4690f6
+#0470fe
+#4d93f5
+#036fff
+#0e75fd
+#1f7dfb
+#4b92f6
+#83ca41 L
+#60d017 L
+#87c946 L
+#76cc31 L
+#3085f9
+#63cf1b L
+#0c74fd
+#438ef7
+#3387f9
+#1e7cfb
+#0872fe
+#2881fa
+#3688f8
+#1c7bfc
+#1578fc
+#1176fd
+#5094f5
+#408df7
+#0b73fe
+#4e94f5
+#0c74fd
+#2c83fa
+#1f7dfb
+#88c947 L
+#59d10e L
+#7ccb38 L
+#72cd2c L
+#64cf1b L
+#84ca43 L
+#7dcb3a L
+#63cf1a L
+#5cd012 L
+#70cd2a L
+#3688f8
+#3588f8
+#2b83fa
+#7acb35 L
+#2881fa
+#60d017 L
+#7ccb39 L
+#69ce21 L
+#70cd2b L
+#62cf19 L
+#72cd2d L
+#62cf19 L
+#65cf1d L
+#71cd2b L
+#75cc31 L
+#5bd110 L
+#7dcb39 L
+#59d10e L
+#5ed014 L
+#0772fe
+#5094f5
+#2781fa
+#0973fe
+#217efb
+#4690f6
+#3f8cf7
+#1a7bfc
+#7ecb3b L
+#81ca3f L
+#84ca42 L
+#81ca3f L
+#5dd013 L
+#64cf1c L
+#70cd2a L
+#63cf1a L
+#6bce24 L
+#80ca3e L
+#74cc2f L
+#83ca41 L
+#65cf1d L
+#69ce21 L
+#5ad10f L
+#7ccb38 L
+#1e7cfb
+#76cc31 L
+#0f75fd
+#4991f6
+#4e94f5
+#227efb
+#4b92f6
+#0f75fd
 
 ## Ring 17
 
-#48d800
-#00d8e9
-#007cfc
-#e3e700
-#007ffc
-#00a1f4
-#00ece5
-#009df5
-#00fde1
-#00cdeb
-#17d300
-#00c9ec
-#007efc
-#007efc
-#a0e100
-#00a1f4
-#007ffc
-#00fde1
-#c1e400
-#0079fd
-#00a7f3
-#f5e900
-#007efc
-#00dae9
-#f2e900
-#4dd900
-#00b9ef
-#00a1f4
-#00f4e3
-#6fdc00
-#bce300
-#00e6e6
-#bfe400
-#0079fd
-#0077fd
-#55d900
-#f6e900
-#5ada00
-#00f1e4
-#97e000
-#00e3e7
-#70dc00
-#6ddc00
-#00dce8
-#04d100
-#00d0eb
-#7cdd00
-#c4e400
-#07d200
-#efe800
-#9ee000
-#00bcef
-#1dd400
-#d3e600
-#00b6f0
-#0074fe
-#b8e300
-#afe200
-#00a7f3
-#63db00
-#c5e400
-#f1e900
-#3cd700
-#4ed900
-#0cd200
-#1bd400
-#0082fb
-#40d700
-#b4e300
-#81de00
-#00b7f0
-#1fd400
-#45d800
-#15d300
-#00f8e2
-#007bfc
-#e4e700
-#00f3e4
-#0081fb
-#7edd00
-#20d400
-#00c8ec
-#3cd700
-#00b0f1
-#00d5ea
-#00c7ed
-#00e6e6
-#85de00
-#9fe100
-#00e9e6
-#24d500
-#4dd900
-#00d1eb
-#70dc00
-#00cdeb
-#a8e100
-#00c9ec
-#c5e400
-#26d500
-#00a3f4
-#81de00
-#44d800
-#0085fa
-#0080fb
-#d1e500
-#00aff2
-#006eff
-#7edd00
-#25d500
-#00cfeb
-#f5e900
-#b2e200
-#efe800
-#0088fa
-#52d900
-#fcea00
-#00e4e7
-#5dda00
-#d8e600
-#39d700
-#92df00
-#2cd500
-#00fee1
-#04d100
-#a9e200
-#18d300
-#0072fe
-#79dd00
-#2ed600
-#00f9e2
-#e7e800
-#00ebe5
-#58da00
-#00d6ea
-#6cdc00
-#0dd200
-#59da00
-#00b5f0
-#00e4e7
-#7bdd00
-#00b5f0
-#1fd400
-#00bbef
-#d2e600
-#9ae000
-#00fde1
-#008ef8
-#53d900
-#64db00
-#1fd400
-#a8e100
-#74dc00
-#abe200
-#03d100
-#d3e600
-#20d400
-#1bd400
-#76dd00
-#00ceeb
-#00b0f1
+#1b7bfc
+#1076fd
+#7fcb3c L
+#5cd012 L
+#68ce20 L
+#1176fd
+#78cc34 L
+#5dd014 L
+#86c944 L
+#66cf1e L
+#86c945 L
+#87c946 L
+#6bce24 L
+#6bce23 L
+#7bcb37 L
+#65cf1d L
+#7acb36 L
+#70cd2a L
+#5cd012 L
+#73cc2e L
+#66cf1e L
+#70cd2a L
+#61cf18 L
+#63cf1a L
+#7ecb3b L
+#6bce24 L
+#67ce1f L
+#4790f6
+#78cc34 L
+#5ed014 L
+#5cd011 L
+#80ca3d L
+#80ca3e L
+#61d017 L
+#1176fd
+#1276fd
+#1176fd
+#2b83fa
+#0e75fd
+#1c7cfc
+#237ffb
+#448ff7
+#408df7
+#1076fd
+#3487f9
+#2580fa
+#76cc31 L
+#2f84f9
+#69ce22 L
+#3f8df7
+#3688f8
+#438ef7
+#0972fe
+#1578fc
+#3f8cf7
+#227efb
+#3085f9
+#0973fe
+#5ed014 L
+#78cc34 L
+#2b82fa
+#83ca41 L
+#67ce20 L
+#58d10d L
+#1377fd
+#68ce21 L
+#4790f6
+#5ad110 L
+#82ca40 L
+#2781fa
+#398af8
+#3f8cf7
+#0470fe
+#187afc
+#63cf1a L
+#73cd2d L
+#65cf1c L
+#74cc2e L
+#0c74fe
+#4c93f6
+#3789f8
+#2680fa
+#0f75fd
+#4d93f6
+#4c92f6
+#3387f9
+#4790f6
+#247ffb
+#1779fc
+#2680fa
+#0872fe
+#4b92f6
+#0872fe
+#3085f9
+#1377fd
+#4c92f6
+#4f94f5
+#0671fe
+#7acb36 L
+#6ace23 L
+#0570fe
+#1c7cfc
+#1176fd
+#247ffb
+#0470ff
+#4991f6
+#217efb
+#67ce1f L
+#79cc34 L
+#79cc35 L
+#82ca3f L
+#88c947 L
+#3386f9
+#60d016 L
+#7dcb39 L
+#63cf1a L
+#5ed014 L
+#82ca40 L
+#6ace22 L
+#83ca41 L
+#86c945 L
+#59d10e L
+#72cd2d L
+#60d017 L
+#7ecb3b L
+#7bcb37 L
+#5ad10f L
+#86c944 L
+#70cd2a L
+#75cc31 L
+#1c7bfc
+#2d84f9
+#3588f8
+#458ff7
+#0e75fd
+#63cf1a L
+#88c947 L
+#77cc33 L
+#63cf1a L
+#60d017 L
+#66cf1e L
+#7dcb3a L
+#66cf1e L
+#73cc2e L
+#2781fa
+#84ca43 L
+#81ca3e L
+#5ad10f L
+#5ad10f L
+#76cc31 L
+#73cc2e L
+#81ca3e L
+#84ca42 L
+#5095f5
+#7ecb3b L
+#2b83fa
+#68ce20 L
+#72cd2d L
+#1176fd
+#1d7cfb
 
 ## Ring 18
 
-#00f7e3
-#0085fa
-#007efc
-#f7e900
-#00c0ee
-#07d200
-#0094f7
-#00efe4
-#18d300
-#ede800
-#007cfc
-#00eee5
-#00beee
-#d2e600
-#00d7e9
-#00dce8
-#55d900
-#57da00
-#0075fe
-#00c2ee
-#00fce2
-#006fff
-#7edd00
-#5dda00
-#44d800
-#00fbe2
-#0081fb
-#3ed700
-#00fde1
-#0078fd
-#00beee
-#008ef8
-#00f5e3
-#00e0e7
-#00a4f4
-#16d300
-#0087fa
-#007afd
-#43d800
-#00b5f0
-#00c1ee
-#47d800
-#008df9
-#5eda00
-#0098f6
-#00aff2
-#faea00
-#00ebe5
-#0070ff
-#00a7f3
-#19d300
-#00c4ed
-#4cd800
-#8ade00
-#21d400
-#76dd00
-#0071fe
-#00bdef
-#8fdf00
-#d9e600
-#00acf2
-#40d700
-#00d0eb
-#00d6ea
-#008ff8
-#dee700
-#00e1e7
-#00a8f3
-#00a6f3
-#5ada00
-#e9e800
-#d3e600
-#00c9ec
-#34d600
-#0cd200
-#00a5f4
-#007afd
-#59da00
-#05d200
-#76dd00
-#00d5ea
-#2ed500
-#0092f8
-#00eae5
-#008cf9
-#00abf2
-#00dde8
-#b1e200
-#9ce000
-#00a4f4
-#0085fa
-#91df00
-#8edf00
-#5dda00
-#00acf2
-#15d300
-#93df00
-#5cda00
-#a8e100
-#008cf9
-#00f0e4
-#007afd
-#00b1f1
-#00f1e4
-#00b6f0
-#fae900
-#89de00
-#00c1ee
-#00c6ed
-#e3e700
-#f4e900
-#90df00
-#80de00
-#0074fe
-#95e000
-#00beee
-#00c2ee
-#00d6ea
-#dde700
-#00d100
-#fcea00
-#007ffc
-#a1e100
-#76dd00
-#0085fa
-#cee500
-#00ece5
-#62db00
-#2fd600
-#5bda00
-#00eee4
-#e2e700
-#008df9
-#7bdd00
-#00beee
-#ebe800
-#00dce8
-#10d300
-#7edd00
-#00eae5
-#3ed700
-#e3e700
-#009ef5
-#74dc00
-#00b3f1
-#00fce2
-#85de00
-#3bd700
-#c1e400
-#fdea00
-#3fd700
-#00f3e3
-#52d900
-#3dd700
-#7bdd00
-#0079fd
-#dee700
-#63db00
-#81de00
-#00b0f1
+#5ad10f L
+#63cf1b L
+#5bd011 L
+#2a82fa
+#3789f8
+#458ff6
+#83ca41 L
+#4d93f5
+#79cc34 L
+#6bce24 L
+#64cf1c L
+#60d016 L
+#61d018 L
+#5cd012 L
+#65cf1d L
+#71cd2b L
+#78cc34 L
+#6bce24 L
+#5cd011 L
+#71cd2b L
+#59d10e L
+#76cc31 L
+#69ce22 L
+#6fcd28 L
+#74cc2e L
+#73cc2e L
+#3487f9
+#74cc2f L
+#61d017 L
+#61d017 L
+#66cf1e L
+#80ca3e L
+#5cd011 L
+#7acb36 L
+#0872fe
+#4890f6
+#2480fb
+#4b92f6
+#1b7bfc
+#2a82fa
+#86c944 L
+#67ce1f L
+#2982fa
+#0e75fd
+#458ff6
+#75cc30 L
+#6ace23 L
+#1d7cfb
+#4f94f5
+#448ff7
+#1277fd
+#3889f8
+#408df7
+#4891f6
+#2781fa
+#7fcb3c L
+#73cc2e L
+#5ed014 L
+#0d74fd
+#6ace23 L
+#4891f6
+#60d017 L
+#4d93f5
+#69ce22 L
+#448ff7
+#0f75fd
+#1478fc
+#84ca42 L
+#006eff
+#0b73fe
+#448ff7
+#2781fa
+#1b7bfc
+#1277fd
+#60d016 L
+#3286f9
+#3d8cf7
+#4991f6
+#217efb
+#3e8cf7
+#4690f6
+#4790f6
+#1377fd
+#1277fd
+#3085f9
+#0872fe
+#2e84f9
+#1679fc
+#1277fd
+#3889f8
+#217efb
+#3688f8
+#5095f5
+#0c74fd
+#0671fe
+#3b8af8
+#0d74fd
+#3e8cf7
+#4d93f6
+#5094f5
+#4d93f5
+#1779fc
+#4690f6
+#4991f6
+#1578fc
+#016fff
+#70cd29 L
+#60d016 L
+#4690f6
+#72cd2c L
+#61cf18 L
+#59d10f L
+#74cc2f L
+#4690f6
+#0470fe
+#7ecb3b L
+#016fff
+#006eff
+#7bcb37 L
+#85c944 L
+#69ce22 L
+#77cc33 L
+#82ca40 L
+#6bce24 L
+#6ace23 L
+#1e7cfb
+#6cce26 L
+#0470ff
+#0972fe
+#0a73fe
+#3688f8
+#77cc33 L
+#83ca41 L
+#59d10e L
+#81ca3e L
+#77cc33 L
+#64cf1c L
+#68ce20 L
+#87c946 L
+#7dcb39 L
+#58d10d L
+#76cc31 L
+#217efb
+#0771fe
+#1377fd
+#3387f9
+#1d7cfb
+#3487f9
+#458ff6
+#4690f6
+#4891f6
+#5ad10f L
+#84ca42 L
+#58d10d L
+#6cce25 L
+#79cb35 L
+#7fcb3c L
+#7acb36 L
+#2c83fa
+#5dd013 L
 
 ## Ring 19
 
-#8adf00
-#4ed900
-#00f1e4
-#00cbec
-#8edf00
-#53d900
-#00b7f0
-#007bfc
-#00bcef
-#00d0eb
-#bae300
-#e3e700
-#ece800
-#00fee1
-#bee400
-#3dd700
-#00dbe8
-#0083fb
-#0095f7
-#00c8ec
-#60da00
-#00a7f3
-#0098f6
-#98e000
-#00efe4
-#06d200
-#4ed900
-#00f6e3
-#b4e300
-#b5e300
-#84de00
-#00d7e9
-#03d100
-#00c5ed
-#007efc
-#00a2f4
-#00dfe8
-#8bdf00
-#fcea00
-#00e6e6
-#f2e900
-#39d700
-#00bbef
-#0dd200
-#00aff1
-#fdea00
-#49d800
-#afe200
-#00a6f3
-#58da00
-#0082fb
-#ebe800
-#007bfc
-#00e2e7
-#00d1eb
-#4dd900
-#88de00
-#0076fd
-#00f9e2
-#00f6e3
-#0077fd
-#6bdb00
-#c4e400
-#22d400
-#0082fb
-#0089f9
-#00acf2
-#dfe700
-#00d7e9
-#c5e400
-#3dd700
-#d3e600
-#79dd00
-#00ece5
-#006fff
-#00b5f0
-#00e7e6
-#c0e400
-#19d300
-#e7e800
-#b3e300
-#00b3f1
-#00dee8
-#00ece5
-#79dd00
-#f1e900
-#0099f6
-#00e5e6
-#00bcef
-#0086fa
-#00c3ed
-#bfe400
-#00bbef
-#e3e700
-#e1e700
-#007bfc
-#dce700
-#0075fe
-#0089f9
-#b9e300
-#4ad800
-#00c8ec
-#80de00
-#00d1eb
-#0097f6
-#bee400
-#007efc
-#00eee5
-#00dbe9
-#008df9
-#00f0e4
-#00b9ef
-#2ad500
-#00ebe5
-#f6e900
-#04d100
-#8bdf00
-#00dfe8
-#b2e200
-#27d500
-#00d2ea
-#00bfee
-#00b5f0
-#0094f7
-#0cd200
-#96e000
-#0074fe
-#00e2e7
-#00dbe8
-#009af6
-#f7e900
-#00ebe5
-#007dfc
-#d6e600
-#68db00
-#0cd200
-#a9e200
-#00b5f0
-#86de00
-#00ebe5
-#e5e700
-#00c3ed
-#0088fa
-#21d400
-#ece800
-#bde300
-#00abf2
-#dee700
-#97e000
-#00f8e2
-#00fde1
-#0077fd
-#00b7f0
-#96e000
-#00b2f1
-#7fdd00
-#1cd400
-#6bdb00
-#2bd500
-#00dde8
+#6dce26 L
+#83ca41 L
+#6bce24 L
+#76cc31 L
+#61d018 L
+#65cf1c L
+#82ca40 L
+#1277fd
+#7dcb3a L
+#6ace22 L
+#3286f9
+#6dcd27 L
+#73cc2e L
+#76cc31 L
+#5ad110 L
+#61d018 L
+#78cc34 L
+#6ace23 L
+#78cc34 L
+#5ad10f L
+#5094f5
+#5ed014 L
+#58d10d L
+#69ce22 L
+#187afc
+#81ca3e L
+#7bcb38 L
+#84ca42 L
+#438ef7
+#5cd012 L
+#5dd013 L
+#62cf19 L
+#1c7cfc
+#3286f9
+#2881fa
+#4b92f6
+#0671fe
+#0872fe
+#4d93f6
+#4891f6
+#2c83fa
+#6ecd28 L
+#5ed015 L
+#1f7dfb
+#4891f6
+#6ace23 L
+#3e8cf7
+#7ccb38 L
+#4a92f6
+#1c7bfc
+#4991f6
+#428ef7
+#428ef7
+#2781fa
+#4b92f6
+#5dd013 L
+#7bcb38 L
+#63cf1a L
+#71cd2b L
+#6bce23 L
+#68ce20 L
+#237ffb
+#1277fd
+#1377fd
+#237ffb
+#85c944 L
+#6cce26 L
+#3c8bf8
+#1a7afc
+#5fd016 L
+#026fff
+#78cc34 L
+#6ace22 L
+#77cc32 L
+#3f8cf7
+#1277fd
+#187afc
+#0a73fe
+#1d7cfb
+#217efb
+#016eff
+#1c7bfc
+#2680fa
+#1b7bfc
+#408df7
+#0972fe
+#3487f9
+#1a7afc
+#3989f8
+#3889f8
+#4d93f5
+#217efb
+#187afc
+#4c93f6
+#207dfb
+#438ef7
+#5094f5
+#0e75fd
+#438ef7
+#2a82fa
+#0872fe
+#2b83fa
+#227efb
+#006eff
+#1578fc
+#0b73fe
+#3c8bf8
+#70cd2a L
+#6fcd28 L
+#5cd011 L
+#64cf1b L
+#82ca40 L
+#6cce26 L
+#60d017 L
+#76cc32 L
+#83ca41 L
+#6fcd29 L
+#3688f8
+#60d017 L
+#1779fc
+#81ca3e L
+#73cd2e L
+#63cf1a L
+#66cf1e L
+#6ecd28 L
+#71cd2b L
+#026fff
+#0c74fe
+#0c74fe
+#197afc
+#4790f6
+#78cc33 L
+#7ccb39 L
+#7fca3c L
+#5fd015 L
+#6bce23 L
+#64cf1b L
+#5fd015 L
+#6dcd27 L
+#84ca42 L
+#59d10e L
+#79cc35 L
+#3286f9
+#1d7cfb
+#4f94f5
+#2a82fa
+#1478fd
+#2f85f9
+#3085f9
+#3f8cf7
+#4c93f6
+#70cd2a L
+#79cc34 L
+#3587f8
+#61d018 L
+#82ca3f L
+#5ad10f L
+#7acb36 L
+#66cf1e L
+#5dd012 L
 
 ## Ring 20
 
-#00a4f4
-#00e4e7
-#d5e600
-#00fae2
-#7edd00
-#55d900
-#007afd
-#00c6ed
-#e5e700
-#63db00
-#68db00
-#8ddf00
-#3dd700
-#00c6ed
-#e7e800
-#5ada00
-#00c5ed
-#00fae2
-#00fbe2
-#00caec
-#0093f7
-#cee500
-#8bdf00
-#23d400
-#62db00
-#c4e400
-#66db00
-#00d3ea
-#008af9
-#55d900
-#0090f8
-#a0e100
-#0088fa
-#84de00
-#a7e100
-#16d300
-#4cd800
-#00a6f3
-#009bf6
-#10d300
-#00eee4
-#96e000
-#00aff2
-#f4e900
-#bae300
-#007ffc
-#00b7f0
-#0086fa
-#00a2f4
-#0097f6
-#0089f9
-#00c9ec
-#00cbec
-#00acf2
-#0088fa
-#00f2e4
-#8bdf00
-#00a1f4
-#00aff1
-#33d600
-#00dee8
-#04d100
-#25d500
-#cae500
-#00e5e6
-#bfe400
-#00a7f3
-#97e000
-#00f2e4
-#32d600
-#94df00
-#00f4e3
-#57da00
-#00a2f4
-#0079fd
-#00a8f3
-#67db00
-#4fd900
-#32d600
-#0086fa
-#3cd700
-#9be000
-#007ffb
-#0092f7
-#0092f8
-#2fd600
-#00d7e9
-#00b2f1
-#0078fd
-#00caec
-#0085fa
-#00f5e3
-#ede800
-#4dd900
-#6edc00
-#007bfc
-#f5e900
-#00fce2
-#7bdd00
-#00ede5
-#00aaf3
-#007efc
-#00e2e7
-#d2e600
-#b0e200
-#c4e400
-#a7e100
-#00dce8
-#007afd
-#6edc00
-#f5e900
-#00e2e7
-#00d1ea
-#00b8f0
-#46d800
-#00eee5
-#00a0f5
-#0072fe
-#fbea00
-#0083fb
-#00a4f4
-#52d900
-#00fde1
-#abe200
-#00ece5
-#00d8e9
-#00d4ea
-#29d500
-#00d2ea
-#5ada00
-#0075fe
-#68db00
-#34d600
-#00f9e2
-#00d8e9
-#c1e400
-#00f8e3
+#72cd2c L
+#74cc2e L
+#7fcb3c L
+#73cc2e L
+#71cd2b L
+#7ccb39 L
+#0370ff
+#207dfb
+#6ecd27 L
+#64cf1b L
+#016fff
+#70cd2a L
+#7dcb39 L
+#67ce1f L
+#62cf19 L
+#84ca42 L
+#5fd016 L
+#1377fd
+#5cd012 L
+#6bce24 L
+#438ef7
+#5ad10f L
+#3186f9
+#75cc2f L
+#0470fe
+#80ca3e L
+#70cd2a L
+#1578fc
+#3788f8
+#1679fc
+#3688f8
+#036fff
+#026fff
+#3b8bf8
+#3085f9
+#4c93f6
+#3b8af8
+#0671fe
+#1377fd
+#2e84f9
+#0470fe
+#6bce23 L
+#6ace22 L
+#2e84f9
+#68ce21 L
+#3a8af8
+#4a92f6
+#026fff
+#0e75fd
+#418df7
+#4d93f6
+#3d8bf7
+#247ffb
+#1d7cfb
+#86c945 L
+#70cd2a L
+#6fcd28 L
+#3387f9
+#73cc2e L
+#6ecd28 L
+#1e7cfb
+#0b73fe
+#0a73fe
+#3085f9
+#0c74fe
+#0470fe
+#3e8cf7
+#1779fc
+#4790f6
+#4f94f5
+#0370ff
+#247ffb
+#408df7
+#4790f6
+#428ef7
+#207efb
 #006eff
-#0089f9
-#00b8f0
-#0098f6
-#00f4e3
-#3fd700
-#74dc00
-#00bfee
-#00b1f1
-#00a2f4
-#dee700
-#04d100
-#0082fb
-#6bdb00
-#009bf6
-#00a3f4
-#00d6e9
-#2bd500
-#00f6e3
-#93df00
-#00f4e3
-#b7e300
-#7fdd00
+#3688f8
+#3085f9
+#0a73fe
+#408df7
+#3085f9
+#0c74fe
+#036fff
+#2982fa
+#2881fa
+#3e8cf7
+#0571fe
+#0570fe
+#3387f9
+#3e8cf7
+#237ffb
+#2e84f9
+#0872fe
+#3286f9
+#4891f6
+#237ffb
+#2580fa
+#3186f9
+#0872fe
+#3b8bf8
+#3688f8
+#3a8af8
+#0a73fe
+#006eff
+#1c7bfc
+#0972fe
+#77cc32 L
+#458ff7
+#63cf1a L
+#62cf19 L
+#7fcb3c L
+#83ca41 L
+#5fd016 L
+#82ca40 L
+#7acb36 L
+#1478fd
+#7acb36 L
+#60d017 L
+#5095f5
+#5ad110 L
+#83ca41 L
+#76cc31 L
+#6bce24 L
+#60d017 L
+#408df7
+#3789f8
+#7ccb39 L
+#69ce22 L
+#69ce21 L
+#026fff
+#3889f8
+#0f75fd
+#5fd015 L
+#61cf18 L
+#60d016 L
+#64cf1b L
+#4e94f5
+#438ef7
+#80ca3d L
+#7ecb3b L
+#59d10e L
+#0772fe
+#2681fa
+#3487f9
+#026fff
+#3688f8
+#227efb
+#3789f8
+#2781fa
+#1277fd
+#5195f5
+#3889f8
+#59d10e L
+#3989f8
+#6ace22 L
+#5ad110 L
+#7fca3c L
+#3286f9
+#458ff6
 
 ## Ring 21
 
-#b3e300
-#00abf2
-#0077fd
-#61db00
-#009ff5
-#00a9f3
-#009bf6
-#00cdeb
-#d4e600
-#54d900
-#008ff8
-#25d500
-#dce700
-#96e000
-#0ed200
-#00d4ea
-#0086fa
-#00a3f4
-#00dce8
-#00e1e7
-#b4e300
-#29d500
-#8bdf00
-#0074fe
-#0072fe
-#41d700
-#008bf9
-#0076fd
-#a8e100
-#e1e700
-#30d600
-#00c3ed
-#00c5ed
-#19d300
-#00ece5
-#00b0f1
-#008bf9
-#0081fb
-#0080fb
-#00d3ea
-#5dda00
-#0dd200
-#45d800
-#0072fe
-#6cdc00
-#60da00
-#0dd200
-#52d900
-#00aef2
-#c7e500
-#00f4e3
-#59da00
-#00c0ee
-#008ef8
-#00e3e7
-#d9e600
-#a3e100
-#87de00
-#3ad700
-#cee500
-#00dee8
-#006fff
-#00ebe5
-#2dd500
-#00d5ea
-#fae900
-#00b8f0
-#00d7e9
-#e6e800
-#00dee8
-#00aff2
-#00f5e3
-#ede800
-#1cd400
-#0072fe
-#00fbe2
-#00b4f1
-#3ed700
-#95e000
-#0072fe
-#00b9f0
-#00c7ed
-#90df00
-#00d5ea
-#0083fb
-#4ed900
-#00dae9
-#00f8e3
-#f5e900
-#00e7e6
-#4cd800
-#00cfeb
-#8edf00
-#008ff8
-#8ddf00
-#c0e400
-#00dde8
-#009df5
-#00e4e7
-#00c7ed
-#73dc00
-#009af6
-#bce300
-#19d300
-#11d300
-#b0e200
-#00bcef
-#02d100
-#0072fe
-#009ff5
-#87de00
-#bce300
-#3cd700
-#0097f7
-#0073fe
-#87de00
-#b4e300
-#00d5ea
-#ede800
-#ece800
-#1bd400
-#00fde1
-#8ddf00
-#00b4f1
-#e2e700
-#f7e900
-#f6e900
-#00e9e6
-#bce300
-#bce300
-#00d9e9
-#6edc00
-#1ed400
-#00dde8
-#b4e300
-#46d800
-#b3e300
-#9ee000
-#007afd
-#4bd800
-#93df00
-#18d300
-#ade200
-#b2e200
-#13d300
-#007dfc
-#2cd500
-#9ee000
-#d3e600
-#e1e700
-#d1e600
-#40d700
-#a9e200
-#00e1e7
-#a1e100
-#00beee
-#00a5f4
-#03d100
-#21d400
-#1dd400
+#85ca43 L
+#5bd011 L
+#85c944 L
+#3e8cf7
+#87c946 L
+#7fca3c L
+#448ff7
+#026fff
+#6ace23 L
+#73cc2e L
+#7ccb38 L
+#7dcb39 L
+#85c943 L
+#74cc2f L
+#64cf1c L
+#58d10d L
+#7fca3c L
+#3e8cf7
+#2d84f9
+#87c945 L
+#65cf1d L
+#5ad10f L
+#2982fa
+#6fcd28 L
+#036fff
+#4e93f5
+#3c8bf8
+#4991f6
+#0b73fe
+#0972fe
+#0d74fd
+#006eff
+#1478fc
+#187afc
+#4991f6
+#2781fa
+#0b73fe
+#0c74fe
+#2580fa
+#418df7
+#006eff
+#2f85f9
+#80ca3d L
+#6dce26 L
+#237ffb
+#0e75fd
+#1277fd
+#408df7
+#0972fe
+#4b92f6
+#0972fe
+#428ef7
+#86c944 L
+#79cb35 L
+#77cc32 L
+#82ca40 L
+#61cf18 L
+#81ca3f L
+#66cf1d L
+#87c946 L
+#67cf1f L
+#237ffb
+#1277fd
+#1377fd
+#0571fe
+#1076fd
+#3889f8
+#5195f5
+#247ffb
+#0a73fe
+#1e7dfb
+#2f85f9
+#3789f8
+#0671fe
+#1377fd
+#3e8cf7
+#3c8bf8
+#408df7
+#0470ff
+#418df7
+#1176fd
+#1e7cfb
+#016fff
+#0671fe
+#1678fc
+#2b83fa
+#1578fc
+#3c8bf8
+#5094f5
+#1f7dfb
+#197afc
+#5095f5
+#1a7afc
+#1e7dfb
+#4e94f5
+#448ff7
+#4d93f5
+#4690f6
+#2c83fa
+#3889f8
+#1075fd
+#2b82fa
+#2781fa
+#408df7
+#1879fc
+#3085f9
+#4a92f6
+#0571fe
+#0e75fd
+#85ca43 L
+#83ca41 L
+#75cc31 L
+#87c946 L
+#4991f6
+#3085f9
+#4c93f6
+#5cd011 L
+#4d93f5
+#62cf19 L
+#1d7cfb
+#67cf1f L
+#5ed015 L
+#84ca42 L
+#7ccb38 L
+#71cd2c L
+#2f85f9
+#0a73fe
+#74cc2f L
+#6ecd28 L
+#3e8cf7
+#227efb
+#2781fa
+#438ef7
+#5ad10f L
+#3186f9
+#0e75fd
+#3989f8
+#1779fc
+#0671fe
+#237ffb
+#0e75fd
+#0c74fe
+#3788f8
+#448ff7
+#3889f8
+#2982fa
+#026fff
+#2e84f9
+#1176fd
+#0a73fe
+#2f84f9
+#2a82fa
+#1e7cfb
+#237ffb
+#026fff
+#4b92f6
+#0c74fd
+#428ef7
+#0d74fd
+#197afc
 
 ## Ring 22
 
-#00e0e7
-#00eae5
-#0083fb
-#0081fb
-#008ff8
-#12d300
-#00b2f1
-#0098f6
-#00a7f3
-#58da00
-#008ff8
-#d3e600
-#63db00
-#00b5f0
-#2bd500
-#00f4e3
-#45d800
-#abe200
-#25d500
-#c7e400
-#e0e700
-#00d8e9
-#00d9e9
-#81de00
-#00f5e3
-#00d1eb
-#96e000
-#0097f7
-#0096f7
-#00efe4
-#00e0e7
-#009df5
-#0094f7
-#00a2f4
-#00c7ed
-#0092f8
-#2ad500
-#00f3e4
-#0097f7
-#bbe300
-#00fee1
-#b6e300
-#63db00
-#0ad200
-#ece800
-#00ede5
-#00d3ea
-#cce500
-#b6e300
-#0091f8
-#90df00
-#11d300
-#dde700
-#0093f7
-#008ff8
-#00bbef
-#00d3ea
-#009cf6
-#72dc00
-#00a6f3
-#17d300
-#22d400
-#0091f8
-#007efc
-#006fff
-#00d9e9
-#00bdef
-#93df00
-#00c5ed
-#89de00
-#0071fe
-#31d600
-#00d9e9
-#0099f6
-#00dee8
-#009df5
-#37d600
-#00c6ed
-#00dbe9
-#0072fe
-#00baef
-#00cceb
-#006fff
-#17d300
-#00c2ee
-#26d500
-#91df00
-#38d700
-#00c9ec
-#008df8
-#00b7f0
-#00aaf3
-#0073fe
-#6edc00
-#12d300
-#009cf5
-#ece800
-#0085fa
-#00d100
-#0082fb
-#0cd200
-#009df5
-#9fe100
-#00a2f4
-#0089f9
-#00d8e9
-#00e2e7
-#8fdf00
-#7bdd00
-#99e000
-#0082fb
-#0095f7
-#00f7e3
-#00e3e7
-#00e5e6
-#d0e500
-#00c6ed
-#00a4f4
-#0097f7
-#00f5e3
-#d1e500
-#00a5f4
-#00e1e7
-#007ffb
-#aae200
-#00d5ea
-#00f2e4
-#8fdf00
-#59da00
-#8ddf00
-#00e0e7
-#04d100
-#80de00
-#e8e800
-#85de00
-#3ed700
-#a2e100
-#00a8f3
-#e0e700
-#dae600
-#00b1f1
-#95e000
-#0074fe
-#0082fb
-#3bd700
-#0cd200
-#007ffc
-#00a3f4
-#00efe4
-#63db00
-#0ad200
-#d2e600
-#59da00
-#ade200
-#85de00
-#04d100
-#00e0e7
-#00a6f3
-#00c2ee
-#e8e800
+#2580fa
+#5bd011 L
+#0e75fd
+#2d84f9
+#5ed015 L
+#5095f5
+#74cc2f L
+#7acb36 L
+#70cd2a L
+#5bd011 L
+#5cd012 L
+#61cf18 L
+#66cf1d L
+#7fca3c L
+#6ace22 L
+#6cce25 L
+#408df7
+#70cd2a L
+#1e7cfb
+#7ecb3b L
+#1478fc
+#86c944 L
+#2781fa
+#82ca3f L
+#7acb36 L
+#0c74fd
+#1277fd
+#2580fa
+#428ef7
+#0c74fe
+#1e7cfb
+#448ff7
+#1e7dfb
+#227efb
+#1377fd
+#3085f9
+#408df7
+#036fff
+#5095f5
+#227ffb
+#1a7afc
+#1477fd
+#3587f8
+#2781fa
+#64cf1b L
+#3989f8
+#1d7cfb
+#4790f6
+#3b8af8
+#207dfb
+#237ffb
+#5ed015 L
+#78cc33 L
+#70cd2a L
+#72cd2c L
+#67ce1f L
+#1a7afc
+#70cd2a L
+#0c74fe
+#1d7cfb
+#1076fd
+#3a8af8
+#1478fd
+#006eff
+#1176fd
+#4891f6
+#2a82fa
+#1679fc
+#4e93f5
+#3d8bf7
+#3c8bf8
+#2480fa
+#3a8af8
+#4690f6
+#227ffb
+#1f7dfb
+#3186f9
+#247ffb
+#448ff7
+#5095f5
+#3789f8
+#2a82fa
+#026fff
+#2b83fa
+#1076fd
+#016eff
+#428ef7
+#1a7afc
+#418df7
+#1a7afc
+#4a92f6
+#237ffb
+#2680fa
+#3186f9
+#3889f8
+#3788f8
+#2b83fa
+#0b73fe
+#0771fe
+#227efb
+#026fff
+#1f7dfb
+#3386f9
+#3487f9
+#4891f6
+#036fff
+#1e7dfb
+#3c8bf8
+#187afc
+#7acb36 L
+#72cd2d L
+#0d74fd
+#0470fe
+#3386f9
+#4a92f6
+#2881fa
+#006eff
+#67ce1f L
+#0771fe
+#83ca41 L
+#60d017 L
+#5fd016 L
+#82ca40 L
+#5fd015 L
+#60d017 L
+#3085f9
+#74cc2f L
+#64cf1c L
+#0671fe
+#3688f8
+#1b7bfc
+#3286f9
+#0570fe
+#448ff7
+#3c8bf8
+#1478fd
+#4e94f5
+#4d93f5
+#4891f6
+#0e75fd
+#0470ff
+#448ff7
+#217efb
+#3386f9
+#4790f6
+#1478fd
+#2f85f9
+#1779fc
+#2e84f9
+#247ffb
+#3387f9
+#0c74fd
+#1f7dfb
+#2f85f9
+#1277fd
+#438ef7
+#3387f9
+#0771fe
+#448ff7
+#4790f6
 
 ## Ring 23
 
-#f7e900
-#19d300
-#a3e100
-#00a9f3
-#00b5f0
-#d6e600
-#0087fa
-#0083fb
-#3cd700
-#00d4ea
-#42d700
-#d4e600
-#00dae9
-#3fd700
-#0074fe
-#b6e300
-#dee700
-#00f3e3
-#00bcef
-#55d900
-#0093f7
-#0ad200
-#0098f6
-#e7e800
-#00b5f0
-#19d300
-#00dbe8
-#5cda00
-#0091f8
-#00f1e4
-#2fd600
-#00e2e7
-#00e4e7
-#9ce000
-#f2e900
-#c4e400
-#0093f7
-#04d100
-#95e000
-#0076fd
-#70dc00
-#cae500
-#00beef
-#0083fb
-#00a2f4
-#19d300
-#24d500
-#03d100
-#0071fe
-#d7e600
-#98e000
-#4dd900
-#00b7f0
-#00c1ee
-#00e6e6
-#00bcef
-#008df9
-#dde700
-#00eae5
-#67db00
-#00f3e4
-#7cdd00
-#0078fd
-#b4e300
-#f9e900
-#d0e500
-#fcea00
-#f6e900
-#1bd400
-#00f8e2
-#00eae5
-#0079fd
-#bce300
-#0080fb
-#008af9
-#5eda00
-#e2e700
-#008bf9
-#3bd700
-#006fff
-#00a6f3
-#0078fd
-#35d600
-#00baef
-#0076fd
-#00c5ed
-#31d600
-#00f4e3
-#79dd00
-#46d800
-#00c0ee
-#e8e800
-#0096f7
-#6ddc00
-#00b4f1
-#7cdd00
-#00acf2
-#00ede5
-#12d300
-#00f0e4
-#dae600
-#00f0e4
-#60da00
-#0087fa
-#009ef5
-#0079fd
-#41d700
-#0085fa
-#00aff1
-#4ed900
-#17d300
-#0083fb
-#009df5
-#00d5ea
-#99e000
-#37d600
-#0071fe
-#a1e100
-#00c8ec
-#4dd900
-#cbe500
-#00c7ed
-#23d400
-#00b7f0
-#0071fe
-#3bd700
-#00beee
-#00e6e6
-#35d600
-#8edf00
-#00a1f4
-#0090f8
-#00a5f4
-#51d900
-#007ffb
-#00f1e4
-#e5e700
-#bfe400
-#ade200
-#00a2f4
-#00b2f1
-#3dd700
-#fbea00
-#00dee8
-#00a5f4
-#008cf9
-#fdea00
-#0097f7
-#55d900
-#00f2e4
-#91df00
-#54d900
-#00d0eb
-#00fde1
-#9ce000
-#4ed900
-#f6e900
-#00cbec
-#00cbec
-#9ce000
+#197afc
+#64cf1c L
+#85ca43 L
+#1377fd
+#0a73fe
+#60d017 L
+#79cb35 L
+#5cd012 L
+#5ad110 L
+#69ce21 L
+#5fd016 L
+#5dd013 L
+#81ca3f L
+#82ca40 L
+#65cf1d L
+#5bd110 L
+#3b8af8
+#65cf1c L
+#5cd012 L
+#438ef7
+#5dd013 L
+#5cd012 L
+#2c83fa
+#74cc2f L
+#4c92f6
+#3387f9
+#016eff
+#4c92f6
+#0671fe
+#0b73fe
+#1779fc
+#428ef7
+#398af8
+#438ef7
+#4a92f6
+#026fff
+#2982fa
+#0671fe
+#0d74fd
+#4690f6
+#1679fc
+#62cf19 L
+#78cc34 L
+#84ca42 L
+#4790f6
+#408df7
+#3989f8
+#1578fc
+#1c7bfc
+#2b83fa
+#5fd016 L
+#6ace23 L
+#1779fc
+#6fcd29 L
+#2982fa
+#2881fa
+#1578fc
+#418ef7
+#7bcb38 L
+#4c93f6
+#247ffb
+#237ffb
+#3a8af8
+#3c8bf8
+#5ed014 L
+#76cc32 L
+#3a8af8
+#4890f6
+#3d8cf7
+#1277fd
+#71cd2b L
+#0d74fd
+#247ffb
+#1e7dfb
+#217efb
+#1076fd
+#448ff7
+#1c7bfc
+#2b83fa
+#036fff
+#247ffb
+#3386f9
+#2e84f9
+#0e75fd
+#2e84f9
+#428ef7
+#0570fe
+#3c8bf8
+#1e7cfb
+#0d74fd
+#2881fa
+#0972fe
+#2b83fa
+#3387f9
+#4891f6
+#2982fa
+#3b8af8
+#2f85f9
+#4d93f5
+#4690f6
+#2e84f9
+#2a82fa
+#418df7
+#1076fd
+#1c7bfc
+#2a82fa
+#0771fe
+#3588f8
+#2982fa
+#0e75fd
+#1f7dfb
+#3d8bf7
+#0c74fd
+#1e7dfb
+#3186f9
+#1d7cfb
+#7fcb3c L
+#72cd2c L
+#58d10d L
+#0370ff
+#85ca43 L
+#61cf18 L
+#3e8cf7
+#85c944 L
+#60d017 L
+#5ad10f L
+#71cd2b L
+#63cf1a L
+#67cf1f L
+#408df7
+#1578fc
+#0e75fd
+#4a91f6
+#3085f9
+#4690f6
+#3d8bf8
+#2d84f9
+#2680fa
+#5094f5
+#2881fa
+#237ffb
+#4d93f5
+#1f7dfb
+#2b83fa
+#0d74fd
+#3a8af8
+#4b92f6
+#2b83fa
+#3588f8
+#3387f9
+#3889f8
+#1076fd
+#0370ff
+#408df7
+#3186f9
+#2d84f9
+#3185f9
+#1176fd
+#4991f6
+#3989f8
 
 ## Ring 24
 
-#00efe4
-#e8e800
-#00f1e4
-#8edf00
-#009af6
-#00f4e3
-#0086fa
-#00d1eb
-#86de00
-#09d200
-#0097f7
-#a7e100
-#00e5e6
-#84de00
-#eae800
-#40d700
-#0082fb
-#bfe400
-#78dd00
-#0096f7
-#00e0e7
-#84de00
-#00d1ea
-#e1e700
-#00a4f4
-#00dce8
-#7edd00
-#00dfe8
-#36d600
-#18d300
-#008cf9
-#00dee8
-#00b4f1
-#92df00
-#c4e400
-#10d300
-#00f1e4
-#21d400
-#0096f7
-#7cdd00
-#00e8e6
-#19d300
-#d3e600
-#37d600
-#00c1ee
-#a1e100
-#e4e700
-#3fd700
-#009bf6
-#d4e600
-#0081fb
-#b1e200
-#00dce8
-#4ad800
-#53d900
-#00f8e2
-#00c4ed
-#3bd700
-#00c2ee
-#0cd200
-#71dc00
-#9de000
-#00d9e9
-#63db00
-#00dae9
-#d1e500
-#b7e300
-#09d200
-#f3e900
-#007cfc
-#00c6ed
-#74dc00
-#00c3ed
-#00bbef
-#3dd700
-#00a1f4
-#f5e900
-#dbe600
-#3cd700
-#00c3ed
-#e0e700
-#6ddc00
-#00e8e6
-#57da00
-#93df00
-#72dc00
-#dbe600
-#00c3ed
-#62db00
-#008ef8
-#00a8f3
-#bde300
-#d7e600
-#009ff5
-#00cfeb
-#f3e900
-#8fdf00
-#1bd400
-#6adb00
-#d4e600
-#3fd700
-#cfe500
-#99e000
-#008df9
-#0078fd
-#007efc
-#22d400
-#00bcef
-#00a8f3
-#04d100
-#72dc00
-#f2e900
-#008df9
-#00a6f3
-#00aff2
-#f3e900
-#008cf9
-#64db00
-#00caec
-#008df9
-#00cdeb
-#0070ff
-#5ada00
-#26d500
-#fcea00
-#13d300
-#9ae000
-#00cfeb
-#00b6f0
-#0093f7
-#00c2ee
-#00ebe5
-#feea00
-#a5e100
-#9ce000
-#00cbec
-#0093f7
-#44d800
-#1fd400
-#15d300
-#82de00
-#007bfc
-#27d500
-#0070ff
-#d9e600
-#0095f7
-#81de00
-#54d900
-#03d100
-#ffea00
-#00a5f4
-#61db00
-#00c3ed
-#00b0f1
-#b3e300
-#76dd00
-#0ed200
-#9fe100
-#70dc00
-#00e1e7
+#2a82fa
+#0973fe
+#2580fa
+#87c945 L
+#6dce26 L
+#3889f8
+#63cf1a L
+#59d10f L
+#7dcb39 L
+#60d017 L
+#5dd013 L
+#88c947 L
+#86c945 L
+#5ad10f L
+#63cf1b L
+#60d016 L
+#4d93f6
+#61cf18 L
+#458ff6
+#2f85f9
+#66cf1e L
+#77cc32 L
+#75cc30 L
+#3386f9
+#0e75fd
+#1176fd
+#3a8af8
+#1779fc
+#1e7cfb
+#4790f6
+#438ef7
+#418df7
+#3f8cf7
+#87c946 L
+#63cf1a L
+#5dd013 L
+#68ce21 L
+#1d7cfb
+#71cd2b L
+#80ca3d L
+#6ecd28 L
+#5fd015 L
+#76cc32 L
+#82ca40 L
+#0470fe
+#4f94f5
+#4991f6
+#3789f8
+#3487f9
+#4d93f5
+#1e7dfb
+#247ffb
+#4891f6
+#0d74fd
+#2580fa
+#1e7cfb
+#0d74fd
+#83ca41 L
+#3989f8
+#4a91f6
+#81ca3e L
+#2c83fa
+#80ca3d L
+#65cf1d L
+#207efb
+#86c945 L
+#7dcb3a L
+#3386f9
+#6dcd27 L
+#71cd2b L
+#3788f8
+#3286f9
+#2d84f9
+#1a7afc
+#4e94f5
+#4c93f6
+#1d7cfb
+#1477fd
+#428ef7
+#197afc
+#0a73fe
+#3186f9
+#4e93f5
+#207efb
+#207dfb
+#458ff6
+#006eff
+#3387f9
+#3286f9
+#0772fe
+#4790f6
+#1076fd
+#3989f8
+#197afc
+#4b92f6
+#2a82fa
+#1a7bfc
+#0671fe
+#0771fe
+#1779fc
+#4a92f6
+#0b73fe
+#187afc
+#428ef7
+#3688f8
+#207dfb
+#408df7
+#0972fe
+#1b7bfc
+#3b8af8
+#3186f9
+#1a7afc
+#458ff6
+#3d8bf7
+#1176fd
+#428ef7
+#448ff7
+#64cf1b L
+#2781fa
+#2e84f9
+#0d74fd
+#88c947 L
+#3788f8
+#7dcb3a L
+#6cce25 L
+#6ecd28 L
+#81ca3f L
+#86c945 L
+#237ffb
+#0470ff
+#3a8af8
+#0771fe
+#016fff
+#3889f8
+#4991f6
+#3688f8
+#0b74fe
+#1477fd
+#3c8bf8
+#2e84f9
+#4b92f6
+#187afc
+#1a7afc
+#4d93f5
+#0972fe
+#1377fd
+#0f75fd
+#438ef7
+#1b7bfc
+#3487f9
+#1a7afc
+#0a73fe
+#2781fa
+#3789f8
+#4690f6
+#026fff
+#0f75fd
+#1f7dfb
+#2881fa
+#2f85f9
 
 ## Ring 25
 
-#00ede5
-#00d6e9
-#a1e100
-#9be000
-#1ad400
-#00e9e6
-#0082fb
-#00c1ee
-#00efe4
-#00a4f4
-#008bf9
-#e1e700
-#22d400
-#00beee
-#0092f8
-#f0e800
-#00f1e4
-#74dc00
-#009ef5
-#0085fa
-#07d200
-#00e5e6
-#dfe700
-#dfe700
-#bfe400
-#00b9ef
-#00e1e7
-#00d7e9
-#0072fe
-#0081fb
-#e7e800
-#dae600
-#00dbe9
-#34d600
-#dfe700
-#008ef8
-#88de00
-#0073fe
-#00bdef
-#8edf00
-#00ece5
-#b3e300
-#21d400
-#9de000
-#0073fe
-#0085fa
-#009ff5
-#68db00
-#008ff8
-#e0e700
-#36d600
-#72dc00
-#00ffe1
-#9ce000
-#70dc00
-#1ad400
-#75dc00
-#00e2e7
-#5bda00
-#00c3ed
-#cfe500
-#87de00
-#009cf6
-#0077fd
-#009cf5
-#d5e600
-#0099f6
-#00b6f0
-#cfe500
-#73dc00
-#00aaf3
-#09d200
-#c0e400
-#bde300
-#00a1f4
-#15d300
-#00e3e7
-#05d200
-#92df00
-#f7e900
-#00beee
-#bae300
-#76dd00
-#0097f7
-#9de000
-#00b7f0
-#00f1e4
-#41d700
-#33d600
-#00b3f1
-#e7e800
-#00e2e7
-#00e6e6
-#bce300
-#25d500
-#00dde8
-#007efc
-#0084fb
-#00ede5
-#46d800
-#45d800
-#00f2e4
-#00b7f0
-#0dd200
-#99e000
-#00aef2
-#14d300
-#0072fe
-#00b9ef
-#e0e700
-#61db00
-#99e000
-#93df00
-#42d800
-#c5e400
-#23d400
-#c8e500
-#3dd700
-#57d900
-#b9e300
-#00dfe8
-#00d3ea
-#00dbe9
-#00c0ee
-#51d900
-#87de00
-#00b1f1
-#00a5f4
-#b2e200
-#f2e900
-#00b5f0
-#d0e500
-#009bf6
-#0086fa
-#00b8f0
-#a4e100
-#e7e800
-#bde400
-#43d800
-#00fbe2
-#00a0f5
-#00f8e2
-#00e9e6
-#68db00
-#00a6f3
-#0099f6
-#00bcef
-#65db00
-#d0e500
-#00acf2
-#7fdd00
-#58da00
-#00b4f0
-#00e8e6
-#00e2e7
-#90df00
-#00c9ec
-#00f0e4
-#30d600
-#46d800
+#85c944 L
+#1678fc
+#6ace22 L
+#79cc35 L
+#4a92f6
+#85c944 L
+#6fcd29 L
+#77cc32 L
+#58d10d L
+#76cc31 L
+#85c944 L
+#81ca3e L
+#63cf1b L
+#86c945 L
+#60d017 L
+#5ed014 L
+#73cd2e L
+#65cf1d L
+#5dd013 L
+#72cd2d L
+#75cc30 L
+#62cf19 L
+#78cc33 L
+#72cd2d L
+#58d10d L
+#81ca3e L
+#7acb36 L
+#4790f6
+#006eff
+#2e84f9
+#4f94f5
+#4790f6
+#2781fa
+#7ecb3a L
+#1377fd
+#7dcb39 L
+#65cf1d L
+#59d10e L
+#62cf19 L
+#60d017 L
+#76cc31 L
+#68ce20 L
+#85c943 L
+#1277fd
+#016eff
+#197afc
+#1879fc
+#0f75fd
+#1779fc
+#4b92f6
+#227efb
+#438ef7
+#0a73fe
+#3f8cf7
+#0872fe
+#5095f5
+#418df7
+#1f7dfb
+#2982fa
+#036fff
+#77cc33 L
+#1679fc
+#77cc32 L
+#448ff7
+#5bd011 L
+#0370ff
+#1679fc
+#69ce21 L
+#3186f9
+#2881fa
+#227efb
+#5095f5
+#4690f6
+#0a73fe
+#2781fa
+#2580fa
+#1f7dfb
+#3d8bf8
+#3789f8
+#1377fd
+#1377fd
+#0a73fe
+#438ef7
+#3387f9
+#2b83fa
+#0872fe
+#3085f9
+#2e84f9
+#1277fd
+#3487f9
+#4f94f5
+#3c8bf8
+#3286f9
+#3e8cf7
+#4790f6
+#3587f8
+#0b74fe
+#2d83f9
+#1f7dfb
+#1377fd
+#2680fa
+#3b8af8
+#3c8bf8
+#4790f6
+#0d74fd
+#227efb
+#0f75fd
+#3c8bf8
+#3085f9
+#4790f6
+#2881fa
+#0370ff
+#0f75fd
+#3889f8
+#0470fe
+#3e8cf7
+#1176fd
+#3186f9
+#3d8cf7
+#3e8cf7
+#73cc2e L
+#0972fe
+#7ecb3b L
+#0f75fd
+#5cd012 L
+#75cc31 L
+#71cd2c L
+#1779fc
+#3a8af8
+#2781fa
+#197afc
+#026fff
+#1176fd
+#0972fe
+#3a8af8
+#0a73fe
+#4d93f5
+#1a7bfc
+#4d93f5
+#4790f6
+#448ff7
+#0f75fd
+#458ff6
+#4790f6
+#4991f6
+#0872fe
+#0771fe
+#026fff
+#0470ff
+#1578fc
+#4991f6
+#0a73fe
+#3789f8
+#3f8cf7
+#006eff
+#0d74fd
+#79cc34 L
+#1679fc
+#64cf1b L
+#68ce20 L
 
 ## Ring 26
 
-#0081fb
-#18d300
-#00c2ee
-#00d7e9
-#00e9e6
-#4ad800
-#00ceeb
-#00c9ec
-#00bfee
-#00fce2
-#1ad400
-#6adb00
-#00beef
-#006fff
-#00d4ea
-#0086fa
-#00a1f4
-#00f0e4
-#b4e300
-#00ece5
-#50d900
-#0fd200
-#97e000
-#41d700
-#00efe4
-#6edc00
-#b8e300
-#7fdd00
-#2ad500
-#58da00
-#abe200
-#bbe300
-#9ee000
-#afe200
-#3fd700
-#00f4e3
-#0098f6
-#11d300
-#0086fa
-#bae300
-#00c3ed
-#00d8e9
-#007cfc
-#f9e900
-#00aaf3
-#0095f7
-#0088fa
-#00f7e3
-#b4e300
-#0098f6
-#00a5f4
-#00fce2
-#3ed700
-#50d900
-#9ee000
-#00f4e3
-#92df00
-#15d300
-#49d800
-#0082fb
-#007dfc
-#2bd500
-#03d100
-#0092f8
-#00c2ee
-#00b8f0
-#00b9ef
-#00bfee
-#0089f9
-#0087fa
-#50d900
-#00cdeb
-#a4e100
-#00b1f1
-#0083fb
-#007bfc
-#d6e600
-#fdea00
-#a8e200
-#c8e500
-#95e000
-#c7e500
-#00a3f4
-#00dde8
-#3ad700
-#00e8e6
-#00b8f0
-#e4e700
-#33d600
-#dde700
-#00e1e7
-#007bfc
-#59da00
-#b6e300
-#7edd00
-#00e3e7
-#00d4ea
-#dfe700
-#e6e800
-#00aef2
-#afe200
-#008ff8
-#47d800
-#a2e100
-#58da00
-#0070ff
-#51d900
-#bce300
-#00cdeb
-#e5e700
-#88de00
-#00dce8
-#8bdf00
-#00f8e2
-#00cfeb
-#00cbec
-#007efc
-#f2e900
-#8bdf00
-#2cd500
-#6edc00
-#3fd700
-#a5e100
-#c4e400
-#00ece5
-#a1e100
-#00c2ee
-#37d600
-#00dfe8
-#e3e700
-#00f1e4
-#9ce000
-#78dd00
-#3cd700
-#62db00
-#0084fb
-#007efc
-#00c7ed
-#50d900
-#0ed200
-#f2e900
-#d8e600
-#009df5
-#00a9f3
-#f2e900
-#008ff8
-#0092f7
-#14d300
-#00dfe8
-#00ceeb
-#bbe300
-#00d1eb
-#00f2e4
-#00f2e4
-#a5e100
+#217efb
+#1a7afc
+#77cc33 L
+#82ca40 L
+#71cd2b L
+#73cd2d L
+#6bce24 L
+#6cce25 L
+#6fcd29 L
+#67ce1f L
+#82ca3f L
+#78cc33 L
+#62cf19 L
+#86c944 L
+#72cd2c L
+#79cc34 L
+#6bce24 L
+#86c945 L
+#7acb36 L
+#1679fc
+#1277fd
+#75cc31 L
+#5bd011 L
+#75cc30 L
+#86c945 L
+#1779fc
+#3c8bf8
+#3286f9
+#3688f8
+#1478fd
+#3c8bf8
+#0d74fd
+#1779fc
+#4c93f6
+#7acb36 L
+#68ce21 L
+#5dd014 L
+#7acb36 L
+#82ca40 L
+#6fcd29 L
+#5cd012 L
+#5bd011 L
+#83ca41 L
+#2d84f9
+#7fcb3c L
+#3688f8
+#2781fa
+#418df7
+#2a82fa
+#3788f8
+#3788f8
+#3185f9
+#217efb
+#418df7
+#77cc32 L
+#5dd013 L
+#0f75fd
+#58d10d L
+#0e75fd
+#58d10d L
+#1678fc
+#2881fa
+#2580fa
+#72cd2c L
+#88c947 L
+#5cd012 L
+#2680fa
+#86c945 L
+#87c945 L
+#3d8cf7
 #006eff
-#2cd500
-#00a3f4
-#00f7e3
-#00dee8
+#1176fd
+#3b8af8
+#0c74fd
+#438ef7
+#3286f9
+#418df7
+#237ffb
+#408df7
+#2881fa
+#2b83fa
+#036fff
+#0c74fe
+#2f85f9
+#3688f8
+#026fff
+#0d74fd
+#1176fd
+#3688f8
+#418df7
+#3487f9
+#3588f8
+#85c943 L
+#6ecd27 L
+#408df7
+#418df7
+#3889f8
+#0c74fd
+#3b8bf8
+#2580fa
+#2d84f9
+#1377fd
+#1578fc
+#3085f9
+#2982fa
+#4b92f6
+#4b92f6
+#3588f8
+#3085f9
+#3387f9
+#418df7
+#5095f5
+#4f94f5
+#1c7bfc
+#2a82fa
+#0b73fe
+#0f75fd
+#428ef7
+#69ce22 L
+#3688f8
+#7dcb39 L
+#026fff
+#75cc30 L
+#74cc2f L
+#7ccb39 L
+#65cf1d L
+#0f75fd
+#207efb
+#62cf1a L
+#7ccb38 L
+#1478fd
+#1e7cfb
+#76cc31 L
+#1e7cfb
+#4d93f5
+#1779fc
+#1377fd
+#016eff
+#0c74fe
+#3b8bf8
+#428ef7
+#4690f6
+#1b7bfc
+#247ffb
+#3788f8
+#4d93f6
+#207dfb
+#4690f6
+#237ffb
+#1277fd
+#0b73fe
+#418df7
+#4891f6
+#2881fa
+#85ca43 L
+#7dcb3a L
+#80ca3d L
+#0671fe
+#0470ff
+#5dd013 L
 
 ## Ring 27
 
-#00a6f3
-#d0e500
-#9fe100
-#00e9e5
-#00f7e3
-#6cdc00
-#00ede5
-#32d600
-#d9e600
-#bae300
-#2ed600
-#77dd00
-#b7e300
-#00f6e3
-#1ed400
-#34d600
-#00aaf3
-#00c1ee
-#efe800
-#007dfc
-#6cdc00
-#9ce000
-#23d400
-#0075fe
-#0080fb
-#00aef2
-#007afd
-#e2e700
-#00e5e6
-#eee800
-#77dd00
-#e1e700
-#f4e900
-#56d900
-#00f5e3
-#10d300
-#00f1e4
-#00fee1
-#b4e300
-#00e3e7
-#0079fd
-#ece800
-#98e000
-#3ed700
-#00efe4
-#cce500
-#007bfc
-#aae200
-#00d6e9
-#01d100
-#009af6
-#d3e600
-#00dfe8
-#86de00
-#00aaf3
-#00f3e4
-#007afd
-#66db00
-#80de00
-#91df00
-#00adf2
-#21d400
-#00cfeb
-#c5e400
-#009df5
-#00a6f3
-#17d300
-#56d900
-#33d600
-#f2e900
-#9ee000
-#bce300
-#0081fb
-#00cbec
-#00d2ea
-#00d7e9
-#0076fd
-#aae200
-#ece800
-#00dfe8
-#00eee4
-#00a6f3
-#00c7ed
-#009ff5
-#0dd200
-#ace200
-#7ddd00
-#00b9ef
-#08d200
-#76dd00
-#ace200
-#95e000
-#00bfee
-#f2e900
-#00e5e6
-#46d800
-#008af9
-#00d9e9
-#00aef2
-#fae900
-#0082fb
-#95e000
-#03d100
-#00a4f4
-#b9e300
-#36d600
-#50d900
-#a4e100
-#02d100
-#dee700
-#b0e200
-#00fce2
-#00e2e7
-#00dfe8
-#dae600
-#f5e900
-#00d9e9
-#4ed900
-#007efc
-#76dd00
-#69db00
-#64db00
-#fdea00
-#45d800
-#00dee8
-#00e6e6
-#00f6e3
-#00fde1
-#faea00
-#29d500
-#83de00
-#65db00
-#00b2f1
-#38d700
-#d5e600
-#d4e600
-#0bd200
-#ede800
-#76dd00
-#75dc00
-#51d900
-#00d4ea
-#1bd400
-#dde700
-#b8e300
-#ace200
-#4cd800
-#14d300
-#00a0f5
-#92df00
-#39d700
-#00e9e6
-#41d700
-#00ccec
-#eae800
-#0093f7
-#f9e900
-#9ee000
-#0085fa
-#65db00
+#68ce21 L
+#65cf1c L
+#65cf1c L
+#5dd014 L
+#6fcd29 L
+#72cd2c L
+#78cc33 L
+#76cc31 L
+#73cc2e L
+#5cd011 L
+#69ce22 L
+#69ce22 L
+#6ecd28 L
+#63cf1a L
+#6dce26 L
+#7acb36 L
+#3286f9
+#5ad10f L
+#4991f6
+#3d8bf7
+#2c83fa
+#3588f8
+#187afc
+#5dd013 L
+#68ce20 L
+#2f85f9
+#1578fc
+#3688f8
+#418df7
+#036fff
+#036fff
+#2680fa
+#438ef7
+#5fd015 L
+#1176fd
+#83ca41 L
+#7dcb3a L
+#3185f9
+#67ce1f L
+#63cf1a L
+#63cf1a L
+#63cf1a L
+#61d018 L
+#5fd016 L
+#5195f5
+#237ffb
+#2881fa
+#2982fa
+#3889f8
+#1a7afc
+#2781fa
+#0470fe
+#0771fe
+#428ef7
+#4a92f6
+#6dcd27 L
+#3889f8
+#6ecd28 L
+#2881fa
+#7bcb37 L
+#2f85f9
+#4991f6
+#7fca3c L
+#0f75fd
+#207dfb
+#4991f6
+#0671fe
+#6ecd28 L
+#0c74fe
+#3788f8
+#1779fc
+#1a7afc
+#3e8cf7
+#4e94f5
+#1176fd
+#0a73fe
+#3688f8
+#4690f6
+#4b92f6
+#016fff
+#1779fc
+#4c93f6
+#026fff
+#0872fe
+#3688f8
+#4d93f6
+#3085f9
+#0a73fe
+#1478fd
+#1779fc
+#1f7dfb
+#67cf1f L
+#67ce20 L
+#6ecd28 L
+#75cc2f L
+#0b73fe
+#5195f5
+#026fff
+#006eff
+#3e8cf7
+#2c83fa
+#0c74fe
+#1879fc
+#3d8cf7
+#1e7dfb
+#448ff7
+#1176fd
+#4991f6
+#1d7cfb
+#0972fe
+#0a73fe
+#3186f9
+#2b83fa
+#4690f6
+#1377fd
+#1679fc
+#0f75fd
+#76cc31 L
+#2e84f9
+#6bce24 L
+#4991f6
+#59d10e L
+#63cf1b L
+#6bce24 L
+#62cf19 L
+#70cd2a L
+#5fd016 L
+#86c945 L
+#70cd2a L
+#87c946 L
+#6ace22 L
+#80ca3e L
+#1f7dfb
+#1377fd
+#4991f6
+#0f75fd
+#197afc
+#187afc
+#0570fe
+#4d93f6
+#3d8bf8
+#2781fa
+#3b8af8
+#3a8af8
+#0f75fd
+#3386f9
+#2680fa
+#4891f6
+#1a7bfc
+#2781fa
+#3d8bf7
+#6fcd29 L
+#6dcd27 L
+#68ce20 L
+#60d017 L
+#67cf1f L
+#7fca3c L
+#7dcb3a L
+#83ca41 L
+#85c944 L
 
 ## Ring 28
 
-#6cdc00
-#0098f6
-#4ed900
-#f7e900
-#76dd00
-#00c1ee
-#31d600
-#0095f7
-#d8e600
-#0072fe
-#05d200
-#15d300
-#12d300
-#70dc00
-#6fdc00
-#aee200
-#22d400
-#06d200
-#07d200
-#00bfee
-#a1e100
-#00b0f1
-#28d500
-#00f2e4
-#6fdc00
-#00dce8
-#00b5f0
-#e4e700
-#0074fe
-#0098f6
-#00b0f1
-#feea00
-#00b6f0
-#00d4ea
-#00aef2
-#00e9e6
-#feea00
-#00caec
-#8edf00
-#00c7ed
-#0071fe
-#36d600
-#00e2e7
-#0078fd
-#68db00
-#e0e700
-#74dc00
-#eee800
-#7cdd00
-#7edd00
-#00c8ec
-#00b6f0
-#00c6ed
-#00c1ee
-#95e000
-#c7e400
-#33d600
-#00efe4
-#2cd500
-#00e4e7
-#00fde1
-#3cd700
-#00bcef
-#0070ff
-#00e6e6
-#c6e400
-#00dbe8
-#b7e300
-#0ad200
-#0075fe
-#42d700
-#00f6e3
-#5dda00
-#5fda00
-#00f8e2
-#0093f7
-#d4e600
-#f5e900
-#7edd00
-#ace200
-#009bf6
-#00d0eb
-#00a9f3
-#d0e500
-#00aaf3
-#c1e400
-#00fae2
-#efe800
-#008df9
-#006fff
-#00c8ec
-#00a1f4
-#25d500
-#55d900
-#00a2f4
-#c5e400
-#b8e300
-#60da00
-#a0e100
-#00cbec
-#00aef2
-#ece800
-#5bda00
-#b8e300
-#009ff5
-#12d300
-#dae600
-#00e1e7
-#00d4ea
-#0098f6
-#00f4e3
-#dde700
-#00ede5
-#00a1f4
-#9ce000
-#f9e900
-#90df00
-#0098f6
-#00adf2
-#92df00
-#a0e100
-#0ed200
-#0090f8
-#00abf2
-#0084fa
-#009bf6
-#00dde8
-#ace200
-#00b1f1
-#7add00
-#8adf00
-#00c6ed
-#0071fe
-#a4e100
-#34d600
-#0079fd
-#3ad700
-#0093f7
-#00ebe5
-#0089fa
-#0070ff
-#00abf2
-#84de00
-#23d400
-#7cdd00
-#0ed200
-#64db00
-#008bf9
-#00a9f3
-#7ddd00
-#e0e700
-#0075fe
-#15d300
-#52d900
-#00e7e6
-#00c1ee
-#0dd200
-#90df00
-#00d9e9
-#e9e800
+#66cf1e L
+#5195f5
+#74cc2f L
+#5095f5
+#63cf1a L
+#4790f6
+#4890f6
+#71cd2b L
+#81ca3f L
+#4891f6
+#69ce22 L
+#1277fd
+#3a8af8
+#1f7dfb
+#82ca40 L
+#6fcd29 L
+#2b83fa
+#0b73fe
+#0772fe
+#006eff
+#4b92f6
+#3487f9
+#0972fe
+#75cc30 L
+#0c74fd
+#0c74fd
+#2f85f9
+#3a8af8
+#0771fe
+#418df7
+#207dfb
+#2982fa
+#1779fc
+#0470ff
+#4f94f5
+#3d8cf7
+#3185f9
+#5195f5
+#227efb
+#3989f8
+#63cf1a L
+#72cd2c L
+#6cce25 L
+#3f8cf7
+#0771fe
+#1478fc
+#1679fc
+#3889f8
+#2f85f9
+#0470ff
+#5fd015 L
+#79cc35 L
+#7ecb3a L
+#77cc33 L
+#6cce25 L
+#5fd016 L
+#2b83fa
+#58d10d L
+#84ca42 L
+#1779fc
+#84ca43 L
+#1d7cfb
+#1578fc
+#83ca41 L
+#1a7afc
+#4c92f6
+#69ce22 L
+#4690f6
+#438ef7
+#4b92f6
+#2a82fa
+#438ef7
+#4991f6
+#438ef7
+#4b92f6
+#5094f5
+#0570fe
+#3889f8
+#2580fa
+#187afc
+#0a73fe
+#1679fc
+#1679fc
+#2781fa
+#1879fc
+#83ca41 L
+#5bd110 L
+#68ce20 L
+#6bce24 L
+#75cc30 L
+#73cc2e L
+#59d10f L
+#7ecb3b L
+#64cf1b L
+#3386f9
+#4d93f6
+#4d93f5
+#2781fa
+#5195f5
+#207efb
+#006eff
+#3d8cf7
+#4790f6
+#036fff
+#4690f6
+#207dfb
+#1679fc
+#2d84f9
+#217efb
+#1076fd
+#4f94f5
+#0e75fd
+#2982fa
+#3185f9
+#60d016 L
+#6bce25 L
+#2680fa
+#77cc32 L
+#0772fe
+#5cd012 L
+#4d93f6
+#5ed014 L
+#68ce20 L
+#5fd015 L
+#61cf18 L
+#6bce24 L
+#65cf1d L
+#7fca3d L
+#79cb35 L
+#67ce1f L
+#247ffb
+#3085f9
+#247ffb
+#4991f6
+#2781fa
+#3d8bf8
+#0671fe
+#1f7dfb
+#1076fd
+#0c74fe
+#237ffb
+#0f75fd
+#0570fe
+#4b92f6
+#2680fa
+#1d7cfb
+#3b8bf8
+#1d7cfb
+#3b8af8
+#3989f8
+#0570fe
+#6ecd27 L
+#61d017 L
+#61d018 L
+#5ad10f L
+#5ed015 L
+#69ce22 L
+#79cc35 L
+#70cd2a L
+#3c8bf8
 
 ## Ring 29
 
-#0089f9
-#a9e200
-#8bdf00
-#009df5
-#009bf6
-#36d600
-#63db00
-#7ddd00
-#00d3ea
-#00fae2
-#eae800
-#00bdef
-#00a2f4
-#4cd800
-#8bdf00
-#00bbef
-#a2e100
-#007afc
-#aae200
-#00c3ed
-#3bd700
-#bee400
-#0090f8
-#0084fa
-#f8e900
-#00f9e2
-#0074fe
-#d9e600
-#0098f6
-#0079fd
-#9fe100
-#00cbec
-#79dd00
-#88de00
-#e2e700
-#cce500
-#0dd200
-#5eda00
-#00ece5
-#00dde8
-#f9e900
-#2bd500
-#19d300
-#c7e500
-#0091f8
-#b3e300
-#2cd500
-#9ce000
-#00cdeb
-#9fe100
-#00d5ea
-#00d8e9
-#b2e200
-#73dc00
-#00abf2
-#0cd200
-#00f5e3
-#9fe100
-#d9e600
-#63db00
-#9ee000
-#00ece5
-#a0e100
-#0071fe
-#007efc
-#00fae2
-#00d100
-#51d900
-#00a2f4
-#cce500
-#009df5
-#00cceb
-#44d800
-#00eae5
-#5eda00
-#e8e800
-#00eae5
-#00c0ee
-#e9e800
-#bbe300
-#00f2e4
-#71dc00
-#008bf9
-#2dd500
-#3ed700
-#41d700
-#007dfc
-#b8e300
-#007bfc
-#00aff2
-#00bbef
-#b6e300
-#00e3e7
-#0077fd
-#79dd00
-#0081fb
-#00e8e6
-#07d200
-#00c4ed
-#36d600
-#81de00
-#0bd200
-#f3e900
-#5ada00
-#62db00
-#00e0e7
-#53d900
-#009ff5
-#b4e300
-#00b3f1
-#24d500
-#00abf2
-#95e000
-#9ee000
-#008ff8
-#00a5f4
-#00aef2
-#009ef5
-#00d9e9
-#00a9f3
-#00a2f4
-#00f2e4
-#00f0e4
-#00d9e9
-#f1e900
-#aee200
-#56d900
-#007efc
-#00bfee
-#0083fb
-#0077fd
-#0093f7
-#67db00
-#00e5e6
-#00d8e9
-#0080fb
-#18d300
-#93df00
-#00c4ed
-#49d800
-#00dbe8
-#0dd200
-#7fdd00
-#00c2ee
-#fae900
-#00fee1
-#3bd700
-#0088fa
-#4ed900
-#f2e900
-#6adb00
-#54d900
-#44d800
-#00b3f1
-#1ed400
-#dae600
-#70dc00
-#00d7e9
-#75dc00
-#00dee8
+#76cc31 L
+#66cf1e L
+#59d10e L
+#60d017 L
+#71cd2b L
+#63cf1a L
+#0470ff
+#2b82fa
+#7bcb37 L
+#68ce21 L
+#5dd013 L
+#2681fa
+#0c74fd
+#6bce24 L
+#70cd29 L
+#3f8cf7
+#3688f8
+#4b92f6
+#4891f6
+#0470ff
+#3789f8
+#2a82fa
+#3587f8
+#3387f9
+#0370ff
+#2e84f9
+#0b73fe
+#2a82fa
+#2a82fa
+#3889f8
+#3588f8
+#3185f9
+#4a92f6
+#036fff
+#2982fa
+#2680fa
+#3e8cf7
+#4f94f5
+#3286f9
+#408df7
+#79cc35 L
+#86c944 L
+#79cc34 L
+#0a73fe
+#77cc32 L
+#3989f8
+#1c7cfc
+#4d93f6
+#3387f9
+#3085f9
+#63cf1a L
+#76cc31 L
+#83ca40 L
+#6cce25 L
+#0771fe
+#1c7bfc
+#3d8bf8
+#1076fd
+#2680fa
+#0570fe
+#75cc30 L
+#60d017 L
+#3186f9
+#66cf1d L
+#68ce21 L
+#6ace23 L
+#79cb35 L
+#197afc
+#7ccb39 L
+#1e7cfb
+#76cc32 L
+#3f8cf7
+#3587f8
+#398af8
+#438ef7
+#2982fa
+#2982fa
+#3e8cf7
+#1779fc
+#2a82fa
+#1277fd
+#1f7dfb
+#1377fd
+#87c946 L
+#6ace23 L
+#65cf1d L
+#80ca3d L
+#6ace23 L
+#5fd016 L
+#5fd015 L
+#59d10f L
+#79cc35 L
+#74cc2e L
+#0e75fd
+#2580fa
+#1277fd
+#2781fa
+#3186f9
+#1d7cfb
+#438ef7
+#4891f6
+#0872fe
+#448ff7
+#1478fc
+#1779fc
+#1e7dfb
+#1679fc
+#5ed015 L
+#82ca40 L
+#59d10e L
+#0972fe
+#448ff7
+#73cd2d L
+#77cc33 L
+#70cd2a L
+#1e7dfb
+#4790f6
+#5ed015 L
+#3588f8
+#6cce25 L
+#1b7bfc
+#60d017 L
+#79cb35 L
+#6fcd29 L
+#79cb35 L
+#6ace23 L
+#64cf1b L
+#66cf1e L
+#60d016 L
+#5bd011 L
+#6ecd28 L
+#1076fd
+#69ce21 L
+#6ace23 L
+#7bcb37 L
+#3789f8
+#1b7bfc
+#0671fe
+#1f7dfb
+#4d93f6
+#408df7
+#3286f9
+#016eff
+#3788f8
+#3186f9
+#1a7bfc
+#0671fe
+#2680fa
+#81ca3f L
+#7ecb3b L
+#75cc31 L
+#79cb35 L
+#227ffb
+#74cc2e L
+#86c944 L
+#5ad10f L
+#3e8cf7
+#1c7bfc
+#73cc2e L
+#5fd015 L
 
 ## Ring 30
 
-#d0e500
-#cde500
-#d7e600
-#00d1eb
-#efe800
-#00f4e3
-#00b7f0
-#00d7e9
-#dfe700
-#00ece5
-#0086fa
-#00d6e9
-#007efc
-#5fda00
-#9ce000
-#00d6e9
-#bee400
-#00dde8
-#31d600
-#0070ff
-#a0e100
-#ece800
-#b9e300
-#00cfeb
-#e1e700
-#2bd500
-#afe200
-#51d900
-#8cdf00
-#0092f8
-#40d700
-#00d2ea
-#00baef
-#9ee100
-#0091f8
-#eae800
-#a5e100
-#00e6e6
-#a0e100
-#009df5
-#97e000
-#00baef
-#00d9e9
-#00d6e9
-#b0e200
-#00fae2
-#4bd800
-#00a3f4
-#f0e900
-#00c2ee
-#007cfc
-#b9e300
-#09d200
-#c2e400
-#61db00
-#dee700
-#009df5
-#00d9e9
-#007dfc
-#ebe800
-#00f2e4
-#34d600
-#cce500
-#0091f8
-#a8e100
-#0094f7
-#ece800
-#89de00
-#0094f7
-#86de00
-#00e5e6
-#00bbef
-#00c9ec
-#00fee1
-#b4e300
-#0091f8
-#bfe400
-#00d1eb
-#00bdef
-#00dae9
-#93df00
-#04d100
-#6ddc00
-#1bd400
-#0076fd
-#89de00
-#00d0eb
-#00c4ed
-#00fde1
-#2dd500
-#72dc00
-#57da00
-#d8e600
-#00f6e3
-#006fff
-#36d600
-#00e1e7
-#01d100
-#00f6e3
-#95e000
-#b2e200
-#00d4ea
-#00adf2
-#0071fe
-#0094f7
-#44d800
-#cee500
-#00adf2
-#28d500
-#b5e300
-#88de00
-#84de00
-#0072fe
-#00c1ee
-#24d500
-#00baef
-#00a1f4
-#00e9e6
-#00e3e7
-#00fee1
-#00a8f3
-#79dd00
-#00e0e7
-#74dc00
-#00caec
-#00e1e7
-#6fdc00
-#0072fe
-#58da00
-#00aef2
-#00aff2
-#a4e100
-#bae300
-#0094f7
-#009af6
-#27d500
-#c4e400
-#0ad200
-#00dae9
-#00aaf3
-#87de00
-#00fee1
-#3bd700
-#c5e400
-#5ada00
-#7add00
-#00a6f3
-#5eda00
-#78dd00
-#21d400
-#9fe100
-#009cf5
-#00e6e6
-#8fdf00
-#53d900
-#89de00
-#00b2f1
-#00a3f4
-#eee800
-#00d4ea
+#81ca3f L
+#86c945 L
+#7acb36 L
+#6ace22 L
+#6fcd28 L
+#80ca3d L
+#82ca40 L
+#5ad10f L
+#5dd013 L
+#79cb35 L
+#5dd013 L
+#75cc30 L
+#65cf1d L
+#7ccb38 L
+#6ecd27 L
+#3487f9
+#438ef7
+#2b83fa
+#026fff
+#247ffb
+#1076fd
+#1578fc
+#76cc32 L
+#60d017 L
+#2c83fa
+#0470fe
+#2a82fa
+#0d74fd
+#5094f5
+#2b83fa
+#237ffb
+#036fff
+#5095f5
+#1076fd
+#428ef7
+#2b83fa
+#0c74fe
+#2580fa
+#1578fc
+#217efb
+#1277fd
+#65cf1c L
+#71cd2b L
+#80ca3d L
+#77cc32 L
+#398af8
+#2781fa
+#0d74fd
+#77cc32 L
+#84ca42 L
+#7ecb3b L
+#79cb35 L
+#76cc32 L
+#5ed014 L
+#6fcd29 L
+#7ecb3b L
+#84ca43 L
+#86c944 L
+#2881fa
+#5cd011 L
+#5ad110 L
+#4f94f5
+#7acb36 L
+#59d10f L
+#6cce25 L
+#79cb35 L
+#5cd012 L
+#58d10d L
+#68ce21 L
+#82ca40 L
+#5ad110 L
+#2e84f9
+#67ce1f L
+#62cf1a L
+#0872fe
+#0a73fe
+#0972fe
+#3b8af8
+#0a73fe
+#5ed014 L
+#5ed014 L
+#7fcb3c L
+#60d017 L
+#0671fe
+#71cd2c L
+#5cd012 L
+#87c946 L
+#85ca43 L
+#76cc32 L
+#5fd016 L
+#68ce20 L
+#80ca3d L
+#1076fd
+#237ffb
+#3085f9
+#448ff7
+#2781fa
+#2d84f9
+#3386f9
+#2b83fa
+#4690f6
+#1679fc
+#468ff6
+#0872fe
+#72cd2d L
+#78cc34 L
+#5ad10f L
+#64cf1b L
+#87c946 L
+#1377fd
+#6fcd28 L
+#86c945 L
+#81ca3e L
+#6cce25 L
+#7fcb3c L
+#6dce26 L
+#64cf1b L
+#3186f9
+#7dcb3a L
+#80ca3e L
+#7dcb3a L
+#79cc35 L
+#5dd013 L
+#6cce26 L
+#59d10e L
+#5ed015 L
+#7acb37 L
+#6dce26 L
+#5dd013 L
+#6ace23 L
+#6dcd27 L
+#82ca40 L
+#86c944 L
+#67cf1f L
+#3d8cf7
+#4690f6
+#1578fc
+#4e93f5
+#1377fd
+#197afc
+#2c83fa
+#458ff7
+#3989f8
+#2881fa
+#4e94f5
+#2c83fa
+#468ff6
+#1e7dfb
+#1b7bfc
+#4e94f5
+#2982fa
+#79cc34 L
+#6cce25 L
+#0e75fd
+#1b7bfc
+#5bd011 L
+#5dd013 L
+#6cce25 L
+#247ffb
+#59d10e L
 
 ## Ring 31
 
-#16d300
-#e5e700
-#8fdf00
-#72dc00
-#00f6e3
-#00d100
-#e4e700
-#0084fa
-#27d500
-#0079fd
-#0076fd
-#7ddd00
-#00adf2
-#00b8f0
-#0fd300
-#2fd600
-#00a2f4
-#d2e600
-#0096f7
-#0075fe
-#eee800
-#006fff
-#26d500
-#00bcef
-#00a9f3
-#00fde1
-#00f3e4
-#0086fa
-#efe800
-#06d200
-#00dfe8
-#009ff5
-#00d7e9
-#00baef
-#0085fa
-#6ddc00
-#a2e100
-#0077fd
-#3cd700
-#feea00
-#6adb00
-#3cd700
-#a0e100
-#64db00
-#007efc
-#00b3f1
-#1bd400
-#1ed400
-#56d900
-#d9e600
-#6cdc00
-#74dc00
-#00d7e9
-#b3e300
-#12d300
-#62db00
-#0092f7
-#00b7f0
-#8adf00
-#00b2f1
-#00b1f1
-#72dc00
-#00bdef
-#40d700
-#76dd00
-#00d1eb
-#f0e900
-#00e9e6
-#d4e600
-#00cdeb
-#ade200
-#00e3e7
-#00b4f0
-#3ed700
-#05d200
-#54d900
-#b5e300
-#24d500
-#a6e100
-#5eda00
-#00a3f4
-#006fff
-#00fde1
-#1fd400
-#ece800
-#009ef5
-#00d1eb
-#73dc00
-#43d800
-#00c2ee
-#00a5f4
-#00e4e7
-#007ffc
-#0076fd
-#0fd200
-#42d800
-#008ff8
-#00e3e7
-#65db00
-#00ebe5
-#26d500
-#00a9f3
-#007dfc
-#3bd700
-#00d6e9
-#09d200
-#0081fb
-#00e3e7
-#00e9e6
-#dde700
-#6cdc00
-#00f4e3
-#009df5
-#f2e900
-#00a7f3
-#00f0e4
-#8edf00
-#00d6e9
-#b3e300
-#00b4f0
-#19d300
-#3dd700
-#4dd900
-#00bbef
-#7add00
-#00d7e9
-#00eae5
-#2dd500
-#41d700
-#93df00
-#84de00
-#00e1e7
-#e0e700
-#cce500
-#04d100
-#d3e600
-#dbe700
-#88de00
-#54d900
-#0081fb
-#00d2ea
-#b5e300
-#009cf6
-#00ebe5
-#009cf6
-#008ef8
-#a1e100
-#00f0e4
-#07d200
-#9fe100
-#00ffe1
-#2cd500
-#0072fe
-#c4e400
-#69db00
-#007bfc
-#00a1f5
-#3dd700
-#a4e100
-#0085fa
+#7ecb3b L
+#7ccb38 L
+#7ccb39 L
+#84ca43 L
+#7ccb39 L
+#79cb35 L
+#67ce20 L
+#71cd2c L
+#6ace22 L
+#73cd2d L
+#85c944 L
+#6ace23 L
+#71cd2b L
+#7ecb3a L
+#79cb35 L
+#1377fd
+#1578fc
+#2580fa
+#5fd015 L
+#80ca3e L
+#6cce26 L
+#5ed015 L
+#7dcb3a L
+#4e94f5
+#016fff
+#3085f9
+#3286f9
+#2d84f9
+#3688f8
+#3f8cf7
+#4991f6
+#3387f9
+#0c74fe
+#036fff
+#4991f6
+#3185f9
+#1c7cfc
+#4991f6
+#1b7bfc
+#1b7bfc
+#0470fe
+#4991f6
+#61cf18 L
+#6bce24 L
+#81ca3f L
+#1679fc
+#2d84f9
+#76cc31 L
+#61cf18 L
+#64cf1b L
+#62cf19 L
+#76cc31 L
+#6dcd27 L
+#6ace22 L
+#65cf1d L
+#76cc32 L
+#58d10d L
+#68ce21 L
+#5bd110 L
+#207efb
+#5fd016 L
+#7fcb3c L
+#7ecb3b L
+#84ca42 L
+#88c947 L
+#71cd2b L
+#88c947 L
+#64cf1b L
+#6cce26 L
+#5fd015 L
+#68ce20 L
+#66cf1d L
+#86c945 L
+#71cd2b L
+#6cce25 L
+#59d10e L
+#80ca3e L
+#62cf19 L
+#5ad110 L
+#5dd012 L
+#88c946 L
+#5fd015 L
+#5dd013 L
+#81ca3f L
+#80ca3d L
+#63cf1b L
+#7ccb39 L
+#80ca3d L
+#71cd2b L
+#77cc33 L
+#71cd2b L
+#6fcd28 L
+#62cf1a L
+#1277fd
+#3386f9
+#2781fa
+#2b83fa
+#5195f5
+#448ff7
+#428ef7
+#3b8af8
+#2982fa
+#78cc33 L
+#428ef7
+#7fca3c L
+#5ed014 L
+#5ed015 L
+#74cc2f L
+#76cc31 L
+#62cf19 L
+#7fca3c L
+#60d017 L
+#80ca3e L
+#62cf19 L
+#79cb35 L
+#62cf19 L
+#74cc2f L
+#5094f5
+#5195f5
+#5dd013 L
+#5ad110 L
+#6fcd29 L
+#7ecb3b L
+#62cf19 L
+#67cf1f L
+#87c945 L
+#68ce20 L
+#6ecd28 L
+#70cd2a L
+#7fcb3c L
+#59d10f L
+#88c947 L
+#458ff7
+#187afc
+#5095f5
+#2680fa
+#428ef7
+#3286f9
+#1076fd
+#4f94f5
+#2e84f9
+#0973fe
+#4d93f6
+#2b83fa
+#3588f8
+#3387f9
+#1b7bfc
+#2b82fa
+#4a92f6
+#69ce21 L
+#6bce24 L
+#78cc33 L
+#0571fe
+#428ef7
+#5fd015 L
+#82ca40 L
+#83ca41 L
+#60d017 L
+#66cf1e L
+#63cf1b L
 
 ## Ring 32
 
-#c9e500
-#a2e100
-#00c5ed
-#00abf2
-#00fce2
-#0099f6
-#00eee4
-#abe200
-#5ada00
-#40d700
-#0096f7
-#72dc00
-#b4e300
-#00baef
-#00a0f5
-#00d8e9
-#29d500
-#51d900
-#00efe4
-#c5e400
-#b7e300
-#00adf2
-#00e6e6
-#abe200
-#c3e400
-#4dd900
-#00e0e7
-#35d600
-#0086fa
-#008ef8
-#00b9f0
-#00dce8
-#5eda00
-#bbe300
-#00fce2
-#80de00
-#3cd700
-#00bbef
-#5bda00
-#0071fe
-#00f9e2
-#49d800
-#6ddc00
-#00a8f3
-#82de00
-#77dd00
-#08d200
-#73dc00
-#008cf9
-#008cf9
-#00efe4
-#80de00
-#3ed700
-#29d500
-#07d200
-#00f6e3
-#00fee1
-#00d3ea
-#00e2e7
-#59da00
-#0085fa
-#a6e100
-#007afd
-#bfe400
-#00d5ea
-#0086fa
-#00dce8
-#0083fb
-#00d8e9
-#009ff5
-#00acf2
-#00e4e7
-#00baef
-#0095f7
-#00ebe5
-#46d800
-#008df9
-#b9e300
-#88de00
-#ece800
-#008cf9
-#c4e400
-#71dc00
-#0084fa
-#5bda00
-#00e6e6
-#00d1ea
-#009af6
-#e5e700
-#0087fa
-#37d600
-#13d300
-#3ed700
-#00f0e4
-#0fd300
-#0dd200
-#0087fa
-#00fae2
-#00a1f4
-#00a7f3
-#00e5e6
-#a7e100
-#00c4ed
-#96e000
-#00a0f5
-#e7e800
-#00adf2
-#0ad200
-#0098f6
-#aee200
-#00d7e9
-#32d600
-#00f6e3
-#a8e100
-#00b7f0
-#00f9e2
-#00f8e2
-#80de00
-#73dc00
-#24d500
-#dbe700
-#77dd00
-#0099f6
-#57d900
-#00f8e2
-#70dc00
-#13d300
-#37d600
-#76dd00
-#00b0f1
-#84de00
-#00e2e7
-#00bbef
-#c9e500
-#6cdc00
-#47d800
-#0dd200
-#cde500
-#00d1eb
-#0091f8
-#f4e900
-#0092f8
-#f4e900
-#00a2f4
-#00baef
-#c6e400
-#00b5f0
-#08d200
-#2ad500
-#00eee5
-#bce300
-#21d400
-#bee400
-#f9e900
-#dbe600
+#79cb35 L
+#7acb36 L
+#74cc2f L
+#6ace22 L
+#6dcd26 L
+#5ad10f L
+#7bcb37 L
+#73cc2e L
+#85c944 L
+#82ca40 L
+#61cf18 L
+#4690f6
+#76cc32 L
+#62cf1a L
+#6ecd27 L
+#7ccb38 L
+#7dcb3a L
+#7ccb39 L
+#87c946 L
+#408df7
+#036fff
+#0470ff
+#1779fc
+#1176fd
+#3085f9
+#1f7dfb
+#2a82fa
+#3387f9
+#1d7cfb
+#3688f8
+#187afc
+#1076fd
+#1277fd
+#4c93f6
+#217efb
+#3f8cf7
+#4991f6
+#3085f9
+#6cce25 L
+#66cf1e L
+#2d84f9
+#71cd2b L
+#61cf18 L
+#69ce22 L
+#60d017 L
+#59d10f L
+#78cc34 L
+#74cc2f L
+#5dd013 L
+#65cf1d L
+#86c944 L
+#7fcb3c L
+#2b83fa
+#0972fe
+#83ca41 L
+#6cce25 L
+#0a73fe
+#7fca3c L
+#82ca3f L
+#75cc30 L
+#6dcd27 L
+#60d017 L
+#7fca3c L
+#5ad110 L
+#59d10f L
+#7bcb37 L
+#7fcb3c L
+#6fcd29 L
+#7ccb38 L
+#1578fc
+#6fcd29 L
+#62cf1a L
+#79cb35 L
+#79cb35 L
+#227efb
+#3c8bf8
+#76cc31 L
+#66cf1e L
+#67ce20 L
+#6bce24 L
+#81ca3e L
+#5ad110 L
+#6cce25 L
+#5cd012 L
+#78cc34 L
+#7fcb3c L
+#62cf19 L
+#80ca3d L
+#86c944 L
+#79cb35 L
+#87c945 L
+#448ff7
+#438ef7
+#4a91f6
+#026fff
+#3c8bf8
+#7fcb3c L
+#74cc2f L
+#68ce20 L
+#63cf1a L
+#76cc31 L
+#6dcd27 L
+#7bcb37 L
+#6cce25 L
+#76cc31 L
+#65cf1c L
+#68ce21 L
+#6ace23 L
+#61cf18 L
+#7acb37 L
+#5ad10f L
+#6cce25 L
+#3387f9
+#3889f8
+#6cce25 L
+#87c946 L
+#5cd012 L
+#5ad10f L
+#61cf18 L
+#5cd012 L
+#6dcd27 L
+#7ecb3b L
+#74cc2f L
+#78cc33 L
+#72cd2c L
+#5dd014 L
+#88c947 L
+#0872fe
+#4790f6
+#006eff
+#3b8af8
+#3989f8
+#1e7dfb
+#0a73fe
+#3588f8
+#006eff
+#2f85f9
+#428ef7
+#3487f9
+#0d74fd
+#3f8cf7
+#1b7bfc
+#7fca3c L
+#61cf18 L
+#69ce22 L
+#78cc34 L
+#1076fd
+#69ce21 L
+#6bce24 L
+#66cf1e L
+#6ecd27 L
+#69ce21 L
+#60d016 L
+#3186f9
+#2781fa
 
 ## Ring 33
 
-#cce500
-#21d400
-#d0e500
-#58da00
-#82de00
-#b2e200
-#00cdeb
-#2fd600
-#00d0eb
-#00a3f4
-#aee200
-#00ebe5
-#d5e600
-#00f0e4
-#00bcef
-#79dd00
-#00ede5
-#00cfeb
-#0085fa
-#007ffb
-#009ff5
-#009af6
-#00f8e2
-#00a7f3
-#00b1f1
-#b2e200
-#00e2e7
-#0078fd
-#80de00
-#d4e600
-#00f4e3
-#f0e900
-#009af6
-#25d500
-#00eee4
-#28d500
-#007bfc
-#4ad800
-#86de00
-#feea00
-#6fdc00
-#00f9e2
-#aee200
-#00f6e3
-#54d900
-#00ece5
-#9ee100
-#00aaf3
-#96e000
-#00f7e3
-#8ddf00
-#ece800
-#7fdd00
-#88de00
-#39d700
-#0088fa
-#88de00
-#00efe4
-#b5e300
-#c4e400
-#00a1f4
-#79dd00
-#00aff2
-#008df9
-#91df00
-#00ccec
-#00b6f0
-#3fd700
-#0077fd
-#66db00
-#0081fb
-#00a1f4
-#009bf6
-#00dfe8
-#00a6f3
-#00a2f4
-#0089f9
-#00ccec
-#00fbe2
-#007cfc
-#00cbec
-#0bd200
-#00c0ee
-#00f5e3
-#00ccec
-#25d500
-#00ceeb
-#00e5e6
-#c9e500
-#86de00
-#00b0f1
-#69db00
-#feea00
-#00dbe9
-#d8e600
-#fbea00
-#00baef
-#34d600
-#33d600
-#0ad200
-#0096f7
-#00f7e3
-#47d800
-#a9e200
-#48d800
-#00a2f4
-#00e3e7
-#90df00
-#95e000
-#38d700
-#dde700
-#8bdf00
-#bae300
-#15d300
-#0076fd
-#abe200
-#00aaf2
-#84de00
-#009af6
-#00ece5
-#009af6
-#00d9e9
-#00c8ec
-#bce300
-#fdea00
-#9ee000
-#00baef
-#00e7e6
-#00a9f3
-#00f9e2
-#0082fb
-#54d900
-#00dce8
-#0082fb
-#00c4ed
-#8edf00
-#00c8ec
-#00bbef
-#8ddf00
-#00bbef
-#dde700
-#58da00
-#67db00
-#00a2f4
-#79dd00
+#80ca3d L
+#6bce24 L
+#78cc34 L
+#5bd011 L
+#65cf1c L
+#5cd011 L
+#58d10d L
+#7bcb37 L
+#86c945 L
+#5bd011 L
+#0671fe
+#60d017 L
+#5ad10f L
+#77cc33 L
+#71cd2b L
+#7ecb3b L
+#7dcb3a L
+#68ce20 L
+#1779fc
+#0370ff
+#4790f6
+#2680fa
+#2480fb
+#3889f8
+#207dfb
+#448ff7
+#4d93f5
+#3185f9
+#1578fc
+#4891f6
+#1276fd
+#4d93f6
+#3387f9
+#4d93f6
+#3a8af8
+#458ff6
+#78cc33 L
+#2e84f9
+#63cf1a L
+#6bce24 L
+#85c944 L
+#6ace23 L
+#82ca3f L
+#81ca3e L
+#6bce24 L
+#83ca41 L
+#5ed014 L
+#88c947 L
+#207dfb
+#3588f8
+#2b83fa
+#0972fe
+#187afc
+#5cd012 L
+#66cf1e L
+#73cc2e L
+#7ccb38 L
+#7fca3d L
+#7dcb39 L
+#5fd016 L
+#7ccb38 L
+#6ecd28 L
+#66cf1e L
+#7dcb3a L
+#82ca3f L
+#87c946 L
+#6fcd28 L
+#3a8af8
+#2781fa
+#217efb
+#3b8bf8
+#6ace23 L
+#73cc2e L
+#6dce26 L
+#86c944 L
+#63cf1b L
+#67cf1f L
+#65cf1d L
+#84ca42 L
+#7ccb38 L
+#67cf1f L
+#72cd2c L
+#7ccb39 L
+#448ff7
+#81ca3e L
+#83ca41 L
+#3588f8
+#65cf1c L
+#5bd011 L
+#6ace22 L
+#58d10d L
+#7dcb3a L
+#4891f6
+#5ad10f L
+#62cf19 L
+#64cf1b L
+#3e8cf7
+#69ce21 L
+#6fcd28 L
+#78cc33 L
+#76cc31 L
+#78cc34 L
+#63cf1a L
+#62cf19 L
+#3e8cf7
+#408df7
+#398af8
+#237ffb
+#61cf18 L
+#86c945 L
+#66cf1e L
+#64cf1b L
+#87c946 L
+#6ecd28 L
+#78cc34 L
+#3789f8
+#6ace23 L
+#5cd012 L
+#3e8cf7
+#036fff
+#3085f9
+#3e8cf7
+#428ef7
+#1679fc
+#1276fd
+#3588f8
+#0d74fd
+#036fff
+#3d8bf8
+#237ffb
+#3c8bf8
+#2881fa
+#6ecd28 L
+#6fcd29 L
+#5bd110 L
+#67ce1f L
+#5ad10f L
+#73cd2d L
+#80ca3e L
+#72cd2c L
+#6bce24 L
+#82ca3f L
+#58d10d L
+#83ca41 L
+#77cc33 L
 
 ## Ring 34
 
-#56d900
-#12d300
-#92df00
-#d4e600
-#00c4ed
-#008cf9
-#25d500
-#00ceeb
-#0077fd
-#02d100
-#3ad700
-#00aef2
-#00f9e2
-#007cfc
-#0086fa
-#00aaf3
-#0dd200
-#009ff5
-#dee700
-#00e3e7
-#51d900
-#00c5ed
-#0090f8
-#00bcef
-#008bf9
-#ade200
-#00a4f4
-#95e000
-#b7e300
-#12d300
-#00fae2
-#0090f8
-#00c0ee
-#89de00
-#74dc00
-#92df00
-#b7e300
-#00e7e6
-#9ae000
-#00bbef
-#009af6
-#a7e100
-#d8e600
-#e1e700
-#70dc00
-#84de00
-#00bbef
-#87de00
-#007bfc
-#008cf9
-#ffea00
-#0079fd
-#cee500
-#00f0e4
-#00bdef
-#ade200
-#64db00
-#05d200
-#3dd700
-#00a3f4
-#00b5f0
-#0094f7
-#06d200
-#71dc00
-#78dd00
-#3cd700
-#00f3e3
-#a9e200
-#00ebe5
-#0073fe
-#f9e900
-#00aef2
-#ace200
-#6edc00
-#007afc
-#33d600
-#b2e200
-#00efe4
-#bee400
-#0077fd
-#00d9e9
-#fcea00
-#f0e900
-#0071fe
-#00c6ed
-#d9e600
-#00d8e9
-#09d200
-#91df00
-#22d400
-#dae600
-#66db00
-#02d100
-#c1e400
-#00dfe8
-#67db00
-#10d300
-#00f4e3
-#0090f8
-#00c1ee
-#20d400
-#b0e200
-#0093f7
-#e2e700
-#00bdef
-#007ffc
-#fbea00
-#00acf2
-#01d100
-#0096f7
-#2bd500
-#1ad400
-#00bdef
-#00d1eb
-#0077fd
-#78dd00
-#b9e300
-#14d300
-#00ccec
-#c8e500
-#e9e800
-#c4e400
-#0095f7
-#9ee000
-#006fff
-#0ad200
-#0099f6
-#1fd400
-#007ffb
-#00f6e3
-#00d100
-#00b3f1
-#00f8e2
-#00bdef
-#3fd700
+#5ad10f L
+#6dcd27 L
+#84ca42 L
+#87c946 L
+#6ecd28 L
+#61d018 L
+#6cce26 L
+#7acb36 L
+#84ca42 L
+#85c944 L
+#77cc33 L
+#85c944 L
+#88c947 L
+#6bce24 L
+#84ca42 L
+#1578fc
+#2b83fa
+#3487f9
+#3889f8
+#3487f9
+#0370ff
+#3487f9
+#0370ff
+#217efb
+#2680fa
+#3c8bf8
+#2982fa
+#3e8cf7
+#0772fe
+#2681fa
+#3587f8
+#68ce20 L
+#62cf1a L
+#75cc30 L
+#58d10d L
+#3889f8
+#5ed014 L
+#88c947 L
+#7ccb39 L
+#61d017 L
+#61d017 L
+#70cd2a L
+#82ca3f L
+#73cc2e L
+#69ce21 L
+#65cf1c L
+#86c944 L
+#7bcb38 L
+#7fca3c L
+#0972fe
+#6fcd29 L
+#72cd2c L
+#6fcd29 L
+#5ad10f L
+#75cc30 L
+#7bcb37 L
+#5dd013 L
+#036fff
+#5dd014 L
+#408df7
+#6ace23 L
+#5094f5
+#0f75fd
+#2b83fa
+#006eff
+#237ffb
+#5195f5
+#5ed014 L
+#0f75fd
+#0671fe
+#86c945 L
+#62cf1a L
+#68ce21 L
+#5dd014 L
+#86c945 L
+#61d018 L
+#5fd015 L
+#74cc2e L
+#227efb
+#3286f9
+#73cc2e L
+#70cd2a L
+#73cd2d L
+#77cc33 L
+#59d10e L
+#80ca3d L
+#0671fe
+#1b7bfc
+#3a8af8
+#4b92f6
+#438ef7
+#69ce21 L
+#3789f8
+#428ef7
+#3186f9
+#217efb
+#2c83fa
+#1076fd
+#3c8bf8
+#3386f9
+#87c945 L
+#5bd111 L
+#408df7
+#76cc31 L
+#64cf1c L
+#83ca41 L
+#0671fe
+#79cb35 L
+#73cd2d L
+#4d93f6
+#5094f5
+#0b73fe
+#4790f6
+#428ef7
+#438ef7
+#1c7bfc
+#4690f6
+#1c7bfc
+#227efb
+#237ffb
+#2e84f9
+#3387f9
+#217efb
+#78cc34 L
+#7dcb3a L
+#82ca3f L
+#7ccb38 L
+#81ca3f L
+#75cc31 L
+#88c947 L
+#76cc31 L
+#6ace23 L
+#61d018 L
+#70cd2a L
+#73cd2d L
 
 ## Ring 35
 
-#0091f8
-#00d9e9
-#57da00
-#82de00
-#0083fb
-#00adf2
-#00d3ea
-#47d800
-#0086fa
-#00e4e7
-#009cf6
-#00b5f0
-#34d600
-#04d100
-#0081fb
-#cae500
-#64db00
-#00c1ee
-#c2e400
-#00c7ed
-#00c7ed
-#22d400
-#00d5ea
-#007efc
-#f0e900
-#00c6ed
-#00bfee
-#00cfeb
-#00dde8
-#00a4f4
-#e6e800
-#00fce2
-#007cfc
-#e0e700
-#abe200
-#8ddf00
-#00b8f0
-#00e6e6
-#0089f9
-#17d300
-#82de00
-#00ede5
-#8bdf00
-#88de00
-#00b4f0
-#46d800
-#00d6ea
-#57da00
-#bce300
-#008ef8
-#f4e900
-#00c7ed
-#00a7f3
-#0072fe
-#00b4f1
-#006fff
-#00aef2
-#00bbef
-#80de00
-#00fae2
-#89de00
-#00baef
-#00a6f3
-#bfe400
-#b7e300
-#34d600
-#00e1e7
-#e5e700
-#00cbec
-#10d300
-#45d800
-#00a0f5
-#5ada00
-#00beef
-#00b5f0
-#afe200
-#00c1ee
-#28d500
-#00a9f3
-#43d800
-#33d600
-#5bda00
-#6fdc00
-#0082fb
-#35d600
-#13d300
-#00a7f3
-#00dbe9
-#0094f7
-#00a7f3
-#34d600
-#0098f6
-#00a6f3
-#00baef
-#0079fd
-#e3e700
-#00dee8
-#0ad200
-#c7e500
-#0094f7
-#bfe400
-#1bd400
-#b2e200
-#00f9e2
-#16d300
-#80de00
-#53d900
-#a2e100
-#f3e900
-#87de00
-#00fae2
-#00a8f3
-#006fff
-#0076fd
-#6bdc00
-#00bcef
-#b8e300
-#dae600
-#16d300
-#82de00
-#00aaf3
-#00d7e9
-#36d600
-#7fdd00
-#89de00
+#87c946 L
+#6bce24 L
+#67ce20 L
+#6bce24 L
+#7ccb39 L
+#6ace23 L
+#7ecb3b L
+#66cf1e L
+#7fca3c L
+#84ca42 L
+#1c7bfc
+#87c945 L
+#60d017 L
+#6cce25 L
+#3688f8
+#2781fa
+#3587f9
+#2a82fa
+#0570fe
+#2680fa
+#4e94f5
+#016fff
+#2a82fa
+#2c83fa
+#3c8bf8
+#1779fc
+#217efb
+#2a82fa
+#4790f6
+#5bd011 L
+#83ca41 L
+#7ecb3a L
+#5ed015 L
+#80ca3d L
+#86c945 L
+#7bcb37 L
+#81ca3e L
+#6ecd27 L
+#5bd110 L
+#74cc2e L
+#65cf1d L
+#6dcd26 L
+#5095f5
+#0671fe
+#3487f9
+#0a73fe
+#76cc31 L
+#85c943 L
+#62cf19 L
+#7dcb39 L
+#81ca3f L
+#0c74fe
+#0e75fd
+#3788f8
+#3587f8
+#428ef7
+#1176fd
+#5095f5
+#2a82fa
+#5195f5
+#5095f5
+#79cb35 L
+#62cf19 L
+#65cf1d L
+#5ed015 L
+#84ca42 L
+#64cf1b L
+#68ce20 L
+#448ff7
+#6fcd29 L
+#61d018 L
+#5cd011 L
+#3889f8
+#0d74fd
+#2c83fa
+#82ca3f L
+#3286f9
+#1b7bfc
+#1578fc
+#2680fa
+#2c83fa
+#4f94f5
+#1578fc
+#1779fc
+#4891f6
+#016fff
+#3e8cf7
+#3f8df7
+#3085f9
+#3b8af8
+#0570fe
+#3889f8
+#4790f6
+#61d018 L
+#2680fa
+#3889f8
+#7acb36 L
+#75cc30 L
+#2f84f9
+#3085f9
+#3286f9
+#3286f9
+#3487f9
+#1176fd
+#2d84f9
+#036fff
+#026fff
+#3f8df7
+#207efb
+#458ff6
+#237ffb
+#4d93f6
+#016eff
+#036fff
+#73cd2d L
+#6ecd28 L
+#58d10d L
+#2a82fa
+#77cc32 L
+#86c945 L
+#85c944 L
+#60d017 L
+#5ed014 L
+#6dcd27 L
+#6bce23 L
 
 ## Ring 36
 
-#00c5ed
-#6fdc00
-#008ff8
-#4cd800
-#61da00
-#72dc00
-#008bf9
-#00b6f0
-#007bfc
-#0091f8
-#00e2e7
-#d2e600
-#0090f8
-#9de000
-#00a5f4
-#aae200
-#e6e800
-#90df00
-#30d600
-#00b1f1
-#00dae9
-#0088fa
-#79dd00
-#aee200
-#05d100
-#98e000
-#07d200
-#0096f7
-#26d500
-#aee200
-#34d600
-#86de00
-#00a8f3
-#00b8f0
-#4ed900
-#66db00
-#00c3ee
-#0083fb
-#70dc00
-#00a3f4
-#d0e500
-#c4e400
-#27d500
-#00b0f1
-#e3e700
-#009df5
-#f2e900
-#00dce8
-#6adb00
-#00e2e7
-#008ef8
-#27d500
-#00b5f0
-#ffea00
-#15d300
-#ffea00
-#00a1f4
-#00e9e5
-#dee700
-#cce500
-#00f6e3
-#00a8f3
-#00b8f0
-#00eae5
-#8ddf00
-#05d200
-#d1e600
-#4ad800
-#9ee100
-#44d800
-#d2e600
-#36d600
-#73dc00
-#ebe800
-#0079fd
-#5fda00
-#00ceeb
-#86de00
-#00d4ea
-#00fce2
-#00f1e4
-#44d800
-#fdea00
-#71dc00
-#00a9f3
-#74dc00
-#43d800
-#00aaf2
-#1dd400
-#00c3ed
-#00c9ec
-#00f5e3
-#d0e500
-#c1e400
-#01d100
-#93df00
-#00c5ed
-#18d300
-#0073fe
-#00a1f4
-#3cd700
-#00eee4
-#00e1e7
-#3bd700
-#00dce8
-#7fdd00
-#57d900
-#8fdf00
-#0075fe
-#aae200
-#00ebe5
-#2ed600
-#0074fe
-#009af6
-#84de00
+#5cd012 L
+#78cc34 L
+#7bcb37 L
+#5ed014 L
+#7fca3d L
+#59d10e L
+#66cf1e L
+#7ecb3b L
+#7fcb3c L
+#68ce20 L
+#2580fa
+#82ca40 L
+#0570fe
+#448ff7
+#62cf1a L
+#7dcb3a L
+#0872fe
+#3186f9
+#1e7cfb
+#1c7bfc
+#2c83fa
+#1176fd
+#2e84f9
+#0470fe
+#3387f9
+#0872fe
+#4f94f5
+#85ca43 L
+#64cf1b L
+#7dcb3a L
+#81ca3e L
+#63cf1a L
+#7bcb37 L
+#5ad110 L
+#7bcb37 L
+#62cf19 L
+#78cc34 L
+#3788f8
+#88c947 L
+#2c83fa
+#2d84f9
+#1478fd
+#3889f8
+#7fca3c L
+#5cd012 L
+#77cc32 L
+#428ef7
+#4991f6
+#0f75fd
+#237ffb
+#3788f8
+#197afc
+#1779fc
+#4690f6
+#3085f9
+#3889f8
+#1a7afc
+#4a92f6
+#3889f8
+#68ce21 L
+#69ce21 L
+#1f7dfb
+#74cc2e L
+#78cc33 L
+#3688f8
+#3286f9
+#438ef7
+#1678fc
+#036fff
+#3186f9
+#0370ff
+#0370ff
+#1377fd
+#3f8cf7
+#4991f6
+#4690f6
+#217efb
+#2781fa
+#1176fd
+#016fff
+#2580fa
+#2d84f9
+#3186f9
+#4790f6
+#458ff6
+#1f7dfb
+#428ef7
+#5094f5
+#2b83fa
+#3b8bf8
+#458ff6
+#3487f9
+#0c74fd
+#4d93f5
+#3588f8
+#4790f6
+#0e75fd
+#217efb
+#4690f6
+#4f94f5
+#438ef7
+#2f85f9
+#217efb
+#2d83f9
+#0872fe
+#4c93f6
+#237ffb
+#0a73fe
+#6dce26 L
+#67cf1f L
+#2b83fa
+#6cce25 L
+#63cf1b L
+#5bd011 L
+#5ad110 L
 
 ## Ring 37
 
-#25d500
-#9ee100
-#85de00
-#95e000
-#3bd700
-#0083fb
-#78dd00
-#30d600
-#b8e300
-#02d100
-#0073fe
-#00b5f0
-#6fdc00
-#9be000
-#08d200
-#fbea00
-#00d0eb
-#00abf2
-#f9e900
-#39d700
-#00cfeb
-#00b2f1
-#0085fa
-#008bf9
-#2cd500
-#00b1f1
-#96e000
-#00e5e6
-#00ece5
-#9be000
-#0079fd
-#00ede5
-#cce500
-#009bf6
-#00f8e2
-#00d2ea
-#00caec
-#00bdef
-#00b9ef
-#f1e900
-#00d1eb
-#7bdd00
-#00adf2
-#1fd400
-#e4e700
-#bae300
-#c0e400
-#2ad500
-#00e6e6
-#c7e500
-#00bcef
-#4ad800
-#00d3ea
-#00b7f0
-#89de00
-#ede800
-#6ddc00
-#12d300
-#0079fd
-#4dd900
-#00d9e9
-#b0e200
-#00dce8
-#e3e700
-#00b4f1
-#0099f6
-#d2e600
-#a7e100
-#b0e200
-#00b6f0
-#007efc
-#69db00
-#00a4f4
-#eae800
-#bce300
-#20d400
-#007cfc
-#00f8e2
-#92df00
-#d6e600
-#007ffc
-#008ef8
-#b1e200
-#feea00
-#9ce000
-#dae600
-#00d3ea
-#b4e300
-#b9e300
-#00b8f0
-#00b9ef
-#00fde1
-#0086fa
-#d6e600
-#50d900
-#2fd600
-#a8e100
-#22d400
-#0099f6
-#79dd00
-#f3e900
-#3ad700
-#35d600
-#00dde8
-#0076fd
+#6fcd28 L
+#61d017 L
+#61cf18 L
+#67cf1f L
+#7fcb3c L
+#81ca3f L
+#58d10d L
+#4790f6
+#4b92f6
+#5bd011 L
+#58d10d L
+#5ad10f L
+#87c945 L
+#6cce26 L
+#61cf18 L
+#6ace22 L
+#58d10d L
+#79cc34 L
+#1377fd
+#7bcb37 L
+#3085f9
+#3286f9
+#4891f6
+#026fff
+#87c946 L
+#82ca40 L
+#247ffb
+#0a73fe
+#6ecd27 L
+#7ecb3a L
+#87c946 L
+#016fff
+#3387f9
+#76cc31 L
+#81ca3e L
+#79cb35 L
+#6ecd27 L
+#5cd012 L
+#4690f6
+#207efb
+#0f75fd
+#0d74fd
+#0771fe
+#1e7cfb
+#4d93f6
+#1c7bfc
+#0470fe
+#1f7dfb
+#1478fd
+#3186f9
+#3a8af8
+#1f7dfb
+#2c83fa
+#84ca42 L
+#86c945 L
+#418df7
+#0f75fd
+#3587f9
+#0b73fe
+#3889f8
+#438ef7
+#2b83fa
+#4b92f6
+#2982fa
+#428ef7
+#247ffb
+#0b73fe
+#4d93f6
+#0c74fd
+#1477fd
+#2d84f9
+#1679fc
+#217efb
+#1a7bfc
+#2580fa
+#0872fe
+#036fff
+#006eff
+#1c7cfc
+#3286f9
+#0972fe
+#4b92f6
+#2b83fa
+#026fff
+#2982fa
+#0771fe
+#4b92f6
+#2f85f9
+#408df7
+#0570fe
+#3487f9
+#2f84f9
+#006eff
+#3889f8
+#4c92f6
+#2881fa
+#4890f6
+#7ccb38 L
+#66cf1e L
+#7ccb39 L
+#026fff
+#7acb36 L
+#458ff6
+#80ca3d L
+#7acb36 L
 
 ## Ring 38
 
-#cfe500
-#18d300
-#00cbec
-#0093f7
-#e1e700
-#00e7e6
-#efe800
-#b6e300
-#0088fa
-#1dd400
-#00bbef
-#b7e300
-#00caec
-#0087fa
-#0097f6
-#79dd00
-#00dee8
-#d0e500
-#0072fe
-#14d300
-#0073fe
-#009ef5
-#13d300
-#00ccec
-#00b1f1
-#33d600
-#fbea00
-#50d900
-#91df00
-#008af9
-#96e000
-#2ed500
-#0074fe
-#73dc00
-#1cd400
-#00f1e4
-#44d800
-#00eae5
-#2ad500
-#009bf6
-#00eae5
-#d1e500
-#9de000
-#41d700
-#6cdc00
-#00cdeb
-#39d700
-#0099f6
-#00bbef
-#b2e200
-#b2e200
-#68db00
-#00cdeb
-#009bf6
-#43d800
-#b0e200
-#93df00
-#e5e700
-#00c5ed
-#00d9e9
-#0ad200
-#8edf00
-#008cf9
-#00f6e3
-#ede800
-#fae900
-#6cdc00
-#a8e200
-#00fce2
-#45d800
-#00a6f3
-#00abf2
-#93df00
-#27d500
-#00abf2
-#d9e600
-#42d800
-#7fdd00
-#0094f7
-#00dbe9
-#d5e600
-#75dc00
-#0093f7
-#84de00
-#c1e400
-#00ceeb
-#08d200
-#009af6
-#0076fd
-#d5e600
-#00d3ea
-#3bd700
-#4dd900
-#0090f8
-#eee800
+#63cf1a L
+#7dcb3a L
+#74cc2f L
+#3c8bf8
+#2580fa
+#84ca42 L
+#7ecb3b L
+#6bce24 L
+#69ce21 L
+#82ca40 L
+#77cc32 L
+#7ccb38 L
+#59d10f L
+#65cf1d L
+#6fcd29 L
+#7fca3c L
+#5bd011 L
+#65cf1c L
+#6dce26 L
+#7acb37 L
+#78cc34 L
+#72cd2c L
+#247ffb
+#0771fe
+#2982fa
+#68ce20 L
+#3c8bf8
+#0470fe
+#1a7afc
+#187afc
+#82ca40 L
+#79cb35 L
+#67cf1f L
+#5bd011 L
+#0671fe
+#2c83fa
+#4a92f6
+#4d93f5
+#3f8cf7
+#0c74fe
+#1679fc
+#217efb
+#0972fe
+#3788f8
+#1679fc
+#1477fd
+#0e75fd
+#66cf1e L
+#81ca3f L
+#3186f9
+#3588f8
+#1c7bfc
+#3e8cf7
+#1e7cfb
+#4790f6
+#1176fd
+#3789f8
+#4790f6
+#197afc
+#3e8cf7
+#3085f9
+#418df7
+#1a7afc
+#0872fe
+#60d017 L
+#247ffb
+#0872fe
+#85ca43 L
+#247ffb
+#4c92f6
+#2982fa
+#2680fa
+#4891f6
+#3688f8
+#1377fd
+#4b92f6
+#2580fa
+#438ef7
+#418ef7
+#1a7afc
+#1679fc
+#3c8bf8
+#3587f8
+#4e94f5
+#2b83fa
+#4790f6
+#3085f9
+#237ffb
+#3789f8
+#84ca42 L
+#2580fa
+#63cf1a L
+#4f94f5
+#4890f6
+#6ace23 L
 
 ## Ring 39
 
-#00b6f0
-#00c1ee
-#0081fb
-#00f9e2
-#00c6ed
-#1ed400
-#007ffb
-#44d800
-#00e8e6
-#00c4ed
-#99e000
-#3fd700
-#71dc00
-#0082fb
-#00c0ee
-#96e000
-#00f8e3
-#008af9
-#26d500
-#57da00
-#04d100
-#34d600
-#2fd600
-#009bf6
-#a4e100
-#e0e700
-#5eda00
-#16d300
-#2bd500
-#009ef5
-#40d700
-#8cdf00
-#00b4f1
-#e0e700
-#68db00
-#f7e900
-#67db00
-#2ad500
-#0096f7
-#00d9e9
-#009df5
-#00e7e6
-#73dc00
-#0080fb
-#c1e400
-#00b2f1
-#dde700
-#7cdd00
-#00dae9
-#a7e100
-#43d800
-#26d500
-#00dfe8
-#53d900
-#0ed200
-#0090f8
-#50d900
-#0078fd
-#00e0e7
-#00efe4
-#48d800
-#00abf2
-#00bbef
-#00a4f4
-#b8e300
-#6bdb00
-#007afd
-#00d4ea
-#8edf00
-#03d100
-#0071fe
-#009ff5
-#0071fe
-#00f9e2
-#5fda00
-#44d800
-#1cd400
-#00dce8
-#43d800
-#00a1f5
-#c1e400
-#85de00
-#29d500
-#0ad200
-#c7e400
+#1a7bfc
+#2a82fa
+#6ace22 L
+#62cf19 L
+#7dcb3a L
+#66cf1d L
+#71cd2b L
+#61cf18 L
+#75cc31 L
+#3889f8
+#88c947 L
+#5dd013 L
+#5dd013 L
+#85c944 L
+#6cce25 L
+#74cc2e L
+#83ca40 L
+#197afc
+#3f8cf7
+#006eff
+#207efb
+#036fff
+#3989f8
+#448ff7
+#1f7dfb
+#1f7dfb
+#448ff7
+#458ff6
+#5ed014 L
+#71cd2b L
+#84ca42 L
+#4d93f5
+#2b83fa
+#0b73fe
+#1578fc
+#3c8bf8
+#2f85f9
+#1c7cfc
+#016fff
+#227efb
+#4c92f6
+#1277fd
+#1377fd
+#2982fa
+#2680fa
+#2e84f9
+#2e84f9
+#0e75fd
+#4f94f5
+#2d84f9
+#438ef7
+#428ef7
+#2e84f9
+#1c7cfc
+#1a7afc
+#1e7dfb
+#207dfb
+#468ff6
+#448ff7
+#1779fc
+#74cc2f L
+#0671fe
+#237ffb
+#2982fa
+#4690f6
+#2e84f9
+#4f94f5
+#4e94f5
+#4790f6
+#4e94f5
+#2f85f9
+#3186f9
+#448ff7
+#3286f9
+#3c8bf8
+#1a7bfc
+#026fff
+#3487f9
+#036fff
+#5bd110 L
+#83ca41 L
+#1c7bfc
+#7ccb38 L
+#59d10e L
+#78cc34 L
 
 ## Ring 40
 
-#007efc
-#00ece5
-#1ed400
-#37d600
-#dae600
-#abe200
-#00dae9
-#008cf9
-#007afc
-#1ad400
-#0077fd
-#00d1eb
-#70dc00
-#008ef8
-#00c0ee
-#008df9
-#008df9
-#00eae5
-#f5e900
-#3fd700
-#e6e800
-#41d700
-#ede800
-#00fae2
-#0099f6
-#009df5
-#a6e100
-#00c1ee
-#cae500
-#00c7ed
-#19d300
-#bee400
-#00eee4
-#f0e900
-#f1e900
-#00cbec
-#52d900
-#00e0e7
-#00b1f1
-#00dbe8
-#9ee000
-#07d200
-#00eae5
-#46d800
-#f1e900
-#00b8f0
-#00c1ee
-#00dfe8
-#5eda00
-#7add00
-#04d100
-#b0e200
-#93df00
-#00c8ec
-#66db00
-#00c6ed
-#00b7f0
-#3cd700
-#2dd500
-#00b1f1
-#0078fd
-#00f6e3
-#0072fe
-#00e3e7
-#44d800
-#4dd900
-#007cfc
-#d2e600
-#31d600
-#95e000
-#00a1f4
-#f2e900
-#00f2e4
-#0083fb
-#0083fb
+#3889f8
+#0c74fe
+#3a8af8
+#217efb
+#74cc2f L
+#65cf1d L
+#2a82fa
+#4d93f6
+#2a82fa
+#0571fe
+#58d10e L
+#58d10d L
+#74cc2e L
+#6fcd29 L
+#77cc33 L
+#5bd011 L
+#2580fa
+#1e7dfb
+#026fff
+#3487f9
+#4e94f5
+#4a92f6
+#0671fe
+#6bce24 L
+#73cd2e L
+#6ecd28 L
+#5dd013 L
+#72cd2d L
+#74cc2f L
+#61d018 L
+#61cf18 L
+#85ca43 L
+#1578fc
+#2e84f9
+#458ff6
+#1f7dfb
+#0470fe
+#4f94f5
+#2b83fa
+#2a82fa
+#1478fc
+#2781fa
+#0872fe
+#3688f8
+#3085f9
+#1076fd
+#1e7dfb
+#0c74fe
+#0570fe
+#1076fd
+#7fcb3c L
+#64cf1b L
+#197afc
+#1e7cfb
+#187afc
+#1377fd
+#0b73fe
+#0f75fd
+#1679fc
+#0d74fd
+#2c83fa
+#1c7cfc
+#3d8bf7
+#1b7bfc
+#2881fa
+#1779fc
+#2b83fa
+#4991f6
+#4991f6
+#1f7dfb
+#84ca42 L
+#1478fd
+#187afc
+#227efb
+#458ff6
 
 ## Ring 41
 
-#57da00
-#00f6e3
-#00c5ed
-#00cdeb
-#a1e100
-#00b0f1
-#c3e400
-#22d400
-#b8e300
-#00ceeb
-#00c5ed
-#007cfc
-#00d7e9
-#eae800
-#00dee8
-#00e0e7
-#7ddd00
-#e5e700
-#1ad400
-#00e0e7
-#15d300
-#00e5e6
-#9fe100
-#00f0e4
-#46d800
-#00a7f3
-#00c3ed
-#00c8ec
-#00c9ec
-#00eee5
-#8fdf00
-#15d300
-#00cbec
-#28d500
-#00a5f4
-#0076fd
-#00d4ea
-#0087fa
-#008af9
-#00c1ee
-#2fd600
-#6fdc00
-#00d4ea
-#008ef8
-#55d900
-#00f9e2
-#00c1ee
-#b0e200
-#00bcef
-#62db00
-#f9e900
-#2ed600
-#00fee1
-#96e000
-#00fae2
-#00eee5
-#0092f8
-#89de00
-#14d300
-#62db00
-#00cbec
-#95e000
-#008df9
-#60da00
-#00e5e6
+#3889f8
+#3387f9
+#006eff
+#2680fa
+#3a8af8
+#0c74fe
+#4f94f5
+#2982fa
+#197afc
+#2d84f9
+#81ca3f L
+#3286f9
+#1277fd
+#237ffb
+#0f75fd
+#5095f5
+#2b83fa
+#016eff
+#4e93f5
+#237ffb
+#76cc31 L
+#79cc34 L
+#71cd2b L
+#63cf1a L
+#1076fd
+#6ecd27 L
+#1a7afc
+#2982fa
+#1a7bfc
+#237ffb
+#1176fd
+#5ed014 L
+#0771fe
+#1d7cfb
+#2a82fa
+#237ffb
+#4b92f6
+#4b92f6
+#0c74fe
+#3286f9
+#3286f9
+#4a92f6
+#3e8cf7
+#67cf1f L
+#3688f8
+#6ace23 L
+#76cc31 L
+#67cf1f L
+#1578fc
+#2b83fa
+#0671fe
+#3186f9
+#3587f9
+#3a8af8
+#1277fd
+#458ff6
+#1578fc
+#1176fd
+#3185f9
+#0a73fe
+#2881fa
+#3587f8
+#2680fa
+#1f7dfb
+#88c947 L
 
 ## Ring 42
 
-#00e2e7
-#00b8f0
-#ede800
-#0083fb
-#00aaf3
-#71dc00
-#0080fb
-#90df00
-#d0e500
-#0ad200
-#00a6f3
-#00b3f1
-#83de00
-#009df5
-#6edc00
-#00cbec
-#00c4ed
-#00f5e3
-#00b7f0
-#00d9e9
-#00abf2
-#76dd00
-#c2e400
-#0099f6
-#00abf2
-#58da00
-#24d500
-#bbe300
-#61da00
-#2ed500
-#0077fd
-#0084fb
-#36d600
-#0072fe
-#f3e900
-#8fdf00
-#5cda00
-#00fce2
-#24d500
-#dce700
-#00e5e6
-#ffea00
-#0081fb
-#00f8e2
-#007bfc
-#0088fa
-#0086fa
-#f0e900
-#00bdef
-#00e7e6
-#8cdf00
-#87de00
-#00a6f3
-#2bd500
-#00c9ec
+#1879fc
+#2d84f9
+#0d74fd
+#4e94f5
+#4d93f6
+#217efb
+#3f8cf7
+#438ef7
+#2982fa
+#4891f6
+#3889f8
+#0771fe
+#2a82fa
+#197afc
+#1a7afc
+#0c74fe
+#4b92f6
+#1076fd
+#7ccb38 L
+#6ace23 L
+#88c947 L
+#84ca42 L
+#6ace23 L
+#197afc
+#7ccb38 L
+#58d10d L
+#59d10f L
+#80ca3d L
+#4790f6
+#1e7cfb
+#3588f8
+#3a8af8
+#3d8bf7
+#4f94f5
+#6ace23 L
+#66cf1e L
+#0f75fd
+#74cc2e L
+#84ca43 L
+#2d84f9
+#3286f9
+#458ff6
+#237ffb
+#3286f9
+#3588f8
+#0872fe
+#1477fd
+#2982fa
+#2f85f9
+#4790f6
+#438ef7
+#026fff
+#5095f5
+#1c7bfc
+#4f94f5
 
 ## Ring 43
 
-#59da00
-#d7e600
-#00c2ee
-#00acf2
-#02d100
-#c3e400
-#00a7f3
-#007afd
-#0078fd
-#00d2ea
-#1bd400
-#dee700
-#4ed900
-#dfe700
-#e5e700
-#00d8e9
-#41d700
-#18d300
-#00a6f3
-#00b6f0
-#5eda00
-#78dd00
-#00d3ea
-#00d9e9
-#48d800
-#3cd700
-#4cd800
-#29d500
-#00f8e2
-#e4e700
-#0089f9
-#1ad400
-#2fd600
-#00d2ea
-#35d600
-#0084fa
-#00b3f1
-#19d300
-#e1e700
-#f0e900
-#07d200
-#9ae000
-#0094f7
-#34d600
-#00caec
+#4991f6
+#1377fd
+#408df7
+#0c74fe
+#016fff
+#4e94f5
+#2b83fa
+#4e94f5
+#4e93f5
+#1b7bfc
+#227efb
+#4d93f6
+#71cd2c L
+#6dcd26 L
+#64cf1b L
+#5cd012 L
+#7fcb3c L
+#87c946 L
+#78cc34 L
+#85ca43 L
+#60d016 L
+#7dcb3a L
+#4b92f6
+#5dd013 L
+#75cc30 L
+#60d016 L
+#448ff7
+#4c92f6
+#75cc30 L
+#3c8bf8
+#3487f9
+#036fff
+#1478fd
+#217efb
+#438ef7
+#1076fd
+#0972fe
+#0c74fe
+#237ffb
+#3487f9
+#3c8bf8
+#1c7bfc
+#0b73fe
+#1377fd
+#0972fe
 
 ## Ring 44
 
-#a8e100
-#0090f8
-#05d200
-#29d500
-#38d600
-#a7e100
-#bbe300
-#77dd00
-#2dd500
-#00ece5
-#f8e900
-#06d200
-#c6e400
-#00d9e9
-#a7e100
-#007cfc
-#0095f7
-#2cd500
-#0073fe
-#17d300
-#5bda00
-#00aef2
-#0098f6
-#98e000
-#00d4ea
-#00d7e9
-#0080fb
-#00abf2
-#00c4ed
-#00b2f1
-#00bdef
-#00e3e7
-#54d900
-#e0e700
-#a2e100
+#016eff
+#0d74fd
+#1277fd
+#418df7
+#1076fd
+#2d84f9
+#5095f5
+#1277fd
+#026fff
+#207dfb
+#62cf19 L
+#67ce1f L
+#4c93f6
+#1f7dfb
+#60d017 L
+#1b7bfc
+#4991f6
+#448ff7
+#1e7cfb
+#3185f9
+#1176fd
+#6ecd28 L
+#1c7cfc
+#0f75fd
+#1a7bfc
+#0571fe
+#187afc
+#247ffb
+#0872fe
+#1c7bfc
+#1f7dfb
+#217efb
+#4991f6
+#0973fe
+#237ffb
 
 ## Ring 45
 
-#0075fe
-#00f6e3
-#00c4ed
-#a9e200
-#00c2ee
-#bde400
-#78dd00
-#00bfee
-#d1e500
-#58da00
-#08d200
-#00c2ee
-#00ece5
-#00b8f0
-#00d8e9
-#00acf2
-#00abf2
-#cce500
-#00acf2
-#00a3f4
-#00f2e4
-#08d200
-#00ccec
-#00f8e3
-#36d600
+#0f75fd
+#3487f9
+#187afc
+#4c93f6
+#4d93f5
+#197afc
+#016fff
+#76cc31 L
+#5bd110 L
+#1c7cfc
+#438ef7
+#3d8bf8
+#1a7bfc
+#408df7
+#0872fe
+#1f7dfb
+#438ef7
+#2580fa
+#3a8af8
+#1e7cfb
+#0771fe
+#1176fd
+#448ff7
+#217efb
+#237ffb
 
 ## Ring 46
 
-#dbe600
-#00e8e6
-#0096f7
-#efe800
-#00bbef
-#c0e400
-#0091f8
-#00beee
-#60da00
-#8edf00
-#00ede5
-#0082fb
-#00adf2
-#008ff8
-#00b2f1
+#0872fe
+#4c93f6
+#0470fe
+#036fff
+#2b83fa
+#81ca3f L
+#217efb
+#0470ff
+#3b8bf8
+#3286f9
+#227efb
+#3b8af8
+#3085f9
+#4e93f5
+#1d7cfb
 
 ## Ring 47
 
-#00c5ed
-#00d1eb
-#e4e700
-#00e0e8
-#08d200
+#3085f9
+#2982fa
+#1d7cfb
+#247ffb
+#1779fc

@@ -81,7 +81,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - a pointer in frontend/CLAUDE.md
 - [done] update the list page snapshots
 
-#2 Planet is divided into land & sea
+#2 [done] Planet is divided into land & sea
 - [done] modify planet.md: mark a triangle as land by putting "L" to the triangle line, space-separated from color
     - form continents
         - huge groups of neighbouring triangles are land

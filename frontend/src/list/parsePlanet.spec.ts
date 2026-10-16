@@ -32,4 +32,15 @@ describe("parsePlanetColors", () => {
 
     expect(parsePlanetColors(planetMarkdown)).toEqual([["#ff0000"]]);
   });
+
+  it("reads the colour of a triangle marked as land", () => {
+    const planetMarkdown = [
+      "# Topology",
+      "## Ring 0",
+      "#ffea00 L",
+      "#006eff",
+    ].join("\n");
+
+    expect(parsePlanetColors(planetMarkdown)).toEqual([["#ffea00", "#006eff"]]);
+  });
 });
