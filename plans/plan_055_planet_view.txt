@@ -134,8 +134,8 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - tropical: #55c400-#b2ed00
     - apply random colors to land triangles according to their biome
 
-#4 Planet has forested zones
-- on land there are large zones with forest biome sub-type (the rest of the land mass is the grassland subtype)
+#4 [done] Planet has forested zones
+- [done] on land there are large zones with forest biome sub-type (the rest of the land mass is the grassland subtype)
     - triangle which is a forested zone is marked with F (next to L)
     - grow forested zones randomly on land triangles
         - forested zone has a random size between 1 and 20 triangles
@@ -146,7 +146,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - do not grow forest on a triangle in a ring with polar climate zone
         - polar *biomes* may still have forests (in sub-polar zones)
     - overall, 50% of land triangles should be forests
-- forested zones look different from un-forested zones
+- [done] forested zones look different from un-forested zones
     - color ranges per forested zone, by biome type
         - polar: #00735e-#009959
         - temperate: #0a6900-#11ab00

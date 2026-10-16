@@ -33,15 +33,16 @@ describe("parsePlanetColors", () => {
     expect(parsePlanetColors(planetMarkdown)).toEqual([["#ff0000"]]);
   });
 
-  it("reads the colour of a triangle marked as land", () => {
+  it("reads the colour of a triangle whatever it is marked as", () => {
     const planetMarkdown = [
       "# Topology",
       "## Ring 0",
-      "#ffea00 L",
-      "#006eff",
+      "#ffea00 L temperate",
+      "#0a6900 L F temperate",
+      "#006eff polar",
     ].join("\n");
 
-    expect(parsePlanetColors(planetMarkdown)).toEqual([["#ffea00", "#006eff"]]);
+    expect(parsePlanetColors(planetMarkdown)).toEqual([["#ffea00", "#0a6900", "#006eff"]]);
   });
 
   it("does not take a ring's climate zone for a triangle", () => {
