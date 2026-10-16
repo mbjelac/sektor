@@ -129,15 +129,15 @@ Climate: polar
 #4697e7 polar
 #2884e1 polar
 #4495e7 polar
-#dcfeff L polar
+#e5feff L polar
 #378ee4 polar
 #4998e8 polar
-#c5fdff L polar
-#b8fdff L polar
+#d2feff L polar
+#affdff L polar
 #4495e7 polar
 #2683e0 polar
-#c2fdff L polar
-#e1feff L polar
+#a0fcff L polar
+#d4feff L polar
 #388ee4 polar
 #3f92e6 polar
 #338be3 polar
@@ -180,7 +180,7 @@ Climate: sub-polar
 #378ee4 temperate
 #4294e6 temperate
 #3c91e5 polar
-#a5fcff L polar
+#04ff96 L polar
 #2a86e1 polar
 #4998e8 temperate
 #4596e7 polar
@@ -190,7 +190,7 @@ Climate: sub-polar
 #3d91e5 temperate
 #2683e0 temperate
 #2d87e2 temperate
-#cffeff L polar
+#65ffbf L polar
 #4395e6 polar
 #00de00 L temperate
 #2985e1 polar
@@ -243,12 +243,12 @@ Climate: sub-polar
 #4093e6 temperate
 #3a8fe5 polar
 #4898e8 polar
-#e6feff L polar
+#6fffc3 L polar
 #4696e7 polar
 #398fe4 temperate
-#f1ffff L polar
+#86ffcd L polar
 #00c800 L temperate
-#b7fdff L polar
+#42ffb0 L polar
 #3a8fe5 temperate
 #2e88e2 polar
 #4394e6 temperate
@@ -321,8 +321,8 @@ Climate: sub-polar
 #4495e7 temperate
 #358ce4 temperate
 #3c91e5 polar
-#feffff L polar
-#a8fcff L polar
+#3affad L polar
+#08ff98 L polar
 #00af00 L temperate
 #318ae3 polar
 #0e9200 L F temperate
@@ -404,8 +404,8 @@ Climate: sub-polar
 #2a86e1 polar
 #378de4 temperate
 #368de4 polar
-#f6ffff L polar
-#c1fdff L polar
+#49ffb4 L polar
+#62ffbe L polar
 #00b100 L temperate
 #00815c L F polar
 #008e5a L F polar
@@ -414,12 +414,12 @@ Climate: sub-polar
 #00b700 L temperate
 #00dd00 L temperate
 #00b700 L temperate
-#a9fcff L polar
+#12ff9c L polar
 #00d200 L temperate
-#a2fcff L polar
+#56ffb9 L polar
 #2c87e2 temperate
-#ddfeff L polar
-#d7feff L polar
+#87ffcd L polar
+#88ffce L polar
 #0c7b00 L F temperate
 #0e8d00 L F temperate
 #10a400 L F temperate
@@ -496,24 +496,24 @@ Climate: sub-polar
 #2e88e2 temperate
 #4093e6 polar
 #4898e8 temperate
-#fbffff L polar
+#04ff97 L polar
 #00c200 L temperate
 #00d900 L temperate
-#eafeff L polar
-#b8fdff L polar
+#86ffcd L polar
+#99ffd5 L polar
 #00ca00 L temperate
 #00855c L F polar
-#cffeff L polar
+#0eff9b L polar
 #0c7c00 L F temperate
 #0b7500 L F temperate
 #00735e L F polar
-#e0feff L polar
+#62ffbe L polar
 #3f93e6 polar
 #4999e8 polar
 #3089e3 temperate
-#dcfeff L polar
+#02ff96 L polar
 #4697e7 temperate
-#e8feff L polar
+#52ffb7 L polar
 #0c7e00 L F temperate
 #00ad00 L temperate
 #00905a L F polar
@@ -4828,8 +4828,8 @@ Climate: temperate
 
 Climate: sub-polar
 
-#a3fcff L polar
-#fbffff L polar
+#97ffd4 L polar
+#07ff98 L polar
 #0f9600 L F temperate
 #388ee4 polar
 #2985e1 polar
@@ -4849,19 +4849,19 @@ Climate: sub-polar
 #0e8c00 L F temperate
 #0a6e00 L F temperate
 #00a000 L temperate
-#d5feff L polar
+#3bffad L polar
 #4395e7 temperate
 #2c87e2 temperate
 #2683e0 temperate
-#defeff L polar
+#0aff99 L polar
 #388ee4 temperate
 #2a86e1 polar
 #338be3 polar
 #3f92e6 polar
 #0b7400 L F temperate
-#a7fcff L polar
+#20ffa2 L polar
 #00bd00 L temperate
-#a2fcff L polar
+#3bffae L polar
 #4294e6 temperate
 #2c87e2 temperate
 #388ee4 polar
@@ -4892,10 +4892,10 @@ Climate: sub-polar
 #2b86e1 polar
 #3b90e5 polar
 #2885e1 polar
-#abfcff L polar
+#69ffc1 L polar
 #3f92e6 temperate
 #2e88e2 temperate
-#c5fdff L polar
+#65ffbf L polar
 #3f92e6 polar
 #4a99e8 polar
 #4697e7 temperate
@@ -4938,8 +4938,8 @@ Climate: sub-polar
 #00835c L F polar
 #008f5a L F polar
 #2c87e2 temperate
-#d2feff L polar
-#c4fdff L polar
+#56ffb9 L polar
+#0fff9b L polar
 #009559 L F polar
 #00b300 L temperate
 #109f00 L F temperate
@@ -5010,7 +5010,7 @@ Climate: sub-polar
 #007e5d L F polar
 #0f9400 L F temperate
 #4696e7 polar
-#9ffcff L polar
+#8fffd1 L polar
 #00bc00 L temperate
 #00c700 L temperate
 
@@ -5031,8 +5031,8 @@ Climate: sub-polar
 #0c7d00 L F temperate
 #0c7a00 L F temperate
 #00bb00 L temperate
-#eefeff L polar
-#b5fdff L polar
+#98ffd4 L polar
+#53ffb8 L polar
 #007c5d L F polar
 #4999e8 polar
 #2a86e1 temperate
@@ -5046,10 +5046,10 @@ Climate: sub-polar
 #10a100 L F temperate
 #00795d L F polar
 #0d8500 L F temperate
-#a0fcff L polar
-#a5fcff L polar
-#cbfdff L polar
-#feffff L polar
+#94ffd3 L polar
+#6bffc2 L polar
+#24ffa4 L polar
+#65ffbf L polar
 #358ce3 temperate
 #2c87e2 polar
 #4495e7 temperate
@@ -5123,7 +5123,7 @@ Climate: sub-polar
 #00925a L F polar
 #00755e L F polar
 #348be3 temperate
-#b8fdff L polar
+#62ffbe L polar
 #4797e7 polar
 #378de4 temperate
 #2b86e2 polar
@@ -5162,7 +5162,7 @@ Climate: sub-polar
 #2985e1 temperate
 #3a8fe5 temperate
 #4193e6 polar
-#c0fdff L polar
+#6cffc2 L polar
 
 ## Ring 42
 
@@ -5193,8 +5193,8 @@ Climate: sub-polar
 #007b5d L F polar
 #4294e6 temperate
 #0e9300 L F temperate
-#aafcff L polar
-#9ffcff L polar
+#28ffa6 L polar
+#01ff96 L polar
 #00a800 L temperate
 #358ce4 polar
 #3c91e5 polar
@@ -5205,8 +5205,8 @@ Climate: sub-polar
 #00a600 L temperate
 #00a500 L temperate
 #2e88e2 temperate
-#d1feff L polar
-#d7feff L polar
+#03ff96 L polar
+#26ffa5 L polar
 #368de4 polar
 #3089e3 polar
 #368de4 polar
@@ -5240,23 +5240,23 @@ Climate: polar
 #4395e7 polar
 #3089e2 polar
 #2a86e1 polar
-#fbffff L polar
-#a0fcff L polar
-#cffeff L polar
-#c1fdff L polar
-#a4fcff L polar
-#b2fdff L polar
-#adfcff L polar
-#d6feff L polar
-#b3fdff L polar
-#bafdff L polar
-#4596e7 polar
-#b2fdff L polar
-#dffeff L polar
+#c5fdff L polar
+#d7feff L polar
+#ddfeff L polar
+#f8ffff L polar
 #cafdff L polar
+#a5fcff L polar
+#a6fcff L polar
+#ecfeff L polar
+#adfcff L polar
+#eafeff L polar
+#4596e7 polar
+#a2fcff L polar
+#b9fdff L polar
+#d7feff L polar
 #4395e6 polar
 #2784e1 polar
-#e7feff L polar
+#bafdff L polar
 #388ee4 polar
 #2f89e2 polar
 #3089e3 polar
@@ -5288,18 +5288,18 @@ Climate: polar
 #2884e1 polar
 #2f89e2 polar
 #2985e1 polar
-#cdfdff L polar
-#bbfdff L polar
+#f2ffff L polar
+#a8fcff L polar
 #4495e7 polar
 #2c87e2 polar
-#a0fcff L polar
+#fbffff L polar
 #3f92e6 polar
 #2583e0 polar
 #358de4 polar
 #3c90e5 polar
 #3089e3 polar
 #388ee4 polar
-#f7ffff L polar
+#b6fdff L polar
 #328ae3 polar
 #2885e1 polar
 #2a86e1 polar
@@ -5325,8 +5325,8 @@ Climate: polar
 #4294e6 polar
 #2885e1 polar
 #348ce3 polar
-#f5ffff L polar
-#d6feff L polar
+#cffeff L polar
+#9efcff L polar
 #4093e6 polar
 #2482e0 polar
 #2885e1 polar
@@ -5353,7 +5353,7 @@ Climate: polar
 #2985e1 polar
 #398fe5 polar
 #3f92e6 polar
-#bdfdff L polar
+#b7fdff L polar
 #2e88e2 polar
 #3e92e5 polar
 #3d91e5 polar
