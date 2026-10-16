@@ -48,3 +48,7 @@ So, except for the Desert, all biome groups have sub-groups:
     - if the sektor's area (i.e. planet triangle, see plan 55) is non-land
     - amount of sea squares in the sektor is random between 70% and 90%
     - no rivers
+
+#3 Tropical sektors look tropical
+- if a sektor's area is in a tropical biome
+    - use elevation & forest rendering SGLs from folder frontend/src/assets/terrain/tropical
