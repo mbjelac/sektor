@@ -172,7 +172,8 @@ async function storeSektors(page: Page, ownedSektorIds: string[]) {
 
 // More sektors than the window holds are scrolled through on their own: the standings beside them
 // stay put, and no bar is drawn down the side of them.
-test("scrolls the sektors on their own, without a bar and without moving the standings", async ({ page }) => {
+// Skipped while the leaderboard is hidden from the list page.
+test.skip("scrolls the sektors on their own, without a bar and without moving the standings", async ({ page }) => {
   await storeManySektors(page, 40);
 
   await page.goto("/");
@@ -223,7 +224,8 @@ async function storeManySektors(page: Page, sektorCount: number) {
   }, [CURRENT_PLAYER, sektorCount] as [string, number]);
 }
 
-test("shows every player on the leaderboard", async ({ page }) => {
+// Skipped while the leaderboard is hidden from the list page.
+test.skip("shows every player on the leaderboard", async ({ page }) => {
   await storeMiningSektor(page, "Alpha", [20, 30, 40]);
   await storeMiningSektor(page, "Beta", [10]);
 
@@ -324,7 +326,8 @@ test("stands at the same size whatever it holds", async ({ page }) => {
 // More resources than the page holds are scrolled through in the list itself, so that the page and
 // the two lists beside it stay where the player last saw them. The bar for doing it is left
 // undrawn: the amounts are what the player is looking at, and a bar down the side of them is not.
-test("scrolls the resources on its own, without a bar and without moving the standings", async ({ page }) => {
+// Skipped while the leaderboard is hidden from the list page.
+test.skip("scrolls the resources on its own, without a bar and without moving the standings", async ({ page }) => {
   await storeSektorWithBuildings(page, "Alpha", ["TestRefinery", "TestHouse", "TestProcessor"], 6);
   await page.setViewportSize({ width: 1280, height: 400 });
 

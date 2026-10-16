@@ -970,6 +970,12 @@ body > main {
     color: #fff;
 }
 
+/* The leaderboard is hidden from the list page for now, though it is still drawn, so that it can be
+   brought back by taking this away. */
+#leaderboard {
+    display: none !important;
+}
+
 #leaderboard {
     width: 100%;
     max-width: 420px;
@@ -1163,9 +1169,14 @@ body > main {
    two beside it, the list itself is nothing to look at: every resource stands in a panel of its own,
    with the page showing between them. It is as tall as the page whatever it holds, so that the
    column it stands in never changes size. */
+/* It stands against the right side of the window, between the player's name above it and the PURGE
+   button below it, rather than in a column beside the other lists. */
 #global-state-panel {
-    width: 100%;
-    height: 100%;
+    position: fixed;
+    top: 56px;
+    bottom: 56px;
+    right: 16px;
+    width: 300px;
 }
 
 .global-state-list {
