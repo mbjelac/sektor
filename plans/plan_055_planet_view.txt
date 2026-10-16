@@ -201,3 +201,14 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 #7 [done] Player can rotate planet to vertical axis
 - [done] when player doubleclicks the planet canvas
     - rotate planet so that it's poles are "vertical", i.e. both poles are equally distant from view port
+
+#8 Created sektors are located on the planet
+- when creating a sektor, pick a habitable triangle at random
+    - habitable triangle:
+        - ring is not in polar climate zone
+        - triangle either
+            - land
+            - sea next to land or 1 sea triangle away from land
+    - mark the sektor on the triangle as a small white hollow square
+    - render sektor name hovering under the square
+    - both the square and the label move if the player rotates the planet
