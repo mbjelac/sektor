@@ -221,3 +221,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - flash list item background
             - white background
             - fade away white background
+
+#10 Player can visit sektor from globe
+- when player doubleclicks a sektor marked on globe (either square marking or label)
+    - navigate to map page with that sektor
