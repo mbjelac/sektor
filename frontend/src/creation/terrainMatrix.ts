@@ -5,7 +5,8 @@
 //
 // Half of all sektors on land have a river running through them. It comes in over the rim of the
 // map, wanders across the land a square at a time, and runs out again over the rim. A sektor on the
-// sea has too little land for a river, and has none.
+// sea has too little land for a river, and has none. Neither has a sektor in the desert, which has
+// no water to run one.
 //
 // What is left over is not all flat either: rock stands out of the dry land here and there, which
 // a player builds around as they do the sea.
@@ -42,12 +43,19 @@ export const ELEVATION_SQUARE_COUNTS = [
   Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 5),
 ];
 
-export function createTerrainMatrix(isOnLand: boolean, randomNumber: RandomNumber): number[][] {
+// What the planet is like where a sektor is made: whether it is land or sea, and whether the land
+// is desert.
+export interface SektorGround {
+  isOnLand: boolean;
+  isDesert: boolean;
+}
+
+export function createTerrainMatrix(ground: SektorGround, randomNumber: RandomNumber): number[][] {
   const terrain = allGround();
-  if (isOnLand) {
-    runRiver(terrain, randomNumber);
-  } else {
+  if (!ground.isOnLand) {
     floodWithSea(terrain, randomNumber);
+  } else if (!ground.isDesert) {
+    runRiver(terrain, randomNumber);
   }
   raiseElevations(terrain, randomNumber);
   return terrain;

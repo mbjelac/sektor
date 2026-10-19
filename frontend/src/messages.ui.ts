@@ -40,7 +40,7 @@ export function updateMessages(
   habitatShortages: string[],
   anyBuildingAffectedByPollution: boolean,
   disabledBuildingCount: number,
-  croppedExportCount: number,
+  wastedExportAmount: number,
 ) {
   showMostImportedMessage(planetImportsAndExports);
   showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
@@ -48,7 +48,7 @@ export function updateMessages(
   showPollutionMessage(anyBuildingAffectedByPollution);
   showDisabledBuildingsMessage(disabledBuildingCount);
   showImportCapacityMessage(disabledBuildingCount);
-  showExportCapacityMessage(croppedExportCount);
+  showExportCapacityMessage(wastedExportAmount);
   showToggleButtons();
 }
 
@@ -114,8 +114,8 @@ function showImportCapacityMessage(disabledBuildingCount: number) {
 
 // What the hubs cannot carry out is wasted rather than costing the sektor any building, so the
 // player is told how many exports go to waste and what to do about it.
-function showExportCapacityMessage(croppedExportCount: number) {
-  if (croppedExportCount === 0) {
+function showExportCapacityMessage(wastedExportAmount: number) {
+  if (wastedExportAmount === 0) {
     hideMessage(EXPORT_CAPACITY_MESSAGE_ID);
     return;
   }
@@ -123,7 +123,7 @@ function showExportCapacityMessage(croppedExportCount: number) {
   showMessage(
     EXPORT_CAPACITY_MESSAGE_ID,
     "warning",
-    `Export capacity exceeded: ${croppedExportCount} exports wasted. Optimize sektor or build more transport hubs.`,
+    `Export capacity exceeded: ${wastedExportAmount} exports wasted. Optimize sektor or build more transport hubs.`,
     [],
   );
 }

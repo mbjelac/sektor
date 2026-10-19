@@ -61,6 +61,14 @@ is there.
   `ro(0,0,−((h−2)/2+0.2))`. Half the trees are dropped, the rest narrowed ×0.6 (height kept),
   coloured #003b23–#00cc7a; roof trees are lifted onto the highest new roof under them, and
   ground trees now inside a rock are dropped. Fixed seed; rerunning reproduces the files.
+- `tools/sgl/generator/terrain/desert_elevations.py` — rewrites every
+  `frontend/src/assets/terrain/desert/elevations/<edge|middle>/*.sgl` from the temperate file of
+  the same name: `pri5` rocks become `pyr7 f(50)` frusta, narrowed ×0.7 in `s` x and y,
+  topping out at ×2 the rock's height (`s` z ×4 for the cut; `t` and `r` unchanged), colours random
+  from #d1a56b–#e0b696. Half as many trees (picked from those that still have a frustum top or free
+  ground under them), half the size, colours #cdd99e–#97b061; roof trees are set onto the flat top,
+  and 70% of the ground trees are moved onto a random clear spot on the top of the nearest rock of
+  their own file (staying on the ground when no top has room). Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/outcrop.py` — shared helpers: random core rocks, rock palette,
   tree sizes and colours, pri5 rock geometry, placing trees on rock roofs.
 

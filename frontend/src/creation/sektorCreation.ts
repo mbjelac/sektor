@@ -8,6 +8,7 @@ import { generateSektorName } from "./sektorName.api";
 import { pickSektorLocation } from "./sektorLocation";
 import { getPlanet } from "../list/planet";
 import { TriangleCoordinate } from "../list/planetGrid";
+import { SektorGround } from "./terrainMatrix";
 
 const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Sektors nobody has taken up pile up if they are made faster than they are claimed, so no more are
@@ -36,14 +37,14 @@ export async function createSektorIfNeeded(): Promise<boolean> {
   const levels = neededLevels();
   const level = levels[Math.floor(Math.random() * levels.length)];
 
-  // The sektor's place on the planet is picked first, as whether it stands on land or on the sea
-  // shapes its ground.
+  // The sektor's place on the planet is picked first, as whether it stands on land or on the sea,
+  // and in the desert or not, shapes its ground.
   const location = pickSektorLocation();
 
   // Whatever the ground turns out to hold, the sektor made on it is offered: what a player can do
   // with a sektor is theirs to work out, and no sektor is thrown away for being hard to get
   // anything out of with the buildings it happens to allow.
-  const sektorData = createSektor(level, getLocationPropertyNames(), isLand(location));
+  const sektorData = createSektor(level, getLocationPropertyNames(), groundAt(location));
 
   // The name is waited for before the sektor is numbered, so that a sektor made while this one
   // waits is the one holding the number it was given, and neither of them takes the other's.
@@ -56,8 +57,9 @@ export async function createSektorIfNeeded(): Promise<boolean> {
   return true;
 }
 
-function isLand({ ring, index }: TriangleCoordinate): boolean {
-  return getPlanet().regionRings[ring]![index]!.isLand;
+function groundAt({ ring, index }: TriangleCoordinate): SektorGround {
+  const region = getPlanet().regionRings[ring]![index]!;
+  return { isOnLand: region.isLand, isDesert: region.isDesert };
 }
 
 // A sektor is waiting for somebody as long as nobody owns it, whatever already stands in it.

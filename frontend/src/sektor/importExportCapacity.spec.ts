@@ -270,6 +270,18 @@ describe("a sektor's uncropped imports and exports", () => {
   });
 });
 
+describe("a sektor's wasted export amount", () => {
+  it("is how much its exports were cropped by altogether, not how many exports were cropped", () => {
+    const sektor = sektorWithBuildings([
+      { type: "Hub", location: hubLocation },
+      { type: "Quarry", location: quarryLocation },
+      { type: "Mine", location: mineLocation },
+    ]);
+
+    expect(sektor.getSektorState().wastedExportAmount).toEqual(6);
+  });
+});
+
 describe("a disabled building", () => {
   it("is told apart from a running one by its building state", () => {
     const sektor = sektorWithBuildings([

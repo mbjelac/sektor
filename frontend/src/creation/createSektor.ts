@@ -1,6 +1,6 @@
 import { SektorData } from "../../../shared/sektorData";
 import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
-import { createTerrainMatrix } from "./terrainMatrix";
+import { createTerrainMatrix, SektorGround } from "./terrainMatrix";
 import { RandomNumber } from "./randomNumber";
 import { plantForests } from "./forests";
 import { forestEcosystemSupport } from "../sektor/forest";
@@ -13,11 +13,12 @@ export type { RandomNumber };
 export function createSektor(
   level: number,
   locationPropertyNames: string[],
-  isOnLand: boolean,
+  ground: SektorGround,
   randomNumber: RandomNumber = Math.random,
 ): SektorData {
-  const terrain = createTerrainMatrix(isOnLand, randomNumber);
-  const forests = plantForests(terrain, randomNumber);
+  const terrain = createTerrainMatrix(ground, randomNumber);
+  // Nothing grows in the desert, so no forests are planted there.
+  const forests = ground.isDesert ? [] : plantForests(terrain, randomNumber);
   return {
     level,
     terrain,

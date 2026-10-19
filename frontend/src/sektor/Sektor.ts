@@ -42,6 +42,8 @@ export interface SektorState {
   disabledBuildings: BuildingLocation[];
   // The exports cut short because the sektor cannot ship out all it makes.
   croppedExports: string[];
+  // How much of what the sektor makes goes to waste because its hubs cannot carry it out.
+  wastedExportAmount: number;
   // What the sektor would import were none of its buildings disabled, which is what its hubs fall
   // short of when buildings are disabled.
   uncroppedImports: ResourceThroughput[];
@@ -203,6 +205,7 @@ export class Sektor {
       starvedFunctions,
       disabledBuildings,
       croppedExports: findCroppedExports(uncroppedExports, exports),
+      wastedExportAmount: findWastedExportAmount(uncroppedExports, exports),
       uncroppedImports: this.findImports(this.findStarvedFunctions([])),
       uncroppedExports,
       importExportCapacity,
@@ -635,6 +638,10 @@ function findCroppedExports(uncroppedExports: ResourceThroughput[], croppedExpor
   return uncroppedExports
     .filter((uncroppedExport, exportIndex) => croppedExports[exportIndex].value < uncroppedExport.value)
     .map(uncroppedExport => uncroppedExport.name);
+}
+
+function findWastedExportAmount(uncroppedExports: ResourceThroughput[], croppedExports: ResourceThroughput[]): number {
+  return roundToOneDecimal(sumThroughputValues(uncroppedExports) - sumThroughputValues(croppedExports));
 }
 
 function sumThroughputValues(throughputs: ResourceThroughput[]): number {

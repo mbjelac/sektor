@@ -1,17 +1,26 @@
 import { describe, it, expect } from "vitest";
-import { terrainStyleOfBiome } from "./terrainStyle";
+import { terrainStyleOfRegion } from "./terrainStyle";
 
-describe("terrainStyleOfBiome", () => {
-  // The tropics and the polar regions have a look of their own; every other biome, and a sektor
-  // lying on no biome at all, is drawn the temperate way.
-  it("draws the tropics tropical, the polar regions polar and everything else temperate", () => {
-    const biomes = ["tropical", "temperate", "polar", null];
+describe("terrainStyleOfRegion", () => {
+  // Desert has a look of its own whatever its biome, as have the tropics and the polar regions;
+  // every other biome, and a sektor lying on no region at all, is drawn the temperate way.
+  it("draws desert deserty, the tropics tropical, the polar regions polar and everything else temperate", () => {
+    const regions = [
+      { biome: "tropical", isDesert: false },
+      { biome: "temperate", isDesert: false },
+      { biome: "polar", isDesert: false },
+      { biome: "tropical", isDesert: true },
+      { biome: "temperate", isDesert: true },
+      null,
+    ];
 
-    expect(biomes.map(biome => ({ biome, terrainStyle: terrainStyleOfBiome(biome) }))).toEqual([
-      { biome: "tropical", terrainStyle: "tropical" },
-      { biome: "temperate", terrainStyle: "temperate" },
-      { biome: "polar", terrainStyle: "polar" },
-      { biome: null, terrainStyle: "temperate" },
+    expect(regions.map(region => ({ region, terrainStyle: terrainStyleOfRegion(region) }))).toEqual([
+      { region: { biome: "tropical", isDesert: false }, terrainStyle: "tropical" },
+      { region: { biome: "temperate", isDesert: false }, terrainStyle: "temperate" },
+      { region: { biome: "polar", isDesert: false }, terrainStyle: "polar" },
+      { region: { biome: "tropical", isDesert: true }, terrainStyle: "desert" },
+      { region: { biome: "temperate", isDesert: true }, terrainStyle: "desert" },
+      { region: null, terrainStyle: "temperate" },
     ]);
   });
 });

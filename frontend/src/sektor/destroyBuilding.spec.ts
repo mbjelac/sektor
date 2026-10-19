@@ -101,6 +101,7 @@ describe("destroyBuilding", () => {
       starvedFunctions: [],
       disabledBuildings: [],
       croppedExports: [],
+      wastedExportAmount: 0,
       uncroppedImports: [
         { name: "Water", value: 2 },
       ],

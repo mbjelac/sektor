@@ -58,3 +58,10 @@ So, except for the Desert, all biome groups have sub-groups:
 - [done] if a sektor's area is in a polar biome
     - soil color is from range: #afccc1 - #86ebc4
     - use elevation & forest rendering SGLs from folder frontend/src/assets/terrain/polar
+
+#5 [done] Desert sektors look deserty
+- [done] if a sektor's area is in a desert biome
+    - soil color is from range: #d7e07e - #f0c756
+    - use elevation rendering SGLs from folder frontend/src/assets/terrain/desert
+- [done] do not generate forests
+- [done] do not generate rivers

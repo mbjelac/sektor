@@ -31,7 +31,7 @@ import { drawRiverBed, drawRiverGlints, drawRiverSurface, RIVER_NAME, RiverSquar
 import { riverGlintStrips, riverSideFlowedInFrom, riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
-import { TerrainStyle, terrainStyleOfBiome } from "./terrainStyle";
+import { TerrainStyle, terrainStyleOfRegion } from "./terrainStyle";
 import { getPlanet } from "../list/planet";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
 import { getUsername } from "../login/login.api";
@@ -290,14 +290,14 @@ interface Construction {
 const placedBuildings: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }[] = [];
 let notificationTimeout: ReturnType<typeof setTimeout> | null = null;
 
-// The look of the sektor's ground, rock and forests, taken from the biome of the triangle of the
+// The look of the sektor's ground, rock and forests, taken from the region of the triangle of the
 // planet it lies on. The test sektor lies nowhere on the planet, and neither does a sektor made
 // before sektors were put on it.
 function getTerrainStyle(): TerrainStyle {
-  if (isTestMode || !sektorId) return terrainStyleOfBiome(null);
+  if (isTestMode || !sektorId) return terrainStyleOfRegion(null);
   const location = getSektorLocation(sektorId);
-  if (!location) return terrainStyleOfBiome(null);
-  return terrainStyleOfBiome(getPlanet().regionRings[location.ring]?.[location.index]?.biome ?? null);
+  if (!location) return terrainStyleOfRegion(null);
+  return terrainStyleOfRegion(getPlanet().regionRings[location.ring]?.[location.index] ?? null);
 }
 
 function locationsToLocationProperties(locationMatrix: Location[][]): { [key: string]: number[][] } {
@@ -368,7 +368,7 @@ function updateSektorState() {
     sektorState.habitatShortages,
     buildingsWithOutputDecreasedByPollution.length > 0,
     sektorState.disabledBuildings.length,
-    sektorState.croppedExports.length,
+    sektorState.wastedExportAmount,
   );
   warnedBuildingLocations = [
     ...sektorState.starvedFunctions.map(starvedFunction => starvedFunction.buildingLocation),
@@ -1368,7 +1368,7 @@ updateMessages(
   openedSektorState.habitatShortages,
   sektor.findBuildingsWithOutputDecreasedByPollution().length > 0,
   openedSektorState.disabledBuildings.length,
-  openedSektorState.croppedExports.length,
+  openedSektorState.wastedExportAmount,
 );
 if (isTestMode) {
   (window as any).updateSektorStatePanel = updateSektorStatePanel;

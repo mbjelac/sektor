@@ -16,11 +16,15 @@ import {
 // happen to fall.
 const MAPS_LOOKED_AT = 200;
 
+const LAND_GROUND = { isOnLand: true, isDesert: false };
+const SEA_GROUND = { isOnLand: false, isDesert: false };
+const DESERT_GROUND = { isOnLand: true, isDesert: true };
+
 describe("createTerrainMatrix", () => {
   // The terrain covers the map and no more of it: a matrix wider than the sektor describes ground
   // which is not there.
   it("lays the terrain out over the whole of the sektor's map and no further", () => {
-    const terrain = createTerrainMatrix(false, Math.random);
+    const terrain = createTerrainMatrix(SEA_GROUND, Math.random);
 
     expect({ rows: terrain.length, rowLengths: [...new Set(terrain.map(row => row.length))] })
       .toEqual({ rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] });
@@ -48,6 +52,15 @@ describe("createTerrainMatrix", () => {
   // A sektor on the sea has too little land left for a river to run through.
   it("runs no river through any map of a sektor on the sea", () => {
     const riverSquareCounts = seaMapsDrawn()
+      .map(terrain => squaresOfRiver(terrain).length)
+      .filter(riverSquareCount => riverSquareCount > 0);
+
+    expect(riverSquareCounts).toEqual([]);
+  });
+
+  // The desert has no water to run a river.
+  it("runs no river through any map of a sektor in the desert", () => {
+    const riverSquareCounts = desertMapsDrawn()
       .map(terrain => squaresOfRiver(terrain).length)
       .filter(riverSquareCount => riverSquareCount > 0);
 
@@ -252,11 +265,15 @@ function mapsWithRockStandingInTheSea(): object[] {
 }
 
 function landMapsDrawn(): number[][][] {
-  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(true, Math.random));
+  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(LAND_GROUND, Math.random));
 }
 
 function seaMapsDrawn(): number[][][] {
-  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(false, Math.random));
+  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(SEA_GROUND, Math.random));
+}
+
+function desertMapsDrawn(): number[][][] {
+  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(DESERT_GROUND, Math.random));
 }
 
 function squaresOfSea(terrain: number[][]): [number, number][] {
