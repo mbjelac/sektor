@@ -1,4 +1,4 @@
-# Generates the polar elevations: frontend/src/assets/terrain/polar/elevations/<edge|middle>/<name>.sgl
+# Generates the polar elevations: frontend/src/assets/terrain/polar/elevations/forested/<edge|middle>/<name>.sgl
 #
 # Each is made from the temperate elevation of the same name: the pri5 rocks grow taller and a bit darker, and each
 # gets a thin, shiny white cap of snow on its top face. The cap is turned about the rock's centre (with ro), so it tilts
@@ -37,8 +37,8 @@ KINDS = ['edge', 'middle']
 def main():
     random.seed(SEED)
     for kind in KINDS:
-        temperate_directory = os.path.join(TERRAIN_DIRECTORY, 'temperate', 'elevations', kind)
-        polar_directory = os.path.join(TERRAIN_DIRECTORY, 'polar', 'elevations', kind)
+        temperate_directory = os.path.join(TERRAIN_DIRECTORY, 'temperate', 'elevations', 'forested', kind)
+        polar_directory = os.path.join(TERRAIN_DIRECTORY, 'polar', 'elevations', 'forested', kind)
         files = {}
         for file_name in sorted(os.listdir(temperate_directory)):
             with open(os.path.join(temperate_directory, file_name)) as source:

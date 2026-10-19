@@ -31,7 +31,9 @@ import { drawRiverBed, drawRiverGlints, drawRiverSurface, RIVER_NAME, RiverSquar
 import { riverGlintStrips, riverSideFlowedInFrom, riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
-import { TerrainStyle, terrainStyleOfRegion } from "./terrainStyle";
+import { terrainStyleOfRegion } from "./terrainStyle";
+import { elevationCoverOfRegion } from "./elevationCover";
+import { PlanetRegion } from "../list/parsePlanet";
 import { getPlanet } from "../list/planet";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
 import { getUsername } from "../login/login.api";
@@ -275,7 +277,9 @@ function createTestTerrain(): number[][] {
 
 const builderLevel = getBuilderLevel();
 const terrain = getTerrain();
-const terrainStyle = getTerrainStyle();
+const sektorRegion = getSektorRegion();
+const terrainStyle = terrainStyleOfRegion(sektorRegion);
+const elevationCover = elevationCoverOfRegion(sektorRegion);
 const sektor = new Sektor(getLocations(), everyBuildingDefinition, getLocalResources(), terrain);
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
@@ -290,14 +294,14 @@ interface Construction {
 const placedBuildings: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }[] = [];
 let notificationTimeout: ReturnType<typeof setTimeout> | null = null;
 
-// The look of the sektor's ground, rock and forests, taken from the region of the triangle of the
-// planet it lies on. The test sektor lies nowhere on the planet, and neither does a sektor made
-// before sektors were put on it.
-function getTerrainStyle(): TerrainStyle {
-  if (isTestMode || !sektorId) return terrainStyleOfRegion(null);
+// The region of the planet the sektor lies on, which the look of its ground, rock and forests is
+// taken from. The test sektor lies nowhere on the planet, and neither does a sektor made before
+// sektors were put on it.
+function getSektorRegion(): PlanetRegion | null {
+  if (isTestMode || !sektorId) return null;
   const location = getSektorLocation(sektorId);
-  if (!location) return terrainStyleOfRegion(null);
-  return terrainStyleOfRegion(getPlanet().regionRings[location.ring]?.[location.index] ?? null);
+  if (!location) return null;
+  return getPlanet().regionRings[location.ring]?.[location.index] ?? null;
 }
 
 function locationsToLocationProperties(locationMatrix: Location[][]): { [key: string]: number[][] } {
@@ -570,7 +574,7 @@ const EMPTY_NAME = "Empty";
 // more, so the panel shows them with no bodies over the floor.
 function terrainRenderingCodeAt(gx: number, gy: number): string {
   return isElevationLocation(gx, gy)
-    ? elevationRenderingCode(squareVariation(gx, gy), elevationSides(terrain, gx, gy), terrainStyle)
+    ? elevationRenderingCode(squareVariation(gx, gy), elevationSides(terrain, gx, gy), terrainStyle, elevationCover)
     : "";
 }
 
@@ -738,7 +742,7 @@ function bakedElevationBodies(p: p5, location: BuildingLocation): BakedBodies {
   const variation = squareVariation(location.x, location.y);
   const sides = elevationSides(terrain, location.x, location.y);
   const bakeName = `${ELEVATION_NAME} ${variation} ${sides.north} ${sides.east} ${sides.south} ${sides.west}`;
-  return bakedBuildingBodies(p, bakeName, elevationRenderingCode(variation, sides, terrainStyle));
+  return bakedBuildingBodies(p, bakeName, elevationRenderingCode(variation, sides, terrainStyle, elevationCover));
 }
 
 // Every building of a type draws the same bodies, so one bake serves all of its locations.

@@ -1,4 +1,4 @@
-# Generates the tropical elevations: frontend/src/assets/terrain/tropical/elevations/<edge|middle>/<name>.sgl
+# Generates the tropical elevations: frontend/src/assets/terrain/tropical/elevations/forested/<edge|middle>/<name>.sgl
 #
 # Each is made from the temperate elevation of the same name: the pri5 rocks become darker sph boulders standing in
 # the same place, and the trees grow bigger and turn a bright tropical green. A tree that stood on a flat pri5 roof
@@ -29,8 +29,8 @@ NUMBER = r'(-?\d+(?:\.\d+)?)'
 def main():
     random.seed(SEED)
     for kind in KINDS:
-        temperate_directory = os.path.join(TERRAIN_DIRECTORY, 'temperate', 'elevations', kind)
-        tropical_directory = os.path.join(TERRAIN_DIRECTORY, 'tropical', 'elevations', kind)
+        temperate_directory = os.path.join(TERRAIN_DIRECTORY, 'temperate', 'elevations', 'forested', kind)
+        tropical_directory = os.path.join(TERRAIN_DIRECTORY, 'tropical', 'elevations', 'forested', kind)
         files = {}
         for file_name in sorted(os.listdir(temperate_directory)):
             with open(os.path.join(temperate_directory, file_name)) as source:

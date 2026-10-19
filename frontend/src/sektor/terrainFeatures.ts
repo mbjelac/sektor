@@ -9,6 +9,7 @@
 
 import { ELEVATION } from "../../../shared/terrain";
 import { TerrainStyle } from "./terrainStyle";
+import { ElevationCover } from "./elevationCover";
 
 // What the panel calls a square of rock the player has clicked on. Every outcrop goes by it,
 // whichever shape it happens to stand in.
@@ -49,9 +50,19 @@ export function squareVariation(x: number, z: number): number {
 }
 
 // Rock is drawn in the look of the sektor's terrain, each look having its own folder of side files.
-export function elevationRenderingCode(variation: number, sides: ElevationSides, terrainStyle: TerrainStyle): string {
+// Every look but the desert's has a forested and a grassland folder of them; the desert has
+// nothing to be wooded with, so it has the one.
+export function elevationRenderingCode(
+  variation: number,
+  sides: ElevationSides,
+  terrainStyle: TerrainStyle,
+  elevationCover: ElevationCover,
+): string {
+  const elevationFolder = terrainStyle === "desert"
+    ? `${TERRAIN_FOLDER}/${terrainStyle}/elevations`
+    : `${TERRAIN_FOLDER}/${terrainStyle}/elevations/${elevationCover}`;
   return elevationSideFiles(variation, sides)
-    .map(sideFile => (elevationSideRenderingCodes[`${TERRAIN_FOLDER}/${terrainStyle}/elevations/${sideFile}`] ?? "").trim())
+    .map(sideFile => (elevationSideRenderingCodes[`${elevationFolder}/${sideFile}`] ?? "").trim())
     .join("\n");
 }
 
@@ -76,8 +87,8 @@ const SQUARE_VARIATION_COUNT = 10;
 
 const TERRAIN_FOLDER = "../assets/terrain";
 
-// The bodies of every side file of the rock, in every look, by the path it was read from.
+// The bodies of every side file of the rock, in every look and cover, by the path it was read from.
 const elevationSideRenderingCodes = import.meta.glob<string>(
-  "../assets/terrain/*/elevations/*/*.sgl",
+  ["../assets/terrain/*/elevations/*/*.sgl", "../assets/terrain/*/elevations/*/*/*.sgl"],
   { query: "?raw", import: "default", eager: true },
 );

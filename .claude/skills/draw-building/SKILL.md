@@ -22,7 +22,7 @@ Before writing a new script to generate SGL, check `tools/sgl/generator/` — re
 is there.
 
 - `tools/sgl/generator/terrain/middle_elevations.py` — writes
-  `../../../frontend/src/assets/terrain/temperate/elevations/middle/<edge><variant>.sgl` (edge = e/n/s/w,
+  `../../../frontend/src/assets/terrain/temperate/elevations/forested/middle/<edge><variant>.sgl` (edge = e/n/s/w,
   variant = 0–9): for each, a whole grassy rocky outcrop with rocks piled up towards that edge,
   of which only the triangle facing that edge is kept. Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/forests.py` — writes
@@ -45,7 +45,7 @@ is there.
   - Check a result by measuring each tree's nearest-neighbour gap (touching count, largest
     gap/overlap), trees centred within 3 of an edge (~12% expected), and duplicate positions.
 - `tools/sgl/generator/terrain/tropical_elevations.py` — rewrites every
-  `frontend/src/assets/terrain/tropical/elevations/<edge|middle>/*.sgl` from the temperate file of
+  `frontend/src/assets/terrain/tropical/elevations/forested/<edge|middle>/*.sgl` from the temperate file of
   the same name: `pri5` rocks become `sph` boulders (same `s`/`t`/`r`, colour ×0.6), trees grow
   ×1.5 with colours from #3dbf00–#51ff00, and roof trees (`t` z ≥ 1) are reset onto the highest
   boulder top under them (looking at all four files of the variant), sunk 15% of their height.
@@ -55,7 +55,7 @@ is there.
   name: each tree keeps its place and width; heights 7–11 map linearly onto 10–20 (tallest twice
   the shortest), colours from #005727–#629e7d. Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/polar_elevations.py` — rewrites every
-  `frontend/src/assets/terrain/polar/elevations/<edge|middle>/*.sgl` from the temperate file of
+  `frontend/src/assets/terrain/polar/elevations/forested/<edge|middle>/*.sgl` from the temperate file of
   the same name: `pri5` rocks grow ×1.5–2 in height (base `t` unchanged), colour ×0.85, and each
   gets a white, `sh(90)` shiny `pri5` snow cap (2 high, 1 wider, 0.2 above the top) turned with the rock via
   `ro(0,0,−((h−2)/2+0.2))`. Half the trees are dropped, the rest narrowed ×0.6 (height kept),
@@ -69,6 +69,17 @@ is there.
   ground under them), half the size, colours #cdd99e–#97b061; roof trees are set onto the flat top,
   and 70% of the ground trees are moved onto a random clear spot on the top of the nearest rock of
   their own file (staying on the ground when no top has room). Fixed seed; rerunning reproduces the files.
+- `tools/sgl/generator/terrain/elevation_covers.py` — works **in place** on
+  `frontend/src/assets/terrain/<polar|temperate|tropical>/elevations/<forested|grasslands>/<edge|middle>/*.sgl`;
+  each run changes what the last one wrote. The current forested files are the original trees
+  doubled twice (run `forested` twice, ×4); the grasslands ones ran `grasslands` once. `forested` doubles the trees: each gets a new tree of
+  its size next to it (0.7–1.1× the two radii away, never closer than 0.5×, colour of another tree
+  of the file), on the same kind of spot — open ground at the same `t` z, or a roof (pri5 roof or
+  tropical boulder top) at the same height above it — and inside the file's own triangle
+  (n: y ≤ −|x|, s: y ≥ |x|, e: x ≥ |y|, w: x ≤ −|y|). `grasslands` keeps each tree with chance ½.
+  Rocks (pri5 without `sh(`, tropical `sph` with `r(`) are never touched. The other elevation
+  generators above write/read the `forested` folders, which since then hold the doubled trees —
+  rerunning them means re-copying to `grasslands` and rerunning this script.
 - `tools/sgl/generator/terrain/outcrop.py` — shared helpers: random core rocks, rock palette,
   tree sizes and colours, pri5 rock geometry, placing trees on rock roofs.
 

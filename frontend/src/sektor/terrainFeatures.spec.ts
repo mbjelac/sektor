@@ -1,13 +1,23 @@
 import { describe, it, expect } from "vitest";
-import { elevationRenderingCode, elevationSideFiles, elevationSides, squareVariation } from "./terrainFeatures";
+import {
+  elevationRenderingCode,
+  ElevationSide,
+  ElevationSides,
+  elevationSideFiles,
+  elevationSides,
+  squareVariation,
+} from "./terrainFeatures";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
 import { TerrainStyle } from "./terrainStyle";
+import { ElevationCover } from "./elevationCover";
 
 // How many shapes rock and forests stand in, which is how many the squares of a map are shared out between.
 const SQUARE_VARIATION_COUNT = 10;
 
-const TERRAIN_STYLES: TerrainStyle[] = ["temperate", "tropical", "polar"];
+const TERRAIN_STYLES: TerrainStyle[] = ["temperate", "tropical", "polar", "desert"];
+
+const ELEVATION_COVERS: ElevationCover[] = ["forested", "grasslands"];
 
 function everySquareOfTheMap(): { x: number, z: number }[] {
   return Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>
@@ -66,14 +76,36 @@ describe("elevationSideFiles", () => {
 describe("elevationRenderingCode", () => {
   // Every side of every shape has bodies to draw it with, in every look of the terrain, so no side
   // of any rock comes out empty.
-  it("has bodies to draw every side of every shape in every look", () => {
-    const everySideDrawnAs = (side: "edge" | "middle") => ({ north: side, east: side, south: side, west: side });
+  it("has bodies to draw every side of every shape in every look and cover", () => {
     const shapesWithAnEmptySide = TERRAIN_STYLES
-      .flatMap(terrainStyle => Array.from({ length: SQUARE_VARIATION_COUNT }, (_unused, variation) => ({ terrainStyle, variation })))
-      .flatMap(({ terrainStyle, variation }) => (["edge", "middle"] as const).map(side => ({ terrainStyle, variation, side })))
-      .filter(({ terrainStyle, variation, side }) =>
-        elevationRenderingCode(variation, everySideDrawnAs(side), terrainStyle).split("\n").some(line => line.trim() === ""));
+      .flatMap(terrainStyle => ELEVATION_COVERS.map(elevationCover => ({ terrainStyle, elevationCover })))
+      .flatMap(look => Array.from({ length: SQUARE_VARIATION_COUNT }, (_unused, variation) => ({ ...look, variation })))
+      .flatMap(shape => (["edge", "middle"] as const).map(side => ({ ...shape, side })))
+      .filter(({ terrainStyle, elevationCover, variation, side }) =>
+        elevationRenderingCode(variation, everySideDrawnAs(side), terrainStyle, elevationCover)
+          .split("\n").some(line => line.trim() === ""));
 
     expect(shapesWithAnEmptySide).toEqual([]);
   });
+
+  // Forested rock and grassland rock are drawn from folders of their own in every look but the
+  // desert's, which has nothing to be wooded with and draws both the same.
+  it("draws forested and grassland rock differently in every look but the desert", () => {
+    const looksDrawingCoversAlike = TERRAIN_STYLES.map(terrainStyle => ({
+      terrainStyle,
+      coversDrawnAlike: elevationRenderingCode(0, everySideDrawnAs("edge"), terrainStyle, "forested")
+        === elevationRenderingCode(0, everySideDrawnAs("edge"), terrainStyle, "grasslands"),
+    }));
+
+    expect(looksDrawingCoversAlike).toEqual([
+      { terrainStyle: "temperate", coversDrawnAlike: false },
+      { terrainStyle: "tropical", coversDrawnAlike: false },
+      { terrainStyle: "polar", coversDrawnAlike: false },
+      { terrainStyle: "desert", coversDrawnAlike: true },
+    ]);
+  });
 });
+
+function everySideDrawnAs(side: ElevationSide): ElevationSides {
+  return { north: side, east: side, south: side, west: side };
+}

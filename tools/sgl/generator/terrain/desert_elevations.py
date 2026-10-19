@@ -43,7 +43,7 @@ def main():
     random.seed(SEED)
     tree_random = random.Random(TREE_SEED)
     for kind in KINDS:
-        temperate_directory = os.path.join(TERRAIN_DIRECTORY, 'temperate', 'elevations', kind)
+        temperate_directory = os.path.join(TERRAIN_DIRECTORY, 'temperate', 'elevations', 'forested', kind)
         desert_directory = os.path.join(TERRAIN_DIRECTORY, 'desert', 'elevations', kind)
         files = {}
         for file_name in sorted(os.listdir(temperate_directory)):

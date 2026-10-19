@@ -1,4 +1,4 @@
-# Generates the "middle" elevation triangles: frontend/src/assets/terrain/temperate/elevations/middle/<edge><variant>.sgl
+# Generates the "middle" elevation triangles: frontend/src/assets/terrain/temperate/elevations/forested/middle/<edge><variant>.sgl
 #
 # For each variant and each edge, a whole outcrop square is generated with a pile of rocks rising towards that edge
 # (like the "Neighbouring elevation" example in frontend/src/assets/terrain.md), so that the neighbouring square's
@@ -20,7 +20,7 @@ SEED = 9044
 # Outward unit vector of each high edge.
 EDGE_DIRECTIONS = {'e': (1, 0), 's': (0, 1), 'w': (-1, 0), 'n': (0, -1)}
 OUTPUT_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..',
-                                'frontend', 'src', 'assets', 'terrain', 'temperate', 'elevations', 'middle')
+                                'frontend', 'src', 'assets', 'terrain', 'temperate', 'elevations', 'forested', 'middle')
 
 
 def main():
