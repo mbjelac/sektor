@@ -92,20 +92,48 @@ So, except for the Desert, all biome groups have sub-groups:
     - desert: all matrix elements are the same number
         - tropical: 12
         - temperate: 8
-        - polar: 5
+        - polar: 2
     - sea: all matrix elements are the same number
         - tropical: 10
-        - temperate: 7
-        - polar: 3
-    - forest: create randomly 2-6 "pockets" of high insolation throughout the sektor
+        - temperate: 6
+        - polar: 1
+    - forest: create randomly 6-10 "pockets" of high insolation throughout the sektor
         - pockets have a high point and then fall off as the distance from that point grows
+            - fall off per square: 4
         - high point values per biome type:
-            - tropical: 8
-            - temperate: 6
-            - polar: 2
-    - grassland: create randomly 2-6 "pockets" of high insolation throughout the sektor
-        - pockets have a high point and then fall off as the distance from that point grows
-        - high point values per biome type:
-            - tropical: 10
+            - tropical: 12
             - temperate: 8
-            - polar: 3
+            - polar: 1
+    - grassland: create randomly 4-8 "pockets" of high insolation throughout the sektor
+        - pockets have a high point and then fall off as the distance from that point grows
+            - fall off per square: 2
+        - high point values per biome type:
+            - tropical: 12
+            - temperate: 8
+            - polar: 1
+
+#9 Biomes affect wind
+- when generating wind matrix, take biomes into account
+- wind has "tracks" across a sektor
+- generate randomly from 1 to 3 wind tracks
+- a wind track is a row of squares with wind high point
+    - this row starts on one edge and ends on the opposite egde
+    - all wind tracks on a sektor are parallel
+    - rows next to the track high point have a dropoff with distance
+- high points:
+    - desert:
+        - tropical: 12
+        - temperate: 12
+        - polar: 12
+    - sea:
+        - tropical: 12
+        - temperate: 12
+        - polar: 12
+    - forest:
+        - tropical: 8
+        - temperate: 6
+        - polar: 8
+    - grassland:
+        - tropical: 10
+        - temperate: 8
+        - polar: 10
