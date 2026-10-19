@@ -44,6 +44,12 @@ is there.
     when the reach changes, or gaps appear.
   - Check a result by measuring each tree's nearest-neighbour gap (touching count, largest
     gap/overlap), trees centred within 3 of an edge (~12% expected), and duplicate positions.
+- `tools/sgl/generator/terrain/tropical_elevations.py` — rewrites every
+  `frontend/src/assets/terrain/tropical/elevations/<edge|middle>/*.sgl` from the temperate file of
+  the same name: `pri5` rocks become `sph` boulders (same `s`/`t`/`r`, colour ×0.6), trees grow
+  ×1.5 with colours from #3dbf00–#51ff00, and roof trees (`t` z ≥ 1) are reset onto the highest
+  boulder top under them (looking at all four files of the variant), sunk 15% of their height.
+  Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/outcrop.py` — shared helpers: random core rocks, rock palette,
   tree sizes and colours, pri5 rock geometry, placing trees on rock roofs.
 
