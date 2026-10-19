@@ -81,7 +81,13 @@ So, except for the Desert, all biome groups have sub-groups:
     - if sektor not marked with F use frontend/src/assets/terrain/<biome>/elevations/grasslands
 - [done] double the amount of trees in /elevations/forested again, for polar, temperate & tropical biomes (use skill /draw-building)
 
-#7 Biomes affect insolation
+#7 Grasslands have very little forest
+- when generating forests, take biome sub-type into account:
+    - forest sub-type (land area marked with F) has at random 50%-90% forests
+    - grassland sub-type (land area not marked with F) has at random 0%-15% forests
+    - sea (area not marked with L) has at random 0%-10% forests
+
+#8 Biomes affect insolation
 - when generating insolation matrix, take biomes into account:
     - desert: all matrix elements are the same number
         - tropical: 12
