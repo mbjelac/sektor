@@ -7,7 +7,8 @@ export type SpotOfTriangle = (location: TriangleCoordinate) => { x: number; y: n
 // Every sektor lying on the planet is marked where it lies: a small hollow square, its name under
 // it. The marks lie over the planet, under the lists, and go round with the planet as it is turned,
 // out of sight while their sektor is on the far side of it. They are placed afresh whenever the
-// planet is drawn and whenever the sektors change. Clicking a mark chooses its sektor.
+// planet is drawn and whenever the sektors change. Clicking a mark chooses its sektor, double clicking
+// it opens the sektor's map.
 export function createSektorMarkers(
   onSektorChosen: (sektorId: string) => void,
 ): { showSektors: (sektors: SektorListItem[]) => void; followPlanet: (spotOfTriangle: SpotOfTriangle) => void } {
@@ -52,5 +53,8 @@ function createMarker(sektor: SektorListItem, spot: { x: number; y: number }, on
 
   marker.append(square, name);
   marker.addEventListener("click", () => onSektorChosen(sektor.id));
+  marker.addEventListener("dblclick", () => {
+    window.location.href = `/sektor.html?id=${encodeURIComponent(sektor.id)}`;
+  });
   return marker;
 }

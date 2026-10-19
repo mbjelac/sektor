@@ -634,6 +634,17 @@ test("brings a sektor clicked on the planet into view on the list, flashing", as
   });
 });
 
+test("opens the map of a sektor double clicked on the planet", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Echo", name: "Echo", owner: null, location: { ring: 23, index: 112 } }]));
+  });
+  await page.reload();
+
+  await page.locator(".sektor-marker", { hasText: "Echo" }).dblclick();
+
+  await expect(page).toHaveURL(/\/sektor\.html\?id=Echo$/);
+});
+
 test("makes a new sektor and puts it on the list", async ({ page }) => {
   await page.goto("/?test=true");
 
