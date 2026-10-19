@@ -226,5 +226,5 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
 - [done] when player doubleclicks a sektor marked on globe (either square marking or label)
     - navigate to map page with that sektor
 
-#11 Returning to the planet view shows planet rotated to same point as when leaving it
-- when player rotates planet and leaves page, returning to page displays planet still rotated as it was left
+#11 [done] Returning to the planet view shows planet rotated to same point as when leaving it
+- [done] when player rotates planet and leaves page, returning to page displays planet still rotated as it was left

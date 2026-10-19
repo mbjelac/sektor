@@ -3,7 +3,8 @@ import { PlanetGrid, PlanetTriangle, TriangleCoordinate } from "./planetGrid";
 import { PlanetRegion } from "./parsePlanet";
 import { getPlanet, Planet } from "./planet";
 import { findTriangleAt, planetPointAt, screenSpotOf } from "./planetPicking";
-import { dragRotation, facingRotation, Rotation, rotationBetween, UNTURNED, uprightRotation } from "./planetRotation";
+import { dragRotation, facingRotation, Rotation, rotationBetween, uprightRotation } from "./planetRotation";
+import { getPlanetRotation, savePlanetRotation } from "./planetRotation.api";
 import { createPlanetRegionInfo } from "./planetRegionInfo.ui";
 import { createSektorMarkers, SpotOfTriangle } from "./sektorMarkers.ui";
 import { SektorListItem } from "./sektorList.api";
@@ -15,8 +16,9 @@ type ColoredTriangle = { triangle: PlanetTriangle; region: PlanetRegion; color: 
 
 // The planet stands behind the lists, across the whole of the window, and is turned by dragging
 // wherever the lists leave it showing, or stood upright by a double click. Nothing on it moves of
-// itself, so it is drawn only when it is dragged or the window changes size. Wherever the mouse is
-// over it, what lies there is told along the bottom of the page. The sektors are marked where they
+// itself, so it is drawn only when it is dragged or the window changes size. It is kept turned as
+// it was last drawn, so that it is turned the same way when the page is come back to. Wherever the
+// mouse is over it, what lies there is told along the bottom of the page. The sektors are marked where they
 // lie on it, and whoever shows the planet says which sektors there are, and again whenever they
 // change, and may turn the planet to show any triangle of it. A sektor clicked on the planet is
 // handed back to whoever shows it.
@@ -35,7 +37,7 @@ export function showPlanetBackground(onSektorChosen: (sektorId: string) => void)
 function planetSketch(p: p5, followPlanet: (spotOfTriangle: SpotOfTriangle) => void): (location: TriangleCoordinate) => void {
   let grid: PlanetGrid;
   let coloredTriangles: ColoredTriangle[] = [];
-  let rotation: Rotation = UNTURNED;
+  let rotation: Rotation = getPlanetRotation();
   let lastPointerX = 0;
   let lastPointerY = 0;
   let isDragging = false;
@@ -99,6 +101,7 @@ function planetSketch(p: p5, followPlanet: (spotOfTriangle: SpotOfTriangle) => v
       for (const [x, y, z] of triangle.corners) p.vertex(x, y, z);
     }
     p.endShape();
+    savePlanetRotation(rotation);
 
     followPlanet(location => {
       const spot = screenSpotOf(grid.rings[location.ring]![location.index]!.center, planetRadius(), rotation);

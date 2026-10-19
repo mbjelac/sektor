@@ -258,6 +258,30 @@ test("stands a tilted planet back upright on a double click", async ({ page }) =
   await expect(page.locator("#list-page")).toHaveScreenshot("list-page.png", { maxDiffPixelRatio: 0 });
 });
 
+// Unturned, the middle of the planet is triangle 23 : 112. A sektor's page is gone to and come back
+// from in between.
+test("shows the planet turned as it was left when the page is come back to", async ({ page }) => {
+  await page.mouse.move(640, 500);
+  await page.mouse.down();
+  await page.mouse.move(540, 400, { steps: 5 });
+  await page.mouse.up();
+  await page.mouse.move(640, 360);
+  const triangleWhenLeaving = await page.locator("#planet-region-info span").first().textContent();
+
+  await page.goto("/sektor.html?id=Alpha");
+  await page.goBack();
+  await page.mouse.move(641, 360);
+  await page.mouse.move(640, 360);
+
+  expect({
+    whenLeaving: triangleWhenLeaving,
+    whenComingBack: await page.locator("#planet-region-info span").first().textContent(),
+  }).toEqual({
+    whenLeaving: "36 : 99",
+    whenComingBack: "36 : 99",
+  });
+});
+
 test("tells nothing once the mouse leaves the planet", async ({ page }) => {
   await page.mouse.move(640, 360);
   await page.mouse.move(1100, 600);
