@@ -43,12 +43,22 @@ export const ELEVATION_SQUARE_COUNTS = [
   Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 5),
 ];
 
-// What the planet is like where a sektor is made: whether it is land or sea, and whether the land
-// is desert or forest.
+// What the planet is like where a sektor is made: its biome, whether it is land or sea, and whether
+// the land is desert or forest.
 export interface SektorGround {
+  biome: string;
   isOnLand: boolean;
   isDesert: boolean;
   isForest: boolean;
+}
+
+// What covers the ground of a sektor, which is what the forests on it and the sun reaching it go by.
+export type GroundCover = "forest" | "grassland" | "sea" | "desert";
+
+export function groundCover(ground: SektorGround): GroundCover {
+  if (!ground.isOnLand) return "sea";
+  if (ground.isDesert) return "desert";
+  return ground.isForest ? "forest" : "grassland";
 }
 
 export function createTerrainMatrix(ground: SektorGround, randomNumber: RandomNumber): number[][] {

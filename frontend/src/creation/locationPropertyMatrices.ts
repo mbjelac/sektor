@@ -1,12 +1,13 @@
 // Ground is not scattered at random: metal runs in seams, minerals lie in blotches, uranium sits in
 // pockets, wind blows straight through. Every property is laid out the same way — a handful of
 // hotspots, and ground which falls away from them the further it lies — and one property differs
-// from another only in where its hotspots go. Insolation has no hotspots at all: the sun falls on
-// the whole map alike, and what dims a location is the ground standing over it.
+// from another only in where its hotspots go. Insolation goes by the biome instead: the desert and
+// the sea lie open to the sun all alike, and forest and grassland let it through in pockets.
 
 import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { RandomNumber } from "./randomNumber";
+import { groundCover, GroundCover, SektorGround } from "./terrainMatrix";
 
 // A tile of the sektor's map which holds a lot of the property, by how far along and across it lies.
 interface Hotspot {
@@ -20,13 +21,17 @@ const HOTSPOT_REACH = 3;
 const BACKGROUND_MAX = 2;
 
 // A property the game knows the shape of is laid out in that shape. One it does not — a property a
-// building asks for which was never described — simply falls where it falls, as insolation does.
-export function createLocationPropertyMatrix(propertyName: string, randomNumber: RandomNumber): number[][] {
+// building asks for which was never described — simply falls where it falls.
+export function createLocationPropertyMatrix(
+  propertyName: string,
+  ground: SektorGround,
+  randomNumber: RandomNumber,
+): number[][] {
   const createMatrix = MATRIX_CREATORS[propertyName] ?? createScatteredMatrix;
-  return createMatrix(randomNumber);
+  return createMatrix(randomNumber, ground);
 }
 
-type MatrixCreator = (randomNumber: RandomNumber) => number[][];
+type MatrixCreator = (randomNumber: RandomNumber, ground: SektorGround) => number[][];
 
 const MATRIX_CREATORS: { [propertyName: string]: MatrixCreator } = {
   metals: createMetalsMatrix,
@@ -61,13 +66,43 @@ function createUraniumMatrix(randomNumber: RandomNumber): number[][] {
   return matrixAroundHotspots(blobHotspots(URANIUM_POCKET_COUNT, 1, 0.4, randomNumber), randomNumber);
 }
 
-// The sun falls on the whole map alike, so insolation has no pattern of its own and no barren
-// ground: every location sees a good part of the day, and what takes the day away from one is the
-// ground standing over it, which is reckoned once the map has its heights.
-export const DIMMEST_SUNLIGHT = 6;
+// How much sun a location sees goes by the biome: least near the poles. The desert and the sea
+// have nothing standing over them, so the whole map sees the same. Forest and grassland are lit in
+// pockets — clearings, open ground — brightest at the middle of a pocket and darker square by
+// square away from it: forest has more pockets, but the trees close in on them fast, while the
+// light of grassland pockets falls away slowly.
+export const INSOLATION_BY_BIOME: { [cover in GroundCover]: { [biome: string]: number } } = {
+  desert: { tropical: 12, temperate: 8, polar: 2 },
+  sea: { tropical: 10, temperate: 6, polar: 1 },
+  forest: { tropical: 12, temperate: 8, polar: 1 },
+  grassland: { tropical: 12, temperate: 8, polar: 1 },
+};
 
-function createInsolationMatrix(randomNumber: RandomNumber): number[][] {
-  return matrixOfValuesBetween(DIMMEST_SUNLIGHT, MODIFIER_MAX, randomNumber);
+// How many pockets of sunlight forest and grassland have, and how much darker each square away
+// from the middle of one is.
+export const SUNLIGHT_POCKETS: { [cover in "forest" | "grassland"]: { fewest: number; most: number; fallOffPerSquare: number } } = {
+  forest: { fewest: 6, most: 10, fallOffPerSquare: 4 },
+  grassland: { fewest: 4, most: 8, fallOffPerSquare: 2 },
+};
+
+function createInsolationMatrix(randomNumber: RandomNumber, ground: SektorGround): number[][] {
+  const cover = groundCover(ground);
+  const brightest = INSOLATION_BY_BIOME[cover][ground.biome] ?? INSOLATION_BY_BIOME[cover].temperate;
+  if (cover === "desert" || cover === "sea") return matrixAllOf(brightest);
+
+  const { fewest, most, fallOffPerSquare } = SUNLIGHT_POCKETS[cover];
+  const pockets = sunlightPocketMiddles(fewest + Math.floor(randomNumber() * (most - fewest + 1)), randomNumber);
+  return Array.from({ length: SEKTOR_SIZE }, (_, x) =>
+    Array.from({ length: SEKTOR_SIZE }, (_, z) =>
+      Math.max(0, Math.round(brightest - fallOffPerSquare * distanceToNearestHotspot(x, z, pockets))))
+  );
+}
+
+// No two pockets share a middle, so there are as many pockets on the map as were drawn.
+function sunlightPocketMiddles(pocketCount: number, randomNumber: RandomNumber): Hotspot[] {
+  const tiles = Array.from({ length: SEKTOR_SIZE * SEKTOR_SIZE }, (_, index) =>
+    ({ x: Math.floor(index / SEKTOR_SIZE), z: index % SEKTOR_SIZE }));
+  return Array.from({ length: pocketCount }, () => tiles.splice(Math.floor(randomNumber() * tiles.length), 1)[0]);
 }
 
 // Wind flows through the map rather than settling in it: a line clear across, from one edge to the
@@ -79,7 +114,7 @@ function createWindMatrix(randomNumber: RandomNumber): number[][] {
 // Pollution is what buildings leave behind, not what the ground starts with: a sektor just made has
 // had nothing standing in it to foul it, so every location of it is clean.
 function createUnpollutedMatrix(): number[][] {
-  return Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => 0));
+  return matrixAllOf(0);
 }
 
 // Groundwater gathers in pockets: smaller than mineral blotches, and several of them.
@@ -215,6 +250,10 @@ function matrixOfValuesBetween(lowest: number, highest: number, randomNumber: Ra
   return Array.from({ length: SEKTOR_SIZE }, () =>
     Array.from({ length: SEKTOR_SIZE }, () => lowest + Math.floor(randomNumber() * (highest - lowest + 1)))
   );
+}
+
+function matrixAllOf(value: number): number[][] {
+  return Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => value));
 }
 
 function randomTile(randomNumber: RandomNumber): number {

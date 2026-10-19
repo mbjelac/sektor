@@ -59,7 +59,7 @@ export async function createSektorIfNeeded(): Promise<boolean> {
 
 function groundAt({ ring, index }: TriangleCoordinate): SektorGround {
   const region = getPlanet().regionRings[ring]![index]!;
-  return { isOnLand: region.isLand, isDesert: region.isDesert, isForest: region.isForest };
+  return { biome: region.biome, isOnLand: region.isLand, isDesert: region.isDesert, isForest: region.isForest };
 }
 
 // A sektor is waiting for somebody as long as nobody owns it, whatever already stands in it.

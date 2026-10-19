@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { createLocationPropertyMatrix, DIMMEST_SUNLIGHT } from "./locationPropertyMatrices";
+import { createLocationPropertyMatrix } from "./locationPropertyMatrices";
+import { SektorGround } from "./terrainMatrix";
 import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 
@@ -8,17 +9,42 @@ const ALL_PROPERTIES = [...PATTERNED_PROPERTIES, "insolation", "pollution", "som
 
 const RUNS = 50;
 
+const BIOMES = ["tropical", "temperate", "polar"];
+
+const GRASSLAND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false };
+const FOREST = { biome: "temperate", isOnLand: true, isDesert: false, isForest: true };
+
 // Ground worth going out of the way for: it holds most of what a property is ever found holding.
 function isRich(value: number): boolean {
   return value >= MODIFIER_MAX * 0.8;
 }
 
-function matrixOf(propertyName: string): number[][] {
-  return createLocationPropertyMatrix(propertyName, Math.random);
+function matrixOf(propertyName: string, ground: SektorGround = GRASSLAND): number[][] {
+  return createLocationPropertyMatrix(propertyName, ground, Math.random);
 }
 
-function runsOf(propertyName: string): number[][][] {
-  return Array.from({ length: RUNS }, () => matrixOf(propertyName));
+function runsOf(propertyName: string, ground: SektorGround = GRASSLAND): number[][][] {
+  return Array.from({ length: RUNS }, () => matrixOf(propertyName, ground));
+}
+
+// Every value insolation takes anywhere on the maps of a ground of each biome, lowest first.
+function insolationValuesByBiome(cover: Omit<SektorGround, "biome">): { [biome: string]: number[] } {
+  return Object.fromEntries(BIOMES.map(biome => [
+    biome,
+    [...new Set(runsOf("insolation", { ...cover, biome }).flatMap(matrix => matrix.flat()))].sort((first, second) => first - second),
+  ]));
+}
+
+// The brightest location of every map of a ground of each biome, as many different ones as there are.
+function brightestInsolationByBiome(cover: Omit<SektorGround, "biome">): { [biome: string]: number[] } {
+  return Object.fromEntries(BIOMES.map(biome => [
+    biome,
+    [...new Set(runsOf("insolation", { ...cover, biome }).map(matrix => Math.max(...matrix.flat())))],
+  ]));
+}
+
+function locationsHolding(matrix: number[][], value: number): { x: number, z: number }[] {
+  return matrix.flatMap((row, x) => row.flatMap((locationValue, z) => locationValue === value ? [{ x, z }] : []));
 }
 
 describe("createLocationPropertyMatrix", () => {
@@ -51,12 +77,48 @@ describe("createLocationPropertyMatrix", () => {
     }))).toEqual(PATTERNED_PROPERTIES.map(propertyName => ({ property: propertyName, runsWithoutARichLocation: 0 })));
   });
 
-  // The sun falls on the whole map alike, so no location starts the day in the dark: the ground
-  // standing over a location is what takes its light away, and that is reckoned later.
-  it("gives every location a good part of the day before anything stands over it", () => {
-    const dimLocations = runsOf("insolation").flatMap(matrix => matrix.flat()).filter(value => value < DIMMEST_SUNLIGHT);
+  // The desert and the sea lie open to the sun, so every location of the map sees the same of it.
+  it("lights every location of a desert 12 in the tropics, 8 in temperate lands and 2 near the poles", () => {
+    expect(insolationValuesByBiome({ isOnLand: true, isDesert: true, isForest: false }))
+      .toEqual({ tropical: [12], temperate: [8], polar: [2] });
+  });
 
-    expect(dimLocations).toEqual([]);
+  it("lights every location of the sea 10 in the tropics, 6 in temperate lands and 1 near the poles", () => {
+    expect(insolationValuesByBiome({ isOnLand: false, isDesert: false, isForest: false }))
+      .toEqual({ tropical: [10], temperate: [6], polar: [1] });
+  });
+
+  // Forest and grassland are lit in pockets, the middle of which is as bright as it gets there.
+  it("lights the pockets of a forest at most 12 in the tropics, 8 in temperate lands and 1 near the poles", () => {
+    expect(brightestInsolationByBiome({ isOnLand: true, isDesert: false, isForest: true }))
+      .toEqual({ tropical: [12], temperate: [8], polar: [1] });
+  });
+
+  it("lights the pockets of grassland at most 12 in the tropics, 8 in temperate lands and 1 near the poles", () => {
+    expect(brightestInsolationByBiome({ isOnLand: true, isDesert: false, isForest: false }))
+      .toEqual({ tropical: [12], temperate: [8], polar: [1] });
+  });
+
+  // Every pocket has a middle of its own, the only location lit as brightly as the ground there is
+  // lit at all.
+  it("lights six to ten pockets on every map of forest and four to eight on every map of grassland", () => {
+    const pocketCountsOutOfRange = [
+      ...pocketCounts(FOREST).filter(pocketCount => pocketCount < 6 || pocketCount > 10).map(pocketCount => ({ forest: pocketCount })),
+      ...pocketCounts(GRASSLAND).filter(pocketCount => pocketCount < 4 || pocketCount > 8).map(pocketCount => ({ grassland: pocketCount })),
+    ];
+
+    expect(pocketCountsOutOfRange).toEqual([]);
+  });
+
+  // The light falls away square by square from the middle of the nearest pocket: by 4 a square in a
+  // forest, by 2 in grassland, and never below dark.
+  it("darkens forest by 4 and grassland by 2 for every square away from the nearest pocket", () => {
+    const wronglyLitLocations = [
+      ...wronglyLitLocationsOf(FOREST, 4),
+      ...wronglyLitLocationsOf(GRASSLAND, 2),
+    ];
+
+    expect(wronglyLitLocations).toEqual([]);
   });
 
   // Nothing has stood in a sektor just made to foul its ground, so none of it is polluted.
@@ -77,3 +139,21 @@ describe("createLocationPropertyMatrix", () => {
     )).toEqual([]);
   });
 });
+
+// The temperate pockets are lit 8 at their middles, and no other location as brightly.
+const TEMPERATE_POCKET_MIDDLE = 8;
+
+function pocketCounts(ground: SektorGround): number[] {
+  return runsOf("insolation", ground).map(matrix => locationsHolding(matrix, TEMPERATE_POCKET_MIDDLE).length);
+}
+
+function wronglyLitLocationsOf(ground: SektorGround, fallOffPerSquare: number): object[] {
+  return runsOf("insolation", ground).flatMap(matrix => {
+    const pocketMiddles = locationsHolding(matrix, TEMPERATE_POCKET_MIDDLE);
+    return matrix.flatMap((row, x) => row.flatMap((value, z) => {
+      const distance = Math.min(...pocketMiddles.map(middle => Math.hypot(middle.x - x, middle.z - z)));
+      const expected = Math.max(0, Math.round(TEMPERATE_POCKET_MIDDLE - fallOffPerSquare * distance));
+      return value === expected ? [] : [{ isForest: ground.isForest, x, z, value, expected }];
+    }));
+  });
+}

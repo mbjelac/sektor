@@ -16,9 +16,9 @@ import {
 // happen to fall.
 const MAPS_LOOKED_AT = 200;
 
-const LAND_GROUND = { isOnLand: true, isDesert: false, isForest: false };
-const SEA_GROUND = { isOnLand: false, isDesert: false, isForest: false };
-const DESERT_GROUND = { isOnLand: true, isDesert: true, isForest: false };
+const LAND_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false };
+const SEA_GROUND = { biome: "temperate", isOnLand: false, isDesert: false, isForest: false };
+const DESERT_GROUND = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false };
 
 describe("createTerrainMatrix", () => {
   // The terrain covers the map and no more of it: a matrix wider than the sektor describes ground

@@ -87,8 +87,8 @@ So, except for the Desert, all biome groups have sub-groups:
     - grassland sub-type (land area not marked with F) has at random 0%-15% forests
     - sea (area not marked with L) has at random 0%-10% forests
 
-#8 Biomes affect insolation
-- when generating insolation matrix, take biomes into account:
+#8 [done] Biomes affect insolation
+- [done] when generating insolation matrix, take biomes into account:
     - desert: all matrix elements are the same number
         - tropical: 12
         - temperate: 8

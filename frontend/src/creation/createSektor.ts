@@ -21,7 +21,7 @@ export function createSektor(
   return {
     level,
     terrain,
-    locationProperties: createLocationProperties(locationPropertyNames, randomNumber),
+    locationProperties: createLocationProperties(locationPropertyNames, ground, randomNumber),
     buildings: forests,
     // Nothing but forests stands in a sektor just made, so what they give is all the support the
     // ecosystem has to begin with.
@@ -34,12 +34,13 @@ export function createSektor(
 // built out of the ground it was given rather than the ground being bent to suit the sektor.
 function createLocationProperties(
   locationPropertyNames: string[],
+  ground: SektorGround,
   randomNumber: RandomNumber,
 ): { [key: string]: number[][] } {
   return Object.fromEntries(
     locationPropertyNames.map(propertyName => [
       propertyName,
-      createLocationPropertyMatrix(propertyName, randomNumber),
+      createLocationPropertyMatrix(propertyName, ground, randomNumber),
     ])
   );
 }

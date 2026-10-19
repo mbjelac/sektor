@@ -8,10 +8,10 @@ import { Building, BuildingLocation } from "../../../shared/sektorData";
 import { GROUND } from "../../../shared/terrain";
 import { FOREST_NAME } from "../sektor/forest";
 import { RandomNumber } from "./randomNumber";
-import { SektorGround } from "./terrainMatrix";
+import { groundCover, GroundCover, SektorGround } from "./terrainMatrix";
 
 // The least and the most of a sektor's plain ground forests cover, by what its ground is.
-export const FOREST_SHARES = {
+export const FOREST_SHARES: { [cover in GroundCover]: { least: number; most: number } } = {
   forest: { least: 0.5, most: 0.9 },
   grassland: { least: 0, most: 0.15 },
   sea: { least: 0, most: 0.1 },
@@ -23,12 +23,6 @@ export const FOREST_SHARES = {
 export function drawForestShare(ground: SektorGround, randomNumber: RandomNumber): number {
   const { least, most } = FOREST_SHARES[groundCover(ground)];
   return least + randomNumber() * (most - least);
-}
-
-function groundCover(ground: SektorGround): keyof typeof FOREST_SHARES {
-  if (!ground.isOnLand) return "sea";
-  if (ground.isDesert) return "desert";
-  return ground.isForest ? "forest" : "grassland";
 }
 
 // The largest forest started at once. A forest is drawn anywhere from one square up to this.
