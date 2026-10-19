@@ -67,7 +67,7 @@ So, except for the Desert, all biome groups have sub-groups:
 - [done] do not generate rivers
 
 #6 Forest elevations are more wooded than grassland elevations
-- for polar, temperate & tropical biomes, elevations should be picked from one of two types:
+- [done] for polar, temperate & tropical biomes, elevations should be picked from one of two types:
     - forest elevations for forested areas (marked F)
     - grassland elevations for grasslands (not marked F)
     - sea areas (not marked L) should use grassland elevations
@@ -79,3 +79,22 @@ So, except for the Desert, all biome groups have sub-groups:
 - when rendering sektor map use appropriate elevation SGLs
     - if sektor marked with F use frontend/src/assets/terrain/<biome>/elevations/forested
     - if sektor not marked with F use frontend/src/assets/terrain/<biome>/elevations/grasslands
+
+#7 Biomes affect insolation
+- when generating insolation matrix, take biomes into account:
+    - desert: all matrix elements are the same number
+        - tropical: 12
+        - temperate: 8
+        - polar: 5
+    - forest: create randomly 2-6 "pockets" of high insolation throughout the sektor
+        - pockets have a high point and then fall off as the distance from that point grows
+        - high point values per biome type:
+            - tropical: 8
+            - temperate: 6
+            - polar: 2
+    - grassland: create randomly 2-6 "pockets" of high insolation throughout the sektor
+        - pockets have a high point and then fall off as the distance from that point grows
+        - high point values per biome type:
+            - tropical: 10
+            - temperate: 8
+            - polar: 3
