@@ -1,0 +1,9 @@
+Some buildings can be generated with the sektor, like forests, but take no input & give no output.
+Also, these buildings can be automatically destroyed by constructing another building on their location.
+
+Examples:
+- polar biome snow cover
+- desert, tropical & temperate bushes
+- puddles
+- small rocks
+- dead wood
