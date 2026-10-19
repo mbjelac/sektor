@@ -93,6 +93,10 @@ So, except for the Desert, all biome groups have sub-groups:
         - tropical: 12
         - temperate: 8
         - polar: 5
+    - sea: all matrix elements are the same number
+        - tropical: 10
+        - temperate: 7
+        - polar: 3
     - forest: create randomly 2-6 "pockets" of high insolation throughout the sektor
         - pockets have a high point and then fall off as the distance from that point grows
         - high point values per biome type:
