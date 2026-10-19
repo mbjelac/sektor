@@ -3,6 +3,8 @@ import testPropertiesMd from "./assets/properties.test.md?raw";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../shared/modifierLimits";
 import { isTestMode } from "./testMode";
 import { MOST_POLLUTION, POLLUTION_PROPERTY } from "./sektor/pollution";
+import { TerrainStyle } from "./sektor/terrainStyle";
+import { floorColorRange } from "./sektor/floorColorRange";
 
 const source = isTestMode ? testPropertiesMd : propertiesMd;
 
@@ -31,14 +33,14 @@ for (const line of source.split("\n")) {
 }
 
 const FLOOR_PROPERTY = "soil";
-const FLOOR_LOW_COLOR = "#E3CA86";
 
-// A floor is colored by its soil: the lowest value is sandy, the highest is soil's own color, and
-// values in between are the color in between.
-export function floorColor(soilValue: number): [number, number, number] {
+// A floor is colored by its soil: the lowest value is the poorest color of the terrain's look, the
+// highest its richest, and values in between are the color in between.
+export function floorColor(soilValue: number, terrainStyle: TerrainStyle): [number, number, number] {
   const soil = propertyDefinitions.find(property => property.name === FLOOR_PROPERTY);
   if (!soil) return [128, 128, 128];
-  return interpolateColors(parseHexColor(FLOOR_LOW_COLOR), parseHexColor(soil.color), valueFraction(soilValue));
+  const { poorest, richest } = floorColorRange(terrainStyle, soil.color);
+  return interpolateColors(parseHexColor(poorest), parseHexColor(richest), valueFraction(soilValue));
 }
 
 // The lowest property value is black, the highest is the property's own color,

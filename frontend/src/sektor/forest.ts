@@ -3,6 +3,7 @@
 // offered in the toolbar, and it comes with the sektor or not at all.
 
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
+import { TerrainStyle } from "./terrainStyle";
 
 // What a forest is called, on the map and in the panel.
 export const FOREST_NAME = "Forest";
@@ -38,15 +39,16 @@ export function forestEcosystemSupport(): number {
 }
 
 // A forest is drawn in whichever of its shapes its square is counted down to, the way a square of
-// rock is, so that forests side by side do not look stamped from one another.
-export function forestRenderingCode(variation: number): string {
-  return (forestRenderingCodes[`${FORESTS_FOLDER}/${variation}.sgl`] ?? "").trim();
+// rock is, so that forests side by side do not look stamped from one another. Each look of the
+// terrain has its own folder of forests.
+export function forestRenderingCode(variation: number, terrainStyle: TerrainStyle): string {
+  return (forestRenderingCodes[`${TERRAIN_FOLDER}/${terrainStyle}/forests/${variation}.sgl`] ?? "").trim();
 }
 
-const FORESTS_FOLDER = "../assets/terrain/temperate/forests";
+const TERRAIN_FOLDER = "../assets/terrain";
 
-// The bodies of every shape a forest stands in, by the path it was read from.
+// The bodies of every shape a forest stands in, in every look, by the path it was read from.
 const forestRenderingCodes = import.meta.glob<string>(
-  "../assets/terrain/temperate/forests/*.sgl",
+  "../assets/terrain/*/forests/*.sgl",
   { query: "?raw", import: "default", eager: true },
 );

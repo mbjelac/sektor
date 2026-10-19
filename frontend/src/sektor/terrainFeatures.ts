@@ -8,6 +8,7 @@
 // than as squares of rock standing next to each other.
 
 import { ELEVATION } from "../../../shared/terrain";
+import { TerrainStyle } from "./terrainStyle";
 
 // What the panel calls a square of rock the player has clicked on. Every outcrop goes by it,
 // whichever shape it happens to stand in.
@@ -47,9 +48,10 @@ export function squareVariation(x: number, z: number): number {
   return scrambled % SQUARE_VARIATION_COUNT;
 }
 
-export function elevationRenderingCode(variation: number, sides: ElevationSides): string {
+// Rock is drawn in the look of the sektor's terrain, each look having its own folder of side files.
+export function elevationRenderingCode(variation: number, sides: ElevationSides, terrainStyle: TerrainStyle): string {
   return elevationSideFiles(variation, sides)
-    .map(sideFile => (elevationSideRenderingCodes[`${ELEVATIONS_FOLDER}/${sideFile}`] ?? "").trim())
+    .map(sideFile => (elevationSideRenderingCodes[`${TERRAIN_FOLDER}/${terrainStyle}/elevations/${sideFile}`] ?? "").trim())
     .join("\n");
 }
 
@@ -72,10 +74,10 @@ function elevationSideTowards(terrain: number[][], x: number, y: number): Elevat
 // for each of them.
 const SQUARE_VARIATION_COUNT = 10;
 
-const ELEVATIONS_FOLDER = "../assets/terrain/temperate/elevations";
+const TERRAIN_FOLDER = "../assets/terrain";
 
-// The bodies of every side file of the rock, by the path it was read from.
+// The bodies of every side file of the rock, in every look, by the path it was read from.
 const elevationSideRenderingCodes = import.meta.glob<string>(
-  "../assets/terrain/temperate/elevations/*/*.sgl",
+  "../assets/terrain/*/elevations/*/*.sgl",
   { query: "?raw", import: "default", eager: true },
 );

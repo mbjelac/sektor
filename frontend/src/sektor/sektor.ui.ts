@@ -15,7 +15,7 @@ import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExpo
 import { updateMessages } from "../messages.ui";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
-import { getGivenSektorName, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
+import { getGivenSektorName, getSektorLocation, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, propertyValueColor } from "../properties";
@@ -31,6 +31,8 @@ import { drawRiverBed, drawRiverGlints, drawRiverSurface, RIVER_NAME, RiverSquar
 import { riverGlintStrips, riverSideFlowedInFrom, riverSides } from "./river";
 import { elevationRenderingCode, elevationSides, squareVariation, ELEVATION_NAME } from "./terrainFeatures";
 import { FOREST_NAME, forestRenderingCode } from "./forest";
+import { TerrainStyle, terrainStyleOfBiome } from "./terrainStyle";
+import { getPlanet } from "../list/planet";
 import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NAME } from "./sea.ui";
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
@@ -273,6 +275,7 @@ function createTestTerrain(): number[][] {
 
 const builderLevel = getBuilderLevel();
 const terrain = getTerrain();
+const terrainStyle = getTerrainStyle();
 const sektor = new Sektor(getLocations(), everyBuildingDefinition, getLocalResources(), terrain);
 const locations = sektor.getLocations();
 const sektorLevel = getSektorLevel();
@@ -286,6 +289,16 @@ interface Construction {
 }
 const placedBuildings: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }[] = [];
 let notificationTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// The look of the sektor's ground, rock and forests, taken from the biome of the triangle of the
+// planet it lies on. The test sektor lies nowhere on the planet, and neither does a sektor made
+// before sektors were put on it.
+function getTerrainStyle(): TerrainStyle {
+  if (isTestMode || !sektorId) return terrainStyleOfBiome(null);
+  const location = getSektorLocation(sektorId);
+  if (!location) return terrainStyleOfBiome(null);
+  return terrainStyleOfBiome(getPlanet().regionRings[location.ring]?.[location.index]?.biome ?? null);
+}
 
 function locationsToLocationProperties(locationMatrix: Location[][]): { [key: string]: number[][] } {
   if (locationMatrix.length === 0) return {};
@@ -557,7 +570,7 @@ const EMPTY_NAME = "Empty";
 // more, so the panel shows them with no bodies over the floor.
 function terrainRenderingCodeAt(gx: number, gy: number): string {
   return isElevationLocation(gx, gy)
-    ? elevationRenderingCode(squareVariation(gx, gy), elevationSides(terrain, gx, gy))
+    ? elevationRenderingCode(squareVariation(gx, gy), elevationSides(terrain, gx, gy), terrainStyle)
     : "";
 }
 
@@ -725,7 +738,7 @@ function bakedElevationBodies(p: p5, location: BuildingLocation): BakedBodies {
   const variation = squareVariation(location.x, location.y);
   const sides = elevationSides(terrain, location.x, location.y);
   const bakeName = `${ELEVATION_NAME} ${variation} ${sides.north} ${sides.east} ${sides.south} ${sides.west}`;
-  return bakedBuildingBodies(p, bakeName, elevationRenderingCode(variation, sides));
+  return bakedBuildingBodies(p, bakeName, elevationRenderingCode(variation, sides, terrainStyle));
 }
 
 // Every building of a type draws the same bodies, so one bake serves all of its locations.
@@ -814,7 +827,7 @@ function gridToWorld(gx: number, gy: number): { wx: number; wz: number } {
 // What the top of a location is colored: the sea where the map is under water, otherwise its soil.
 function floorColorAt(gx: number, gy: number): [number, number, number] {
   if (isSeaLocation(gx, gy)) return SEA_COLOR;
-  return floorColor(locations[gx]?.[gy]?.properties[FLOOR_PROPERTY] ?? 0);
+  return floorColor(locations[gx]?.[gy]?.properties[FLOOR_PROPERTY] ?? 0, terrainStyle);
 }
 
 function isSeaLocation(gx: number, gy: number): boolean {
@@ -1332,7 +1345,7 @@ const sektorUi = (p: p5) => {
 // counted down to; every other building is drawn the same wherever it stands.
 function placedBuildingCode(type: string, location: BuildingLocation): string | null {
   return type === FOREST_NAME
-    ? forestRenderingCode(squareVariation(location.x, location.y))
+    ? forestRenderingCode(squareVariation(location.x, location.y), terrainStyle)
     : getBuildingCode(type);
 }
 

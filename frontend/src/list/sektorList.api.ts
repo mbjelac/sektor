@@ -33,6 +33,12 @@ export function getSektorOwner(sektorId: string): string | null {
   return getSektor(sektorId)?.owner ?? null;
 }
 
+// The triangle of the planet a sektor lies on, or null for a sektor made before sektors were put
+// on the planet.
+export function getSektorLocation(sektorId: string): TriangleCoordinate | null {
+  return getSektor(sektorId)?.location ?? null;
+}
+
 export function setSektorOwner(sektorId: string, owner: string): void {
   updateSektor(sektorId, { owner });
 }

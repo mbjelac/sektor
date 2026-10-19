@@ -2,18 +2,30 @@ import { describe, it, expect } from "vitest";
 import { ECOSYSTEM_SUPPORT_RESOURCE, FOREST_DEFINITION, forestRenderingCode } from "./forest";
 import { IMPORT_EXPORT_RESOURCE, Sektor } from "./Sektor";
 import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
+import { TerrainStyle } from "./terrainStyle";
 
 // How many shapes a forest stands in: one file for each of them.
 const FOREST_VARIATION_COUNT = 10;
 
+const TERRAIN_STYLES: TerrainStyle[] = ["temperate", "tropical"];
+
 describe("forestRenderingCode", () => {
-  // Every shape a square can be counted down to has bodies to draw it with, so no forest comes out
-  // empty.
-  it("has bodies to draw every shape of a forest", () => {
-    const shapesWithoutBodies = Array.from({ length: FOREST_VARIATION_COUNT }, (_unused, variation) => variation)
-      .filter(variation => forestRenderingCode(variation) === "");
+  // Every shape a square can be counted down to has bodies to draw it with, in every look of the
+  // terrain, so no forest comes out empty.
+  it("has bodies to draw every shape of a forest in every look", () => {
+    const shapesWithoutBodies = TERRAIN_STYLES
+      .flatMap(terrainStyle => Array.from({ length: FOREST_VARIATION_COUNT }, (_unused, variation) => ({ terrainStyle, variation })))
+      .filter(({ terrainStyle, variation }) => forestRenderingCode(variation, terrainStyle) === "");
 
     expect(shapesWithoutBodies).toEqual([]);
+  });
+
+  // A tropical forest is drawn from the tropical folder, not the temperate one.
+  it("draws a tropical forest unlike a temperate one", () => {
+    const shapesDrawnAlike = Array.from({ length: FOREST_VARIATION_COUNT }, (_unused, variation) => variation)
+      .filter(variation => forestRenderingCode(variation, "tropical") === forestRenderingCode(variation, "temperate"));
+
+    expect(shapesDrawnAlike).toEqual([]);
   });
 });
 

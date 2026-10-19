@@ -2,9 +2,12 @@ import { describe, it, expect } from "vitest";
 import { elevationRenderingCode, elevationSideFiles, elevationSides, squareVariation } from "./terrainFeatures";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { ELEVATION, GROUND, SEA } from "../../../shared/terrain";
+import { TerrainStyle } from "./terrainStyle";
 
 // How many shapes rock and forests stand in, which is how many the squares of a map are shared out between.
 const SQUARE_VARIATION_COUNT = 10;
+
+const TERRAIN_STYLES: TerrainStyle[] = ["temperate", "tropical"];
 
 function everySquareOfTheMap(): { x: number, z: number }[] {
   return Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>
@@ -61,13 +64,15 @@ describe("elevationSideFiles", () => {
 });
 
 describe("elevationRenderingCode", () => {
-  // Every side of every shape has bodies to draw it with, so no side of any rock comes out empty.
-  it("has bodies to draw every side of every shape", () => {
+  // Every side of every shape has bodies to draw it with, in every look of the terrain, so no side
+  // of any rock comes out empty.
+  it("has bodies to draw every side of every shape in every look", () => {
     const everySideDrawnAs = (side: "edge" | "middle") => ({ north: side, east: side, south: side, west: side });
-    const shapesWithAnEmptySide = Array.from({ length: SQUARE_VARIATION_COUNT }, (_unused, variation) => variation)
-      .flatMap(variation => (["edge", "middle"] as const).map(side => ({ variation, side })))
-      .filter(({ variation, side }) =>
-        elevationRenderingCode(variation, everySideDrawnAs(side)).split("\n").some(line => line.trim() === ""));
+    const shapesWithAnEmptySide = TERRAIN_STYLES
+      .flatMap(terrainStyle => Array.from({ length: SQUARE_VARIATION_COUNT }, (_unused, variation) => ({ terrainStyle, variation })))
+      .flatMap(({ terrainStyle, variation }) => (["edge", "middle"] as const).map(side => ({ terrainStyle, variation, side })))
+      .filter(({ terrainStyle, variation, side }) =>
+        elevationRenderingCode(variation, everySideDrawnAs(side), terrainStyle).split("\n").some(line => line.trim() === ""));
 
     expect(shapesWithAnEmptySide).toEqual([]);
   });

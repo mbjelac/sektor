@@ -49,7 +49,7 @@ So, except for the Desert, all biome groups have sub-groups:
     - amount of sea squares in the sektor is random between 70% and 90%
     - no rivers
 
-#3 Tropical sektors look tropical
-- if a sektor's area is in a tropical biome
+#3 [done] Tropical sektors look tropical
+- [done] if a sektor's area is in a tropical biome
     - soil color is from range: #e3c286 - #99eb73
     - use elevation & forest rendering SGLs from folder frontend/src/assets/terrain/tropical
