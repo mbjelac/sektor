@@ -65,3 +65,17 @@ So, except for the Desert, all biome groups have sub-groups:
     - use elevation rendering SGLs from folder frontend/src/assets/terrain/desert
 - [done] do not generate forests
 - [done] do not generate rivers
+
+#6 Forest elevations are more wooded than grassland elevations
+- for polar, temperate & tropical biomes, elevations should be picked from one of two types:
+    - forest elevations for forested areas (marked F)
+    - grassland elevations for grasslands (not marked F)
+    - sea areas (not marked L) should use grassland elevations
+- to get two types of elevations for each biome (polar, temperate, tropical)
+    - move existing elevations from their current /elevations folder to /elevations/forested
+    - copy from /elevations/forested to /elevations/grasslands
+    - modify /elevations/forested so that the number of trees are doubled (use skill /draw-building)
+    - modify /elevations/grasslands so that the number of trees are halved (use skill /draw-building)
+- when rendering sektor map use appropriate elevation SGLs
+    - if sektor marked with F use frontend/src/assets/terrain/<biome>/elevations/forested
+    - if sektor not marked with F use frontend/src/assets/terrain/<biome>/elevations/grasslands
