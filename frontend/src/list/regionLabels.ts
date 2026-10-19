@@ -8,19 +8,18 @@ const CLIMATE_LABELS: Record<string, string> = {
   "tropical": "Tropical",
 };
 
-// What a player is told of the land at a triangle: its climate zone, then what covers it there. The
-// cold zones have tundra and taiga, the temperate zone grassland and forest, the warm zones savanna
-// and jungle, and every zone but the cold ones its deserts. Polar land is only polar, and the sea is
-// only the sea.
+// What a player is told of a triangle: its climate zone, then what covers it there. The cover goes
+// by the biome: polar land is tundra and taiga, temperate land grassland and forest, tropical land
+// savanna and jungle, and any of them may be desert. The polar zone is only polar.
 export function regionLabels(region: PlanetRegion): string[] {
-  if (!region.isLand) return ["Sea"];
   if (region.climate === "polar") return ["Polar"];
-  return [CLIMATE_LABELS[region.climate]!, landCover(region)];
+  return [CLIMATE_LABELS[region.climate]!, cover(region)];
 }
 
-function landCover(region: PlanetRegion): string {
+function cover(region: PlanetRegion): string {
+  if (!region.isLand) return "Sea";
   if (region.isDesert) return "Desert";
-  if (region.climate === "sub-polar") return region.isForest ? "Taiga" : "Tundra";
-  if (region.climate === "temperate") return region.isForest ? "Forest" : "Grassland";
+  if (region.biome === "polar") return region.isForest ? "Taiga" : "Tundra";
+  if (region.biome === "temperate") return region.isForest ? "Forest" : "Grassland";
   return region.isForest ? "Jungle" : "Savanna";
 }
