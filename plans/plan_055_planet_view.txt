@@ -178,25 +178,19 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
     - data:
         - coordinates: "<ring index> : <triangle index>"
         - spacing of 50px
-        - climate zone:
-            - polar: "Polar"
-            - sub-polar
-                - L: "Sub-polar<spacing>Tundra"
-                - L F: "Sub-polar<spacing>Taiga"
-            - temperate:
-                - L: "Temperate<spacing>Grassland"
-                - L F: "Temperate<spacing>Forest"
-                - L D: "Temperate<spacing>Desert"
-            - sub-tropical:
-                - L: "Sub-tropical<spacing>Savanna"
-                - L F: "Sub-tropical<spacing>Jungle"
-                - L D: "Sub-tropical<spacing>Desert"
-            - tropical:
-                - L: "Tropical<spacing>Savanna"
-                - L F: "Tropical<spacing>Jungle"
-                - L D: "Tropical<spacing>Desert"
+        - display data according to context:
+            - polar climate zone: "Polar"
+            - all other climate zones: "<climate zone><spacing><biome-related>"
+                - biome-related:
+                    - polar L: "Tundra"
+                    - polar L F: "Taiga"
+                    - temperate L: "Grassland"
+                    - temperate L F: "Forest"
+                    - tropical L: "Savanna"
+                    - tropical L F: "Jungle"
+                    - any biome L D: "Desert"
+                - sea: "Sea"
         - for <spacing> use 30px
-        - non-land: "Sea"
 
 #7 [done] Player can rotate planet to vertical axis
 - [done] when player doubleclicks the planet canvas
