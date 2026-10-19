@@ -44,10 +44,11 @@ export const ELEVATION_SQUARE_COUNTS = [
 ];
 
 // What the planet is like where a sektor is made: whether it is land or sea, and whether the land
-// is desert.
+// is desert or forest.
 export interface SektorGround {
   isOnLand: boolean;
   isDesert: boolean;
+  isForest: boolean;
 }
 
 export function createTerrainMatrix(ground: SektorGround, randomNumber: RandomNumber): number[][] {

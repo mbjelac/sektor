@@ -6,8 +6,9 @@ import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 // drawn from, rock is quarried, and wind and insolation are what stands over the ground.
 const LOCATION_PROPERTIES = ["soil", "groundwater", "rock", "wind", "insolation"];
 
-const LAND_GROUND = { isOnLand: true, isDesert: false };
-const DESERT_GROUND = { isOnLand: true, isDesert: true };
+const LAND_GROUND = { isOnLand: true, isDesert: false, isForest: false };
+const FOREST_GROUND = { isOnLand: true, isDesert: false, isForest: true };
+const DESERT_GROUND = { isOnLand: true, isDesert: true, isForest: false };
 
 // Every draw lands in the middle of whatever it is choosing from, so the same sektor comes out
 // every time and the test can say exactly what it expects.
@@ -41,19 +42,21 @@ describe("createSektor", () => {
     }).toEqual({ rows: SEKTOR_SIZE, rowLengths: [SEKTOR_SIZE] });
   });
 
+  // Nothing grows in the desert, so nothing at all stands in a sektor just made there.
   it("makes a sektor which has no buildings in it yet", () => {
-    const sektorData = createSektor(2, LOCATION_PROPERTIES, LAND_GROUND, middleOfTheRange);
+    const sektorData = createSektor(2, LOCATION_PROPERTIES, DESERT_GROUND, middleOfTheRange);
 
     expect({ level: sektorData.level, buildings: sektorData.buildings }).toEqual({ level: 2, buildings: [] });
   });
 
-  // Every draw falls low enough to start a forest of one square, on a map drawn with no sea and no
-  // rock, so every square of it holds a forest giving 5 EcosystemSupport.
+  // Every draw falls at a quarter: the map is drawn with no river and no rock, forests are drawn to
+  // cover 60% of a forest's ground, and every square of forest gives 5 EcosystemSupport.
   it("stores all the EcosystemSupport its forests give as the ecosystem's initial support", () => {
-    const sektorData = createSektor(1, LOCATION_PROPERTIES, LAND_GROUND, () => 0.25);
+    const sektorData = createSektor(1, LOCATION_PROPERTIES, FOREST_GROUND, () => 0.25);
+    const forestSquareCount = SEKTOR_SIZE * SEKTOR_SIZE * 0.6;
 
     expect({ forests: sektorData.buildings.length, initialEcosystemSupport: sektorData.initialEcosystemSupport })
-      .toEqual({ forests: SEKTOR_SIZE * SEKTOR_SIZE, initialEcosystemSupport: SEKTOR_SIZE * SEKTOR_SIZE * 5 });
+      .toEqual({ forests: forestSquareCount, initialEcosystemSupport: forestSquareCount * 5 });
   });
 
   // Nothing grows in the desert: the same draws which cover a sektor elsewhere in forest plant

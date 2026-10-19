@@ -38,7 +38,7 @@ export async function createSektorIfNeeded(): Promise<boolean> {
   const level = levels[Math.floor(Math.random() * levels.length)];
 
   // The sektor's place on the planet is picked first, as whether it stands on land or on the sea,
-  // and in the desert or not, shapes its ground.
+  // and in the desert, a forest or grassland, shapes its ground.
   const location = pickSektorLocation();
 
   // Whatever the ground turns out to hold, the sektor made on it is offered: what a player can do
@@ -59,7 +59,7 @@ export async function createSektorIfNeeded(): Promise<boolean> {
 
 function groundAt({ ring, index }: TriangleCoordinate): SektorGround {
   const region = getPlanet().regionRings[ring]![index]!;
-  return { isOnLand: region.isLand, isDesert: region.isDesert };
+  return { isOnLand: region.isLand, isDesert: region.isDesert, isForest: region.isForest };
 }
 
 // A sektor is waiting for somebody as long as nobody owns it, whatever already stands in it.

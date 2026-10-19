@@ -1,41 +1,52 @@
-// Trees stand on some of the dry land of a sektor from the start. Every square of plain ground may
-// be where a forest starts, and a forest bigger than one square spreads from there into the ground
-// around it.
+// Trees stand on some of the dry land of a sektor from the start. How much of its plain ground they
+// cover goes by what the planet is like where the sektor lies: a forest is mostly forest, grassland
+// has little of it, a sektor on the sea less still, and the desert none. Forests start on squares
+// of plain ground picked at random, and a forest bigger than one square spreads from there into the
+// ground around it, until as much of the ground is forest as was drawn.
 
 import { Building, BuildingLocation } from "../../../shared/sektorData";
 import { GROUND } from "../../../shared/terrain";
 import { FOREST_NAME } from "../sektor/forest";
 import { RandomNumber } from "./randomNumber";
+import { SektorGround } from "./terrainMatrix";
 
-// How many squares a forest covers, and how likely a square is to be where a forest that size starts.
-export const FOREST_CHANCES = [
-  { size: 3, chance: 0.1 },
-  { size: 2, chance: 0.1 },
-  { size: 1, chance: 0.1 },
-];
+// The least and the most of a sektor's plain ground forests cover, by what its ground is.
+export const FOREST_SHARES = {
+  forest: { least: 0.5, most: 0.9 },
+  grassland: { least: 0, most: 0.15 },
+  sea: { least: 0, most: 0.1 },
+  desert: { least: 0, most: 0 },
+};
 
-// Neither the sea nor the rock grows anything, and a square which a forest has already spread onto
-// holds that forest, so only plain ground no forest has taken is drawn for.
-export function plantForests(terrain: number[][], randomNumber: RandomNumber): Building[] {
-  const forestSquares: BuildingLocation[] = [];
-  terrain.forEach((row, x) => row.forEach((square, y) => {
-    if (square !== GROUND || isAmong(forestSquares, { x, y })) return;
-    const forestSize = drawnForestSize(randomNumber());
-    if (forestSize === 0) return;
-    forestSquares.push(...growForest(terrain, forestSquares, { x, y }, forestSize, randomNumber));
-  }));
-  return forestSquares.map(location => ({ type: FOREST_NAME, location }));
+// How much of a sektor's plain ground forests cover, anywhere between the least and the most its
+// ground has.
+export function drawForestShare(ground: SektorGround, randomNumber: RandomNumber): number {
+  const { least, most } = FOREST_SHARES[groundCover(ground)];
+  return least + randomNumber() * (most - least);
 }
 
-// A square starts one forest at most, so a single draw decides which, if any: the chances of the
-// sizes are laid end to end, and a draw past all of them starts none.
-function drawnForestSize(draw: number): number {
-  let chanceSoFar = 0;
-  for (const forestChance of FOREST_CHANCES) {
-    chanceSoFar += forestChance.chance;
-    if (draw < chanceSoFar) return forestChance.size;
+function groundCover(ground: SektorGround): keyof typeof FOREST_SHARES {
+  if (!ground.isOnLand) return "sea";
+  if (ground.isDesert) return "desert";
+  return ground.isForest ? "forest" : "grassland";
+}
+
+// The largest forest started at once. A forest is drawn anywhere from one square up to this.
+const LARGEST_FOREST_SIZE = 3;
+
+// Neither the sea nor the rock grows anything, so only plain ground is planted. Forests are started
+// on ground no forest has taken until they cover the share of it they were drawn to, the last of
+// them stopping short of its size if that is what it takes to cover no more.
+export function plantForests(terrain: number[][], forestShare: number, randomNumber: RandomNumber): Building[] {
+  const forestSquareCount = Math.round(forestShare * squaresOfFreeGround(terrain, []).length);
+  const forestSquares: BuildingLocation[] = [];
+  while (forestSquares.length < forestSquareCount) {
+    const freeGround = squaresOfFreeGround(terrain, forestSquares);
+    const startSquare = freeGround[Math.floor(randomNumber() * freeGround.length)];
+    const forestSize = Math.min(1 + Math.floor(randomNumber() * LARGEST_FOREST_SIZE), forestSquareCount - forestSquares.length);
+    forestSquares.push(...growForest(terrain, forestSquares, startSquare, forestSize, randomNumber));
   }
-  return 0;
+  return forestSquares.map(location => ({ type: FOREST_NAME, location }));
 }
 
 // A forest is one stand of trees rather than a scattering of them: it spreads from the square it
