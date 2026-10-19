@@ -54,7 +54,7 @@ So, except for the Desert, all biome groups have sub-groups:
     - soil color is from range: #e3c286 - #99eb73
     - use elevation & forest rendering SGLs from folder frontend/src/assets/terrain/tropical
 
-#4 Polar sektors look polar
-- if a sektor's area is in a polar biome
+#4 [done] Polar sektors look polar
+- [done] if a sektor's area is in a polar biome
     - soil color is from range: #afccc1 - #86ebc4
     - use elevation & forest rendering SGLs from folder frontend/src/assets/terrain/polar

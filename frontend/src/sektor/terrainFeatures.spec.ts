@@ -7,7 +7,7 @@ import { TerrainStyle } from "./terrainStyle";
 // How many shapes rock and forests stand in, which is how many the squares of a map are shared out between.
 const SQUARE_VARIATION_COUNT = 10;
 
-const TERRAIN_STYLES: TerrainStyle[] = ["temperate", "tropical"];
+const TERRAIN_STYLES: TerrainStyle[] = ["temperate", "tropical", "polar"];
 
 function everySquareOfTheMap(): { x: number, z: number }[] {
   return Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>

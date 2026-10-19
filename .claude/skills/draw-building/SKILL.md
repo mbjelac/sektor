@@ -50,6 +50,17 @@ is there.
   ×1.5 with colours from #3dbf00–#51ff00, and roof trees (`t` z ≥ 1) are reset onto the highest
   boulder top under them (looking at all four files of the variant), sunk 15% of their height.
   Fixed seed; rerunning reproduces the files.
+- `tools/sgl/generator/terrain/polar_forests.py` — rewrites every
+  `frontend/src/assets/terrain/polar/forests/<variant>.sgl` from the temperate forest of the same
+  name: each tree stays in place, width ÷1.5 and height ×1.5 (rounded), colours from
+  #003b23–#00cc7a. Fixed seed; rerunning reproduces the files.
+- `tools/sgl/generator/terrain/polar_elevations.py` — rewrites every
+  `frontend/src/assets/terrain/polar/elevations/<edge|middle>/*.sgl` from the temperate file of
+  the same name: `pri5` rocks grow ×1.5–2 in height (base `t` unchanged), colour ×0.85, and each
+  gets a white `pri5` snow cap (2 high, 1 wider, 0.2 above the top) turned with the rock via
+  `ro(0,0,−((h−2)/2+0.2))`. Half the trees are dropped, the rest narrowed ×0.6 (height kept),
+  coloured #003b23–#00cc7a; roof trees are lifted onto the highest new roof under them, and
+  ground trees now inside a rock are dropped. Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/outcrop.py` — shared helpers: random core rocks, rock palette,
   tree sizes and colours, pri5 rock geometry, placing trees on rock roofs.
 

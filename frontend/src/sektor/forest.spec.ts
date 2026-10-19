@@ -7,7 +7,7 @@ import { TerrainStyle } from "./terrainStyle";
 // How many shapes a forest stands in: one file for each of them.
 const FOREST_VARIATION_COUNT = 10;
 
-const TERRAIN_STYLES: TerrainStyle[] = ["temperate", "tropical"];
+const TERRAIN_STYLES: TerrainStyle[] = ["temperate", "tropical", "polar"];
 
 describe("forestRenderingCode", () => {
   // Every shape a square can be counted down to has bodies to draw it with, in every look of the
@@ -20,10 +20,11 @@ describe("forestRenderingCode", () => {
     expect(shapesWithoutBodies).toEqual([]);
   });
 
-  // A tropical forest is drawn from the tropical folder, not the temperate one.
-  it("draws a tropical forest unlike a temperate one", () => {
-    const shapesDrawnAlike = Array.from({ length: FOREST_VARIATION_COUNT }, (_unused, variation) => variation)
-      .filter(variation => forestRenderingCode(variation, "tropical") === forestRenderingCode(variation, "temperate"));
+  // A tropical or polar forest is drawn from its own folder, not the temperate one.
+  it("draws tropical and polar forests unlike temperate ones", () => {
+    const shapesDrawnAlike = (["tropical", "polar"] as const)
+      .flatMap(terrainStyle => Array.from({ length: FOREST_VARIATION_COUNT }, (_unused, variation) => ({ terrainStyle, variation })))
+      .filter(({ terrainStyle, variation }) => forestRenderingCode(variation, terrainStyle) === forestRenderingCode(variation, "temperate"));
 
     expect(shapesDrawnAlike).toEqual([]);
   });
