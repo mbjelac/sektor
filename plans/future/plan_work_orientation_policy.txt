@@ -1,0 +1,9 @@
+Problem: A habitat can output various kinds of work.
+
+Solutions:
+1. All habitats output all kinds of work, some work is always exported, some work is always missing - amounts are never enough.
+2. Player tweaks types of work on each habitat to optimize work types needed for the sektor - tedious: lots of work types, small building panel, multiple habitats, has to tweak for each new habitat.
+3. There is a central location where *rules* for work types exist. All habitats automatically tweak their work functions according to the rules.
+
+This plan is for solution 3.
+
