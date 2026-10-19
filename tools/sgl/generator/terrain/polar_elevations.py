@@ -1,7 +1,7 @@
 # Generates the polar elevations: frontend/src/assets/terrain/polar/elevations/<edge|middle>/<name>.sgl
 #
 # Each is made from the temperate elevation of the same name: the pri5 rocks grow taller and a bit darker, and each
-# gets a thin white cap of snow on its top face. The cap is turned about the rock's centre (with ro), so it tilts
+# gets a thin, shiny white cap of snow on its top face. The cap is turned about the rock's centre (with ro), so it tilts
 # along with the rock and lies flat on its top. Trees are thinned out, made narrower and a dark polar green; a tree
 # that stood on a rock roof is lifted onto the snow on the taller rock's roof. A tree in one triangle can stand on a
 # rock kept in a neighbouring triangle, so the rocks of all four files of a variant are looked at.
@@ -21,6 +21,8 @@ SNOW_HEIGHT = 2
 SNOW_LIFT = 0.2
 SNOW_OVERHANG = 1
 SNOW_COLOR = 'ffffff'
+# Snow glows and glares, so that it stays white even on the faces turned away from the light.
+SNOW_SHINE = 90
 TREE_KEPT = 0.5
 TREE_NARROWING = 0.6
 TREE_COLOR_LOW = (0x00, 0x3b, 0x23)
@@ -74,7 +76,7 @@ def rock_lines(rock):
     return [f"pri5 s({scale[0]},{scale[1]},{scale[2]}) t({number(x)},{number(y)},{number(z)}) {turn} c(#{color})",
             f"pri5 s({scale[0] + SNOW_OVERHANG},{scale[1] + SNOW_OVERHANG},{SNOW_HEIGHT}) "
             f"t({number(x)},{number(y)},{number(z + scale[2] - SNOW_HEIGHT + SNOW_LIFT)}) {turn} "
-            f"ro(0,0,{number(-pivot_drop)}) c(#{SNOW_COLOR})"]
+            f"ro(0,0,{number(-pivot_drop)}) c(#{SNOW_COLOR}) sh({SNOW_SHINE})"]
 
 
 def tree_lines(tree, rocks):

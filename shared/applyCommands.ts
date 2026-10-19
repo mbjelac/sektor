@@ -5,6 +5,7 @@ import {drawSphere} from "./primitive/drawSphere";
 import {drawCylinder} from "./primitive/drawCylinder";
 import {drawCone} from "./primitive/drawCone";
 import {drawTorus, torusTubeRadius} from "./primitive/drawTorus";
+import {colorToRgb} from "./primitive/colorToRgb";
 import {CreateBody} from "./parseCommands";
 import {BLOCK_SIZE} from "./constants";
 import {animatedColor, animatedRotate, animatedTranslate, isShown} from "./animateCommands";
@@ -113,6 +114,9 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
     );
   }
   p.translate(0, centreHeight, 0);
+  if (command.shine) {
+    applyShine(p, command.shine, color);
+  }
   const pyrN = pyrSides[command.type];
   if (pyrN) {
     drawPyramid(p, pyrN, color, command.hollow ?? undefined, command.frustum ?? undefined);
@@ -135,6 +139,21 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
   }
   p.pop();
 }
+
+// A shiny body glows with its own color, so that even its faces turned away from the light keep
+// most of it, and glares white where the light catches it. A shine of 100 lights it up with
+// SHINE_GLOW of its color on top of the light falling on it, which turns a white body pure white.
+export function applyShine(p: p5, shine: number, color: string | undefined) {
+  const strength = shine / 100;
+  const [red, green, blue] = colorToRgb(color);
+  const glow = strength * SHINE_GLOW;
+  p.emissiveMaterial(red * glow, green * glow, blue * glow);
+  p.specularMaterial(255 * strength);
+  p.shininess(SHINE_SHININESS);
+}
+
+const SHINE_GLOW = 0.6;
+const SHINE_SHININESS = 20;
 
 // How high above its base the centre of a body stands, before it is scaled: halfway up, which for a
 // torus lying flat is the middle of its tube, and for a cut off pyramid, cone or sphere is halfway up to

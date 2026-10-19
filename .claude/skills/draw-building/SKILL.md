@@ -52,12 +52,12 @@ is there.
   Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/polar_forests.py` — rewrites every
   `frontend/src/assets/terrain/polar/forests/<variant>.sgl` from the temperate forest of the same
-  name: each tree stays in place, width ÷1.5 and height ×1.5 (rounded), colours from
-  #003b23–#00cc7a. Fixed seed; rerunning reproduces the files.
+  name: each tree keeps its place and width; heights 7–11 map linearly onto 10–20 (tallest twice
+  the shortest), colours from #005727–#629e7d. Fixed seed; rerunning reproduces the files.
 - `tools/sgl/generator/terrain/polar_elevations.py` — rewrites every
   `frontend/src/assets/terrain/polar/elevations/<edge|middle>/*.sgl` from the temperate file of
   the same name: `pri5` rocks grow ×1.5–2 in height (base `t` unchanged), colour ×0.85, and each
-  gets a white `pri5` snow cap (2 high, 1 wider, 0.2 above the top) turned with the rock via
+  gets a white, `sh(90)` shiny `pri5` snow cap (2 high, 1 wider, 0.2 above the top) turned with the rock via
   `ro(0,0,−((h−2)/2+0.2))`. Half the trees are dropped, the rest narrowed ×0.6 (height kept),
   coloured #003b23–#00cc7a; roof trees are lifted onto the highest new roof under them, and
   ground trees now inside a rock are dropped. Fixed seed; rerunning reproduces the files.
@@ -108,6 +108,7 @@ The body keyword starts the line; modifiers follow in any order.
 | `c(#rrggbb)` or `c(#rrggbbaa)` | color; alpha < ff makes it transparent |
 | `h(n)` | hollow it out, 0–100 |
 | `f(n)` | cut the top off a `pyr`/`con`, 0–100 |
+| `sh(n)` | shine, 0–100: the body glows with its own colour (60% at 100) so faces turned from the light stay bright, and glares where the light catches it; `c(#ffffff) sh(100)` is pure white |
 
 Position and size are in the same units: `t(24,24,3)` with `s(60,60,40)` is a body 60 units wide
 standing at x=24, y=24.
