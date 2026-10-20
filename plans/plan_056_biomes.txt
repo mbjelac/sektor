@@ -155,9 +155,16 @@ So, except for the Desert, all biome groups have sub-groups:
         - temperate: 4-8
         - polar: 0-5
 
-#11 Marks of location property amounts do not confuse
-- currently marking squares for a location property (insolation, groundwater, ...) go from the location property color to black as the amount decreases
+#11 [done] Marks of location property amounts do not confuse
+- [done] currently marking squares for a location property (insolation, groundwater, ...) go from the location property color to black as the amount decreases
     - black is confusing
     - keep location property color for all values
     - as property value decreases, increase transparency
 
+#12 Biomes affect soil
+- soil should be generated like now, but the maximum value depends on the biome type
+    - desert: max 0 in any biome
+        - color squares randomly from desert color range
+    - tropical: 12
+    - temperate: 12
+    - polar: 4

@@ -595,21 +595,25 @@ function selectBuildingProperty(buildingName: string | null) {
   selectProperty(outputs.find(output => output.locationProperty !== undefined)?.locationProperty ?? FLOOR_PROPERTY);
 }
 
+// The frames are see-through, so they leave the depth of the scene alone: a building standing
+// behind a frame is drawn after it, and would otherwise be cut away where the frame lies over it.
 function drawPropertyOverlay(p: p5, propertyName: string) {
-  for (let x = 0; x < SEKTOR_SIZE; x++) {
-    for (let y = 0; y < SEKTOR_SIZE; y++) {
-      const propertyValue = locations[x]?.[y]?.properties[propertyName] ?? 0;
-      // A black frame around a square holding none of the property reads as something being
-      // there, so a square holding none is left without a frame.
-      if (propertyValue === 0) continue;
-      drawLocationHighlight(p, { x, y }, propertyValueColor(propertyName, propertyValue));
+  withoutDepthWrites(p, () => {
+    for (let x = 0; x < SEKTOR_SIZE; x++) {
+      for (let y = 0; y < SEKTOR_SIZE; y++) {
+        const propertyValue = locations[x]?.[y]?.properties[propertyName] ?? 0;
+        // A square holding none of the property would get a frame too faint to see, so it is
+        // left without one.
+        if (propertyValue === 0) continue;
+        drawLocationHighlight(p, { x, y }, propertyValueColor(propertyName, propertyValue));
+      }
     }
-  }
+  });
 }
 
 // The highlight sits clear above the floor rather than on it, so that the two do not fight
 // over the same depth, which shows up as the floor's wireframe stippling through it.
-function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number, number, number]) {
+function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number, number, number] | [number, number, number, number]) {
   const { wx, wz } = gridToWorld(location.x, location.y);
   const borderWidth = BLOCK_SIZE * 0.04;
   const thickness = BLOCK_SIZE * 0.01;
@@ -624,7 +628,7 @@ function drawLocationHighlight(p: p5, location: BuildingLocation, color: [number
     p.push();
     p.noStroke();
     p.noLights();
-    p.fill(color[0], color[1], color[2]);
+    p.fill(color[0], color[1], color[2], color[3] ?? 255);
     p.translate(side.x, -FLOOR_HEIGHT / 2 - heightAboveFloor - thickness / 2, side.z);
     p.box(side.w, thickness, side.d);
     p.pop();

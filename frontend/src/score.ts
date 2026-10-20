@@ -1,4 +1,5 @@
-import { interpolateColors, parseHexColor } from "./properties";
+import { interpolateColors } from "./properties";
+import { parseHexColor } from "./color";
 
 const WORST_SCORE = -50;
 const MIDDLE_SCORE = 0;
