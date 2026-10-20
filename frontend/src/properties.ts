@@ -38,10 +38,15 @@ const FLOOR_PROPERTY = "soil";
 // A floor is colored by its soil: the lowest value is the poorest color of the terrain's look, the
 // highest its richest, and values in between are the color in between.
 export function floorColor(soilValue: number, terrainStyle: TerrainStyle): [number, number, number] {
+  return floorColorAlongRange(valueFraction(soilValue), terrainStyle);
+}
+
+// The color a fraction of the way from the poorest color of the terrain's look to its richest.
+export function floorColorAlongRange(fraction: number, terrainStyle: TerrainStyle): [number, number, number] {
   const soil = propertyDefinitions.find(property => property.name === FLOOR_PROPERTY);
   if (!soil) return [128, 128, 128];
   const { poorest, richest } = floorColorRange(terrainStyle, soil.color);
-  return interpolateColors(parseHexColor(poorest), parseHexColor(richest), valueFraction(soilValue));
+  return interpolateColors(parseHexColor(poorest), parseHexColor(richest), fraction);
 }
 
 // Every property value is drawn in the property's own color: the highest fully opaque, the lowest

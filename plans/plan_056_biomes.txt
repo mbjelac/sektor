@@ -161,8 +161,8 @@ So, except for the Desert, all biome groups have sub-groups:
     - keep location property color for all values
     - as property value decreases, increase transparency
 
-#12 Biomes affect soil
-- soil should be generated like now, but the maximum value depends on the biome type
+#12 [done] Biomes affect soil
+- [done] soil should be generated like now, but the maximum value depends on the biome type
     - desert: max 0 in any biome
         - color squares randomly from desert color range
     - tropical: 12

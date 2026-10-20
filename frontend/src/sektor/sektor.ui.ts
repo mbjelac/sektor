@@ -18,7 +18,8 @@ import { scoreOfPlayer } from "../players";
 import { getGivenSektorName, getSektorLocation, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
-import { floorColor, propertyValueColor } from "../properties";
+import { floorColor, floorColorAlongRange, propertyValueColor } from "../properties";
+import { desertFloorFraction } from "./desertFloor";
 import { getLocalResources } from "../resources";
 import { arrowLeftIcon, buildingOfficeIcon, ecosystemDamage as ecosystemDamageIcon, faceSmileIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
 import { ecosystemDamage } from "./ecosystemDamage";
@@ -833,8 +834,10 @@ function gridToWorld(gx: number, gy: number): { wx: number; wz: number } {
 }
 
 // What the top of a location is colored: the sea where the map is under water, otherwise its soil.
+// The desert has no soil, and is colored in a sand of the square's own instead.
 function floorColorAt(gx: number, gy: number): [number, number, number] {
   if (isSeaLocation(gx, gy)) return SEA_COLOR;
+  if (terrainStyle === "desert") return floorColorAlongRange(desertFloorFraction(gx, gy), terrainStyle);
   return floorColor(locations[gx]?.[gy]?.properties[FLOOR_PROPERTY] ?? 0, terrainStyle);
 }
 

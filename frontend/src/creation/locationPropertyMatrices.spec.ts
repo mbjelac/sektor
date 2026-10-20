@@ -27,11 +27,11 @@ function runsOf(propertyName: string, ground: SektorGround = GRASSLAND): number[
   return Array.from({ length: RUNS }, () => matrixOf(propertyName, ground));
 }
 
-// Every value insolation takes anywhere on the maps of a ground of each biome, lowest first.
-function insolationValuesByBiome(cover: Omit<SektorGround, "biome">): { [biome: string]: number[] } {
+// Every value a property takes anywhere on the maps of a ground of each biome, lowest first.
+function valuesByBiome(propertyName: string, cover: Omit<SektorGround, "biome">): { [biome: string]: number[] } {
   return Object.fromEntries(BIOMES.map(biome => [
     biome,
-    [...new Set(runsOf("insolation", { ...cover, biome }).flatMap(matrix => matrix.flat()))].sort((first, second) => first - second),
+    [...new Set(runsOf(propertyName, { ...cover, biome }).flatMap(matrix => matrix.flat()))].sort((first, second) => first - second),
   ]));
 }
 
@@ -79,12 +79,12 @@ describe("createLocationPropertyMatrix", () => {
 
   // The desert and the sea lie open to the sun, so every location of the map sees the same of it.
   it("lights every location of a desert 12 in the tropics, 8 in temperate lands and 2 near the poles", () => {
-    expect(insolationValuesByBiome({ isOnLand: true, isDesert: true, isForest: false }))
+    expect(valuesByBiome("insolation", { isOnLand: true, isDesert: true, isForest: false }))
       .toEqual({ tropical: [12], temperate: [8], polar: [2] });
   });
 
   it("lights every location of the sea 10 in the tropics, 6 in temperate lands and 1 near the poles", () => {
-    expect(insolationValuesByBiome({ isOnLand: false, isDesert: false, isForest: false }))
+    expect(valuesByBiome("insolation", { isOnLand: false, isDesert: false, isForest: false }))
       .toEqual({ tropical: [10], temperate: [6], polar: [1] });
   });
 
@@ -151,6 +151,24 @@ describe("createLocationPropertyMatrix", () => {
       pocketCountOf(createLocationPropertyMatrix("groundwater", { biome: "temperate", isOnLand: true, isDesert: true, isForest: false }, drawingFirst((run + 0.5) / 1000))));
 
     expect([0, 1, 2].map(pocketCount => pocketCounts.filter(count => count === pocketCount).length)).toEqual([500, 300, 200]);
+  });
+
+  // The cold leaves soil thin: no soil anywhere is richer than 12 in the tropics and temperate
+  // lands, or than 4 near the poles.
+  it("never makes soil richer than 12 in the tropics and temperate lands, or than 4 near the poles", () => {
+    const richestSoilByBiome = { tropical: 12, temperate: 12, polar: 4 };
+    const tooRichSoil = BIOMES.flatMap(biome =>
+      runsOf("soil", { ...GRASSLAND, biome })
+        .flatMap(matrix => matrix.flat())
+        .filter(value => value > richestSoilByBiome[biome as keyof typeof richestSoilByBiome])
+        .map(value => ({ biome, value })));
+
+    expect(tooRichSoil).toEqual([]);
+  });
+
+  it("makes no soil at all in the desert", () => {
+    expect(valuesByBiome("soil", { isOnLand: true, isDesert: true, isForest: false }))
+      .toEqual({ tropical: [0], temperate: [0], polar: [0] });
   });
 
   // Nothing has stood in a sektor just made to foul its ground, so none of it is polluted.

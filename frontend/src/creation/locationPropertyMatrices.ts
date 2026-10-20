@@ -176,10 +176,16 @@ function countDrawnByChances(chances: number[], draw: number): number {
 }
 
 // Soil lies in the largest blobs of all, there being no rivers or hills yet to say where it is deep.
+// How rich it gets goes by the biome: the cold leaves soil thin, and the desert has none at all.
+// The blobs are laid out the same everywhere and only scaled down to the richest soil there is.
 const SOIL_BLOB_COUNT = 2;
 
-function createSoilMatrix(randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(blobHotspots(SOIL_BLOB_COUNT, 3, 0.75, randomNumber), randomNumber);
+export const RICHEST_SOIL_BY_BIOME: { [biome: string]: number } = { tropical: 12, temperate: 12, polar: 4 };
+
+function createSoilMatrix(randomNumber: RandomNumber, ground: SektorGround): number[][] {
+  const richest = groundCover(ground) === "desert" ? 0 : RICHEST_SOIL_BY_BIOME[ground.biome] ?? RICHEST_SOIL_BY_BIOME.temperate;
+  return matrixAroundHotspots(blobHotspots(SOIL_BLOB_COUNT, 3, 0.75, randomNumber), randomNumber)
+    .map(row => row.map(value => Math.round(value * richest / MODIFIER_MAX)));
 }
 
 // Pockets of a property: the middle of each holds the most there is of it, and every square away
