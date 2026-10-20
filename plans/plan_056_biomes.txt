@@ -154,3 +154,10 @@ So, except for the Desert, all biome groups have sub-groups:
         - tropical: 6-12
         - temperate: 4-8
         - polar: 0-5
+
+#11 Marks of location property amounts do not confuse
+- currently marking squares for a location property (insolation, groundwater, ...) go from the location property color to black as the amount decreases
+    - black is confusing
+    - keep location property color for all values
+    - as property value decreases, increase transparency
+
