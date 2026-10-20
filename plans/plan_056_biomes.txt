@@ -169,7 +169,7 @@ So, except for the Desert, all biome groups have sub-groups:
     - temperate: 12
     - polar: 4
 
-#13 Rivers affect soil
-- applied after regular soil generation
-- if a river is present in the sektor, squares with the river and squares next to them (not diagonally) should have soil 12
-- squares more distant from the river have soil fall off by 4 per square, except if they already have higher soil
+#13 [done] Rivers affect soil
+- [done] applied after regular soil generation
+- [done] if a river is present in the sektor, squares with the river and squares next to them (not diagonally) should have soil 12
+- [done] squares more distant from the river have soil fall off by 4 per square, except if they already have higher soil

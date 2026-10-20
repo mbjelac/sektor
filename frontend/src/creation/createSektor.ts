@@ -4,8 +4,11 @@ import { createTerrainMatrix, SektorGround } from "./terrainMatrix";
 import { RandomNumber } from "./randomNumber";
 import { drawForestShare, plantForests } from "./forests";
 import { forestEcosystemSupport } from "../sektor/forest";
+import { soilWateredByRiver } from "./riverSoil";
 
 export type { RandomNumber };
+
+const SOIL_PROPERTY = "soil";
 
 // A sektor is the ground it stands on and what grows there: it is handed to the player as a piece
 // of land with a difficulty on it, and what is worth building there is theirs to work out. Nothing
@@ -18,10 +21,14 @@ export function createSektor(
 ): SektorData {
   const terrain = createTerrainMatrix(ground, randomNumber);
   const forests = plantForests(terrain, drawForestShare(ground, randomNumber), randomNumber);
+  const locationProperties = createLocationProperties(locationPropertyNames, ground, randomNumber);
+  if (locationProperties[SOIL_PROPERTY]) {
+    locationProperties[SOIL_PROPERTY] = soilWateredByRiver(locationProperties[SOIL_PROPERTY], terrain);
+  }
   return {
     level,
     terrain,
-    locationProperties: createLocationProperties(locationPropertyNames, ground, randomNumber),
+    locationProperties,
     buildings: forests,
     // Nothing but forests stands in a sektor just made, so what they give is all the support the
     // ecosystem has to begin with.
