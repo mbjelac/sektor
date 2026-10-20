@@ -112,15 +112,15 @@ So, except for the Desert, all biome groups have sub-groups:
             - temperate: 8
             - polar: 1
 
-#9 Biomes affect wind
-- when generating wind matrix, take biomes into account
-- wind has "tracks" across a sektor
-- generate randomly from 1 to 3 wind tracks
-- a wind track is a row of squares with wind high point
+#9 [done] Biomes affect wind
+- [done] when generating wind matrix, take biomes into account
+- [done] wind has "tracks" across a sektor
+- [done] generate randomly from 1 to 3 wind tracks
+- [done] a wind track is a row of squares with wind high point
     - this row starts on one edge and ends on the opposite egde
     - all wind tracks on a sektor are parallel
     - rows next to the track high point have a dropoff with distance
-- high points:
+- [done] high points:
     - desert:
         - tropical: 12
         - temperate: 12

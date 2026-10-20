@@ -105,10 +105,43 @@ function sunlightPocketMiddles(pocketCount: number, randomNumber: RandomNumber):
   return Array.from({ length: pocketCount }, () => tiles.splice(Math.floor(randomNumber() * tiles.length), 1)[0]);
 }
 
-// Wind flows through the map rather than settling in it: a line clear across, from one edge to the
-// other, and now and then a second one.
-function createWindMatrix(randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(windHotspots(randomNumber), randomNumber);
+// Wind flows through the map rather than settling in it: it runs in tracks, each a whole row or a
+// whole column clear across from one edge to the other, all of them running the same way. A track
+// blows as hard as the wind blows there, and the rows beside it less the further from it they lie.
+// Nothing stands in the way of the wind over the desert and the sea; trees break it, forest more
+// than grassland, and the temperate lands are the calmest.
+export const WIND_BY_BIOME: { [cover in GroundCover]: { [biome: string]: number } } = {
+  desert: { tropical: 12, temperate: 12, polar: 12 },
+  sea: { tropical: 12, temperate: 12, polar: 12 },
+  forest: { tropical: 8, temperate: 6, polar: 8 },
+  grassland: { tropical: 10, temperate: 8, polar: 10 },
+};
+
+export const FEWEST_WIND_TRACKS = 1;
+export const MOST_WIND_TRACKS = 3;
+// How much less the wind blows for every row away from the nearest track.
+export const WIND_FALL_OFF_PER_ROW = 3;
+
+function createWindMatrix(randomNumber: RandomNumber, ground: SektorGround): number[][] {
+  const cover = groundCover(ground);
+  const strongest = WIND_BY_BIOME[cover][ground.biome] ?? WIND_BY_BIOME[cover].temperate;
+  const runsAlongX = randomNumber() < 0.5;
+  const tracks = windTrackRows(randomNumber);
+  return Array.from({ length: SEKTOR_SIZE }, (_, x) =>
+    Array.from({ length: SEKTOR_SIZE }, (_, z) => {
+      const row = runsAlongX ? z : x;
+      const rowsFromTrack = Math.min(...tracks.map(track => Math.abs(track - row)));
+      return Math.max(0, strongest - WIND_FALL_OFF_PER_ROW * rowsFromTrack);
+    })
+  );
+}
+
+// Which rows of the map the tracks run along: no two along the same one, so there are as many
+// tracks as were drawn.
+function windTrackRows(randomNumber: RandomNumber): number[] {
+  const trackCount = FEWEST_WIND_TRACKS + Math.floor(randomNumber() * (MOST_WIND_TRACKS - FEWEST_WIND_TRACKS + 1));
+  const rows = Array.from({ length: SEKTOR_SIZE }, (_, row) => row);
+  return Array.from({ length: trackCount }, () => rows.splice(Math.floor(randomNumber() * rows.length), 1)[0]);
 }
 
 // Pollution is what buildings leave behind, not what the ground starts with: a sektor just made has
@@ -181,23 +214,6 @@ function blobHotspots(
         if (randomNumber() > denseness) continue;
         hotspots.push({ x, z });
       }
-    }
-  }
-
-  return hotspots;
-}
-
-// A band of wind is a whole row or a whole column of the map, so the wind comes in one edge and
-// leaves by the other.
-function windHotspots(randomNumber: RandomNumber): Hotspot[] {
-  const bandCount = randomNumber() < 0.3 ? 2 : 1;
-  const hotspots: Hotspot[] = [];
-
-  for (let band = 0; band < bandCount; band++) {
-    const flowsAlongX = randomNumber() < 0.5;
-    const across = randomTile(randomNumber);
-    for (let along = 0; along < SEKTOR_SIZE; along++) {
-      hotspots.push(flowsAlongX ? { x: along, z: across } : { x: across, z: along });
     }
   }
 
