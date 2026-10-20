@@ -121,6 +121,38 @@ describe("createLocationPropertyMatrix", () => {
     expect(wronglyLitLocations).toEqual([]);
   });
 
+  // Groundwater gathers in pockets, full at their middles and drying up by 4 for every square away.
+  it("dries groundwater up by 4 for every square away from the nearest pocket", () => {
+    const wronglyWateredLocations = runsOf("groundwater")
+      .flatMap(matrix => locationsNotFallingOffFromPockets(matrix, MODIFIER_MAX, 4));
+
+    expect(wronglyWateredLocations).toEqual([]);
+  });
+
+  // Wet lands and forests have more pockets of groundwater than dry lands and grassland, the sea a
+  // few and the desert mostly none.
+  it("gathers as many pockets of groundwater as the biome has", () => {
+    expect({
+      sea: groundwaterPocketCountsByBiome({ isOnLand: false, isDesert: false, isForest: false }),
+      forest: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: false, isForest: true }),
+      grassland: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: false, isForest: false }),
+      desert: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: true, isForest: false }),
+    }).toEqual({
+      sea: { tropical: [1, 2, 3], temperate: [1, 2, 3], polar: [1, 2, 3] },
+      forest: { tropical: [8, 9, 10, 11, 12, 13, 14, 15], temperate: [5, 6, 7, 8, 9, 10], polar: [3, 4, 5, 6, 7, 8] },
+      grassland: { tropical: [6, 7, 8, 9, 10, 11, 12], temperate: [4, 5, 6, 7, 8], polar: [0, 1, 2, 3, 4, 5] },
+      desert: { tropical: [0, 1, 2], temperate: [0, 1, 2], polar: [0, 1, 2] },
+    });
+  });
+
+  // The desert has no pocket half the time, one 30% of the time and two 20% of the time.
+  it("gathers no groundwater in half of the deserts, one pocket in 30% and two in 20%", () => {
+    const pocketCounts = Array.from({ length: 1000 }, (_, run) =>
+      pocketCountOf(createLocationPropertyMatrix("groundwater", { biome: "temperate", isOnLand: true, isDesert: true, isForest: false }, drawingFirst((run + 0.5) / 1000))));
+
+    expect([0, 1, 2].map(pocketCount => pocketCounts.filter(count => count === pocketCount).length)).toEqual([500, 300, 200]);
+  });
+
   // Nothing has stood in a sektor just made to foul its ground, so none of it is polluted.
   it("leaves every location of a sektor just made unpolluted", () => {
     const pollutedLocations = runsOf("pollution").flatMap(matrix => matrix.flat()).filter(value => value !== 0);
@@ -180,14 +212,20 @@ function pocketCounts(ground: SektorGround): number[] {
 }
 
 function wronglyLitLocationsOf(ground: SektorGround, fallOffPerSquare: number): object[] {
-  return runsOf("insolation", ground).flatMap(matrix => {
-    const pocketMiddles = locationsHolding(matrix, TEMPERATE_POCKET_MIDDLE);
-    return matrix.flatMap((row, x) => row.flatMap((value, z) => {
-      const distance = Math.min(...pocketMiddles.map(middle => Math.hypot(middle.x - x, middle.z - z)));
-      const expected = Math.max(0, Math.round(TEMPERATE_POCKET_MIDDLE - fallOffPerSquare * distance));
-      return value === expected ? [] : [{ isForest: ground.isForest, x, z, value, expected }];
-    }));
-  });
+  return runsOf("insolation", ground).flatMap(matrix =>
+    locationsNotFallingOffFromPockets(matrix, TEMPERATE_POCKET_MIDDLE, fallOffPerSquare)
+      .map(location => ({ isForest: ground.isForest, ...location })));
+}
+
+// Every location which does not hold the most there is, less the fall-off for every square between
+// it and the nearest pocket middle — a location holding the most there is.
+function locationsNotFallingOffFromPockets(matrix: number[][], highest: number, fallOffPerSquare: number): object[] {
+  const pocketMiddles = locationsHolding(matrix, highest);
+  return matrix.flatMap((row, x) => row.flatMap((value, z) => {
+    const distance = Math.min(...pocketMiddles.map(middle => Math.hypot(middle.x - x, middle.z - z)));
+    const expected = Math.max(0, Math.round(highest - fallOffPerSquare * distance));
+    return value === expected ? [] : [{ x, z, value, expected }];
+  }));
 }
 
 // The wind of a temperate grassland's tracks, which blows nowhere else on its map.
@@ -198,5 +236,29 @@ function windTracks(matrix: number[][]): { alongX: number[], alongZ: number[] } 
   return {
     alongX: matrix[0].flatMap((_, z) => matrix.every(row => row[z] === GRASSLAND_WIND) ? [z] : []),
     alongZ: matrix.flatMap((row, x) => row.every(value => value === GRASSLAND_WIND) ? [x] : []),
+  };
+}
+
+// Every pocket of groundwater has a middle of its own, the only location as full as ground ever is.
+function pocketCountOf(matrix: number[][]): number {
+  return locationsHolding(matrix, MODIFIER_MAX).length;
+}
+
+// Every count of groundwater pockets turning up on the maps of a ground of each biome, fewest first.
+function groundwaterPocketCountsByBiome(cover: Omit<SektorGround, "biome">): { [biome: string]: number[] } {
+  return Object.fromEntries(BIOMES.map(biome => [
+    biome,
+    [...new Set(Array.from({ length: 400 }, () => pocketCountOf(matrixOf("groundwater", { ...cover, biome }))))]
+      .sort((first, second) => first - second),
+  ]));
+}
+
+// The first draw is the one given, every draw after it falls at random.
+function drawingFirst(firstDraw: number): () => number {
+  let isFirstDraw = true;
+  return () => {
+    if (!isFirstDraw) return Math.random();
+    isFirstDraw = false;
+    return firstDraw;
   };
 }

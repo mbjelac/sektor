@@ -91,18 +91,8 @@ function createInsolationMatrix(randomNumber: RandomNumber, ground: SektorGround
   if (cover === "desert" || cover === "sea") return matrixAllOf(brightest);
 
   const { fewest, most, fallOffPerSquare } = SUNLIGHT_POCKETS[cover];
-  const pockets = sunlightPocketMiddles(fewest + Math.floor(randomNumber() * (most - fewest + 1)), randomNumber);
-  return Array.from({ length: SEKTOR_SIZE }, (_, x) =>
-    Array.from({ length: SEKTOR_SIZE }, (_, z) =>
-      Math.max(0, Math.round(brightest - fallOffPerSquare * distanceToNearestHotspot(x, z, pockets))))
-  );
-}
-
-// No two pockets share a middle, so there are as many pockets on the map as were drawn.
-function sunlightPocketMiddles(pocketCount: number, randomNumber: RandomNumber): Hotspot[] {
-  const tiles = Array.from({ length: SEKTOR_SIZE * SEKTOR_SIZE }, (_, index) =>
-    ({ x: Math.floor(index / SEKTOR_SIZE), z: index % SEKTOR_SIZE }));
-  return Array.from({ length: pocketCount }, () => tiles.splice(Math.floor(randomNumber() * tiles.length), 1)[0]);
+  const pocketCount = fewest + Math.floor(randomNumber() * (most - fewest + 1));
+  return matrixOfPockets(pocketCount, brightest, fallOffPerSquare, randomNumber);
 }
 
 // Wind flows through the map rather than settling in it: it runs in tracks, each a whole row or a
@@ -150,11 +140,39 @@ function createUnpollutedMatrix(): number[][] {
   return matrixAllOf(0);
 }
 
-// Groundwater gathers in pockets: smaller than mineral blotches, and several of them.
-const GROUNDWATER_POCKET_COUNT = 3;
+// Groundwater gathers in pockets, as full as ground ever is at the middle of one and drying up
+// square by square away from it. How many pockets there are goes by the biome: the desert mostly
+// has none, the sea a few, and wet lands and forests more than dry lands and grassland.
+export const GROUNDWATER_FALL_OFF_PER_SQUARE = 4;
 
-function createGroundwaterMatrix(randomNumber: RandomNumber): number[][] {
-  return matrixAroundHotspots(blobHotspots(GROUNDWATER_POCKET_COUNT, 1, 0.8, randomNumber), randomNumber);
+// How likely the desert is to have no pocket, one, or two.
+export const DESERT_GROUNDWATER_POCKET_CHANCES = [0.5, 0.3, 0.2];
+
+export const GROUNDWATER_POCKETS: { [cover in "sea" | "forest" | "grassland"]: { [biome: string]: { fewest: number; most: number } } } = {
+  sea: { tropical: { fewest: 1, most: 3 }, temperate: { fewest: 1, most: 3 }, polar: { fewest: 1, most: 3 } },
+  forest: { tropical: { fewest: 8, most: 15 }, temperate: { fewest: 5, most: 10 }, polar: { fewest: 3, most: 8 } },
+  grassland: { tropical: { fewest: 6, most: 12 }, temperate: { fewest: 4, most: 8 }, polar: { fewest: 0, most: 5 } },
+};
+
+function createGroundwaterMatrix(randomNumber: RandomNumber, ground: SektorGround): number[][] {
+  return matrixOfPockets(groundwaterPocketCount(ground, randomNumber), MODIFIER_MAX, GROUNDWATER_FALL_OFF_PER_SQUARE, randomNumber);
+}
+
+function groundwaterPocketCount(ground: SektorGround, randomNumber: RandomNumber): number {
+  const cover = groundCover(ground);
+  if (cover === "desert") return countDrawnByChances(DESERT_GROUNDWATER_POCKET_CHANCES, randomNumber());
+  const { fewest, most } = GROUNDWATER_POCKETS[cover][ground.biome] ?? GROUNDWATER_POCKETS[cover].temperate;
+  return fewest + Math.floor(randomNumber() * (most - fewest + 1));
+}
+
+// The chances of every count, from none up, laid end to end: the count is the one the draw falls on.
+function countDrawnByChances(chances: number[], draw: number): number {
+  let chanceSoFar = 0;
+  for (let count = 0; count < chances.length; count++) {
+    chanceSoFar += chances[count];
+    if (draw < chanceSoFar) return count;
+  }
+  return chances.length - 1;
 }
 
 // Soil lies in the largest blobs of all, there being no rivers or hills yet to say where it is deep.
@@ -162,6 +180,23 @@ const SOIL_BLOB_COUNT = 2;
 
 function createSoilMatrix(randomNumber: RandomNumber): number[][] {
   return matrixAroundHotspots(blobHotspots(SOIL_BLOB_COUNT, 3, 0.75, randomNumber), randomNumber);
+}
+
+// Pockets of a property: the middle of each holds the most there is of it, and every square away
+// from the nearest middle holds less by the fall-off, down to none at all.
+function matrixOfPockets(pocketCount: number, highest: number, fallOffPerSquare: number, randomNumber: RandomNumber): number[][] {
+  const pockets = pocketMiddles(pocketCount, randomNumber);
+  return Array.from({ length: SEKTOR_SIZE }, (_, x) =>
+    Array.from({ length: SEKTOR_SIZE }, (_, z) =>
+      Math.max(0, Math.round(highest - fallOffPerSquare * distanceToNearestHotspot(x, z, pockets))))
+  );
+}
+
+// No two pockets share a middle, so there are as many pockets on the map as were drawn.
+function pocketMiddles(pocketCount: number, randomNumber: RandomNumber): Hotspot[] {
+  const tiles = Array.from({ length: SEKTOR_SIZE * SEKTOR_SIZE }, (_, index) =>
+    ({ x: Math.floor(index / SEKTOR_SIZE), z: index % SEKTOR_SIZE }));
+  return Array.from({ length: pocketCount }, () => tiles.splice(Math.floor(randomNumber() * tiles.length), 1)[0]);
 }
 
 // A seam starts somewhere on the map and keeps going one way until it runs off the far edge,

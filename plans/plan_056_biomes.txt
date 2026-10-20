@@ -138,9 +138,9 @@ So, except for the Desert, all biome groups have sub-groups:
         - temperate: 8
         - polar: 10
 
-#10 Biomes affect groundwater
-- groundwater should be generated in pockets like insolation, but for all biomes the fall-off is 4 per square
-- when generating groundwater matrix, take biomes into account:
+#10 [done] Biomes affect groundwater
+- [done] groundwater should be generated in pockets like insolation, but for all biomes the fall-off is 4 per square
+- [done] when generating groundwater matrix, take biomes into account:
     - desert: 0-2 pockets, with probability:
         - 0: 50%
         - 1: 30%
