@@ -1,10 +1,11 @@
 import { test, expect, Page } from "@playwright/test";
+import { readFileSync } from "fs";
 import { makeSektorsByHand, placeHub, prepareSektorNames } from "./test-utils";
 
 const CURRENT_PLAYER = "Tester";
 const OTHER_PLAYER = "Ana";
 // The name every sektor made by a test is given. It is laid out for the page to take, so that no
-// test waits on the word service or is surprised by what it answers.
+// test is surprised by a name drawn from the words.
 const PREPARED_SEKTOR_NAME = "quiet-harvest";
 
 test.beforeEach(async ({ page }) => {
@@ -541,7 +542,7 @@ function getGlobalPanelSize(page: Page) {
 // The sektors of a player's own level are made in the background as they are claimed. A test calls
 // the making of them itself, rather than sitting out the ten seconds between one round and the next.
 function createSektorNow(page: Page) {
-  return page.evaluate(() => (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded());
+  return page.evaluate(() => (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded());
 }
 
 // A sektor is made on a triangle of the planet where it can be lived on, which is never in the
@@ -696,17 +697,17 @@ test("names every sektor it makes", async ({ page }) => {
 });
 
 // The one test which goes the way the game itself goes: no name is laid out for the page, so the
-// word service is asked for two words, which the test answers in place of the network.
-test("names a sektor after two words of the word service", async ({ page }) => {
+// name is two words drawn from the game's own list of words.
+test("names a sektor after two words of the game's list of words", async ({ page }) => {
   await prepareSektorNames(page, []);
-  await page.route("https://random-word-api.herokuapp.com/**", route => route.fulfill({ json: ["quiet", "harvest"] }));
   await page.goto("/?test=true");
 
   await createSektorNow(page);
 
   const sektors = await getStoredSektors(page);
-  expect(sektors.map((sektor: { id: string; name: string | null }) => sektor.name))
-    .toEqual(["Alpha", "Beta", null, "quiet-harvest"]);
+  const madeSektorName: string = sektors[sektors.length - 1].name;
+  const sektorWords = readFileSync("src/assets/sektor-words.txt", "utf8").split("\n");
+  expect(madeSektorName.split("-").map(word => sektorWords.includes(word))).toEqual([true, true]);
 });
 
 test("numbers every sektor it makes above the last one", async ({ page }) => {

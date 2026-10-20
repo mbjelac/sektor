@@ -4,7 +4,7 @@ import { getLocationPropertyNames } from "../properties";
 import { getPlayers } from "../players";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { createSektor } from "./createSektor";
-import { generateSektorName } from "./sektorName.api";
+import { generateSektorName } from "./sektorName";
 import { pickSektorLocation } from "./sektorLocation";
 import { getPlanet } from "../list/planet";
 import { TriangleCoordinate } from "../list/planetGrid";
@@ -18,8 +18,8 @@ const MAXIMUM_UNCLAIMED_SEKTORS = 10;
 let creationTimer: ReturnType<typeof setInterval> | null = null;
 
 export function startCreatingSektors(onSektorCreated: () => void) {
-  creationTimer = setInterval(async () => {
-    if (await createSektorIfNeeded()) onSektorCreated();
+  creationTimer = setInterval(() => {
+    if (createSektorIfNeeded()) onSektorCreated();
   }, CREATION_INTERVAL_MILLISECONDS);
 }
 
@@ -31,7 +31,7 @@ export function stopCreatingSektors() {
 }
 
 // Returns whether a sektor was made, so that a list already on screen can be drawn again.
-export async function createSektorIfNeeded(): Promise<boolean> {
+export function createSektorIfNeeded(): boolean {
   if (countUnclaimedSektors() >= MAXIMUM_UNCLAIMED_SEKTORS) return false;
 
   const levels = neededLevels();
@@ -46,9 +46,7 @@ export async function createSektorIfNeeded(): Promise<boolean> {
   // anything out of with the buildings it happens to allow.
   const sektorData = createSektor(level, getLocationPropertyNames(), groundAt(location));
 
-  // The name is waited for before the sektor is numbered, so that a sektor made while this one
-  // waits is the one holding the number it was given, and neither of them takes the other's.
-  const sektorName = await generateSektorName();
+  const sektorName = generateSektorName();
   const sektorId = `${nextSektorId()}`;
 
   saveSektorData(sektorId, sektorData);

@@ -2,8 +2,7 @@ import { test, expect } from "@playwright/test";
 import { makeSektorsByHand } from "./test-utils";
 
 // No test of the login has anything to do with the sektors a list makes of its own, so the list is
-// kept from filling, which keeps these tests off the word service as well as off sektors they
-// never asked for.
+// kept from filling, which keeps these tests off sektors they never asked for.
 test.beforeEach(async ({ page }) => {
   await makeSektorsByHand(page);
 });

@@ -273,7 +273,7 @@ renderList();
 planetBackground.showSektors(getSektorList());
 showPurgeButton();
 if (areSektorsMadeByHand) {
-  (window as unknown as { createSektorIfNeeded: () => Promise<boolean> }).createSektorIfNeeded = createSektorIfNeeded;
+  (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded = createSektorIfNeeded;
 } else {
   startCreatingSektors(refreshPage);
 }

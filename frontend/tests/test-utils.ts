@@ -25,7 +25,7 @@ export function makeSektorsByHand(page: Page) {
 
 // The names a page makes sektors with, laid out before anything of it loads, as only a name put
 // there before the page runs can be taken by the first sektor it makes. A page with names laid out
-// never asks the word service for any.
+// never draws any from the words.
 export function prepareSektorNames(page: Page, sektorNames: string[]) {
   return page.addInitScript(
     sektorNames => { (window as unknown as { preparedSektorNames: string[] }).preparedSektorNames = sektorNames; },
