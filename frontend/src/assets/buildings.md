@@ -3659,13 +3659,17 @@ sph s(4,4,5) t(25,38,0) c(#188918)
 
 ## Function
 
-EnergyElectric 5
-WorkEducational 2
-WorkMainteance 1
+WorkEducational 3
+EnergyElectric 4
+Water 4
+WorkMaintenance 1
 ->
 EducationGeneral 10
-Sewage 6
+Sewage 2
 
+## Tags
+
+education
 
 # SocialStudies
 
@@ -4114,6 +4118,9 @@ WorkMaintenance 1
 EducationSocial 10
 Sewage 1
 
+## Tags
+
+education
 
 # HouseOfMath
 
@@ -4529,3 +4536,7 @@ WorkMaintenance 1
 ->
 EducationAnalytical 10
 Sewage 1
+
+## Tags
+
+education
