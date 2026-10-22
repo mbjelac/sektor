@@ -670,6 +670,65 @@ Childcare 2
 WorkUnqualified 4
 Hapiness 1
 
+## Function
+
+Name: Maintainers
+
+EducationGeneral 2
+EducationTechnical 1
+->
+WorkMaintenance 6
+
+## Function
+
+Name: Technicians
+
+EducationGeneral 2
+EducationTechnical 2
+EducationAnalytical 1
+->
+WorkTechnical 6
+
+## Function
+
+Name: Administrators
+
+EducationGeneral 2
+EducationSocial 1
+EducationAnalytical 1
+->
+WorkAdministrative 6
+
+## Function
+
+Name: Engineers
+
+EducationGeneral 3
+EducationTechnical 4
+EducationAnalytical 2
+-> 
+WorkEngineering 6
+
+## Function
+
+Name: Educators
+
+EducationGeneral 3
+EducationAnalytical 2
+EducationSocial 4
+->
+WorkEducational 6
+
+## Function
+
+Name: Scientists
+
+EducationGeneral 4
+EducationAnalytical 4
+EducationTechnical 3
+->
+WorkScientific 6
+
 ## Tags
 
 people
