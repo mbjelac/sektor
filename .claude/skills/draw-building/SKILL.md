@@ -132,7 +132,7 @@ The body keyword starts the line; modifiers follow in any order.
 Position and size are in the same units: `t(24,24,3)` with `s(60,60,40)` is a body 60 units wide
 standing at x=24, y=24.
 
-`s(n)` scales all three axes alike. Scale values below 1 are clamped to 1, and `h()`/`f()` are
+`s(n)` scales all three axes alike. Scale values below 0.1 are clamped to 0.1, and `h()`/`f()` are
 clamped to 100.
 
 ## Where a body actually sits
