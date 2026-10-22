@@ -1,5 +1,4 @@
 EnergyElectric ⚡ #ffee44
-WorkUnqualified 🖐 #FFC800 negative people
 WorkTechnical 🛠️ #b5aba1 people
 WorkEducational 📚 #3EB01C people
 WorkMaintenance 🪜 #ffb638 people
@@ -9,7 +8,6 @@ Water 💧 #55aaff
 Sewage 🟤 #a17d4c negative
 FoodRaw 🥕 #ff9955
 FoodProcessed 🥫 #ff6338
-EducationElementary 📖 #D4F4FF people
 OreMetal 🔴 #cccccc
 OreMineral 🟣 #b52b2b
 OreUranium 🟡 #e3ed21

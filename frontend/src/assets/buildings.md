@@ -631,7 +631,6 @@ FoodRaw 5
 FoodProcessed 3
 EnergyElectric 4
 ->
-WorkUnqualified 16
 Sewage 6
 
 ## Function
@@ -640,7 +639,6 @@ Active: always
 
 HealthPhysical 3
 ->
-WorkUnqualified 6
 Hapiness 1
 
 ## Function
@@ -649,7 +647,6 @@ Active: always
 
 HealthMental 3
 ->
-WorkUnqualified 6
 Hapiness 1
 
 ## Function
@@ -658,7 +655,6 @@ Active: always
 
 HealthSocial 3
 ->
-WorkUnqualified 6
 Hapiness 1
 
 ## Function
@@ -667,7 +663,6 @@ Active: always
 
 Childcare 2
 ->
-WorkUnqualified 4
 Hapiness 1
 
 ## Function
