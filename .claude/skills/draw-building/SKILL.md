@@ -204,3 +204,11 @@ rather than emitting the same line many times.
 - **Derive intent from what is already there.** Existing bodies encode the spacing, the inset from
   an edge, the alternation rhythm and the height band being used. Measure them and match.
 - Say plainly which bodies were touched and which were left alone.
+- **Warn about faces that may flicker** — don't change anything for it unless asked. Two visible
+  faces of different bodies lying in exactly the same plane z-fight: the surface flickers between
+  them as the view turns. This happens between two opaque bodies (a bar ending flush with the top
+  of the bar it stands on) and between glass and an opaque body (a closed transparent solid's flat
+  bottom lying on machine tops at the same height). When what was just drawn creates such a
+  contact, mention it in the report with the bodies involved and the usual remedies: shift or
+  shrink one body by a hair (≈0.05–0.2), or hollow a transparent solid with `h()` so its base is
+  open.
