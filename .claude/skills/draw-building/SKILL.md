@@ -201,6 +201,10 @@ rather than emitting the same line many times.
 - **Generate repetitive geometry with a throwaway script** (rings, grids, rows) instead of typing
   out dozens of near-identical lines; then print the result back and sanity-check counts,
   duplicate positions, and the extremes.
+- **Look up named references in `frontend/src/assets/buildings.md`.** When the user names
+  something to copy a design from (e.g. "construct a well like in WaterWells"), that name is a
+  building in `buildings.md`. The SGL in that building's `## Render` section is the source for
+  the reference — read it from there and base the new drawing on it.
 - **Derive intent from what is already there.** Existing bodies encode the spacing, the inset from
   an edge, the alternation rhythm and the height band being used. Measure them and match.
 - Say plainly which bodies were touched and which were left alone.
