@@ -54,4 +54,16 @@ describe("parseCommands", () => {
 
     expect(body.animateTranslate).toEqual({dx: 0, dy: 0, dz: 10, dt: 500, phaseSwitchDelay: 100, delay: 750, oneWay: true});
   });
+
+  it("reads a one-way gradual color change with its optional pause and initial delay", () => {
+    const [withoutOptionalArguments, withOptionalArguments] = parseCommands(
+      "sph acg1(#ffffff00,3000)\n" +
+      "sph acg1(#ffffff00,3000,100,700)"
+    );
+
+    expect([withoutOptionalArguments.animateColorGradual, withOptionalArguments.animateColorGradual]).toEqual([
+      {color: "#ffffff00", dt: 3000, pause: 0, delay: 0, oneWay: true},
+      {color: "#ffffff00", dt: 3000, pause: 100, delay: 700, oneWay: true},
+    ]);
+  });
 });

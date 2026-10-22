@@ -11,7 +11,7 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
   const phaseSwitchDelaySteps = animateTranslate.phaseSwitchDelay / ANIMATION_STEP_MILLISECONDS;
   const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateTranslate.delay) / ANIMATION_STEP_MILLISECONDS);
   const forwardStep = animateTranslate.oneWay
-    ? oneWayTranslationForwardStep(elapsedStep, phaseSteps, phaseSwitchDelaySteps)
+    ? oneWayForwardStep(elapsedStep, phaseSteps, phaseSwitchDelaySteps)
     : translationForwardStep(elapsedStep % (2 * phaseSteps + 2 * phaseSwitchDelaySteps), phaseSteps, phaseSwitchDelaySteps);
   const progress = forwardStep / phaseSteps;
 
@@ -20,13 +20,6 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
     baseTranslate[1] + animateTranslate.dy * progress,
     baseTranslate[2] + animateTranslate.dz * progress,
   ];
-}
-
-// A one-way cycle moves forward, rests at its end for the phase switch delay, then jumps back to
-// the start as the next cycle begins.
-function oneWayTranslationForwardStep(elapsedStep: number, phaseSteps: number, phaseSwitchDelaySteps: number): number {
-  const cycleStep = elapsedStep % (phaseSteps + phaseSwitchDelaySteps);
-  return Math.min(cycleStep, phaseSteps);
 }
 
 function translationForwardStep(cycleStep: number, phaseSteps: number, phaseSwitchDelaySteps: number): number {
@@ -73,9 +66,11 @@ function toggledColor(baseColor: string | null, animateColorToggle: AnimateColor
 
 function graduallyChangedColor(baseColor: string | null, animateColorGradual: AnimateColorGradual, elapsedMilliseconds: number): string {
   const phaseSteps = animateColorGradual.dt / ANIMATION_STEP_MILLISECONDS;
+  const pauseSteps = animateColorGradual.pause / ANIMATION_STEP_MILLISECONDS;
   const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateColorGradual.delay) / ANIMATION_STEP_MILLISECONDS);
-  const cycleStep = elapsedStep % (2 * phaseSteps);
-  const forwardStep = cycleStep <= phaseSteps ? cycleStep : 2 * phaseSteps - cycleStep;
+  const forwardStep = animateColorGradual.oneWay
+    ? oneWayForwardStep(elapsedStep, phaseSteps, pauseSteps)
+    : thereAndBackForwardStep(elapsedStep % (2 * phaseSteps), phaseSteps);
   const progress = forwardStep / phaseSteps;
 
   const fromRgba = toRgba(baseColor);
@@ -86,6 +81,17 @@ function graduallyChangedColor(baseColor: string | null, animateColorGradual: An
     Math.round(fromRgba[2] + (toRgbaColor[2] - fromRgba[2]) * progress),
     Math.round(fromRgba[3] + (toRgbaColor[3] - fromRgba[3]) * progress),
   ]);
+}
+
+// A one-way cycle moves forward, rests at its end for the pause, then jumps back to the start as
+// the next cycle begins — a one-way translation and a one-way color change alike.
+function oneWayForwardStep(elapsedStep: number, phaseSteps: number, pauseSteps: number): number {
+  const cycleStep = elapsedStep % (phaseSteps + pauseSteps);
+  return Math.min(cycleStep, phaseSteps);
+}
+
+function thereAndBackForwardStep(cycleStep: number, phaseSteps: number): number {
+  return cycleStep <= phaseSteps ? cycleStep : 2 * phaseSteps - cycleStep;
 }
 
 // A body with ashow is hidden for dt1, shown for dt2 and hidden again for dt3, over and over.

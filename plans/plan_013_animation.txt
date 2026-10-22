@@ -97,3 +97,16 @@ because in a timespan of 200ms there will be 10 steps.
     - after movement, it pauses (if specified)
     - then it teleports back to original location
     - begins movement again
+
+#9 [done] Object colors can gradually change in one direction
+- [done] function acg1 has same first two params as function acg, but slightly different functionality:
+    - specification is acg1(c, dt, pause, delay)
+        - c: color to which to gradually change from object's original color, can also have transparency component
+        - dt: duration of time during which to arrive to the specified color
+        - pause: optional, how long to keep the specified color after arriving to it; if not present, it is 0
+        - delay: optional, initial delay in milliseconds before the change starts; if not present, it is 0
+    - after initial delay, object changes its color gradually to the specified color during the specified time
+    - after the change, it keeps the specified color for the pause
+    - then it jumps back to its original color
+    - begins changing again
+    - acg1 has no random start delay, so with the same dt, pause and delay it stays in step with at1
