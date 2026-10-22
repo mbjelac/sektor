@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseCommands } from "../../shared/parseCommands";
-import { animatedColor, animatedTranslate } from "../../shared/animateCommands";
+import { animatedColor, animatedScale, animatedTranslate } from "../../shared/animateCommands";
 
 describe("animatedTranslate", () => {
   it("moves a one-way animated body forward, pauses, then jumps back to its start", () => {
@@ -19,6 +19,27 @@ describe("animatedTranslate", () => {
       {elapsedMilliseconds: 320, height: 10},
       {elapsedMilliseconds: 340, height: 0},
       {elapsedMilliseconds: 400, height: 6},
+    ]);
+  });
+});
+
+describe("animatedScale", () => {
+  it("grows a one-way size animated body, holds its size, then jumps back to its own size", () => {
+    const [body] = parseCommands("sph s(10,20,30) as1(10,0,-10,100,40,200)");
+
+    const sizesOverTime = [100, 200, 260, 300, 320, 340, 400].map(elapsedMilliseconds => ({
+      elapsedMilliseconds,
+      size: animatedScale(body, elapsedMilliseconds),
+    }));
+
+    expect(sizesOverTime).toEqual([
+      {elapsedMilliseconds: 100, size: [10, 20, 30]},
+      {elapsedMilliseconds: 200, size: [10, 20, 30]},
+      {elapsedMilliseconds: 260, size: [16, 20, 24]},
+      {elapsedMilliseconds: 300, size: [20, 20, 20]},
+      {elapsedMilliseconds: 320, size: [20, 20, 20]},
+      {elapsedMilliseconds: 340, size: [10, 20, 30]},
+      {elapsedMilliseconds: 400, size: [16, 20, 24]},
     ]);
   });
 });

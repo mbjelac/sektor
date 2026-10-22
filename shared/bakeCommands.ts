@@ -85,6 +85,7 @@ export function freeBakedBodies(p: p5, bakedBodies: BakedBodies) {
 // transparent, which decides the pass the body has to be drawn in.
 function isAnimated(command: CreateBody): boolean {
   return command.animateTranslate !== null
+    || command.animateScale !== null
     || command.animateRotate !== null
     || command.animateColorToggle !== null
     || command.animateColorGradual !== null

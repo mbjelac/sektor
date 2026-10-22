@@ -66,4 +66,16 @@ describe("parseCommands", () => {
       {color: "#ffffff00", dt: 3000, pause: 100, delay: 700, oneWay: true},
     ]);
   });
+
+  it("reads a one-way size animation with its optional pause and initial delay", () => {
+    const [withoutOptionalArguments, withOptionalArguments] = parseCommands(
+      "sph as1(1,2,3,3000)\n" +
+      "sph as1(1,2,3,3000,100,700)"
+    );
+
+    expect([withoutOptionalArguments.animateScale, withOptionalArguments.animateScale]).toEqual([
+      {dx: 1, dy: 2, dz: 3, dt: 3000, pause: 0, delay: 0},
+      {dx: 1, dy: 2, dz: 3, dt: 3000, pause: 100, delay: 700},
+    ]);
+  });
 });

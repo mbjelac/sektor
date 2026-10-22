@@ -22,6 +22,24 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
   ];
 }
 
+export function animatedScale(command: CreateBody, elapsedMilliseconds: number): [number, number, number] | null {
+  const baseScale = command.scale;
+  const animateScale = command.animateScale;
+  if (!animateScale) return baseScale;
+
+  const startScale = baseScale ?? [100, 100, 100];
+  const phaseSteps = animateScale.dt / ANIMATION_STEP_MILLISECONDS;
+  const pauseSteps = animateScale.pause / ANIMATION_STEP_MILLISECONDS;
+  const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateScale.delay) / ANIMATION_STEP_MILLISECONDS);
+  const progress = oneWayForwardStep(elapsedStep, phaseSteps, pauseSteps) / phaseSteps;
+
+  return [
+    startScale[0] + animateScale.dx * progress,
+    startScale[1] + animateScale.dy * progress,
+    startScale[2] + animateScale.dz * progress,
+  ];
+}
+
 function translationForwardStep(cycleStep: number, phaseSteps: number, phaseSwitchDelaySteps: number): number {
   if (cycleStep <= phaseSteps) return cycleStep;
   if (cycleStep <= phaseSteps + phaseSwitchDelaySteps) return phaseSteps;

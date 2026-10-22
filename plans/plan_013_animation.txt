@@ -111,8 +111,8 @@ because in a timespan of 200ms there will be 10 steps.
     - begins changing again
     - acg1 has no random start delay, so with the same dt, pause and delay it stays in step with at1
 
-#10 Objects change size in one direction
-- function as1 has same params as function at1, but changes size instead of translation:
+#10 [done] Objects change size in one direction
+- [done] function as1 has same params as function at1, but changes size instead of translation:
     - specification is as1(dx, dy, dz, dt, pause, delay)
         - dx: how much to change x, 1st parameter of s function
         - dy: how much to change y, 2nd parameter of s function
@@ -125,7 +125,7 @@ because in a timespan of 200ms there will be 10 steps.
     - then it jumps back to its original size
     - begins changing again
     - as1 has no random start delay, so with the same dt, pause and delay it stays in step with at1 and acg1
-- as1 changes size about the object's centre
+- [done] as1 changes size about the object's centre
     - the centre stays where it is while the size changes, so the object grows or shrinks evenly in all directions
     - the base therefore does not stay on the t point during the change
     - objects without as1 still stand with their base on the t point, as before

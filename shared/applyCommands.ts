@@ -8,7 +8,7 @@ import {drawTorus, torusTubeRadius} from "./primitive/drawTorus";
 import {colorToRgb} from "./primitive/colorToRgb";
 import {CreateBody} from "./parseCommands";
 import {BLOCK_SIZE} from "./constants";
-import {animatedColor, animatedRotate, animatedTranslate, isShown} from "./animateCommands";
+import {animatedColor, animatedRotate, animatedScale, animatedTranslate, isShown} from "./animateCommands";
 
 const pyrSides: Record<string, number> = {
   pyr3: 3, pyr4: 4, pyr5: 5, pyr6: 6, pyr7: 7, pyr8: 8, pyr9: 9,
@@ -92,7 +92,10 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
   const rotationOffset = command.rotationOffset ?? [0, 0, 0];
   const scale = BLOCK_SIZE / 100;
   const centreHeight = bodyCentreHeight(command);
+  // The centre is placed by the body's own size, so that while as1 changes the size the body grows
+  // and shrinks about that centre, rather than up from its base.
   const heightFactor = command.scale ? toScaleFactor(command.scale[2]) : 1;
+  const bodyScale = animatedScale(command, elapsedMilliseconds);
   p.translate(
     (translate[0] + rotationOffset[0]) * scale,
     -(translate[2] + rotationOffset[2]) * scale - GROUND_HEIGHT - centreHeight * heightFactor,
@@ -106,11 +109,11 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
     p.rotateZ(rotate[2] * toRad);
   }
   p.translate(-rotationOffset[0] * scale, rotationOffset[2] * scale, -rotationOffset[1] * scale);
-  if (command.scale) {
+  if (bodyScale) {
     p.scale(
-      toScaleFactor(command.scale[0]),
-      toScaleFactor(command.scale[2]),
-      toScaleFactor(command.scale[1])
+      toScaleFactor(bodyScale[0]),
+      toScaleFactor(bodyScale[2]),
+      toScaleFactor(bodyScale[1])
     );
   }
   p.translate(0, centreHeight, 0);
