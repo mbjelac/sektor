@@ -5,6 +5,7 @@ import {parseCommands} from "../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies, freeBakedBodies} from "../../shared/bakeCommands";
 import {BLOCK_SIZE} from "../../shared/constants";
 import {initEditorPanel} from "./editor/editorPanel";
+import {initPasteButton} from "./editor/pasteButton";
 import {drawCursorBodyOutline} from "./highlightCursorBody";
 
 const sketch = (p: p5) => {
@@ -92,3 +93,4 @@ function bakedBodies(p: p5, wireframeOn: boolean): BakedBodies {
 
 new p5(sketch);
 initEditorPanel();
+initPasteButton();

@@ -1,7 +1,7 @@
-#1 Paste SGL from clipboard into architect
-- in architect UI, add a button "Paste" next to the "+" button in the upper right corner
+#1 [done] Paste SGL from clipboard into architect
+- [done] in architect UI, add a button "Paste" next to the "+" button in the upper right corner
     - 40px spacing between
     - blue button
-- when "Paste" is clicked, inspect the contents of the clipboard
+- [done] when "Paste" is clicked, inspect the contents of the clipboard
     - if the clipboard contents is SGL, replace the current contents of the text area with the clipboard contents
     - if the clipboard contents is not SGL, leave the text area unchanged
