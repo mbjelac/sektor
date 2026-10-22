@@ -166,6 +166,10 @@ function bodyCentreHeight(command: CreateBody): number {
   return BLOCK_SIZE / 2;
 }
 
+// A size may be fractional, down to a tenth of a percent of the block; anything smaller, zero or
+// negative is drawn at that size, so that a body never collapses to nothing or turns inside out.
 function toScaleFactor(value: number): number {
-  return Math.max(value, 1) / 100;
+  return Math.max(value, MINIMUM_SCALE) / 100;
 }
+
+const MINIMUM_SCALE = 0.1;
