@@ -29,11 +29,29 @@ describe("parseCommands", () => {
       hollow: 50.5,
       frustum: 40.5,
       shine: 60.5,
-      animateTranslate: {dx: 1.5, dy: 2.5, dz: 3.5, dt: 1000.5, phaseSwitchDelay: 200.5, delay: 0},
+      animateTranslate: {dx: 1.5, dy: 2.5, dz: 3.5, dt: 1000.5, phaseSwitchDelay: 200.5, delay: 0, oneWay: false},
       animateRotate: [1.5, 2.5, 3.5, 40.5],
       animateColorToggle: {color: "#ff0000", dt1: 100.5, dt2: 200.5, dt3: 300.5, delay: 0},
       animateColorGradual: 500.5,
       animateShow: {dt1: 10.5, dt2: 20.5, dt3: 30.5},
     });
+  });
+
+  it("reads an initial delay as the 6th argument of a translation animation", () => {
+    const [withoutInitialDelay, withInitialDelay] = parseCommands(
+      "cyl at(0,0,10,500,100)\n" +
+      "cyl at(0,0,10,500,100,750)"
+    );
+
+    expect([withoutInitialDelay.animateTranslate, withInitialDelay.animateTranslate]).toEqual([
+      {dx: 0, dy: 0, dz: 10, dt: 500, phaseSwitchDelay: 100, delay: 0, oneWay: false},
+      {dx: 0, dy: 0, dz: 10, dt: 500, phaseSwitchDelay: 100, delay: 750, oneWay: false},
+    ]);
+  });
+
+  it("reads a one-way translation animation", () => {
+    const [body] = parseCommands("cyl at1(0,0,10,500,100,750)");
+
+    expect(body.animateTranslate).toEqual({dx: 0, dy: 0, dz: 10, dt: 500, phaseSwitchDelay: 100, delay: 750, oneWay: true});
   });
 });

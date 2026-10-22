@@ -174,8 +174,9 @@ before placing anything along an edge.
 
 | Modifier | Meaning |
 |---|---|
-| `at(dx,dy,dz,dt[,pause])` | glide by (dx,dy,dz) over `dt` ms, then back, pausing `pause` ms at each end; every body with this runs **in step** |
-| `atr(...)` | same arguments, but each line gets its **own random start delay** of 0–2000 ms, so identical bodies drift apart |
+| `at(dx,dy,dz,dt[,pause[,start]])` | glide by (dx,dy,dz) over `dt` ms, then back, pausing `pause` ms at each end; first waits `start` ms after the building is loaded or constructed; every body with this runs **in step** |
+| `atr(...)` | same arguments, but each line gets its **own random start delay** of 0–2000 ms (added to `start`), so identical bodies drift apart |
+| `at1(...)` | same arguments as `at`, but **one way**: glide by (dx,dy,dz) over `dt` ms, pause `pause` ms, then jump back to the start and go again |
 | `ar(d1,d2,d3,stepDelay)` | add these degrees every `stepDelay` ms — an endless spin; random start delay |
 | `act(#color,dt1,dt2[,dt3])` | hold the base color `dt1` ms, `#color` for `dt2` ms, base again for `dt3` ms; in sync across lines |
 | `acg(#color,dt)` | fade base ↔ `#color`, `dt` ms each way; random start delay |

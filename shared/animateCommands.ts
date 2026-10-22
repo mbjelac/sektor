@@ -10,8 +10,9 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
   const phaseSteps = animateTranslate.dt / ANIMATION_STEP_MILLISECONDS;
   const phaseSwitchDelaySteps = animateTranslate.phaseSwitchDelay / ANIMATION_STEP_MILLISECONDS;
   const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateTranslate.delay) / ANIMATION_STEP_MILLISECONDS);
-  const cycleStep = elapsedStep % (2 * phaseSteps + 2 * phaseSwitchDelaySteps);
-  const forwardStep = translationForwardStep(cycleStep, phaseSteps, phaseSwitchDelaySteps);
+  const forwardStep = animateTranslate.oneWay
+    ? oneWayTranslationForwardStep(elapsedStep, phaseSteps, phaseSwitchDelaySteps)
+    : translationForwardStep(elapsedStep % (2 * phaseSteps + 2 * phaseSwitchDelaySteps), phaseSteps, phaseSwitchDelaySteps);
   const progress = forwardStep / phaseSteps;
 
   return [
@@ -19,6 +20,13 @@ export function animatedTranslate(command: CreateBody, elapsedMilliseconds: numb
     baseTranslate[1] + animateTranslate.dy * progress,
     baseTranslate[2] + animateTranslate.dz * progress,
   ];
+}
+
+// A one-way cycle moves forward, rests at its end for the phase switch delay, then jumps back to
+// the start as the next cycle begins.
+function oneWayTranslationForwardStep(elapsedStep: number, phaseSteps: number, phaseSwitchDelaySteps: number): number {
+  const cycleStep = elapsedStep % (phaseSteps + phaseSwitchDelaySteps);
+  return Math.min(cycleStep, phaseSteps);
 }
 
 function translationForwardStep(cycleStep: number, phaseSteps: number, phaseSwitchDelaySteps: number): number {

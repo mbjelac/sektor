@@ -91,8 +91,8 @@ because in a timespan of 200ms there will be 10 steps.
         - applies to both rotation (r) and rotation animation (ar)
         - example: blades of a windmill all rotate about the hub, not about their own centres
 
-#8 Objects move in one direction
-- function at1 has same params as function at, but slightly different functionality:
+#8 [done] Objects move in one direction
+- [done] function at1 has same params as function at, but slightly different functionality:
     - after initial delay (if specified as 6th param) object moves in specified direction for specified duration
     - after movement, it pauses (if specified)
     - then it teleports back to original location
