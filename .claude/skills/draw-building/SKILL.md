@@ -123,7 +123,7 @@ The body keyword starts the line; modifiers follow in any order.
 | `t(x,y,z)` | position — **x and y are the ground plane, z is height** |
 | `s(x,y,z)` or `s(n)` | size as a percentage of the 100-unit block; the third value is the height |
 | `r(a,b,c)` | rotation in degrees: **a spins about the vertical axis**, b tips about the x axis, c tips about the y axis |
-| `ro(x,y,z)` | move the point `r`/`ar` turn about away from the body's centre, in the units and axes of `t`; decimals allowed |
+| `ro(x,y,z)` | move the point `r`/`ar` turn about away from the body's centre, in the units and axes of `t` |
 | `c(#rrggbb)` or `c(#rrggbbaa)` | color; alpha < ff makes it transparent |
 | `h(n)` | hollow it out, 0–100 |
 | `f(n)` | cut the top off a `pyr`/`con`, 0–100 |
@@ -187,9 +187,9 @@ rather than emitting the same line many times.
 
 ## Hard rules
 
-- **Integers only, except in `t()` and `ro()`.** These accept decimals (`t(5,5,11.5)`); every other numeric
-  argument is matched as `-?\d+`, and a decimal there makes the whole modifier silently fail to
-  match — `r(0,22.5,0)` is no rotation at all.
+- **Decimals are allowed in every numeric argument** (`t(5,5,11.5)`, `s(50.5)`, `r(0,22.5,0)`,
+  `h(92.5)`, animation timings). A number is matched as `-?\d+(?:\.\d+)?`, so write `0.5`, not `.5`
+  or `5.` — those make the whole modifier silently fail to match.
 - Each modifier is found by scanning the line, so the **first** match wins if one appears twice.
 - An unrecognised line is dropped in silence. A typo'd keyword means a missing body, not an error.
 

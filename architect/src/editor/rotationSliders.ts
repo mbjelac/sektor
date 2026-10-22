@@ -1,7 +1,7 @@
 import type { SubpanelState } from "./editorPanel";
 import { createSlider, updateFunctionOnLine } from "./editorWidgets";
 
-const ROTATE_REGEX = /r\(\s*-?\d+\s*,\s*-?\d+\s*,\s*-?\d+\s*\)/;
+const ROTATE_REGEX = /r\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)/;
 
 export function addRotationSliders(
   el: HTMLElement,

@@ -249,8 +249,8 @@ function findShapeDef(command: string): ShapeDef | null {
 }
 
 function parseRotate(line: string): [number, number, number] {
-  const m = line.match(/r\(\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/);
-  return m ? [parseInt(m[1]), parseInt(m[2]), parseInt(m[3])] : [0, 0, 0];
+  const m = line.match(/r\(\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)/);
+  return m ? [parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3])] : [0, 0, 0];
 }
 
 function parseTranslate(line: string): [number, number, number] {
@@ -259,10 +259,10 @@ function parseTranslate(line: string): [number, number, number] {
 }
 
 function parseScale(line: string): [number, number, number] {
-  const m3 = line.match(/s\(\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/);
-  if (m3) return [parseInt(m3[1]), parseInt(m3[2]), parseInt(m3[3])];
-  const m1 = line.match(/s\(\s*(-?\d+)\s*\)/);
-  if (m1) { const v = parseInt(m1[1]); return [v, v, v]; }
+  const m3 = line.match(/s\(\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*\)/);
+  if (m3) return [parseFloat(m3[1]), parseFloat(m3[2]), parseFloat(m3[3])];
+  const m1 = line.match(/s\(\s*(-?\d+(?:\.\d+)?)\s*\)/);
+  if (m1) { const v = parseFloat(m1[1]); return [v, v, v]; }
   return [100, 100, 100];
 }
 
