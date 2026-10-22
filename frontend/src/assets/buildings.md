@@ -871,6 +871,7 @@ EnergyElectric 1
 WorkTechnical 2
 ->
 FoodRaw soil
+WasteBio soil
 
 ## Tags
 
@@ -2337,11 +2338,11 @@ pri4 s(1,1,8) t(-33,-33,9.1) ro(0,0,-4.6) r(60,90,0) ar(1,0,0,50)
 
 ## Function
 
-Sewage 5
-EnergyElectric 4
+Sewage 20
+EnergyElectric 8
 WorkTechnical 2
 ->
-Water 8
+Water 10
 
 ## Tags
 
