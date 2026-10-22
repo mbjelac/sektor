@@ -31,6 +31,10 @@ because in a timespan of 200ms there will be 10 steps.
 - [done] separate translation with random start delay and without it
     - animation with random start delay has function atr
     - animation without random start delay has function at
+- [done] initial delay before animation starts
+    - function at can have an optional 6th parameter specifying initial delay in milliseconds
+        - it is the delay to the start of animation when building is loaded or constructed
+        - if not present, delay is 0
 
 #2 [done] Color toggle
 - [done] when color toggle animation specified, object change their color for the specified duration, then change back to original color for the other specified duration
@@ -86,3 +90,10 @@ because in a timespan of 200ms there will be 10 steps.
         - dx, dy, dz: offset of the rotation point from the object's centre in the 3 axes, in the same units as t
         - applies to both rotation (r) and rotation animation (ar)
         - example: blades of a windmill all rotate about the hub, not about their own centres
+
+#8 Objects move in one direction
+- function at1 has same params as function at, but slightly different functionality:
+    - after initial delay (if specified as 6th param) object moves in specified direction for specified duration
+    - after movement, it pauses (if specified)
+    - then it teleports back to original location
+    - begins movement again
