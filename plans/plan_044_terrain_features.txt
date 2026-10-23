@@ -42,7 +42,7 @@ Terrain features also includes water, e.g.:
 #3 [done] Elevation
 - [done] when creating a sektor, some floors are "elevation" (i.e. rocks)
     - a sektor terrain matrix has a value 2 (elevation)
-    - for now, amount of a sektor elevation is determined by randomly selecting from this list of options:
+    - for now, amount of a sektor elevation is determined by randomly selecting from this list of options (shares of the sektor's land area: squares which are neither sea nor river):
         - 0
         - 1/10
         - 1/5

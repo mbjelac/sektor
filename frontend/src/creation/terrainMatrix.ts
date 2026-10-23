@@ -35,13 +35,10 @@ interface Square {
 export const FEWEST_SEA_SQUARES = Math.round(SEKTOR_SIZE * SEKTOR_SIZE * 0.7);
 export const MOST_SEA_SQUARES = Math.round(SEKTOR_SIZE * SEKTOR_SIZE * 0.9);
 
-// How much of the map stands up as rock, each helping as likely as the next: none of it, a tenth
-// of it, or a fifth.
-export const ELEVATION_SQUARE_COUNTS = [
-  0,
-  Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 10),
-  Math.round(SEKTOR_SIZE * SEKTOR_SIZE / 5),
-];
+// How much of the land stands up as rock, each helping as likely as the next: none of it, a tenth
+// of it, or a fifth. The land is what the sea and the river have left, so a sektor on the sea, with
+// little land, has little rock.
+export const ELEVATION_SHARES_OF_LAND = [0, 1 / 10, 1 / 5];
 
 // What the planet is like where a sektor is made: its biome, whether it is land or sea, and whether
 // the land is desert or forest.
@@ -221,10 +218,10 @@ const RIVER_SOURCES: RiverSource[] = Array.from({ length: SEKTOR_SIZE }, (_unuse
     .map(flow => ({ square, flow })));
 
 // Rock stands where it stands: elevation has no shape of its own and is scattered over whatever
-// dry land the sea has left, never twice on the same square.
+// dry land the sea and the river have left, never twice on the same square.
 function raiseElevations(terrain: number[][], randomNumber: RandomNumber) {
-  const elevationSquareCount = randomElevationSquareCount(randomNumber);
   const dryLand = squaresOfDryLand(terrain);
+  const elevationSquareCount = randomElevationSquareCount(dryLand.length, randomNumber);
 
   for (let raised = 0; raised < elevationSquareCount && dryLand.length > 0; raised++) {
     const [square] = dryLand.splice(Math.floor(randomNumber() * dryLand.length), 1);
@@ -244,8 +241,9 @@ function randomSeaSquareCount(randomNumber: RandomNumber): number {
   return FEWEST_SEA_SQUARES + Math.floor(randomNumber() * (MOST_SEA_SQUARES - FEWEST_SEA_SQUARES + 1));
 }
 
-function randomElevationSquareCount(randomNumber: RandomNumber): number {
-  return ELEVATION_SQUARE_COUNTS[Math.floor(randomNumber() * ELEVATION_SQUARE_COUNTS.length)];
+function randomElevationSquareCount(landSquareCount: number, randomNumber: RandomNumber): number {
+  const shareOfLand = ELEVATION_SHARES_OF_LAND[Math.floor(randomNumber() * ELEVATION_SHARES_OF_LAND.length)];
+  return Math.round(landSquareCount * shareOfLand);
 }
 
 function randomSquareOnEdge(randomNumber: RandomNumber): Square {

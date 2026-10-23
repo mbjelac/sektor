@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createTerrainMatrix, ELEVATION_SQUARE_COUNTS, FEWEST_SEA_SQUARES, MOST_SEA_SQUARES } from "./terrainMatrix";
+import { createTerrainMatrix, ELEVATION_SHARES_OF_LAND, FEWEST_SEA_SQUARES, MOST_SEA_SQUARES } from "./terrainMatrix";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import {
   ELEVATION,
@@ -67,10 +67,10 @@ describe("createTerrainMatrix", () => {
     expect(riverSquareCounts).toEqual([]);
   });
 
-  // A sektor on land is dry throughout, so the helping of elevation it is given always has the room
-  // to stand.
-  it("gives every map of a sektor on land one of the helpings of elevation there are", () => {
-    expect(mapsWithElevationOfNoHelping()).toEqual([]);
+  // Rock stands only on land, so its helping is a share of the land: of the squares which are
+  // neither sea nor river.
+  it("raises one of the shares of the land there are as rock on every map", () => {
+    expect(mapsWithElevationOfNoShareOfLand()).toEqual([]);
   });
 
   it("raises no rock out of the sea of a sektor on the sea", () => {
@@ -242,11 +242,18 @@ function seaMapsWithSeaOutsideTheRange(): object[] {
     .map(seaSquareCount => ({ seaSquareCount }));
 }
 
-function mapsWithElevationOfNoHelping(): object[] {
-  return landMapsDrawn()
-    .map(terrain => squaresOf(terrain, ELEVATION).length)
-    .filter(elevationSquareCount => !ELEVATION_SQUARE_COUNTS.includes(elevationSquareCount))
-    .map(elevationSquareCount => ({ elevationSquareCount }));
+// Every map drawn, on land or on the sea, whose rock is none of the shares of its land there are.
+// The land is every square the rock stands on and every square of ground left beside it.
+function mapsWithElevationOfNoShareOfLand(): object[] {
+  return [...landMapsDrawn(), ...seaMapsDrawn()].flatMap(terrain => {
+    const elevationSquareCount = squaresOf(terrain, ELEVATION).length;
+    const landSquareCount = elevationSquareCount + squaresOf(terrain, GROUND).length;
+    const elevationSquareCounts = ELEVATION_SHARES_OF_LAND.map(shareOfLand => Math.round(landSquareCount * shareOfLand));
+
+    return elevationSquareCounts.includes(elevationSquareCount)
+      ? []
+      : [{ landSquareCount, elevationSquareCount, elevationSquareCounts }];
+  });
 }
 
 // Every map drawn which has a square counted as both sea and rock, which no square can be. A
