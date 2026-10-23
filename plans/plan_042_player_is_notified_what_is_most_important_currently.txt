@@ -17,6 +17,9 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
     - the list contains the 3 (or less) resources by specified criteria, by descending global import amount
     - each resource in list is displayed as <name> <icon>
     - items in list delimited by comma + space
+    - action button
+        - icon: eye
+        - when clicked, open up global import/export panel sorted by imports
 - [done] if this message is already shown (with different resources), replace it with this one
 
 #2 [done] Notify player about local imports which are also global imports
