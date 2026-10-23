@@ -496,6 +496,11 @@ body > main {
     border-radius: 2px;
 }
 
+.bf-output-property-fraction {
+    color: #ddd;
+    font-weight: bold;
+}
+
 /* The properties are laid out in three columns, so every name, the color it is drawn in and its
    value on this location line up with those of the properties above and below it. The columns
    are only as wide as what they hold, which keeps each value beside the name it belongs to. */

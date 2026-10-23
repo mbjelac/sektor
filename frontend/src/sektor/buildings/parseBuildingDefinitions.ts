@@ -6,6 +6,9 @@ export interface BuildingFunctionOutput {
   name: string;
   value?: number;
   locationProperty?: string;
+  // An output named after a location property may produce only a fraction of the property's
+  // value, which is that value divided by this and rounded to a whole amount.
+  locationPropertyDivisor?: number;
   // An output made in an amount, which the pollution of the building's location cuts down to
   // its own percentage of that amount.
   affectedByPollution?: boolean;
@@ -27,6 +30,10 @@ const AFFECTED_BY_POLLUTION_MARKER = "pollution";
 
 // The furthest a building can foul the ground around it.
 const LARGEST_POLLUTION_AREA = 4;
+
+// Written between a location property's name and the divisor of the fraction of its value an
+// output produces.
+const FRACTION_INDICATOR = "/";
 
 // The line separating a function's inputs from its outputs.
 const OUTPUT_SEPARATOR = "->";
@@ -251,12 +258,20 @@ function parseBuildingFunction(lines: string[]): BuildingFunction {
 
 // An output is written either with the amount it produces or with the name of the location
 // property whose value on the building's location is the amount it produces. An amount may be
-// followed by the marker of an output pollution affects.
+// followed by the marker of an output pollution affects, and a property name by the fraction
+// indicator and the divisor of the fraction of the property's value it produces.
 function parseOutput(resourceName: string, amountOrProperty: string, marker: string | undefined): BuildingFunctionOutput {
-  if (!isAmount(amountOrProperty)) return { name: resourceName, locationProperty: amountOrProperty };
+  if (!isAmount(amountOrProperty)) return parseLocationPropertyOutput(resourceName, amountOrProperty);
   return marker === AFFECTED_BY_POLLUTION_MARKER
     ? { name: resourceName, value: parseInt(amountOrProperty), affectedByPollution: true }
     : { name: resourceName, value: parseInt(amountOrProperty) };
+}
+
+function parseLocationPropertyOutput(resourceName: string, propertyWithFraction: string): BuildingFunctionOutput {
+  const [locationProperty, divisor] = propertyWithFraction.split(FRACTION_INDICATOR);
+  return divisor !== undefined && isAmount(divisor) && parseInt(divisor) > 0
+    ? { name: resourceName, locationProperty, locationPropertyDivisor: parseInt(divisor) }
+    : { name: resourceName, locationProperty };
 }
 
 function isAmount(amountOrProperty: string): boolean {

@@ -27,10 +27,19 @@ const testDefinitions: BuildingDefinition[] = [
     }],
     properties: {},
   },
+  {
+    name: "Orchard",
+    renderingCode: "box s(1,1,1)",
+    buildingFunctions: [{
+      inputs: [{ name: "Water", value: 1 }],
+      outputs: [{ name: "Apples", locationProperty: "soil", locationPropertyDivisor: 4 }],
+    }],
+    properties: {},
+  },
 ];
 
-function createSektor(): Sektor {
-  const sektor = new Sektor([[{ properties: { soil: 2 } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
+function createSektor(soil: number = 2): Sektor {
+  const sektor = new Sektor([[{ properties: { soil } }]], [...testDefinitions, TEST_HUB_DEFINITION], [IMPORT_EXPORT_RESOURCE]);
   sektor.createBuilding(TEST_HUB);
   return sektor;
 }
@@ -73,6 +82,15 @@ describe("getBuildingState", () => {
 
     expect(sektor.getBuildingState({ x: 0, y: 0 })!.buildingFunctions[0].outputAmounts).toEqual([
       { name: "Wheat", value: 2 },
+    ]);
+  });
+
+  it("returns the rounded fraction of the location property value as the amount of an output producing that fraction", () => {
+    const sektor = createSektor(11);
+    sektor.createBuilding({ type: "Orchard", location: { x: 0, y: 0 } });
+
+    expect(sektor.getBuildingState({ x: 0, y: 0 })!.buildingFunctions[0].outputAmounts).toEqual([
+      { name: "Apples", value: 3 },
     ]);
   });
 });

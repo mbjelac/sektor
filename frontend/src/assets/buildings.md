@@ -871,7 +871,7 @@ EnergyElectric 1
 WorkTechnical 2
 ->
 FoodRaw soil
-WasteBio soil
+WasteBio soil/3
 
 ## Tags
 

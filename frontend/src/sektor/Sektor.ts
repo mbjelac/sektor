@@ -494,15 +494,16 @@ export class Sektor {
 
   // An output naming a location property is produced in the amount the building's own location
   // has of that property, once pollution has spoiled what it spoils, and a location which has
-  // nothing of it makes the building produce nothing, never a negative amount. An output made in
-  // an amount which pollution affects is cut down by the pollution of the location.
+  // nothing of it makes the building produce nothing, never a negative amount. An output producing
+  // a fraction of the property gets that fraction of its value, rounded to a whole amount. An
+  // output made in an amount which pollution affects is cut down by the pollution of the location.
   private getOutputAmounts(buildingFunction: BuildingFunction, location: BuildingLocation): ResourceThroughput[] {
     const locationProperties = pollutedLocationProperties(this.locations[location.x]?.[location.y]?.properties ?? {});
     const pollution = locationProperties[POLLUTION_PROPERTY] ?? 0;
     return buildingFunction.outputs.map(output => ({
       name: output.name,
       value: output.locationProperty !== undefined
-        ? Math.max(0, locationProperties[output.locationProperty] ?? 0)
+        ? Math.round(Math.max(0, locationProperties[output.locationProperty] ?? 0) / (output.locationPropertyDivisor ?? 1))
         : this.getOutputAmount(output, pollution),
     }));
   }

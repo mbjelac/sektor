@@ -473,6 +473,24 @@ describe("parseBuildingDefinitions", () => {
     ]);
   });
 
+  it("parses an output written with a fraction of a location property as that property and divisor", () => {
+    const result = parseBuildingDefinitions([
+      "# Orchard",
+      "## Render",
+      "```",
+      "box s(10,10,10)",
+      "```",
+      "## Function",
+      "Water 1",
+      "->",
+      "Food soil/3",
+    ]);
+
+    expect(result[0].buildingFunctions[0].outputs).toEqual([
+      { name: "Food", locationProperty: "soil", locationPropertyDivisor: 3 },
+    ]);
+  });
+
   it("parses an output written with an amount as that amount", () => {
     const result = parseBuildingDefinitions([
       "# Factory",

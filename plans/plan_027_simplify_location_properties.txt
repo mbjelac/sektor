@@ -35,8 +35,8 @@
 - [done] display swatches in specified property color
     - [done] do not fade it because of lower value
 
-#3 Building can output a fraction of location property value
-- if output definition has a fraction indicator next to location property
+#3 [done] Building can output a fraction of location property value
+- [done] if output definition has a fraction indicator next to location property
     - like so:
         ...
         ->
@@ -46,5 +46,5 @@
         - building has output definition: Food soil/4
         - that location has soil 11
         - Food output is calculated as 3 (11 / 4 = 2.75 ~ 3)
-- mark fraction indicator in building function panel (toolbar)
-- mark fraction indicator in building panel (below output)
+- [done] mark fraction indicator in building function panel (toolbar)
+- [done] mark fraction indicator in building panel (below output)

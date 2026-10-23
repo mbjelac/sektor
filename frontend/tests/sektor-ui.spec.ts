@@ -436,6 +436,30 @@ test("displays building panel with an output named after a location property", a
   await expectScreenshot(page, "building-panel-location-property-output", "#building-panel");
 });
 
+test("displays building panel with an output producing a fraction of a location property", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.evaluate(() => {
+    (window as any).showBuildingPanel({
+      name: "Orchard",
+      code: "box s(30,30,30) t(0,0,0) c(#669944)",
+      buildingFunctions: [{
+        buildingFunction: {
+          inputs: [{ name: "Water", value: 1 }],
+          outputs: [{ name: "Food", locationProperty: "soil", locationPropertyDivisor: 4 }],
+        },
+        outputAmounts: [{ name: "Food", value: 3 }],
+        active: true,
+      }],
+      locationProperties: { soil: 11, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
+      floorColor: [200, 200, 100],
+      location: { x: 0, y: 0 },
+    });
+  });
+
+  await expectScreenshot(page, "building-panel-location-property-fraction-output", "#building-panel");
+});
+
 test("displays building panel with an output named after a location property the location has none of", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
@@ -693,6 +717,19 @@ test("displays function panel with a location property per function", async ({ p
   const panel = page.locator("#toolbar-function-panel");
   await expect(panel).toBeVisible();
   await expect(panel).toHaveScreenshot("toolbar-function-panel-per-function-location-properties.png", {
+    maxDiffPixelRatio: 0,
+    timeout: 10000,
+  });
+});
+
+test("displays function panel with an output producing a fraction of a location property", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-tag[data-building-tag="industry"]').click();
+  await page.locator('.building-item[data-building-name="TestOrchard"]').click();
+  await page.waitForTimeout(100);
+  const panel = page.locator("#toolbar-function-panel");
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveScreenshot("toolbar-function-panel-location-property-fraction.png", {
     maxDiffPixelRatio: 0,
     timeout: 10000,
   });

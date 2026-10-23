@@ -180,7 +180,7 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: Re
     table.appendChild(row);
 
     if (output.locationProperty !== undefined) {
-      table.appendChild(createOutputPropertyRow(output.locationProperty));
+      table.appendChild(createOutputPropertyRow(output.locationProperty, output.locationPropertyDivisor));
     }
   }
 
@@ -211,8 +211,9 @@ function findOutputAmount(output: BuildingFunctionOutput, outputAmounts?: Resour
 }
 
 // The location property an output is named after is shown under that output, indented, so it
-// reads as belonging to the output above it.
-function createOutputPropertyRow(locationProperty: string): HTMLElement {
+// reads as belonging to the output above it. An output producing only a fraction of the property
+// has that fraction marked after the property.
+function createOutputPropertyRow(locationProperty: string, locationPropertyDivisor: number | undefined): HTMLElement {
   const propertyRow = document.createElement("div");
   propertyRow.className = "bf-output-property";
 
@@ -226,6 +227,13 @@ function createOutputPropertyRow(locationProperty: string): HTMLElement {
     swatch.className = "bf-output-property-swatch";
     swatch.style.backgroundColor = propertyDefinition.color;
     propertyRow.appendChild(swatch);
+  }
+
+  if (locationPropertyDivisor !== undefined) {
+    const fraction = document.createElement("span");
+    fraction.className = "bf-output-property-fraction";
+    fraction.textContent = `/${locationPropertyDivisor}`;
+    propertyRow.appendChild(fraction);
   }
 
   return propertyRow;
