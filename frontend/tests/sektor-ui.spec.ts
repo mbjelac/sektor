@@ -1263,6 +1263,26 @@ test("shows what the planet is shortest of over the map", async ({ page }) => {
   await expectScreenshot(page, "most-imported-message", "#messages");
 });
 
+// The planet's list was last put in the order of names, but the eye asks what the planet needs, so
+// the list comes up with what it brings in most at the top.
+test("shows the planet's list in the order of imports when the eye next to what the planet needs is clicked", async ({ page }) => {
+  await storeSektorMovingManyResources(page, "Beta");
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
+  await page.locator("#global-state-button").click();
+  await page.locator('#global-state-dialog .global-state-sort[data-sort-order="resource"]').click();
+  await page.locator("#global-state-close-button").click();
+
+  await page.locator("#show-planet-imports-button").click();
+
+  expect(await getGlobalDialogSortColors(page)).toEqual({
+    resource: "rgb(153, 153, 153)",
+    imported: "rgb(255, 255, 255)",
+    exported: "rgb(153, 153, 153)",
+  });
+});
+
 // A building put up changes what the planet is short of, so the advice on the screen is written
 // over rather than stood beside: the player is never told two of the same thing at once.
 test("writes over what the player is told when what the planet is shortest of changes", async ({ page }) => {

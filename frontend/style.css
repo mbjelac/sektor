@@ -873,6 +873,11 @@ body > main {
     margin-bottom: 18px;
 }
 
+.list-title .icon {
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
 #list-page > * {
     pointer-events: auto;
 }
@@ -1476,7 +1481,9 @@ body > main {
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
-    margin-left: 8px;
+    /* Taller than a line of text for its padding, so it reaches out over the line rather than making
+       the message any taller. */
+    margin: -2px 0 -2px 8px;
     padding: 2px 6px;
     border: none;
     border-radius: 3px;

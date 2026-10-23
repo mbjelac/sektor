@@ -21,17 +21,28 @@ export function updateGlobalStatePanel(globalImportsAndExports: ImportsAndExport
   fillGlobalStateList(document.getElementById("global-state-panel")!, globalImportsAndExports, "Imports/Exports");
 }
 
+// A list called up to answer a question is put in the order which answers it, as if the player had
+// asked for that column themselves.
+export function sortGlobalStateList(columnSortOrder: ResourceSortOrder) {
+  sortOrder = columnSortOrder;
+}
+
 // The header and every resource under it, put into whoever is showing the list: the list of the page
 // itself, or the dialog which calls the same list up over a sektor's map. Each names the list as its
 // own page has room to: beside the sektors it stands among lists which are all of the planet, and
 // over a map it has to say which of the two lists there it is. The list carries no score: what the
 // planet is short of and what it has over is the same for everybody playing, and a score is a thing
 // of a single sektor.
-export function fillGlobalStateList(list: HTMLElement, globalImportsAndExports: ImportsAndExports, title: string) {
+export function fillGlobalStateList(
+  list: HTMLElement,
+  globalImportsAndExports: ImportsAndExports,
+  title: string,
+  titleIcon?: string,
+) {
   // Drawn again whenever the sektors change or the player asks for another order, so what stands
   // there is cleared away first.
   list.replaceChildren(
-    createHeader(title, () => fillGlobalStateList(list, globalImportsAndExports, title)),
+    createHeader(title, titleIcon, () => fillGlobalStateList(list, globalImportsAndExports, title, titleIcon)),
     ...sortedResourceNames(globalImportsAndExports, sortOrder)
       .map(resourceName => createResourceItem(resourceName, globalImportsAndExports)),
   );
@@ -41,11 +52,11 @@ export function fillGlobalStateList(list: HTMLElement, globalImportsAndExports: 
 // resources while they are scrolled past it. Every column name is asked for by clicking it, which
 // puts the resources in the order of that column, and the column they stand in the order of is
 // named in white, so the player sees what order they are looking at.
-function createHeader(title: string, onSorted: () => void): HTMLElement {
+function createHeader(title: string, titleIcon: string | undefined, onSorted: () => void): HTMLElement {
   const header = document.createElement("div");
   header.className = "global-state-header";
 
-  header.appendChild(createListTitle(title));
+  header.appendChild(createListTitle(title, titleIcon));
   header.appendChild(createSortButton("resource", "Resource", "global-state-resource", onSorted));
   header.appendChild(createSortButton("imported", arrowDownTrayIcon, "global-state-value", onSorted, "Imported"));
   header.appendChild(createSortButton("exported", arrowUpTrayIcon, "global-state-value", onSorted, "Exported"));

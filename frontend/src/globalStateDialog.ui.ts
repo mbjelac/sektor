@@ -1,6 +1,6 @@
 import { ImportsAndExports } from "./globalImportsAndExports";
 import { fillGlobalStateList } from "./globalStatePanel.ui";
-import { xMarkIcon } from "./icons";
+import { globeAltIcon, xMarkIcon } from "./icons";
 
 const DIALOG_ID = "global-state-dialog";
 
@@ -26,7 +26,7 @@ export function showGlobalStateDialog(globalImportsAndExports: ImportsAndExports
 
   const list = document.createElement("div");
   list.className = "global-state-list";
-  fillGlobalStateList(list, globalImportsAndExports, "Global Imports/Exports");
+  fillGlobalStateList(list, globalImportsAndExports, "Global Imports/Exports", globeAltIcon);
   dialog.appendChild(list);
 
   document.body.appendChild(overlay);

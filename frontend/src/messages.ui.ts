@@ -7,6 +7,8 @@ import { resourceNameText } from "./throughputDisplay.ui";
 import { getNegativeScoringResources } from "./resources";
 import { pointAtResourceWhileHovered } from "./resourceHover.ui";
 import { chevronDownIcon, chevronUpIcon, eyeIcon } from "./icons";
+import { showGlobalStateDialog } from "./globalStateDialog.ui";
+import { sortGlobalStateList } from "./globalStatePanel.ui";
 import { selectProperty } from "./sektor/propertyToggler.ui";
 import { POLLUTION_PROPERTY } from "./sektor/pollution";
 
@@ -28,6 +30,7 @@ const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
 const POLLUTION_MESSAGE_ID = "pollution-message";
 const SHOW_POLLUTION_BUTTON_ID = "show-pollution-button";
+const SHOW_PLANET_IMPORTS_BUTTON_ID = "show-planet-imports-button";
 const DISABLED_BUILDINGS_MESSAGE_ID = "disabled-buildings-message";
 const IMPORT_CAPACITY_MESSAGE_ID = "import-capacity-message";
 const EXPORT_CAPACITY_MESSAGE_ID = "export-capacity-message";
@@ -152,7 +155,22 @@ function showMostImportedMessage(planetImportsAndExports: ImportsAndExports) {
     "information",
     "This planet needs:",
     mostImportedResourceNames(planetImportsAndExports, getNegativeScoringResources(), MOST_TOLD_RESOURCE_COUNT),
+    [createShowPlanetImportsButton(planetImportsAndExports)],
   );
+}
+
+// A player told what the planet needs is offered the whole of what it brings in, most first, so that
+// they see how the few named stand among all the rest.
+function createShowPlanetImportsButton(planetImportsAndExports: ImportsAndExports): HTMLElement {
+  const showPlanetImportsButton = document.createElement("button");
+  showPlanetImportsButton.id = SHOW_PLANET_IMPORTS_BUTTON_ID;
+  showPlanetImportsButton.className = "message-action-button";
+  showPlanetImportsButton.innerHTML = eyeIcon;
+  showPlanetImportsButton.addEventListener("click", () => {
+    sortGlobalStateList("imported");
+    showGlobalStateDialog(planetImportsAndExports);
+  });
+  return showPlanetImportsButton;
 }
 
 // Bringing in what the planet is short of takes it from everybody else, so a sektor doing it is
@@ -176,13 +194,19 @@ function showMostImportedScarceMessage(
 
 // Advice with no resources left to name has nothing to say, so it is taken off the screen rather
 // than left standing empty.
-function showOrHideMessage(messageId: string, kind: MessageKind, advice: string, resourceNames: string[]) {
+function showOrHideMessage(
+  messageId: string,
+  kind: MessageKind,
+  advice: string,
+  resourceNames: string[],
+  actionButtons: HTMLElement[] = [],
+) {
   if (resourceNames.length === 0) {
     hideMessage(messageId);
     return;
   }
 
-  showMessage(messageId, kind, advice, resourceNames);
+  showMessage(messageId, kind, advice, resourceNames, actionButtons);
 }
 
 // A message of a kind the player is already being told is written over rather than stood beside, so
@@ -199,7 +223,13 @@ function showMessage(
   const said = `${MESSAGE_EMOJI[kind]} ${advice} `;
   const text = `${said}${resourceNames.map(resourceNameText).join(", ")}`;
 
-  if (shownMessage?.textContent === text) return;
+  if (shownMessage?.textContent === text) {
+    // What the buttons act on may have changed even though what the message says has not.
+    shownMessage.querySelectorAll(".message-action-button").forEach((shownButton, buttonIndex) =>
+      shownButton.replaceWith(actionButtons[buttonIndex]),
+    );
+    return;
+  }
 
   const message = shownMessage ?? createMessage(messageId, kind);
   message.replaceChildren(document.createTextNode(said), ...resourceElements(resourceNames), ...actionButtons);
