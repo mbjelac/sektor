@@ -181,10 +181,16 @@ So, except for the Desert, all biome groups have sub-groups:
     - value: same specification as in plan 55, #6, "display data according to context"
         - for value put only biome-related, i.e. "🌱 Tundra", "🌲 Taiga", etc.
 
-#15 Sektor list no longer needs most of it's content
-- remove:
+#15 [done] Sektor list no longer needs most of it's content
+- [done] remove:
     - difficulty
     - number of buildings
     - import/export totals
     - score
     - claim/abandon
+
+#16 Player can more simply view & navigate on list page
+- list items do not have buttons to show sektor on planet and to visit sektor
+- single click on sektor item (any column) shows sektor on planet
+- double click on sektor item (any column) visits sektor map
+
