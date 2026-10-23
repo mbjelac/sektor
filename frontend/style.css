@@ -1709,3 +1709,17 @@ body > main {
     border-color: #888;
     color: #fff;
 }
+
+.resource-amount-label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1;
+    padding: 4px 6px;
+    white-space: nowrap;
+    pointer-events: none;
+}

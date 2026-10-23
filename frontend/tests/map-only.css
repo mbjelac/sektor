@@ -1,7 +1,8 @@
 /* Everything standing over the map — panels, messages, notifications — is made see-through while
    the map is looked at, so a change to any of them leaves the pictures of the map as they were. It
-   is made see-through rather than hidden, so that whatever is pointed at stays pointed at. */
+   is made see-through rather than hidden, so that whatever is pointed at stays pointed at. A label
+   telling how much of a resource a building moves is part of the map, and is left as it is. */
 body > :not(#canvas-container),
-#canvas-container > :not(canvas) {
+#canvas-container > :not(canvas):not(.resource-amount-label) {
     opacity: 0 !important;
 }
