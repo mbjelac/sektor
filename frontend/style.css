@@ -899,7 +899,7 @@ body > main {
     width: 100%;
     justify-self: center;
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto;
     align-content: start;
     gap: 8px 12px;
     /* More sektors than the window holds are scrolled through on their own, so that the standings
@@ -979,23 +979,6 @@ body > main {
     color: inherit;
 }
 
-.sektor-list-level {
-    min-width: 36px;
-    text-align: right;
-    color: lime;
-    font-family: sans-serif;
-    font-size: 12px;
-}
-
-/* The header of the column carries the same washed out look as the other column headers, with its
-   icon over the numbers it names. */
-.sektor-list-header .sektor-list-level {
-    color: inherit;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
 .sektor-list-owner {
     min-width: 72px;
     color: #ccc;
@@ -1040,14 +1023,6 @@ body > main {
 .claim-icon {
     display: flex;
     align-items: center;
-}
-
-.sektor-list-number {
-    min-width: 28px;
-    text-align: right;
-    color: #ccc;
-    font-family: sans-serif;
-    font-size: 12px;
 }
 
 .sektor-list-go {
@@ -1710,22 +1685,6 @@ body > main {
 
 .dialog-button-plain:hover {
     background: #3d3d3d;
-}
-
-.sektor-list-abandon {
-    background: #333;
-    border: 1px solid #555;
-    color: #999;
-    font-family: sans-serif;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.sektor-list-abandon:hover {
-    border-color: #888;
-    color: #fff;
 }
 
 .resource-amount-label {

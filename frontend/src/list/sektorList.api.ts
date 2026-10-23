@@ -43,10 +43,6 @@ export function setSektorOwner(sektorId: string, owner: string): void {
   updateSektor(sektorId, { owner });
 }
 
-export function removeSektorOwner(sektorId: string): void {
-  updateSektor(sektorId, { owner: null });
-}
-
 function getSektor(sektorId: string): SektorListItem | null {
   return getSektorList().find(sektor => sektor.id === sektorId) ?? null;
 }
