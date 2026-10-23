@@ -27,31 +27,31 @@ function createSektor(): Sektor {
   return new Sektor([[{ properties: { insolation: 0 } }]], testDefinitions, []);
 }
 
-describe("doesBuildingHaveOutput", () => {
-  it("returns true when the building has an output of the resource", () => {
+describe("getBuildingOutputAmount", () => {
+  it("returns the amount the building puts out of the resource", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
 
-    expect(sektor.doesBuildingHaveOutput({ x: 0, y: 0 }, "Flour")).toEqual(true);
+    expect(sektor.getBuildingOutputAmount({ x: 0, y: 0 }, "Flour")).toEqual(3);
   });
 
-  it("returns false when the building has no output of the resource", () => {
+  it("returns zero when the building has no output of the resource", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
 
-    expect(sektor.doesBuildingHaveOutput({ x: 0, y: 0 }, "Wheat")).toEqual(false);
+    expect(sektor.getBuildingOutputAmount({ x: 0, y: 0 }, "Wheat")).toEqual(0);
   });
 
-  it("returns false when the location has nothing of the property the output is named after", () => {
+  it("returns zero when the location has nothing of the property the output is named after", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "SolarFarm", location: { x: 0, y: 0 } });
 
-    expect(sektor.doesBuildingHaveOutput({ x: 0, y: 0 }, "Energy")).toEqual(false);
+    expect(sektor.getBuildingOutputAmount({ x: 0, y: 0 }, "Energy")).toEqual(0);
   });
 
-  it("returns false when there is no building at the location", () => {
+  it("returns zero when there is no building at the location", () => {
     const sektor = createSektor();
 
-    expect(sektor.doesBuildingHaveOutput({ x: 0, y: 0 }, "Flour")).toEqual(false);
+    expect(sektor.getBuildingOutputAmount({ x: 0, y: 0 }, "Flour")).toEqual(0);
   });
 });

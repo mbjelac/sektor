@@ -18,24 +18,24 @@ function createSektor(): Sektor {
   return new Sektor([[{ properties: { soil: 1.0 } }]], testDefinitions, []);
 }
 
-describe("doesBuildingNeedInput", () => {
-  it("returns true when the building has an input of the resource", () => {
+describe("getBuildingInputAmount", () => {
+  it("returns the amount the building takes in of the resource", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
 
-    expect(sektor.doesBuildingNeedInput({ x: 0, y: 0 }, "Wheat")).toEqual(true);
+    expect(sektor.getBuildingInputAmount({ x: 0, y: 0 }, "Wheat")).toEqual(4);
   });
 
-  it("returns false when the building has no input of the resource", () => {
+  it("returns zero when the building has no input of the resource", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "Mill", location: { x: 0, y: 0 } });
 
-    expect(sektor.doesBuildingNeedInput({ x: 0, y: 0 }, "Flour")).toEqual(false);
+    expect(sektor.getBuildingInputAmount({ x: 0, y: 0 }, "Flour")).toEqual(0);
   });
 
-  it("returns false when there is no building at the location", () => {
+  it("returns zero when there is no building at the location", () => {
     const sektor = createSektor();
 
-    expect(sektor.doesBuildingNeedInput({ x: 0, y: 0 }, "Wheat")).toEqual(false);
+    expect(sektor.getBuildingInputAmount({ x: 0, y: 0 }, "Wheat")).toEqual(0);
   });
 });

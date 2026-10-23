@@ -407,16 +407,16 @@ export class Sektor {
     return Array.from(amountsByResource.entries()).map(([name, value]) => ({ name, value: roundToOneDecimal(value) }));
   }
 
-  doesBuildingNeedInput(location: BuildingLocation, resourceType: string): boolean {
+  getBuildingInputAmount(location: BuildingLocation, resourceType: string): number {
     const building = this.findBuildingAt(location);
-    if (!building) return false;
-    return this.findThroughputValue(this.getInputs(building, []), resourceType) > 0;
+    if (!building) return 0;
+    return this.findThroughputValue(this.getInputs(building, []), resourceType);
   }
 
-  doesBuildingHaveOutput(location: BuildingLocation, resourceType: string): boolean {
+  getBuildingOutputAmount(location: BuildingLocation, resourceType: string): number {
     const building = this.findBuildingAt(location);
-    if (!building) return false;
-    return this.findThroughputValue(this.getOutputs(building, []), resourceType) > 0;
+    if (!building) return 0;
+    return this.findThroughputValue(this.getOutputs(building, []), resourceType);
   }
 
   // Every building whose output pollution has decreased, so that all of them can be marked.

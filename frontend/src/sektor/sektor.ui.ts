@@ -20,7 +20,7 @@ import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, floorColorAlongRange, propertyValueColor } from "../properties";
 import { desertFloorFraction } from "./desertFloor";
-import { getLocalResources } from "../resources";
+import { getLocalResources, getResourceIcon } from "../resources";
 import { arrowLeftIcon, buildingOfficeIcon, ecosystemDamage as ecosystemDamageIcon, faceSmileIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
 import { ecosystemDamage } from "./ecosystemDamage";
 import { createClaimButton } from "../claimButton.ui";
@@ -672,6 +672,67 @@ function drawWarning(p: p5, location: BuildingLocation, cameraAngleY: number) {
   p.pop();
 }
 
+const RESOURCE_AMOUNT_LABEL_HEIGHT = BLOCK_SIZE * 0.25;
+const RESOURCE_AMOUNT_LABEL_MARGIN = BLOCK_SIZE * 0.04;
+const RESOURCE_AMOUNT_LABEL_SIZE = BLOCK_SIZE * 0.2;
+const RESOURCE_AMOUNT_LABEL_TEXT_SIZE = 48;
+const RESOURCE_AMOUNT_LABEL_PADDING = 12;
+
+// A label saying how much of the pointed-at resource a building takes in (-) or makes (+) floats low
+// over its square, standing upright and turned to the camera the way a warning is. It is moved off
+// the centre towards the camera, to the front of the square, so that the building does not hide it. The canvas draws no emoji
+// in 3D, so the label is written on a flat picture first and that picture is hung over the square.
+function drawResourceAmountLabel(p: p5, location: BuildingLocation, resourceName: string, amountText: string, cameraAngleY: number) {
+  const labelPicture = resourceAmountLabelPicture(p, `${getResourceIcon(resourceName) ?? ""} ${amountText}`);
+  const { wx, wz } = gridToWorld(location.x, location.y);
+  const labelWidth = RESOURCE_AMOUNT_LABEL_SIZE * labelPicture.width / labelPicture.height;
+  const offsetTowardsCamera = resourceAmountLabelOffsetTowardsCamera(cameraAngleY);
+  const labelX = wx + Math.sin(cameraAngleY) * offsetTowardsCamera;
+  const labelZ = wz + Math.cos(cameraAngleY) * offsetTowardsCamera;
+
+  p.push();
+  p.noStroke();
+  p.noLights();
+  p.translate(labelX, -RESOURCE_AMOUNT_LABEL_HEIGHT, labelZ);
+  p.rotateY(cameraAngleY);
+  p.texture(labelPicture);
+  withoutDepthWrites(p, () => p.plane(labelWidth, RESOURCE_AMOUNT_LABEL_SIZE));
+  p.pop();
+}
+
+// The label is pushed towards the camera as far as it goes while its centre stays over its own
+// square; its ends may stick out over the neighbouring squares.
+function resourceAmountLabelOffsetTowardsCamera(cameraAngleY: number): number {
+  const roomInSquare = HALF - RESOURCE_AMOUNT_LABEL_MARGIN;
+  return roomInSquare / Math.max(Math.abs(Math.sin(cameraAngleY)), Math.abs(Math.cos(cameraAngleY)));
+}
+
+// The same text is pointed at frame after frame, so each picture is written once and kept.
+const resourceAmountLabelPictures = new Map<string, p5.Graphics>();
+
+function resourceAmountLabelPicture(p: p5, labelText: string): p5.Graphics {
+  const existingPicture = resourceAmountLabelPictures.get(labelText);
+  if (existingPicture) return existingPicture;
+  const pictureHeight = RESOURCE_AMOUNT_LABEL_TEXT_SIZE + 2 * RESOURCE_AMOUNT_LABEL_PADDING;
+  const measuringContext = document.createElement("canvas").getContext("2d")!;
+  measuringContext.font = `bold ${RESOURCE_AMOUNT_LABEL_TEXT_SIZE}px sans-serif`;
+  const pictureWidth = Math.ceil(measuringContext.measureText(labelText).width) + 2 * RESOURCE_AMOUNT_LABEL_PADDING;
+  const picture = p.createGraphics(pictureWidth, pictureHeight);
+  picture.pixelDensity(1);
+  picture.clear();
+  picture.noStroke();
+  picture.fill(0, 0, 0, 128);
+  picture.rect(0, 0, pictureWidth, pictureHeight);
+  picture.fill(255);
+  picture.textFont("sans-serif");
+  picture.textStyle(p.BOLD);
+  picture.textSize(RESOURCE_AMOUNT_LABEL_TEXT_SIZE);
+  picture.textAlign(p.CENTER, p.CENTER);
+  picture.text(labelText, pictureWidth / 2, pictureHeight / 2);
+  resourceAmountLabelPictures.set(labelText, picture);
+  return picture;
+}
+
 // Drawing the hundred floors one by one costs p5 a geometry rebuild and a GPU upload per
 // floor per frame, which dwarfs everything else on the canvas. The grid only changes when a
 // building that hides its floor is built or destroyed, so it is baked into a single geometry
@@ -1315,12 +1376,17 @@ const sektorUi = (p: p5) => {
 
     // A building doing both with the same resource is marked as taking it in: what a sektor is short
     // of is the more pressing of the two to find.
+    const resourceAmountLabels: { location: BuildingLocation; amountText: string }[] = [];
     if (hoveredResource) {
       for (const building of placedBuildings) {
-        if (sektor.doesBuildingNeedInput(building.location, hoveredResource)) {
+        const inputAmount = sektor.getBuildingInputAmount(building.location, hoveredResource);
+        const outputAmount = sektor.getBuildingOutputAmount(building.location, hoveredResource);
+        if (inputAmount > 0) {
           drawLocationHighlight(p, building.location, IMPORT_HIGHLIGHT_COLOR);
-        } else if (sektor.doesBuildingHaveOutput(building.location, hoveredResource)) {
+          resourceAmountLabels.push({ location: building.location, amountText: `-${formatNumber(inputAmount)}` });
+        } else if (outputAmount > 0) {
           drawLocationHighlight(p, building.location, EXPORT_HIGHLIGHT_COLOR);
+          resourceAmountLabels.push({ location: building.location, amountText: `+${formatNumber(outputAmount)}` });
         }
       }
     }
@@ -1346,6 +1412,12 @@ const sektorUi = (p: p5) => {
 
     for (const location of warnedBuildingLocations) {
       drawWarning(p, location, camAngleY);
+    }
+
+    if (hoveredResource) {
+      for (const resourceAmountLabel of resourceAmountLabels) {
+        drawResourceAmountLabel(p, resourceAmountLabel.location, hoveredResource, resourceAmountLabel.amountText, camAngleY);
+      }
     }
 
     document.getElementById("canvas-container")!.dataset.rendered = "true";

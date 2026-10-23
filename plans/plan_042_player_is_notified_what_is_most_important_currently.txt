@@ -57,7 +57,7 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
     - highlight buildings which have that resource as *output*
         - in green
 
-#7 Player can see how much of a resource buildings input or output
+#7 [done] Player can see how much of a resource buildings input or output
 - [done] when highlighting buildings as consumers (inputs) or producers (outputs) of a resource
     - display a hovering label above the building center
         - background black transparent 50%
