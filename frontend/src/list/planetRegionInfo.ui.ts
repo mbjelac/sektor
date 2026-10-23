@@ -3,7 +3,7 @@ import { PlanetRegion } from "./parsePlanet";
 import { regionLabels } from "./regionLabels";
 
 // A line along the bottom of the page telling what lies under the mouse on the planet: where it is,
-// by its ring and its place on the ring, then its climate zone and what covers the land there. It is
+// by its ring and its place on the ring, then its biome type and what covers the land there. It is
 // empty while the mouse is off the planet.
 export function createPlanetRegionInfo(): (shown: { coordinate: TriangleCoordinate; region: PlanetRegion } | null) => void {
   const info = document.createElement("div");

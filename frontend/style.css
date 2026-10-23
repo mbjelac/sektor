@@ -787,6 +787,9 @@ body > main {
     margin-left: -150px;
     z-index: 2;
     display: none;
+    /* Everything on the line stands on one baseline, or the emoji, taller than the letters, would
+       push the words beside them down. */
+    align-items: baseline;
     gap: 50px;
     color: #fff;
     font-family: sans-serif;
@@ -801,6 +804,7 @@ body > main {
 
 .planet-region-labels {
     display: flex;
+    align-items: baseline;
     gap: 30px;
 }
 
@@ -895,7 +899,7 @@ body > main {
     width: 100%;
     justify-self: center;
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
     align-content: start;
     gap: 8px 12px;
     /* More sektors than the window holds are scrolled through on their own, so that the standings
@@ -959,6 +963,20 @@ body > main {
 /* Kept on one line, so that a sektor waiting for a name does not stand taller than the named ones. */
 .sektor-list-no-name {
     white-space: nowrap;
+}
+
+.sektor-list-biome {
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* The header of the column carries the same washed out look as the other column headers. */
+.sektor-list-header .sektor-list-biome {
+    display: flex;
+    align-items: center;
+    color: inherit;
 }
 
 .sektor-list-level {

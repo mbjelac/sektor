@@ -1,7 +1,7 @@
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, removeSektorOwner, SektorListItem, setSektorOwner } from "./sektorList.api";
-import { arrowDownTrayIcon, arrowRightIcon, arrowsPointingInIcon, arrowUpTrayIcon, buildingOfficeIcon, puzzlePieceIcon, starIcon, userIcon } from "../icons";
+import { arrowDownTrayIcon, arrowRightIcon, arrowsPointingInIcon, arrowUpTrayIcon, buildingOfficeIcon, globeAsiaAustraliaIcon, puzzlePieceIcon, starIcon, userIcon } from "../icons";
 import { showClaimDialog } from "../claimDialog.ui";
 import { createClaimButton } from "../claimButton.ui";
 import { showAbandonDialog } from "./abandonDialog.ui";
@@ -19,6 +19,8 @@ import { currentScore } from "../currentScore";
 import { getNegativeScoringResources } from "../resources";
 import { ImportsAndExports } from "../globalImportsAndExports";
 import { showPlanetBackground } from "./planetBackground.ui";
+import { getPlanet } from "./planet";
+import { regionCover } from "./regionLabels";
 
 const LIST_ROW_GAP_PIXELS = 8;
 
@@ -56,6 +58,12 @@ function createHeader(): HTMLElement {
   name.className = "sektor-list-name";
   name.textContent = "Name";
   header.appendChild(name);
+
+  const biome = document.createElement("span");
+  biome.className = "sektor-list-biome";
+  biome.innerHTML = globeAsiaAustraliaIcon;
+  biome.title = "Biome type";
+  header.appendChild(biome);
 
   const level = document.createElement("span");
   level.className = "sektor-list-level";
@@ -100,6 +108,7 @@ function createListItem(
   item.appendChild(createLocateButton(sektorListItem));
 
   item.appendChild(createName(sektorListItem));
+  item.appendChild(createBiome(sektorListItem));
   item.appendChild(createLevel(summary.level));
   item.appendChild(createOwner(sektorListItem));
   item.appendChild(createNumber(summary.buildingCount));
@@ -170,6 +179,19 @@ function createGoButton(sektorListItem: SektorListItem): HTMLElement {
     window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
   });
   return goButton;
+}
+
+// What covers the sektor's triangle of the planet, as told with the mouse over the triangle but
+// without its biome type. A sektor made before sektors were put on the planet lies nowhere on it,
+// and says nothing.
+function createBiome(sektorListItem: SektorListItem): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = "sektor-list-biome";
+  const location = sektorListItem.location;
+  if (!location) return cell;
+  const region = getPlanet().regionRings[location.ring]?.[location.index];
+  if (region) cell.textContent = regionCover(region);
+  return cell;
 }
 
 // Taking a sektor up and giving it up are the one thing a player does to a whole sektor rather than

@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { PlanetRegion } from "./parsePlanet";
-import { regionLabels } from "./regionLabels";
+import { regionCover, regionLabels } from "./regionLabels";
 
 const land: PlanetRegion = { color: "#00c000", climate: "temperate", biome: "temperate", isLand: true, isForest: false, isDesert: false };
 
 describe("regionLabels", () => {
-  it("tells the climate zone and what covers the triangle by its biome", () => {
+  it("tells the biome type and what covers the triangle by its biome", () => {
     expect({
       polarLand: regionLabels({ ...land, climate: "polar", biome: "polar" }),
       polarSea: regionLabels({ ...land, climate: "polar", biome: "polar", isLand: false }),
@@ -26,24 +26,42 @@ describe("regionLabels", () => {
       tropicalDesert: regionLabels({ ...land, climate: "tropical", biome: "tropical", isDesert: true }),
       tropicalSea: regionLabels({ ...land, climate: "tropical", biome: "tropical", isLand: false }),
     }).toEqual({
-      polarLand: ["Polar"],
-      polarSea: ["Polar"],
-      sea: ["Temperate", "Sea"],
-      tundra: ["Sub-polar", "Tundra"],
-      taiga: ["Sub-polar", "Taiga"],
-      subPolarGrassland: ["Sub-polar", "Grassland"],
-      subPolarForest: ["Sub-polar", "Forest"],
-      grassland: ["Temperate", "Grassland"],
-      forest: ["Temperate", "Forest"],
-      temperateDesert: ["Temperate", "Desert"],
-      subTropicalGrassland: ["Sub-tropical", "Grassland"],
-      subTropicalSavanna: ["Sub-tropical", "Savanna"],
-      subTropicalJungle: ["Sub-tropical", "Jungle"],
-      subTropicalDesert: ["Sub-tropical", "Desert"],
-      tropicalSavanna: ["Tropical", "Savanna"],
-      tropicalJungle: ["Tropical", "Jungle"],
-      tropicalDesert: ["Tropical", "Desert"],
-      tropicalSea: ["Tropical", "Sea"],
+      polarLand: ["❄️ Polar"],
+      polarSea: ["❄️ Polar"],
+      sea: ["Temperate", "🌊 Sea"],
+      tundra: ["Polar", "🌱 Tundra"],
+      taiga: ["Polar", "🌲 Taiga"],
+      subPolarGrassland: ["Temperate", "🌾 Grassland"],
+      subPolarForest: ["Temperate", "🌳 Forest"],
+      grassland: ["Temperate", "🌾 Grassland"],
+      forest: ["Temperate", "🌳 Forest"],
+      temperateDesert: ["Temperate", "🏜 Desert"],
+      subTropicalGrassland: ["Temperate", "🌾 Grassland"],
+      subTropicalSavanna: ["Tropical", "🌿 Savanna"],
+      subTropicalJungle: ["Tropical", "🌴 Jungle"],
+      subTropicalDesert: ["Tropical", "🏜 Desert"],
+      tropicalSavanna: ["Tropical", "🌿 Savanna"],
+      tropicalJungle: ["Tropical", "🌴 Jungle"],
+      tropicalDesert: ["Tropical", "🏜 Desert"],
+      tropicalSea: ["Tropical", "🌊 Sea"],
+    });
+  });
+
+  it("tells only what covers the triangle where there is room for one word", () => {
+    expect({
+      polarLand: regionCover({ ...land, climate: "polar", biome: "polar" }),
+      sea: regionCover({ ...land, isLand: false }),
+      tundra: regionCover({ ...land, climate: "sub-polar", biome: "polar" }),
+      forest: regionCover({ ...land, isForest: true }),
+      desert: regionCover({ ...land, isDesert: true }),
+      savanna: regionCover({ ...land, climate: "tropical", biome: "tropical" }),
+    }).toEqual({
+      polarLand: "❄️ Polar",
+      sea: "🌊 Sea",
+      tundra: "🌱 Tundra",
+      forest: "🌳 Forest",
+      desert: "🏜 Desert",
+      savanna: "🌿 Savanna",
     });
   });
 });

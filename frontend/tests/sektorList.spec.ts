@@ -29,6 +29,23 @@ test("shows the owner of every sektor", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-owners.png", { maxDiffPixelRatio: 0 });
 });
 
+// Every sektor tells what covers its triangle of the planet, as the planet tells it with the mouse
+// over the triangle but without the biome type. A sektor lying nowhere on the planet says nothing.
+test("shows the biome type of every sektor", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([
+      { id: "Alpha", name: "Alpha", owner: null, location: { ring: 10, index: 31 } },
+      { id: "Beta", name: "Beta", owner: null, location: { ring: 0, index: 0 } },
+      { id: "Gamma", name: "Gamma", owner: null, location: { ring: 20, index: 6 } },
+      { id: "Delta", name: "Delta", owner: null },
+    ]));
+  });
+  await page.reload();
+
+  expect(await page.locator(".sektor-list-item .sektor-list-biome").allTextContents())
+    .toEqual(["🌳 Forest", "❄️ Polar", "🌊 Sea", ""]);
+});
+
 test("makes the player the owner of a sektor they claim and opens it", async ({ page }) => {
   await nameStoredSektor(page, "Gamma", "quiet-harvest");
   await page.reload();
@@ -630,13 +647,13 @@ test("turns the planet to show a sektor in the middle of it", async ({ page }) =
   }, { timeout: 3000 }).toEqual("15 : 40");
 });
 
-// The last of more sektors than the window holds lies in the middle of the planet, out of sight on
-// the list until the list is scrolled to it.
+// The last of more sektors than the window holds lies right of the middle of the planet, clear of the
+// list standing over the planet's left side, and out of sight on the list until the list is scrolled to it.
 test("brings a sektor clicked on the planet into view on the list, flashing", async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem("sektors", JSON.stringify(Array.from({ length: 40 }, (_, sektorIndex) => ({
       id: `sektor${sektorIndex}`, name: `sektor-${sektorIndex}`, owner: null,
-      ...(sektorIndex === 39 ? { location: { ring: 23, index: 112 } } : {}),
+      ...(sektorIndex === 39 ? { location: { ring: 23, index: 120 } } : {}),
     }))));
   });
   await page.reload();

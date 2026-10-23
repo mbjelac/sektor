@@ -174,9 +174,9 @@ So, except for the Desert, all biome groups have sub-groups:
 - [done] if a river is present in the sektor, squares with the river and squares next to them (not diagonally) should have soil 12
 - [done] squares more distant from the river have soil fall off by 4 per square, except if they already have higher soil
 
-#14 Sektor list displays biome type
-- sektor list item has column biome type
+#14 [done] Sektor list displays biome type
+- [done] sektor list item has column biome type
     - header icon: heroicons globe-asia-australia
     - header icon tooltip: Biome type
     - value: same specification as in plan 55, #6, "display data according to context"
-        - "spacing" in this case is regular space
+        - for value put only biome-related, i.e. "🌱 Tundra", "🌲 Taiga", etc.
