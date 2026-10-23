@@ -58,8 +58,10 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
         - in green
 
 #7 Player can see how much of a resource buildings input or output
-- when highlighting buildings as consumers (inputs) or producers (outputs) of a resource
+- [done] when highlighting buildings as consumers (inputs) or producers (outputs) of a resource
     - display a hovering label above the building center
         - background black transparent 50%
-        - content: <resource icon> <resource amount>
+        - content: <resource icon> <+/-><resource amount>
+            - if building is consumer use -
+            - if building is producer use +
         - text white bold
