@@ -1,0 +1,20 @@
+A "function panel" is a panel which shows when the player selects a building *from the building toolbar*.
+It's purpose is to let the player know how this building functions
+
+A "building panel" is a panel which shows when the payer has just constructed or selected an already constructed building on the map.
+It's purpose is to let the player know what is the current state of the building.
+
+#1 Improve function panel
+- put building name on top
+    - white bold
+    - centered
+- put Inputs & Outputs headers below title
+- remove right-arrow from all functions
+- remove Inputs & Outputs headers from function sections
+- input & output columns should take up equal amount of space, regardless of what kind of resource names are in each
+- function panel should take up at most 50% of screen height
+- if content is bigger than panel height, scroll content
+    - do not display scrollbar
+    - float building title & Inputs Outputs headers above scrolled content
+
+
