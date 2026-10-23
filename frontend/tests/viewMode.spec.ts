@@ -290,6 +290,59 @@ test("shows the claimed sektor under the name it carries, with nothing left to c
   await expect(page.locator("#sektor-header")).toHaveScreenshot("map-claimed.png", { maxDiffPixelRatio: 0 });
 });
 
+test("offers the player's own sektor for abandoning beside its name", async ({ page }) => {
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+
+  await page.goto("/sektor.html?id=Alpha");
+
+  await expect(page.locator("#sektor-header")).toHaveScreenshot("map-abandon.png", { maxDiffPixelRatio: 0 });
+});
+
+test("offers no abandoning on a sektor of another player", async ({ page }) => {
+  await storeSektor(page, "Beta", OTHER_PLAYER);
+
+  await page.goto("/sektor.html?id=Beta");
+
+  await expect(page.locator("#map-abandon-button")).toHaveCount(0);
+});
+
+// Abandoning a sektor gives up everything built on it, so the player is asked to confirm it.
+test("asks the player to confirm abandoning a sektor from the map", async ({ page }) => {
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+
+  await page.locator("#map-abandon-button").click();
+
+  await expect(page.locator("#abandon-dialog")).toHaveScreenshot("abandon-dialog-from-map.png", { maxDiffPixelRatio: 0 });
+});
+
+test("keeps the sektor when abandoning it from the map is not confirmed", async ({ page }) => {
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#map-abandon-button").click();
+
+  await page.locator("#abandon-no-button").click();
+
+  const sektors = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
+  expect({ sektors, path: new URL(page.url()).pathname }).toEqual({
+    sektors: [{ id: "Alpha", name: "Alpha", owner: CURRENT_PLAYER }],
+    path: "/sektor.html",
+  });
+});
+
+// A sektor given up keeps its name, and the player is taken back to the list.
+test("leaves a sektor abandoned from the map without an owner and goes back to the list", async ({ page }) => {
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#map-abandon-button").click();
+
+  await page.locator("#abandon-yes-button").click();
+  await page.waitForURL(/\/$/);
+
+  const sektors = await page.evaluate(() => JSON.parse(localStorage.getItem("sektors")!));
+  expect(sektors).toEqual([{ id: "Alpha", name: "Alpha", owner: null }]);
+});
+
 async function claimFromMap(page: import("@playwright/test").Page, sektorId: string) {
   await storeSektor(page, sektorId, null);
   await nameStoredSektor(page, sektorId, "Sunset Flats");

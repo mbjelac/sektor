@@ -146,11 +146,11 @@ test("keeps the tool in hand while SHIFT is held, so several of the same buildin
   expect({
     selectedTools: await getSelectedToolNames(page),
     buildings: await page.locator('#sektor-stats .sektor-stat:has([title="Buildings"]) .sektor-stat-value').textContent(),
-  }).toEqual({ selectedTools: ["TestFactory"], buildings: "2" });
+  }).toEqual({ selectedTools: ["TestFactory"], buildings: "2 %" });
 });
 
-// The stats of the sektor stand beside its name, so that a player building on it is told what the
-// list tells them about it from outside.
+// The stats of the sektor stand beside its name, so that a player building on it sees how far along
+// it is.
 test("shows the stats of the sektor beside its name", async ({ page }) => {
   await placeHub(page);
   await placeOneBuilding(page);
@@ -158,7 +158,7 @@ test("shows the stats of the sektor beside its name", async ({ page }) => {
   await expectScreenshot(page, "sektor-stats", "#sektor-stats");
 });
 
-test("names every stat beside the sektor name by the same tooltip the list names it by", async ({ page }) => {
+test("names every stat beside the sektor name by its tooltip", async ({ page }) => {
   await placeHub(page);
   await placeOneBuilding(page);
 
@@ -168,8 +168,7 @@ test("names every stat beside the sektor name by the same tooltip the list names
   })));
 
   expect(stats).toEqual([
-    { tooltip: "Difficulty", value: "1" },
-    { tooltip: "Buildings", value: "2" },
+    { tooltip: "Buildings", value: "2 %" },
     { tooltip: "Hapiness", value: "0 / 0 (0 %)" },
     { tooltip: "Damage to ecosystem", value: "0 / 0 (0 %)" },
   ]);
@@ -1489,8 +1488,7 @@ test("says how happy the sektor's people are", async ({ page }) => {
     tooltip: stat.querySelector(".sektor-stat-icon")!.getAttribute("title"),
     value: stat.querySelector(".sektor-stat-value")!.textContent,
   })))).toEqual([
-    { tooltip: "Difficulty", value: "1" },
-    { tooltip: "Buildings", value: "3" },
+    { tooltip: "Buildings", value: "3 %" },
     { tooltip: "Hapiness", value: "5 / 5 (100 %)" },
     { tooltip: "Damage to ecosystem", value: "0 / 0 (0 %)" },
   ]);

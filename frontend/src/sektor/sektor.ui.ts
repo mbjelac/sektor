@@ -15,13 +15,13 @@ import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExpo
 import { updateMessages } from "../messages.ui";
 import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
-import { getGivenSektorName, getSektorLocation, getSektorOwner, getTakenSektorNames, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
+import { getGivenSektorName, getSektorLocation, getSektorOwner, getTakenSektorNames, removeSektorOwner, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, floorColorAlongRange, propertyValueColor } from "../properties";
 import { desertFloorFraction } from "./desertFloor";
 import { getLocalResources, getResourceIcon } from "../resources";
-import { arrowLeftIcon, buildingOfficeIcon, ecosystemDamage as ecosystemDamageIcon, faceSmileIcon, pencilSquareIcon, puzzlePieceIcon } from "../icons";
+import { arrowLeftIcon, buildingOfficeIcon, ecosystemDamage as ecosystemDamageIcon, faceSmileIcon, pencilSquareIcon } from "../icons";
 import { ecosystemDamage } from "./ecosystemDamage";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
@@ -40,6 +40,7 @@ import { drawSeaBed, drawSeaGlints, drawSeaSurface, SeaSquare, SEA_COLOR, SEA_NA
 import { getUsername } from "../login/login.api";
 import { requireLogin } from "../login/requireLogin";
 import { showClaimDialog } from "../claimDialog.ui";
+import { showAbandonDialog } from "./abandonDialog.ui";
 import { showUser } from "../login/userDisplay.ui";
 import { isTestMode } from "../testMode";
 import { showRenameDialog } from "../renameDialog.ui";
@@ -92,6 +93,9 @@ function showSektorName() {
   // it, so the pencil is not there for anybody looking at somebody else's sektor.
   if (!isViewMode) title.appendChild(createRenameButton());
 
+  const claimOrAbandonButton = createClaimOrAbandonButton();
+  if (claimOrAbandonButton) title.appendChild(claimOrAbandonButton);
+
   document.getElementById("left-panels")!.prepend(header);
 
   showSektorStats(sektor.getSektorState());
@@ -117,6 +121,20 @@ function renameSektor() {
       showSektorName();
     },
   });
+}
+
+// Taking a sektor up and giving it up stand beside its name: a sektor nobody holds is offered to the
+// player looking at it, and the player's own sektor can be given up. A sektor somebody else holds
+// offers neither.
+function createClaimOrAbandonButton(): HTMLElement | null {
+  const owner = getSektorOwnerName();
+  if (!owner) {
+    const claimButton = createClaimButton(claimSektor);
+    claimButton.id = "map-claim-button";
+    return claimButton;
+  }
+  if (owner === getUsername()) return createAbandonButton();
+  return null;
 }
 
 // A sektor carries the name it was made with, so the player is only asked whether they want it.
@@ -149,20 +167,32 @@ function showToolbarToOwner() {
   if (!constructionPanel.hidden) initToolbar(builderLevel, isViewMode);
 }
 
+function createAbandonButton(): HTMLElement {
+  const abandonButton = document.createElement("button");
+  abandonButton.id = "map-abandon-button";
+  abandonButton.textContent = "Abandon";
+  abandonButton.addEventListener("click", abandonSektor);
+  return abandonButton;
+}
+
+// A sektor given up is nobody's again, and the player has nothing more to do on it, so they are
+// taken back to the list. The sektor of a test run is stored nowhere, so there is no owner to take
+// off it.
+function abandonSektor() {
+  showAbandonDialog({
+    sektorName: getDisplayedSektorName(),
+    onConfirmed: () => {
+      if (sektorId) removeSektorOwner(sektorId);
+      window.location.href = "/";
+    },
+  });
+}
+
 // A sektor claimed by another player carries their name, so that the player knows whose sektor
-// they are looking at. Their own sektor carries nothing.
+// they are looking at. Their own sektor carries nothing, and nor does a sektor nobody holds.
 function showSektorOwner() {
-
   const owner = getSektorOwnerName();
-  if (owner === getUsername()) return;
-
-  // A sektor nobody has claimed is offered to the player looking at it.
-  if (!owner) {
-    const claimButton = createClaimButton(claimSektor);
-    claimButton.id = "map-claim-button";
-    document.getElementById("sektor-header")!.appendChild(claimButton);
-    return;
-  }
+  if (!owner || owner === getUsername()) return;
 
   const ownerElement = document.createElement("div");
   ownerElement.id = "sektor-owner";
@@ -397,18 +427,18 @@ function refreshOpenBuildingPanel() {
   if (openedBuilding) openBuildingPanel(openedBuilding);
 }
 
-// A player looking at a sektor from the outside is told the same things about it as the list tells
-// them, by the same icons in the same order, so the two read as one. What the sektor is worth and
-// how much it imports and exports are left out: a sektor being built on is scored resource by
-// resource in the panel on the right, which also totals what it imports and exports against what
-// its hubs can carry.
+// How far along a sektor is stands beside its name: how much of it is built over, how happy its
+// people are and how much of its ecosystem is gone. What the sektor is worth and how much it imports
+// and exports are left out: a sektor being built on is scored resource by resource in the panel on
+// the right, which also totals what it imports and exports against what its hubs can carry.
 function showSektorStats(sektorState: SektorState) {
   document.getElementById("sektor-stats")?.remove();
 
   const stats = document.createElement("div");
   stats.id = "sektor-stats";
-  stats.appendChild(createStat(puzzlePieceIcon, "Difficulty", `${sektorLevel}`));
-  stats.appendChild(createStat(buildingOfficeIcon, "Buildings", formatNumber(sektor.getState().buildings.length)));
+  // A sektor has a hundred places to build on, so the number of its buildings is also how much of
+  // it is built over.
+  stats.appendChild(createStat(buildingOfficeIcon, "Buildings", `${formatNumber(sektor.getState().buildings.length)} %`));
   stats.appendChild(createStat(faceSmileIcon, "Hapiness", formatHapiness(sektorState)));
   stats.appendChild(createStat(ecosystemDamageIcon, "Damage to ecosystem", formatEcosystemDamage(sektorState)));
 
