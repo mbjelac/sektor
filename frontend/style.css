@@ -1471,6 +1471,20 @@ body > main {
     background: #fff;
 }
 
+/* A button standing next to what a message says, letting the player act on it straight away. */
+.message-action-button {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin-left: 8px;
+    padding: 2px 6px;
+    border: none;
+    border-radius: 3px;
+    background: #444;
+    color: #fff;
+    cursor: pointer;
+}
+
 /* A message with something new to say turns white and fades back to its own colour, twice over, so
    that a player watching the map rather than the messages still catches that the advice changed. */
 @keyframes message-flash {

@@ -6,7 +6,9 @@ import {
 import { resourceNameText } from "./throughputDisplay.ui";
 import { getNegativeScoringResources } from "./resources";
 import { pointAtResourceWhileHovered } from "./resourceHover.ui";
-import { chevronDownIcon, chevronUpIcon } from "./icons";
+import { chevronDownIcon, chevronUpIcon, eyeIcon } from "./icons";
+import { selectProperty } from "./sektor/propertyToggler.ui";
+import { POLLUTION_PROPERTY } from "./sektor/pollution";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -25,6 +27,7 @@ const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 // One complaint to a resource, each named after the resource it complains of.
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
 const POLLUTION_MESSAGE_ID = "pollution-message";
+const SHOW_POLLUTION_BUTTON_ID = "show-pollution-button";
 const DISABLED_BUILDINGS_MESSAGE_ID = "disabled-buildings-message";
 const IMPORT_CAPACITY_MESSAGE_ID = "import-capacity-message";
 const EXPORT_CAPACITY_MESSAGE_ID = "export-capacity-message";
@@ -82,7 +85,20 @@ function showPollutionMessage(anyBuildingAffectedByPollution: boolean) {
     return;
   }
 
-  showMessage(POLLUTION_MESSAGE_ID, "warning", "Citizens are complaining about pollution!", []);
+  showMessage(POLLUTION_MESSAGE_ID, "warning", "Citizens are complaining about pollution!", [], [
+    createShowPollutionButton(),
+  ]);
+}
+
+// A player told of pollution is offered a look at where it lies, shown in the geography panel just
+// as if they had picked it there themselves.
+function createShowPollutionButton(): HTMLElement {
+  const showPollutionButton = document.createElement("button");
+  showPollutionButton.id = SHOW_POLLUTION_BUTTON_ID;
+  showPollutionButton.className = "message-action-button";
+  showPollutionButton.innerHTML = eyeIcon;
+  showPollutionButton.addEventListener("click", () => selectProperty(POLLUTION_PROPERTY));
+  return showPollutionButton;
 }
 
 // A player whose sektor ships in more than its hubs can carry is warned once, whichever buildings
@@ -172,7 +188,13 @@ function showOrHideMessage(messageId: string, kind: MessageKind, advice: string,
 // A message of a kind the player is already being told is written over rather than stood beside, so
 // that the same advice is never on the screen twice over. Advice which has not changed is left
 // exactly as it stands: a player who has read it is not made to read it again.
-function showMessage(messageId: string, kind: MessageKind, advice: string, resourceNames: string[]) {
+function showMessage(
+  messageId: string,
+  kind: MessageKind,
+  advice: string,
+  resourceNames: string[],
+  actionButtons: HTMLElement[] = [],
+) {
   const shownMessage = document.getElementById(messageId);
   const said = `${MESSAGE_EMOJI[kind]} ${advice} `;
   const text = `${said}${resourceNames.map(resourceNameText).join(", ")}`;
@@ -180,7 +202,7 @@ function showMessage(messageId: string, kind: MessageKind, advice: string, resou
   if (shownMessage?.textContent === text) return;
 
   const message = shownMessage ?? createMessage(messageId, kind);
-  message.replaceChildren(document.createTextNode(said), ...resourceElements(resourceNames));
+  message.replaceChildren(document.createTextNode(said), ...resourceElements(resourceNames), ...actionButtons);
 
   // Something new to say goes to the top of the stack and flashes, so that a player looking at the
   // map rather than at the messages still catches that the advice has changed.

@@ -318,6 +318,22 @@ test("warns that citizens are complaining about pollution once a building's outp
   await expectScreenshot(page, "pollution-message", "#pollution-message");
 });
 
+test("switches geography to pollution when the eye next to the pollution message is clicked", async ({ page }) => {
+  await placeHub(page);
+  await placeFactoryBesideSmokestack(page);
+
+  await page.locator("#show-pollution-button").click();
+
+  expect(await getSelectedGeographyProperties(page)).toEqual(["pollution"]);
+});
+
+// The names of the properties selected in the geography panel.
+function getSelectedGeographyProperties(page: Page) {
+  return page.locator(".property-toggle.selected").evaluateAll(
+    propertyToggles => propertyToggles.map(propertyToggle => (propertyToggle as HTMLElement).dataset.property),
+  );
+}
+
 // The smokestack fouls the ground around it, but nothing standing there gives any less for it.
 test("says nothing of pollution while no building's output is decreased by it", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
