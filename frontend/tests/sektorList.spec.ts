@@ -490,17 +490,12 @@ async function storeSektorOnFarSideOfPlanet(page: Page) {
   await page.reload();
 }
 
-test("shows the button for finding a sektor on the planet first in its row", async ({ page }) => {
+// The middle of the window is the middle of the planet, which the lists leave showing. The row is
+// clicked away from its name, as anywhere on it will do.
+test("turns the planet to show a sektor clicked on the list in the middle of it", async ({ page }) => {
   await storeSektorOnFarSideOfPlanet(page);
 
-  await expect(page.locator(".sektor-list-item", { hasText: "Echo" })).toHaveScreenshot("sektor-list-locate.png", { maxDiffPixelRatio: 0 });
-});
-
-// The middle of the window is the middle of the planet, which the lists leave showing.
-test("turns the planet to show a sektor in the middle of it", async ({ page }) => {
-  await storeSektorOnFarSideOfPlanet(page);
-
-  await page.locator(".sektor-list-item", { hasText: "Echo" }).locator(".sektor-list-locate").click();
+  await page.locator(".sektor-list-item", { hasText: "Echo" }).locator(".sektor-list-biome").click();
 
   // The planet takes a second to turn, and the mouse is moved off the middle and back on to it
   // until the middle shows the sektor's triangle.
@@ -538,6 +533,14 @@ test("brings a sektor clicked on the planet into view on the list, flashing", as
     isWithinList: true,
     isFlashing: true,
   });
+});
+
+// The row is double clicked away from its name, as anywhere on it will do. A sektor lying nowhere on
+// the planet is gone into all the same.
+test("opens the map of a sektor double clicked on the list", async ({ page }) => {
+  await page.locator(".sektor-list-item", { hasText: "Beta" }).locator(".sektor-list-owner").dblclick();
+
+  await expect(page).toHaveURL(/\/sektor\.html\?id=Beta$/);
 });
 
 test("opens the map of a sektor double clicked on the planet", async ({ page }) => {

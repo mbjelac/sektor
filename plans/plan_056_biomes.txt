@@ -189,8 +189,8 @@ So, except for the Desert, all biome groups have sub-groups:
     - score
     - claim/abandon
 
-#16 Player can more simply view & navigate on list page
-- list items do not have buttons to show sektor on planet and to visit sektor
-- single click on sektor item (any column) shows sektor on planet
-- double click on sektor item (any column) visits sektor map
+#16 [done] Player can more simply view & navigate on list page
+- [done] list items do not have buttons to show sektor on planet and to visit sektor
+- [done] single click on sektor item (any column) shows sektor on planet
+- [done] double click on sektor item (any column) visits sektor map
 

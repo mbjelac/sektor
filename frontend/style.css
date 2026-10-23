@@ -899,7 +899,7 @@ body > main {
     width: 100%;
     justify-self: center;
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: auto auto auto;
     align-content: start;
     gap: 8px 12px;
     /* More sektors than the window holds are scrolled through on their own, so that the standings
@@ -942,6 +942,8 @@ body > main {
     border: 1px solid #444;
     padding: 12px;
     border-radius: 4px;
+    /* The whole row is clicked on, to find its sektor on the planet or to go into it. */
+    cursor: pointer;
 }
 
 .sektor-list-name {
@@ -950,7 +952,6 @@ body > main {
     font-size: 14px;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
 /* The header of the column carries the same washed out look and size as the other column headers,
@@ -1025,22 +1026,6 @@ body > main {
     align-items: center;
 }
 
-.sektor-list-go {
-    background: none;
-    border: none;
-    color: #ccc;
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    /* Never given up to make room for a long name, as it is the way into the sektor. */
-    flex: 0 0 auto;
-}
-
-.sektor-list-go:hover {
-    color: #fff;
-}
-
 /* A row chosen on the planet flashes white and fades back to its own colour. */
 .sektor-list-item-flash {
     animation: sektor-list-item-flash 1s ease-out;
@@ -1050,20 +1035,6 @@ body > main {
     from {
         background: #fff;
     }
-}
-
-.sektor-list-locate {
-    background: none;
-    border: none;
-    color: #ccc;
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-}
-
-.sektor-list-locate:hover {
-    color: #fff;
 }
 
 /* The leaderboard is hidden from the list page for now, though it is still drawn, so that it can be

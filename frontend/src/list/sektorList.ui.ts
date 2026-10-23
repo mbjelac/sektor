@@ -3,7 +3,7 @@ import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, SektorListItem } from "./sektorList.api";
 import { getUsername } from "../login/login.api";
 import { getSektorSummary } from "./sektorSummary";
-import { arrowRightIcon, arrowsPointingInIcon, globeAsiaAustraliaIcon, userIcon } from "../icons";
+import { globeAsiaAustraliaIcon, userIcon } from "../icons";
 import { renderLeaderboard } from "./leaderboard.ui";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 import { showPurgeButton } from "./purgeButton.ui";
@@ -42,9 +42,6 @@ function createHeader(): HTMLElement {
 
   header.appendChild(createListTitle("Sektors"));
 
-  // The column of buttons for finding a sektor on the planet needs no heading, as the buttons say it.
-  header.appendChild(document.createElement("span"));
-
   const name = document.createElement("span");
   name.className = "sektor-list-name";
   name.textContent = "Name";
@@ -69,28 +66,20 @@ function createListItem(sektorListItem: SektorListItem): HTMLElement {
   const item = document.createElement("div");
   item.className = "sektor-list-item";
   item.dataset.sektorId = sektorListItem.id;
-
-  item.appendChild(createLocateButton(sektorListItem));
+  // A click anywhere on the row turns the planet to show the sektor in the middle of it. A sektor
+  // made before sektors were put on the planet lies nowhere on it, and the planet stays as it is.
+  const location = sektorListItem.location;
+  if (location) item.addEventListener("click", () => planetBackground.turnToTriangle(location));
+  // A double click anywhere on the row goes into the sektor, to its map.
+  item.addEventListener("dblclick", () => {
+    window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
+  });
 
   item.appendChild(createName(sektorListItem));
   item.appendChild(createBiome(sektorListItem));
   item.appendChild(createOwner(sektorListItem));
 
   return item;
-}
-
-// The way to a sektor on the planet: the planet turns to show the sektor in the middle of it. A
-// sektor made before sektors were put on the planet lies nowhere on it, and has no such way.
-function createLocateButton(sektorListItem: SektorListItem): HTMLElement {
-  const location = sektorListItem.location;
-  if (!location) return document.createElement("span");
-
-  const locateButton = document.createElement("button");
-  locateButton.className = "sektor-list-locate";
-  locateButton.innerHTML = arrowsPointingInIcon;
-  locateButton.title = "Show on the planet";
-  locateButton.addEventListener("click", () => planetBackground.turnToTriangle(location));
-  return locateButton;
 }
 
 // A sektor chosen on the planet is brought into view on the list, below the header standing over
@@ -110,34 +99,14 @@ function revealSektorInList(sektorId: string) {
   item.classList.add("sektor-list-item-flash");
 }
 
-// The way into a sektor stands against the name of the sektor it leads to, rather than in a column
-// of its own: a column would have to be as wide as the longest name to hold its arrows in line, and
-// what it took to do that is taken from the columns after it.
 function createName(sektorListItem: SektorListItem): HTMLElement {
   const cell = document.createElement("span");
   cell.className = "sektor-list-name";
-
-  const name = document.createElement("span");
-  name.className = "sektor-list-name-text";
   // A sektor nobody has claimed and named yet is shown as having no name, rather than by its id.
   const givenName = (sektorListItem.name ?? "").trim();
-  name.textContent = givenName || "No name";
-  if (!givenName) name.classList.add("sektor-list-no-name");
-  cell.appendChild(name);
-
-  cell.appendChild(createGoButton(sektorListItem));
-
+  cell.textContent = givenName || "No name";
+  if (!givenName) cell.classList.add("sektor-list-no-name");
   return cell;
-}
-
-function createGoButton(sektorListItem: SektorListItem): HTMLElement {
-  const goButton = document.createElement("button");
-  goButton.className = "sektor-list-go";
-  goButton.innerHTML = arrowRightIcon;
-  goButton.addEventListener("click", () => {
-    window.location.href = `/sektor.html?id=${encodeURIComponent(sektorListItem.id)}`;
-  });
-  return goButton;
 }
 
 // What covers the sektor's triangle of the planet, as told with the mouse over the triangle but
