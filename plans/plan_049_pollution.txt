@@ -126,3 +126,6 @@ If two areas overlap, each adds it's pollution level to area squares.
 #8 [done] Player is notified about pollution
 - [done] if at least one building is affected by pollution (whether from decreased location property or output directly)
     - add a warning message: "Citizens are complaining about pollution!"
+    - next to the message is a small button
+        - icon: heroicons "eye"
+        - when clicked, switch Geography to "pollution"
