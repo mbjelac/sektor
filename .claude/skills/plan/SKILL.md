@@ -22,4 +22,6 @@ The script picks the number, makes the slug and creates the file, empty.
 
 ## Step 2: Report
 
-Print the created path. One line. Do not offer to fill it in.
+Print the created path as a clickable markdown link, with the repo-relative path as the text
+and the path as the target, e.g.
+`Created [plans/plan_058_foo.txt](plans/plan_058_foo.txt).` One line. Do not offer to fill it in.
