@@ -180,3 +180,11 @@ So, except for the Desert, all biome groups have sub-groups:
     - header icon tooltip: Biome type
     - value: same specification as in plan 55, #6, "display data according to context"
         - for value put only biome-related, i.e. "🌱 Tundra", "🌲 Taiga", etc.
+
+#15 Sektor list no longer needs most of it's content
+- remove:
+    - difficulty
+    - number of buildings
+    - import/export totals
+    - score
+    - claim/abandon
