@@ -46,4 +46,7 @@ It's purpose is to let the player know what is the current state of the building
 - when some functions starved of local resources
     - display warning message "Not enough local resources!"
     - next to message text put eye icon (not button!)
-    - on mouse over eye icon mark affected buildings in red on map
+        - same color as message text
+    - on mouse over eye icon
+        - highlight eye icon background in white (like
+        - mark affected buildings in red on map
