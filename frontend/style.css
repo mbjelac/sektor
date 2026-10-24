@@ -296,10 +296,44 @@ body > main {
 
 #toolbar-function-panel {
     position: fixed;
+    box-sizing: border-box;
+    width: 330px;
+    max-height: 50vh;
+    display: flex;
+    flex-direction: column;
     background: #2a2a2a;
     border: 1px solid #444;
     padding: 8px 12px;
     z-index: 100;
+}
+
+.fp-title {
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.fp-column-headers {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+    color: #888;
+    font-family: sans-serif;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.fp-content {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.fp-content::-webkit-scrollbar {
+    display: none;
 }
 
 #right-panels {
@@ -439,16 +473,33 @@ body > main {
     gap: 12px;
 }
 
+/* The inputs and outputs of the function panel each take half of it, whichever resources they
+   name, so they line up under the panel's Inputs and Outputs headers. */
+#toolbar-function-panel .bf-function {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+}
+
+/* Every input and output table of the function panel has the same columns, so the amounts of all
+   the functions line up under one another, right-aligned on their last digit. */
+#toolbar-function-panel .bf-inputs-table,
+#toolbar-function-panel .bf-outputs-table {
+    grid-template-columns: minmax(0, 1fr) 48px;
+}
+
+#toolbar-function-panel .bf-inputs-amount,
+#toolbar-function-panel .bf-outputs-amount {
+    text-align: right;
+    color: #eee;
+}
+
 #building-panel .bf-function {
     display: grid;
     grid-template-columns: auto auto;
     column-gap: 6px;
     row-gap: 2px;
     align-items: center;
-}
-
-#building-panel .bf-arrow {
-    display: none;
 }
 
 #building-panel .bf-inputs-table,
@@ -652,17 +703,6 @@ body > main {
 
 .bf-inputs-amount {
     text-align: center;
-}
-
-.bf-arrow {
-    color: #ccc;
-    display: flex;
-    align-items: center;
-}
-
-.bf-arrow .icon {
-    width: 16px;
-    height: 16px;
 }
 
 .bf-destroy .icon {

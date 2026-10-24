@@ -5,7 +5,7 @@ import { parseCommands } from "../../../shared/parseCommands";
 import { applyCommands } from "../../../shared/applyCommands";
 import { drawFloor, drawFloorWireframe } from "../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../shared/constants";
-import { BuildingDefinition, BuildingFunction } from "./buildings/parseBuildingDefinitions";
+import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 import { buildingTags } from "./buildings/buildingTags";
 import { isShownByBuildingTag } from "./buildings/buildingTagFilter";
 import * as icons from "../icons";
@@ -44,34 +44,61 @@ export function deselectBuilding(): void {
   selectionCallback?.(null);
 }
 
-let toolbarFnPanel: HTMLElement | null = null;
+let toolbarFunctionPanel: HTMLElement | null = null;
 
 // A building which has not been built yet stands on no location, so an output of its named
 // after a location property is shown by that property's name alone, without an amount.
-function showToolbarFunctionPanel(buildingFunctions: BuildingFunction[]) {
+function showToolbarFunctionPanel(building: BuildingDefinition) {
   hideToolbarFunctionPanel();
 
-  toolbarFnPanel = document.createElement("div");
-  toolbarFnPanel.id = "toolbar-function-panel";
+  toolbarFunctionPanel = document.createElement("div");
+  toolbarFunctionPanel.id = "toolbar-function-panel";
 
-  for (const buildingFunction of buildingFunctions) {
-    toolbarFnPanel.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction }));
+  const buildingTitle = document.createElement("div");
+  buildingTitle.className = "fp-title";
+  buildingTitle.textContent = building.name;
+  toolbarFunctionPanel.appendChild(buildingTitle);
+
+  toolbarFunctionPanel.appendChild(createInputsOutputsHeaders());
+
+  // Only the functions scroll, so the building's name and the column headers stay in sight above
+  // them however far down the player has scrolled.
+  const functionsContent = document.createElement("div");
+  functionsContent.className = "fp-content";
+  for (const buildingFunction of building.buildingFunctions) {
+    functionsContent.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction, columnHeaders: false }));
   }
+  toolbarFunctionPanel.appendChild(functionsContent);
 
-  document.body.appendChild(toolbarFnPanel);
+  document.body.appendChild(toolbarFunctionPanel);
 
   // The panel is always shown beside the top of the construction panel, so it stays in the
   // same place whichever building is selected and however many functions that building has.
   const constructionPanel = document.getElementById("construction-panel")!;
   const constructionPanelRect = constructionPanel.getBoundingClientRect();
-  toolbarFnPanel.style.left = `${constructionPanelRect.right + TOOLBAR_FUNCTION_PANEL_MARGIN}px`;
-  toolbarFnPanel.style.top = `${constructionPanelRect.top}px`;
+  toolbarFunctionPanel.style.left = `${constructionPanelRect.right + TOOLBAR_FUNCTION_PANEL_MARGIN}px`;
+  toolbarFunctionPanel.style.top = `${constructionPanelRect.top}px`;
+}
+
+// Every function of the building consumes and produces in the same two columns, so they are
+// labelled once for all of them, under the building's name.
+function createInputsOutputsHeaders(): HTMLElement {
+  const columnHeaders = document.createElement("div");
+  columnHeaders.className = "fp-column-headers";
+
+  for (const columnName of ["Inputs", "Outputs"]) {
+    const columnHeader = document.createElement("div");
+    columnHeader.textContent = columnName;
+    columnHeaders.appendChild(columnHeader);
+  }
+
+  return columnHeaders;
 }
 
 function hideToolbarFunctionPanel() {
-  if (toolbarFnPanel) {
-    toolbarFnPanel.remove();
-    toolbarFnPanel = null;
+  if (toolbarFunctionPanel) {
+    toolbarFunctionPanel.remove();
+    toolbarFunctionPanel = null;
   }
 }
 
@@ -120,7 +147,7 @@ export function initToolbar(playerLevel: number, isViewMode = false) {
           item.classList.add("selected");
           hideToolbarFunctionPanel();
           if (building.buildingFunctions.length > 0) {
-            showToolbarFunctionPanel(building.buildingFunctions);
+            showToolbarFunctionPanel(building);
           }
         }
         selectionCallback?.(selectedBuilding);

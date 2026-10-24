@@ -734,6 +734,31 @@ test("displays function panel with an output producing a fraction of a location 
   });
 });
 
+test("scrolls functions under the title and headers of a function panel taller than half the screen", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestWorkshop"]').click();
+  const viewport = page.viewportSize()!;
+  await page.setViewportSize({ width: viewport.width, height: 300 });
+  await page.waitForTimeout(100);
+  const panel = page.locator("#toolbar-function-panel");
+  const content = panel.locator(".fp-content");
+  await content.evaluate(element => element.scrollTop = element.scrollHeight);
+  const panelBox = (await panel.boundingBox())!;
+  const titleBox = (await panel.locator(".fp-title").boundingBox())!;
+  const headersBox = (await panel.locator(".fp-column-headers").boundingBox())!;
+  expect({
+    panelAtMostHalfOfScreen: panelBox.height <= 150,
+    contentScrolled: await content.evaluate(element => element.scrollTop > 0),
+    titleInPanel: titleBox.y >= panelBox.y,
+    headersInPanel: headersBox.y >= panelBox.y,
+  }).toEqual({
+    panelAtMostHalfOfScreen: true,
+    contentScrolled: true,
+    titleInPanel: true,
+    headersInPanel: true,
+  });
+});
+
 test("destroys building when trash icon is clicked", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");

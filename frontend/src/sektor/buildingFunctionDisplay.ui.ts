@@ -1,7 +1,7 @@
 
 import { getResourceIcon } from "../resources";
 import { BuildingFunction, BuildingFunctionOutput, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
-import { arrowRightIcon, exclamationTriangleSolidIcon } from "../icons";
+import { exclamationTriangleSolidIcon } from "../icons";
 import { formatNumber } from "../formatNumber";
 import { propertyDefinitions } from "../properties";
 import { isOutputAffectedByPollution } from "./pollution";
@@ -13,13 +13,15 @@ import { isOutputAffectedByPollution } from "./pollution";
 // amounts, which only a location it stands on can decide, and without the pollution of one.
 // A function of a disabled building consumes and produces nothing, so every amount of it is shown
 // as nothing beside what it would be.
-export function createFunctionDisplay({ buildingFunction, outputAmounts, pollution, activation, starved, disabled }: {
+// A function shown among others labelled by the same column headers goes without headers of its own.
+export function createFunctionDisplay({ buildingFunction, outputAmounts, pollution, activation, starved, disabled, columnHeaders = true }: {
   buildingFunction: BuildingFunction,
   outputAmounts?: ResourceThroughput[],
   pollution?: number,
   activation?: { active: boolean, onToggle?: () => void },
   starved?: boolean,
   disabled?: boolean,
+  columnHeaders?: boolean,
 }): HTMLElement {
   const functionBlock = document.createElement("div");
   functionBlock.className = "bf-function-block";
@@ -35,14 +37,9 @@ export function createFunctionDisplay({ buildingFunction, outputAmounts, polluti
   functionDisplay.className = "bf-function";
   functionBlock.appendChild(functionDisplay);
 
-  functionDisplay.appendChild(createInputsTable(buildingFunction.inputs, disabled ?? false));
+  functionDisplay.appendChild(createInputsTable(buildingFunction.inputs, disabled ?? false, columnHeaders));
 
-  const arrowEl = document.createElement("div");
-  arrowEl.className = "bf-arrow";
-  arrowEl.innerHTML = arrowRightIcon;
-  functionDisplay.appendChild(arrowEl);
-
-  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0, disabled ?? false));
+  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0, disabled ?? false, columnHeaders));
 
   return functionBlock;
 }
@@ -103,23 +100,13 @@ function createActivityRow({ active, onToggle }: { active: boolean, onToggle?: (
   return activityRow;
 }
 
-function createInputsTable(inputs: ResourceThroughput[], disabled: boolean): HTMLElement {
+function createInputsTable(inputs: ResourceThroughput[], disabled: boolean, columnHeaders: boolean): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-inputs-table";
 
-  const headerRow = document.createElement("div");
-  headerRow.className = "bf-inputs-row bf-inputs-header";
-
-  const resourceHeader = document.createElement("div");
-  resourceHeader.className = "bf-inputs-cell";
-  resourceHeader.textContent = "Inputs";
-  headerRow.appendChild(resourceHeader);
-
-  const amountHeader = document.createElement("div");
-  amountHeader.className = "bf-inputs-cell";
-  headerRow.appendChild(amountHeader);
-
-  table.appendChild(headerRow);
+  if (columnHeaders) {
+    table.appendChild(createHeaderRow("inputs", "Inputs"));
+  }
 
   for (const input of inputs) {
     const row = document.createElement("div");
@@ -142,23 +129,13 @@ function createInputsTable(inputs: ResourceThroughput[], disabled: boolean): HTM
   return table;
 }
 
-function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number, disabled: boolean): HTMLElement {
+function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number, disabled: boolean, columnHeaders: boolean): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-outputs-table";
 
-  const headerRow = document.createElement("div");
-  headerRow.className = "bf-outputs-row bf-outputs-header";
-
-  const resourceHeader = document.createElement("div");
-  resourceHeader.className = "bf-outputs-cell";
-  resourceHeader.textContent = "Outputs";
-  headerRow.appendChild(resourceHeader);
-
-  const amountHeader = document.createElement("div");
-  amountHeader.className = "bf-outputs-cell";
-  headerRow.appendChild(amountHeader);
-
-  table.appendChild(headerRow);
+  if (columnHeaders) {
+    table.appendChild(createHeaderRow("outputs", "Outputs"));
+  }
 
   for (const output of outputs) {
     const row = document.createElement("div");
@@ -185,6 +162,22 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: Re
   }
 
   return table;
+}
+
+function createHeaderRow(tableKind: "inputs" | "outputs", title: string): HTMLElement {
+  const headerRow = document.createElement("div");
+  headerRow.className = `bf-${tableKind}-row bf-${tableKind}-header`;
+
+  const resourceHeader = document.createElement("div");
+  resourceHeader.className = `bf-${tableKind}-cell`;
+  resourceHeader.textContent = title;
+  headerRow.appendChild(resourceHeader);
+
+  const amountHeader = document.createElement("div");
+  amountHeader.className = `bf-${tableKind}-cell`;
+  headerRow.appendChild(amountHeader);
+
+  return headerRow;
 }
 
 function disabledAmountText(amount: string): string {
