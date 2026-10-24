@@ -1,18 +1,10 @@
 
 import { getResourceIcon } from "../resources";
 import { BuildingFunction, BuildingFunctionOutput, ResourceThroughput } from "./buildings/parseBuildingDefinitions";
-import { exclamationTriangleSolidIcon } from "../icons";
 import { formatNumber } from "../formatNumber";
 import { propertyDefinitions } from "../properties";
 import { isOutputAffectedByPollution } from "./pollution";
 
-// Only a building with several functions can have them turned on and off, so a function shown
-// without an activation gets no activity label. A function which is only being looked at, not
-// played, gets the label without a toggle to change it by.
-// A building which is not on the map yet stands on no location, so it is shown without output
-// amounts, which only a location it stands on can decide, and without the pollution of one.
-// A function of a disabled building consumes and produces nothing, so every amount of it is shown
-// as nothing beside what it would be.
 // Every function of a building consumes and produces in the same two columns, so they are
 // labelled once for all of them, above the first function.
 export function createColumnHeaders(): HTMLElement {
@@ -28,6 +20,14 @@ export function createColumnHeaders(): HTMLElement {
   return columnHeaders;
 }
 
+// Only a building with several functions can have them turned on and off, so a function shown
+// without an activation gets no activity label. A function which is only being looked at, not
+// played, gets the label without a toggle to change it by.
+// A building which is not on the map yet stands on no location, so it is shown without output
+// amounts, which only a location it stands on can decide, and without the pollution of one.
+// A function starved of a local resource, or of a building disabled for want of imports, consumes
+// and produces nothing, so it is grayed out like a function turned off, marked as starved, and its
+// amounts are shown as what it would consume and produce.
 export function createFunctionDisplay({ buildingFunction, outputAmounts, pollution, activation, starved, disabled }: {
   buildingFunction: BuildingFunction,
   outputAmounts?: ResourceThroughput[],
@@ -38,29 +38,30 @@ export function createFunctionDisplay({ buildingFunction, outputAmounts, polluti
 }): HTMLElement {
   const functionBlock = document.createElement("div");
   functionBlock.className = "bf-function-block";
-  if (activation && !activation.active) {
+  const stopped = (starved ?? false) || (disabled ?? false);
+  if ((activation && !activation.active) || stopped) {
     functionBlock.classList.add("bf-function-inactive");
   }
 
-  if (buildingFunction.name || activation || starved) {
-    functionBlock.appendChild(createFunctionHeader(buildingFunction.name, activation, starved));
+  if (buildingFunction.name || activation || stopped) {
+    functionBlock.appendChild(createFunctionHeader(buildingFunction.name, activation, stopped));
   }
 
   const functionDisplay = document.createElement("div");
   functionDisplay.className = "bf-function";
   functionBlock.appendChild(functionDisplay);
 
-  functionDisplay.appendChild(createInputsTable(buildingFunction.inputs, disabled ?? false));
+  functionDisplay.appendChild(createInputsTable(buildingFunction.inputs));
 
-  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0, disabled ?? false));
+  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0));
 
   return functionBlock;
 }
 
 // The name of the function goes on the left of the header row and its activity on the right, so
-// a function is labelled and switched on the same line it starts with. A function going without
-// a local resource is warned about beside its name.
-function createFunctionHeader(name: string | undefined, activation?: { active: boolean, onToggle?: () => void }, starved?: boolean): HTMLElement {
+// a function is labelled and switched on the same line it starts with. A starved function is
+// marked so right after its name.
+function createFunctionHeader(name: string | undefined, activation: { active: boolean, onToggle?: () => void } | undefined, starved: boolean): HTMLElement {
   const functionHeader = document.createElement("div");
   functionHeader.className = "bf-function-header";
 
@@ -74,8 +75,7 @@ function createFunctionHeader(name: string | undefined, activation?: { active: b
   if (starved) {
     const starvationWarning = document.createElement("span");
     starvationWarning.className = "bf-function-warning";
-    starvationWarning.title = "Not enough of a local resource";
-    starvationWarning.innerHTML = exclamationTriangleSolidIcon;
+    starvationWarning.textContent = "⚠️ Starved";
     functionHeader.appendChild(starvationWarning);
   }
 
@@ -113,7 +113,7 @@ function createActivityRow({ active, onToggle }: { active: boolean, onToggle?: (
   return activityRow;
 }
 
-function createInputsTable(inputs: ResourceThroughput[], disabled: boolean): HTMLElement {
+function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-inputs-table";
 
@@ -129,7 +129,7 @@ function createInputsTable(inputs: ResourceThroughput[], disabled: boolean): HTM
 
     const amountCell = document.createElement("div");
     amountCell.className = "bf-inputs-cell bf-inputs-amount";
-    amountCell.textContent = disabled ? disabledAmountText(formatNumber(input.value)) : formatNumber(input.value);
+    amountCell.textContent = formatNumber(input.value);
     row.appendChild(amountCell);
 
     table.appendChild(row);
@@ -138,7 +138,7 @@ function createInputsTable(inputs: ResourceThroughput[], disabled: boolean): HTM
   return table;
 }
 
-function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number, disabled: boolean): HTMLElement {
+function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-outputs-table";
 
@@ -154,9 +154,7 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: Re
 
     const amountCell = document.createElement("div");
     amountCell.className = "bf-outputs-cell bf-outputs-amount";
-    amountCell.textContent = disabled
-      ? disabledAmountText(findOutputAmount(output, outputAmounts))
-      : outputAmountText(output, outputAmounts, pollution);
+    amountCell.textContent = outputAmountText(output, outputAmounts, pollution);
     row.appendChild(amountCell);
 
     table.appendChild(row);
@@ -167,10 +165,6 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: Re
   }
 
   return table;
-}
-
-function disabledAmountText(amount: string): string {
-  return `0 / ${amount}`;
 }
 
 // An output pollution has cut down is shown as what is left of it beside what the building makes

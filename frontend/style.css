@@ -452,7 +452,7 @@ body > main {
 .bf-function-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 4px;
 }
 
@@ -465,14 +465,10 @@ body > main {
 }
 
 .bf-function-warning {
-    display: flex;
-    align-items: center;
     color: #ffdd00;
-}
-
-.bf-function-warning .icon {
-    width: 20px;
-    height: 20px;
+    font-family: sans-serif;
+    font-size: 11px;
+    white-space: nowrap;
 }
 
 .bp-properties-header {
