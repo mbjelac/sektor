@@ -316,7 +316,8 @@ body > main {
     margin-bottom: 6px;
 }
 
-.fp-column-headers {
+.bf-column-headers {
+    align-self: stretch;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
@@ -362,7 +363,8 @@ body > main {
     min-height: 0;
     overflow-y: auto;
     scrollbar-width: none;
-    width: 288px;
+    /* Wide enough for the longest resource name, EducationAnalytical, beside its amount. */
+    width: 400px;
     background: #2a2a2a;
     border: 1px solid #444;
     padding: 12px;
@@ -466,50 +468,16 @@ body > main {
     margin-bottom: 4px;
 }
 
+/* The inputs and outputs of a function each take half of the panel, whichever resources they
+   name, so they line up under the panel's Inputs and Outputs headers. */
 .bf-function {
-    display: flex;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
     align-self: stretch;
     gap: 12px;
 }
 
-/* The inputs and outputs of the function panel each take half of it, whichever resources they
-   name, so they line up under the panel's Inputs and Outputs headers. */
-#toolbar-function-panel .bf-function {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 12px;
-}
-
-/* Every input and output table of the function panel has the same columns, so the amounts of all
-   the functions line up under one another, right-aligned on their last digit. */
-#toolbar-function-panel .bf-inputs-table,
-#toolbar-function-panel .bf-outputs-table {
-    grid-template-columns: minmax(0, 1fr) 48px;
-}
-
-#toolbar-function-panel .bf-inputs-amount,
-#toolbar-function-panel .bf-outputs-amount {
-    text-align: right;
-    color: #eee;
-}
-
-#building-panel .bf-function {
-    display: grid;
-    grid-template-columns: auto auto;
-    column-gap: 6px;
-    row-gap: 2px;
-    align-items: center;
-}
-
-#building-panel .bf-inputs-table,
-#building-panel .bf-outputs-table {
-    display: contents;
-}
-
-#building-panel .bf-outputs-header {
-    margin-top: 6px;
-}
 
 .bf-col {
     display: flex;
@@ -521,9 +489,11 @@ body > main {
     gap: 2px;
 }
 
+/* Every input and output table has the same columns, so the amounts of all the functions line up
+   under one another, right-aligned on their last digit. */
 .bf-outputs-table {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: minmax(0, 1fr) 48px;
     gap: 2px 6px;
     color: #ccc;
     font-family: sans-serif;
@@ -538,17 +508,13 @@ body > main {
     align-items: center;
 }
 
-.bf-outputs-header {
-    color: #999;
-    font-size: 11px;
-}
-
 .bf-outputs-cell {
     white-space: nowrap;
 }
 
 .bf-outputs-amount {
-    text-align: center;
+    text-align: right;
+    color: #eee;
 }
 
 /* The location property an output is produced in the amount of runs under that output, across
@@ -676,9 +642,8 @@ body > main {
 
 .bf-inputs-table {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: minmax(0, 1fr) 48px;
     gap: 2px 6px;
-    flex: 1;
     color: #ccc;
     font-family: sans-serif;
     font-size: 12px;
@@ -692,17 +657,13 @@ body > main {
     align-items: center;
 }
 
-.bf-inputs-header {
-    color: #888;
-    font-size: 11px;
-}
-
 .bf-inputs-cell {
     white-space: nowrap;
 }
 
 .bf-inputs-amount {
-    text-align: center;
+    text-align: right;
+    color: #eee;
 }
 
 .bf-destroy .icon {

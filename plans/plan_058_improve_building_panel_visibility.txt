@@ -20,9 +20,9 @@ It's purpose is to let the player know what is the current state of the building
 - [done] numbers should be almost white
 - [done] numbers should be aligned vertically
 
-#2 Improve building panel
-- similar to function panel
+#2 [done] Improve building panel
+- [done] similar to function panel
     - header only once
     - input & output in same row
     - fixed & equal width of input & output
-- width 350px as there will be more complex values instead of input & output numbers
+- [done] width 400px as there will be more complex values instead of input & output numbers

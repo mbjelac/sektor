@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { buildingDefinitions } from "./buildings/buildings";
-import { createFunctionDisplay } from "./buildingFunctionDisplay.ui";
+import { createColumnHeaders, createFunctionDisplay } from "./buildingFunctionDisplay.ui";
 import { parseCommands } from "../../../shared/parseCommands";
 import { applyCommands } from "../../../shared/applyCommands";
 import { drawFloor, drawFloorWireframe } from "../../../shared/drawFloor";
@@ -59,14 +59,14 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   buildingTitle.textContent = building.name;
   toolbarFunctionPanel.appendChild(buildingTitle);
 
-  toolbarFunctionPanel.appendChild(createInputsOutputsHeaders());
+  toolbarFunctionPanel.appendChild(createColumnHeaders());
 
   // Only the functions scroll, so the building's name and the column headers stay in sight above
   // them however far down the player has scrolled.
   const functionsContent = document.createElement("div");
   functionsContent.className = "fp-content";
   for (const buildingFunction of building.buildingFunctions) {
-    functionsContent.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction, columnHeaders: false }));
+    functionsContent.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction }));
   }
   toolbarFunctionPanel.appendChild(functionsContent);
 
@@ -78,21 +78,6 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   const constructionPanelRect = constructionPanel.getBoundingClientRect();
   toolbarFunctionPanel.style.left = `${constructionPanelRect.right + TOOLBAR_FUNCTION_PANEL_MARGIN}px`;
   toolbarFunctionPanel.style.top = `${constructionPanelRect.top}px`;
-}
-
-// Every function of the building consumes and produces in the same two columns, so they are
-// labelled once for all of them, under the building's name.
-function createInputsOutputsHeaders(): HTMLElement {
-  const columnHeaders = document.createElement("div");
-  columnHeaders.className = "fp-column-headers";
-
-  for (const columnName of ["Inputs", "Outputs"]) {
-    const columnHeader = document.createElement("div");
-    columnHeader.textContent = columnName;
-    columnHeaders.appendChild(columnHeader);
-  }
-
-  return columnHeaders;
 }
 
 function hideToolbarFunctionPanel() {

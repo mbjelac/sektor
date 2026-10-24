@@ -4,7 +4,7 @@ import { applyCommands } from "../../../../shared/applyCommands";
 import { drawFloor, drawFloorWireframe } from "../../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../../shared/constants";
 import { trashIcon } from "../../icons";
-import { createFunctionDisplay } from "../buildingFunctionDisplay.ui";
+import { createColumnHeaders, createFunctionDisplay } from "../buildingFunctionDisplay.ui";
 import { BuildingFunctionState, BuildingLocation } from "../Sektor";
 import { POLLUTION_PROPERTY, isAffectedByPollution, pollutedLocationProperties } from "../pollution";
 import { propertyDefinitions } from "../../properties";
@@ -134,6 +134,10 @@ export function showBuildingPanel({ name, code, buildingFunctions, disabled, out
     disabledWarning.className = "bp-disabled-warning";
     disabledWarning.textContent = "⚠️ Building missing required inputs!";
     panelEl.appendChild(disabledWarning);
+  }
+
+  if (buildingFunctions.length > 0) {
+    panelEl.appendChild(createColumnHeaders());
   }
 
   // Only a building doing several things can be told which of them to do, so a building with a

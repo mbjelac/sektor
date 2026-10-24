@@ -745,7 +745,7 @@ test("scrolls functions under the title and headers of a function panel taller t
   await content.evaluate(element => element.scrollTop = element.scrollHeight);
   const panelBox = (await panel.boundingBox())!;
   const titleBox = (await panel.locator(".fp-title").boundingBox())!;
-  const headersBox = (await panel.locator(".fp-column-headers").boundingBox())!;
+  const headersBox = (await panel.locator(".bf-column-headers").boundingBox())!;
   expect({
     panelAtMostHalfOfScreen: panelBox.height <= 150,
     contentScrolled: await content.evaluate(element => element.scrollTop > 0),
