@@ -686,6 +686,12 @@ body > main {
     align-items: center;
 }
 
+/* A resource of a building on the map stands out while pointed at, as a row of the imports and
+   exports panel does. */
+.bf-resource-row-pointable:hover {
+    background: #444;
+}
+
 .bf-inputs-cell {
     white-space: nowrap;
 }

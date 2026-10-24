@@ -583,6 +583,52 @@ test("keeps the top of the building panel and its Inputs and Outputs headers in 
   await expectScreenshot(page, "building-panel-scrolled", "#building-panel");
 });
 
+// TestCarer makes the Care the TestHabitat beside it needs, and its panel is open once it is placed.
+async function placeHabitatAndCarer(page: Page) {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await placeHub(page);
+  await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 + 60, y: canvasBox!.height / 2 - 20 });
+  await placeBuildingAt(page, "TestCarer", { x: canvasBox!.width / 2 - 60, y: canvasBox!.height / 2 - 20 });
+}
+
+test("highlights a resource of the building panel while it is pointed at", async ({ page }) => {
+  await placeHabitatAndCarer(page);
+
+  await page.locator("#building-panel .bf-outputs-row").first().hover();
+  await page.waitForTimeout(200);
+
+  await expectScreenshot(page, "building-panel-resource-pointed-at", "#building-panel .bf-function");
+});
+
+test("marks the producers and consumers of a resource pointed at in the building panel", async ({ page }) => {
+  await placeHabitatAndCarer(page);
+
+  await page.locator("#building-panel .bf-outputs-row").first().hover();
+  await page.waitForTimeout(200);
+
+  await expectMapScreenshot(page, "building-panel-resource-producers-and-consumers", MIDDLE_OF_MAP);
+});
+
+// The TestCarer makes Care for only two of the three buildings needing it, so the TestClinic farthest
+// from it is starved. The carer is placed last, so its panel is the one open.
+test("marks no building whose function taking in the resource pointed at in the building panel is starved", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await placeHub(page);
+  await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 - 120, y: canvasBox!.height / 2 - 20 });
+  await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2, y: canvasBox!.height / 2 - 20 });
+  await placeBuildingAt(page, "TestClinic", { x: canvasBox!.width / 2 + 120, y: canvasBox!.height / 2 - 20 });
+  await placeBuildingAt(page, "TestCarer", { x: canvasBox!.width / 2 - 240, y: canvasBox!.height / 2 - 20 });
+
+  await page.locator("#building-panel .bf-outputs-row").first().hover();
+  await page.waitForTimeout(200);
+
+  await expectMapScreenshot(page, "building-panel-resource-starved-consumer", { x: 330, y: 200, width: 500, height: 300 });
+});
+
 async function placeWorkshop(page: Page) {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestWorkshop"]').click();

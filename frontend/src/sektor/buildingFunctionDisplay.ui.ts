@@ -4,6 +4,7 @@ import { BuildingFunction, BuildingFunctionOutput, ResourceThroughput } from "./
 import { formatNumber } from "../formatNumber";
 import { propertyDefinitions } from "../properties";
 import { isOutputAffectedByPollution } from "./pollution";
+import { pointAtResourceWhileHovered } from "../resourceHover.ui";
 
 // Every function of a building consumes and produces in the same two columns, so they are
 // labelled once for all of them, above the first function.
@@ -28,13 +29,16 @@ export function createColumnHeaders(): HTMLElement {
 // A function starved of a local resource, or of a building disabled for want of imports, consumes
 // and produces nothing, so it is grayed out like a function turned off, marked as starved, and its
 // amounts are shown as what it would consume and produce.
-export function createFunctionDisplay({ buildingFunction, outputAmounts, pollution, activation, starved, disabled }: {
+// A function of a building on the map can have its resources pointed at, which marks where in the
+// sektor each is consumed and produced, as pointing at it in the imports and exports panel does.
+export function createFunctionDisplay({ buildingFunction, outputAmounts, pollution, activation, starved, disabled, pointAtResources }: {
   buildingFunction: BuildingFunction,
   outputAmounts?: ResourceThroughput[],
   pollution?: number,
   activation?: { active: boolean, onToggle?: () => void },
   starved?: boolean,
   disabled?: boolean,
+  pointAtResources?: boolean,
 }): HTMLElement {
   const functionBlock = document.createElement("div");
   functionBlock.className = "bf-function-block";
@@ -51,9 +55,9 @@ export function createFunctionDisplay({ buildingFunction, outputAmounts, polluti
   functionDisplay.className = "bf-function";
   functionBlock.appendChild(functionDisplay);
 
-  functionDisplay.appendChild(createInputsTable(buildingFunction.inputs));
+  functionDisplay.appendChild(createInputsTable(buildingFunction.inputs, pointAtResources ?? false));
 
-  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0));
+  functionDisplay.appendChild(createOutputColumn(buildingFunction.outputs, outputAmounts, pollution ?? 0, pointAtResources ?? false));
 
   return functionBlock;
 }
@@ -113,13 +117,14 @@ function createActivityRow({ active, onToggle }: { active: boolean, onToggle?: (
   return activityRow;
 }
 
-function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
+function createInputsTable(inputs: ResourceThroughput[], pointAtResources: boolean): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-inputs-table";
 
   for (const input of inputs) {
     const row = document.createElement("div");
     row.className = "bf-inputs-row";
+    if (pointAtResources) makeResourceRowPointable(row, input.name);
 
     const icon = getResourceIcon(input.name);
     const resourceCell = document.createElement("div");
@@ -138,13 +143,14 @@ function createInputsTable(inputs: ResourceThroughput[]): HTMLElement {
   return table;
 }
 
-function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number): HTMLElement {
+function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: ResourceThroughput[] | undefined, pollution: number, pointAtResources: boolean): HTMLElement {
   const table = document.createElement("div");
   table.className = "bf-outputs-table";
 
   for (const output of outputs) {
     const row = document.createElement("div");
     row.className = "bf-outputs-row";
+    if (pointAtResources) makeResourceRowPointable(row, output.name);
 
     const resourceCell = document.createElement("div");
     resourceCell.className = "bf-outputs-cell";
@@ -165,6 +171,11 @@ function createOutputColumn(outputs: BuildingFunctionOutput[], outputAmounts: Re
   }
 
   return table;
+}
+
+function makeResourceRowPointable(row: HTMLElement, resourceName: string) {
+  row.classList.add("bf-resource-row-pointable");
+  pointAtResourceWhileHovered(row, resourceName, true);
 }
 
 // An output pollution has cut down is shown as what is left of it beside what the building makes

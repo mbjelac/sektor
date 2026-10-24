@@ -5,11 +5,11 @@ import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCo
 import {withoutDepthWrites} from "../../../shared/applyCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
 import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
-import { BuildingLocation, Location, Sektor, SektorState } from "./Sektor";
+import { BuildingLocation, BuildingResourceAmounts, Location, Sektor, SektorState } from "./Sektor";
 import { buildingDefinitions, everyBuildingDefinition } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
 import { updateSektorStatePanel } from "./sektorStatePanel.ui";
-import { onResourceHover } from "../resourceHover.ui";
+import { onResourceHover, ResourcePointing } from "../resourceHover.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
 import { updateMessages } from "../messages.ui";
@@ -396,6 +396,7 @@ function updateSektorState() {
   // with this sektor as it now stands every time anything here changes.
   const planetImportsAndExports = getPlanetImportsAndExportsWhileBuilding(sektorId, sektorState);
   updateSektorStatePanel(sektorState, planetImportsAndExports);
+  pointAtResource(hoveredResource);
   const buildingsWithOutputDecreasedByPollution = sektor.findBuildingsWithOutputDecreasedByPollution();
   updateMessages(
     sektorState,
@@ -499,7 +500,21 @@ let selectedBuildingLocation: BuildingLocation | null = null;
 const IMPORT_HIGHLIGHT_COLOR: [number, number, number] = [255, 0, 0];
 const EXPORT_HIGHLIGHT_COLOR: [number, number, number] = [0, 192, 0];
 
-let hoveredResource: string | null = null;
+let hoveredResource: ResourcePointing | null = null;
+// What every building takes in and gives out of the resource pointed at only changes with the
+// sektor, so it is worked out when the resource is pointed at and whenever the sektor changes,
+// rather than every frame.
+let hoveredResourceAmounts: BuildingResourceAmounts[] = [];
+
+// A resource pointed at in the building panel leaves out every function not running, as a starved
+// function takes nothing in and gives nothing out. Pointed at anywhere else, a starved function is
+// still marked, as the player is told there of what it is going without.
+function pointAtResource(resourcePointing: ResourcePointing | null) {
+  hoveredResource = resourcePointing;
+  hoveredResourceAmounts = resourcePointing
+    ? sektor.getBuildingResourceAmounts(resourcePointing.resourceName, resourcePointing.fromBuildingPanel)
+    : [];
+}
 function openBuildingPanel(placed: { type: string; location: BuildingLocation; code: string }) {
   const buildingState = sektor.getBuildingState(placed.location);
   if (!buildingState) return;
@@ -1390,18 +1405,20 @@ const sektorUi = (p: p5) => {
     }
 
     // A building doing both with the same resource is marked as taking it in: what a sektor is short
-    // of is the more pressing of the two to find.
+    // of is the more pressing of the two to find. A resource pointed at in the building panel leaves
+    // the selected building with its own marking, and without an amount, as the panel already tells
+    // what it takes in and gives out.
     const resourceAmountLabels: { location: BuildingLocation; text: string }[] = [];
     if (hoveredResource) {
-      for (const building of placedBuildings) {
-        const inputAmount = sektor.getBuildingInputAmount(building.location, hoveredResource);
-        const outputAmount = sektor.getBuildingOutputAmount(building.location, hoveredResource);
+      const resourceIcon = getResourceIcon(hoveredResource.resourceName) ?? "";
+      for (const { location, inputAmount, outputAmount } of hoveredResourceAmounts) {
+        if (hoveredResource.fromBuildingPanel && isSelectedBuildingLocation(location)) continue;
         if (inputAmount > 0) {
-          drawLocationHighlight(p, building.location, IMPORT_HIGHLIGHT_COLOR);
-          resourceAmountLabels.push({ location: building.location, text: `${getResourceIcon(hoveredResource) ?? ""} -${formatNumber(inputAmount)}` });
+          drawLocationHighlight(p, location, IMPORT_HIGHLIGHT_COLOR);
+          resourceAmountLabels.push({ location, text: `${resourceIcon} -${formatNumber(inputAmount)}` });
         } else if (outputAmount > 0) {
-          drawLocationHighlight(p, building.location, EXPORT_HIGHLIGHT_COLOR);
-          resourceAmountLabels.push({ location: building.location, text: `${getResourceIcon(hoveredResource) ?? ""} +${formatNumber(outputAmount)}` });
+          drawLocationHighlight(p, location, EXPORT_HIGHLIGHT_COLOR);
+          resourceAmountLabels.push({ location, text: `${resourceIcon} +${formatNumber(outputAmount)}` });
         }
       }
     }
@@ -1435,6 +1452,12 @@ const sektorUi = (p: p5) => {
   };
 };
 
+function isSelectedBuildingLocation(location: BuildingLocation): boolean {
+  return selectedBuildingLocation !== null
+    && location.x === selectedBuildingLocation.x
+    && location.y === selectedBuildingLocation.y;
+}
+
 // A forest is not among the buildings of the toolbar, and is drawn in the shape its square is
 // counted down to; every other building is drawn the same wherever it stands.
 function placedBuildingCode(type: string, location: BuildingLocation): string | null {
@@ -1449,7 +1472,7 @@ showSektorOwner();
 showToolbarToOwner();
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);
-onResourceHover(resourceName => { hoveredResource = resourceName; });
+onResourceHover(pointAtResource);
 if (!isTestMode) {
   loadSavedState();
 }

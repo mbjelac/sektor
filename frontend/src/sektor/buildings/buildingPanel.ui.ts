@@ -154,6 +154,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, disabled, out
         : undefined,
       starved: buildingFunctionState.starved,
       disabled,
+      pointAtResources: true,
     });
     functionBlock.dataset.functionIndex = String(functionIndex);
     panelEl!.appendChild(functionBlock);

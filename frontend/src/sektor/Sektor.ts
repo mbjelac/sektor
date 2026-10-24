@@ -79,6 +79,13 @@ export interface BuildingState {
   disabled: boolean;
 }
 
+// How much of one resource a building takes in and gives out.
+export interface BuildingResourceAmounts {
+  location: BuildingLocation;
+  inputAmount: number;
+  outputAmount: number;
+}
+
 export interface DestroyBuildingResult {
   success: boolean;
   error?: string;
@@ -407,16 +414,21 @@ export class Sektor {
     return Array.from(amountsByResource.entries()).map(([name, value]) => ({ name, value: roundToOneDecimal(value) }));
   }
 
-  getBuildingInputAmount(location: BuildingLocation, resourceType: string): number {
-    const building = this.findBuildingAt(location);
-    if (!building) return 0;
-    return this.findThroughputValue(this.getInputs(building, []), resourceType);
+  // What every building takes in and gives out of the resource, by the functions turned on. Told
+  // what runs only, a function starved of a local resource, or of a building disabled for want of
+  // imports, takes in and gives out nothing, just as a function turned off does.
+  getBuildingResourceAmounts(resourceType: string, runningOnly: boolean): BuildingResourceAmounts[] {
+    const stoppedFunctions = runningOnly ? this.findStoppedFunctions() : [];
+    return this.buildings.map(building => ({
+      location: building.location,
+      inputAmount: this.findThroughputValue(this.getInputs(building, stoppedFunctions), resourceType),
+      outputAmount: this.findThroughputValue(this.getOutputs(building, stoppedFunctions), resourceType),
+    }));
   }
 
-  getBuildingOutputAmount(location: BuildingLocation, resourceType: string): number {
-    const building = this.findBuildingAt(location);
-    if (!building) return 0;
-    return this.findThroughputValue(this.getOutputs(building, []), resourceType);
+  private findStoppedFunctions(): BuildingFunctionLocation[] {
+    const disabledFunctions = this.findFunctionsOfBuildings(this.findDisabledBuildings());
+    return [...disabledFunctions, ...this.findStarvedFunctions(disabledFunctions)];
   }
 
   // Every building whose output pollution has decreased, so that all of them can be marked.
