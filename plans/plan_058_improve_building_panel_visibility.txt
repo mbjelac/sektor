@@ -45,10 +45,15 @@ It's purpose is to let the player know what is the current state of the building
         - after function name (if any) with small spacing between
 
 #5 Player can see consumers & producers of a resource from the building panel
-- when a player moves mouse over *building panel* resource either input or output
+- [done] when a player moves mouse over *building panel* resource either input or output
     - highlight that resource table row (name, icon, value) with dark gray
         - same highlight as in imports exports panel
     - highlight producers & consumers of that resource on map
         - producers green
         - consumers red
         - all have labels with resource icon & + or - value
+    - do NOT highlight currently selected building
+        - the building's yellow selector must stay visible
+        - no need to show input or output value as the building panel already displays it
+    - do NOT highlight buildings for input or output if that function is starved in that building
+        - inactive functions already work like this
