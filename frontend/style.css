@@ -6,6 +6,7 @@
     /* What a sektor moves and what the planet moves are shown at the same width, one at the side of
        the map and the other in the middle of it. */
     --import-export-panel-width: 300px;
+    --building-panel-top-row-height: 36px;
 }
 
 * {
@@ -320,7 +321,6 @@ body > main {
     align-self: stretch;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 12px;
     color: #888;
     font-family: sans-serif;
     font-size: 11px;
@@ -367,7 +367,9 @@ body > main {
     width: 400px;
     background: #2a2a2a;
     border: 1px solid #444;
-    padding: 12px;
+    /* The top row carries the panel's top padding itself, so that it covers whatever is scrolled
+       under it right up to the panel's edge. */
+    padding: 0 12px 12px;
     z-index: 100;
     display: flex;
     flex-direction: column;
@@ -375,11 +377,31 @@ body > main {
     gap: 8px;
 }
 
+/* The name is centered on the panel whatever the location and the destroy button beside it take. */
 .bf-top-row {
-    display: flex;
-    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    flex-shrink: 0;
+    height: var(--building-panel-top-row-height);
+    padding-top: 12px;
+    background: #2a2a2a;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
+    gap: 8px;
     align-self: stretch;
+}
+
+/* The headers are covered down to the functions under them, so nothing scrolled under them shows
+   through. */
+#building-panel .bf-column-headers {
+    position: sticky;
+    top: var(--building-panel-top-row-height);
+    z-index: 1;
+    margin-bottom: 0;
+    padding-bottom: 4px;
+    background: #2a2a2a;
 }
 
 .bf-location {
@@ -401,13 +423,7 @@ body > main {
     padding: 0 2px;
     display: flex;
     align-items: center;
-}
-
-.bf-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
+    justify-self: end;
 }
 
 .bf-preview canvas {
@@ -415,9 +431,10 @@ body > main {
 }
 
 .bf-name {
-    color: #ccc;
+    color: #fff;
     font-family: sans-serif;
     font-size: 13px;
+    font-weight: bold;
     text-align: center;
 }
 
@@ -473,9 +490,23 @@ body > main {
 .bf-function {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     align-self: stretch;
-    gap: 12px;
+}
+
+/* The inputs are set off from the outputs by a line in the color of the panel's border. */
+.bf-column-headers > :first-child,
+.bf-function > :first-child {
+    padding-right: 6px;
+}
+
+.bf-column-headers > :last-child {
+    padding-left: 7px;
+}
+
+.bf-function > :last-child {
+    padding-left: 6px;
+    border-left: 1px solid #444;
 }
 
 
@@ -493,6 +524,7 @@ body > main {
    under one another, right-aligned on their last digit. */
 .bf-outputs-table {
     display: grid;
+    align-content: start;
     grid-template-columns: minmax(0, 1fr) 48px;
     gap: 2px 6px;
     color: #ccc;
@@ -642,6 +674,7 @@ body > main {
 
 .bf-inputs-table {
     display: grid;
+    align-content: start;
     grid-template-columns: minmax(0, 1fr) 48px;
     gap: 2px 6px;
     color: #ccc;

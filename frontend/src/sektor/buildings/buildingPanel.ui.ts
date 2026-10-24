@@ -94,13 +94,21 @@ export function showBuildingPanel({ name, code, buildingFunctions, disabled, out
   panelEl = document.createElement("div");
   panelEl.id = "building-panel";
 
+  // The building's name, where it stands and the button which takes it down make up the top of the
+  // panel, which stays in sight with the Inputs and Outputs headers however far the panel is
+  // scrolled.
   const topRow = document.createElement("div");
   topRow.className = "bf-top-row";
 
   const locationEl = document.createElement("div");
   locationEl.className = "bf-location";
-  locationEl.textContent = `Location: ${location.x} , ${location.y}`;
+  locationEl.textContent = `Loc: ${location.x}-${location.y}`;
   topRow.appendChild(locationEl);
+
+  const nameEl = document.createElement("div");
+  nameEl.className = "bf-name";
+  nameEl.textContent = name;
+  topRow.appendChild(nameEl);
 
   if (onDestroy) {
     const destroyButton = document.createElement("button");
@@ -112,20 +120,9 @@ export function showBuildingPanel({ name, code, buildingFunctions, disabled, out
 
   panelEl.appendChild(topRow);
 
-  // Building preview canvas + name
-  const header = document.createElement("div");
-  header.className = "bf-header";
-
   previewContainer = document.createElement("div");
   previewContainer.className = "bf-preview";
-  header.appendChild(previewContainer);
-
-  const nameEl = document.createElement("div");
-  nameEl.className = "bf-name";
-  nameEl.textContent = name;
-  header.appendChild(nameEl);
-
-  panelEl.appendChild(header);
+  panelEl.appendChild(previewContainer);
 
   // A disabled building is warned of right under its name, since nothing it is shown to consume or
   // produce below holds while it stands idle.

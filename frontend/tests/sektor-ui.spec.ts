@@ -543,6 +543,46 @@ test("displays building panel with several building functions", async ({ page })
   await expectScreenshot(page, "building-panel-several-functions", "#building-panel");
 });
 
+test("keeps the top of the building panel and its Inputs and Outputs headers in sight when scrolled", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.evaluate(() => {
+    (window as any).showBuildingPanel({
+      name: "Workshop",
+      code: "box s(30,30,30) t(0,0,0) c(#888888)",
+      buildingFunctions: [
+        {
+          buildingFunction: {
+            name: "Tool making",
+            inputs: [{ name: "Ore", value: 4 }],
+            outputs: [{ name: "Tools", value: 2 }],
+          },
+          outputAmounts: [{ name: "Tools", value: 2 }],
+          active: true,
+        },
+        {
+          buildingFunction: {
+            inputs: [{ name: "Wood", value: 3 }],
+            outputs: [{ name: "Tools", value: 3 }],
+          },
+          outputAmounts: [{ name: "Tools", value: 3 }],
+          active: false,
+        },
+      ],
+      locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
+      floorColor: [200, 200, 100],
+      location: { x: 3, y: 7 },
+      onDestroy: () => {},
+      onToggleFunction: () => {},
+    });
+  });
+  const viewport = page.viewportSize()!;
+  await page.setViewportSize({ width: viewport.width, height: 300 });
+  await page.locator("#building-panel").evaluate(element => element.scrollTop = element.scrollHeight);
+
+  await expectScreenshot(page, "building-panel-scrolled", "#building-panel");
+});
+
 async function placeWorkshop(page: Page) {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestWorkshop"]').click();

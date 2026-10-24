@@ -27,8 +27,8 @@ It's purpose is to let the player know what is the current state of the building
     - fixed & equal width of input & output
 - [done] width 400px as there will be more complex values instead of input & output numbers
 
-#3 Improve building panel header
-- building name should be in the top of the panel
+#3 [done] Improve building panel header
+- [done] building name should be in the top of the panel
     - aligned center
     - left-aligned location abbreviated to: "Loc: X-Y"
     - delete icon right-aligned
