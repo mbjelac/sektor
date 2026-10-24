@@ -36,17 +36,17 @@ It's purpose is to let the player know what is the current state of the building
     - this whole top section including Inputs & Outputs headers should float when scrolling
 
 #4 Player can clearly see that a function is starved
-- when a function is starved either by missing local resource or missing imports due to transport hub shortage
+- [done] when a function is starved either by missing local resource or missing imports due to transport hub shortage
     - display it's input & output values as specified
         - example: change current "0 / 4" to just "4"
     - display input & output values grayed out, like for turned off functions
     - instead of warning emoji ⚠️
         - display "⚠️ Starved"
         - after function name (if any) with small spacing between
-- when some functions starved of local resources
+- [done] when some functions starved of local resources
     - display warning message "Not enough local resources!"
     - next to message text put eye icon (not button!)
         - same color as message text
     - on mouse over eye icon
-        - highlight eye icon background in white (like
+        - highlight eye icon background in white (like resource mentions in other messages)
         - mark affected buildings in red on map
