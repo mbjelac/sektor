@@ -3,25 +3,21 @@ import { parseBuildingDefinitions } from "./parseBuildingDefinitions";
 
 describe("parseBuildingDefinitions", () => {
   it("returns empty array for empty input", () => {
-    expect(parseBuildingDefinitions([])).toEqual([]);
+    expect(parseBuildingDefinitions([], {})).toEqual([]);
   });
 
   it("returns empty array when there is no heading", () => {
-    expect(parseBuildingDefinitions(["some text", "more text"])).toEqual([]);
+    expect(parseBuildingDefinitions(["some text", "more text"], {})).toEqual([]);
   });
 
-  it("returns empty array when heading has no code block", () => {
-    expect(parseBuildingDefinitions(["# MyBuilding", "some text"])).toEqual([]);
+  it("leaves out a building without a rendering file", () => {
+    expect(parseBuildingDefinitions(["# MyBuilding", "some text"], {})).toEqual([]);
   });
 
   it("parses a building with code only and no function", () => {
     const result = parseBuildingDefinitions([
       "# MyBuilding",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
-    ]);
+    ], { "MyBuilding/0.sgl": "box s(10,10,10)" });
 
     expect(result).toEqual([{
       name: "MyBuilding",
@@ -34,12 +30,7 @@ describe("parseBuildingDefinitions", () => {
   it("parses rendering code with multiple lines", () => {
     const result = parseBuildingDefinitions([
       "# MyBuilding",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "cyl s(5,5,5)",
-      "```",
-    ]);
+    ], { "MyBuilding/0.sgl": "box s(10,10,10)\ncyl s(5,5,5)" });
 
     expect(result[0].renderingCode).toEqual("box s(10,10,10)\ncyl s(5,5,5)");
   });
@@ -47,16 +38,12 @@ describe("parseBuildingDefinitions", () => {
   it("parses building function with inputs and outputs", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Iron 3",
       "Coal 2",
       "->",
       "Steel 5",
-    ]);
+    ], { "Factory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [
@@ -72,16 +59,12 @@ describe("parseBuildingDefinitions", () => {
   it("parses building function name", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Name: Steel making",
       "Iron 3",
       "->",
       "Steel 5",
-    ]);
+    ], { "Factory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0]).toEqual({
       name: "Steel making",
@@ -97,10 +80,6 @@ describe("parseBuildingDefinitions", () => {
   it("parses each building function name separately", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Name: Steel making",
       "Iron 3",
@@ -110,7 +89,7 @@ describe("parseBuildingDefinitions", () => {
       "Coal 2",
       "->",
       "Heat 1",
-    ]);
+    ], { "Factory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions).toEqual([
       {
@@ -128,13 +107,9 @@ describe("parseBuildingDefinitions", () => {
   it("parses building function with inputs only", () => {
     const result = parseBuildingDefinitions([
       "# Consumer",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Water 5",
-    ]);
+    ], { "Consumer/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [{ name: "Water", value: 5 }],
@@ -145,14 +120,10 @@ describe("parseBuildingDefinitions", () => {
   it("parses building function with outputs only", () => {
     const result = parseBuildingDefinitions([
       "# Source",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "->",
       "Energy 10",
-    ]);
+    ], { "Source/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [],
@@ -160,17 +131,11 @@ describe("parseBuildingDefinitions", () => {
     });
   });
 
-  it("accepts blank lines in rendering code section", () => {
+  it("keeps blank lines of the rendering file", () => {
     const result = parseBuildingDefinitions([
       "# MyBuilding",
       "",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "",
-      "cyl s(5,5,5)",
-      "```",
-    ]);
+    ], { "MyBuilding/0.sgl": "box s(10,10,10)\n\ncyl s(5,5,5)" });
 
     expect(result[0].renderingCode).toEqual("box s(10,10,10)\n\ncyl s(5,5,5)");
   });
@@ -178,10 +143,6 @@ describe("parseBuildingDefinitions", () => {
   it("ignores blank lines in function section", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "",
       "Iron 3",
@@ -190,7 +151,7 @@ describe("parseBuildingDefinitions", () => {
       "",
       "Steel 5",
       "",
-    ]);
+    ], { "Factory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [{ name: "Iron", value: 3 }],
@@ -201,16 +162,12 @@ describe("parseBuildingDefinitions", () => {
   it("ignores lines that don't match resource format", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "some random text",
       "Iron 3",
       "->",
       "Steel 5",
-    ]);
+    ], { "Factory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0]).toEqual({
       inputs: [{ name: "Iron", value: 3 }],
@@ -221,17 +178,13 @@ describe("parseBuildingDefinitions", () => {
   it("parses showFloor=false property", () => {
     const result = parseBuildingDefinitions([
       "# Mine",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Iron 3",
       "->",
       "Ore 5",
       "## Properties",
       "showFloor=false",
-    ]);
+    ], { "Mine/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].properties).toEqual({ showFloor: false });
   });
@@ -239,13 +192,9 @@ describe("parseBuildingDefinitions", () => {
   it("parses minLevel property", () => {
     const result = parseBuildingDefinitions([
       "# Mine",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Properties",
       "minLevel=4",
-    ]);
+    ], { "Mine/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].properties).toEqual({ minLevel: 4 });
   });
@@ -253,16 +202,12 @@ describe("parseBuildingDefinitions", () => {
   it("parses an output marked as affected by pollution", () => {
     const result = parseBuildingDefinitions([
       "# Purifier",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Energy 2",
       "->",
       "Water 5 pollution",
       "Steam 1",
-    ]);
+    ], { "Purifier/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0].outputs).toEqual([
       { name: "Water", value: 5, affectedByPollution: true },
@@ -273,13 +218,9 @@ describe("parseBuildingDefinitions", () => {
   it("parses pollutionArea property", () => {
     const result = parseBuildingDefinitions([
       "# Smokestack",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Properties",
       "pollutionArea=3",
-    ]);
+    ], { "Smokestack/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].properties).toEqual({ pollutionArea: 3 });
   });
@@ -287,13 +228,9 @@ describe("parseBuildingDefinitions", () => {
   it("parses randomizedDelayAnimationStart property as a number of seconds", () => {
     const result = ["3", "1.5"].map(randomizedDelayAnimationStart => parseBuildingDefinitions([
       "# Windmill",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Properties",
       `randomizedDelayAnimationStart=${randomizedDelayAnimationStart}`,
-    ])[0].properties);
+    ], { "Windmill/0.sgl": "box s(10,10,10)" })[0].properties);
 
     expect(result).toEqual([{ randomizedDelayAnimationStart: 3 }, { randomizedDelayAnimationStart: 1.5 }]);
   });
@@ -301,13 +238,9 @@ describe("parseBuildingDefinitions", () => {
   it("ignores a randomizedDelayAnimationStart property which is not a number", () => {
     const result = parseBuildingDefinitions([
       "# Windmill",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Properties",
       "randomizedDelayAnimationStart=soon",
-    ]);
+    ], { "Windmill/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].properties).toEqual({});
   });
@@ -316,13 +249,9 @@ describe("parseBuildingDefinitions", () => {
   it("ignores a pollutionArea property outside of 1 to 4", () => {
     const result = ["0", "5"].map(pollutionArea => parseBuildingDefinitions([
       "# Smokestack",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Properties",
       `pollutionArea=${pollutionArea}`,
-    ])[0].properties);
+    ], { "Smokestack/0.sgl": "box s(10,10,10)" })[0].properties);
 
     expect(result).toEqual([{}, {}]);
   });
@@ -330,16 +259,12 @@ describe("parseBuildingDefinitions", () => {
   it("parses Tags section as a list of tags, one per line", () => {
     const result = parseBuildingDefinitions([
       "# Mine",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Tags",
       "",
       "fruit",
       "  metal  ",
       "",
-    ]);
+    ], { "Mine/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].properties).toEqual({ tags: ["fruit", "metal"] });
   });
@@ -347,11 +272,7 @@ describe("parseBuildingDefinitions", () => {
   it("returns empty properties when no Properties section exists", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
-    ]);
+    ], { "Factory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].properties).toEqual({});
   });
@@ -359,13 +280,9 @@ describe("parseBuildingDefinitions", () => {
   it("returns empty properties when Properties section has no recognized properties", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Properties",
       "unknownProp=true",
-    ]);
+    ], { "Factory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].properties).toEqual({});
   });
@@ -373,15 +290,11 @@ describe("parseBuildingDefinitions", () => {
   it("ignores blank lines in properties section", () => {
     const result = parseBuildingDefinitions([
       "# Mine",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Properties",
       "",
       "showFloor=false",
       "",
-    ]);
+    ], { "Mine/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].properties).toEqual({ showFloor: false });
   });
@@ -389,24 +302,16 @@ describe("parseBuildingDefinitions", () => {
   it("parses multiple buildings", () => {
     const result = parseBuildingDefinitions([
       "# BuildingA",
-      "## Render",
-      "```",
-      "box s(1,1,1)",
-      "```",
       "## Function",
       "Water 2",
       "->",
       "Steam 1",
       "# BuildingB",
-      "## Render",
-      "```",
-      "cyl s(5,5,5)",
-      "```",
       "## Function",
       "Iron 4",
       "->",
       "Steel 3",
-    ]);
+    ], { "BuildingA/0.sgl": "box s(1,1,1)", "BuildingB/0.sgl": "cyl s(5,5,5)" });
 
     expect(result).toEqual([
       {
@@ -433,22 +338,34 @@ describe("parseBuildingDefinitions", () => {
   it("trims whitespace from building name", () => {
     const result = parseBuildingDefinitions([
       "#   SpacedName  ",
-      "## Render",
-      "```",
-      "box s(1,1,1)",
-      "```",
-    ]);
+    ], { "SpacedName/0.sgl": "box s(1,1,1)" });
 
     expect(result[0].name).toEqual("SpacedName");
   });
 
-  it("ignores code block outside of Render section", () => {
+  it("leaves out a building whose code is written in its definition instead of its rendering file", () => {
     const result = parseBuildingDefinitions([
       "# MyBuilding",
       "```",
       "box s(10,10,10)",
       "```",
-    ]);
+    ], {});
+
+    expect(result).toEqual([]);
+  });
+
+  it("trims blank lines around the code of the rendering file", () => {
+    const result = parseBuildingDefinitions([
+      "# MyBuilding",
+    ], { "MyBuilding/0.sgl": "\nbox s(10,10,10)\n" });
+
+    expect(result[0].renderingCode).toEqual("box s(10,10,10)");
+  });
+
+  it("leaves out a building whose folder holds only other rendering files", () => {
+    const result = parseBuildingDefinitions([
+      "# MyBuilding",
+    ], { "MyBuilding/1.sgl": "box s(10,10,10)", "OtherBuilding/0.sgl": "cyl s(5,5,5)" });
 
     expect(result).toEqual([]);
   });
@@ -456,16 +373,12 @@ describe("parseBuildingDefinitions", () => {
   it("parses an output written with a location property name as a reference to that property", () => {
     const result = parseBuildingDefinitions([
       "# Farm",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Water 3",
       "->",
       "Food soil",
       "Grain groundwater",
-    ]);
+    ], { "Farm/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0].outputs).toEqual([
       { name: "Food", locationProperty: "soil" },
@@ -476,15 +389,11 @@ describe("parseBuildingDefinitions", () => {
   it("parses an output written with a fraction of a location property as that property and divisor", () => {
     const result = parseBuildingDefinitions([
       "# Orchard",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Water 1",
       "->",
       "Food soil/3",
-    ]);
+    ], { "Orchard/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0].outputs).toEqual([
       { name: "Food", locationProperty: "soil", locationPropertyDivisor: 3 },
@@ -494,15 +403,11 @@ describe("parseBuildingDefinitions", () => {
   it("parses an output written with an amount as that amount", () => {
     const result = parseBuildingDefinitions([
       "# Factory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Iron 3",
       "->",
       "Steel 5",
-    ]);
+    ], { "Factory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0].outputs).toEqual([
       { name: "Steel", value: 5 },
@@ -512,16 +417,12 @@ describe("parseBuildingDefinitions", () => {
   it("parses outputs with amounts alongside outputs with location property names", () => {
     const result = parseBuildingDefinitions([
       "# MixedFactory",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Energy 2",
       "->",
       "Heat 3",
       "Crop soil",
-    ]);
+    ], { "MixedFactory/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0].outputs).toEqual([
       { name: "Heat", value: 3 },
@@ -532,10 +433,6 @@ describe("parseBuildingDefinitions", () => {
   it("gives each building function the location properties of its own outputs", () => {
     const result = parseBuildingDefinitions([
       "# Workshop",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Ore 4",
       "->",
@@ -544,7 +441,7 @@ describe("parseBuildingDefinitions", () => {
       "Wood 3",
       "->",
       "Tools wind",
-    ]);
+    ], { "Workshop/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions.map(buildingFunction => buildingFunction.outputs)).toEqual([
       [{ name: "Tools", locationProperty: "ore" }],
@@ -555,10 +452,6 @@ describe("parseBuildingDefinitions", () => {
   it("marks a function with the Active always property as always active", () => {
     const result = parseBuildingDefinitions([
       "# Reactor",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Water 2",
       "->",
@@ -568,7 +461,7 @@ describe("parseBuildingDefinitions", () => {
       "Energy 1",
       "->",
       "Water 1",
-    ]);
+    ], { "Reactor/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions.map(buildingFunction => buildingFunction.alwaysActive))
       .toEqual([undefined, true]);
@@ -577,16 +470,12 @@ describe("parseBuildingDefinitions", () => {
   it("leaves a function with another Active value switchable", () => {
     const result = parseBuildingDefinitions([
       "# Reactor",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Active: sometimes",
       "Water 2",
       "->",
       "Energy 5",
-    ]);
+    ], { "Reactor/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions[0].alwaysActive).toEqual(undefined);
   });
@@ -594,10 +483,6 @@ describe("parseBuildingDefinitions", () => {
   it("parses a building with two function sections", () => {
     const result = parseBuildingDefinitions([
       "# Workshop",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "## Function",
       "Ore 4",
       "->",
@@ -606,7 +491,7 @@ describe("parseBuildingDefinitions", () => {
       "Wood 3",
       "->",
       "Tools 3",
-    ]);
+    ], { "Workshop/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions).toEqual([
       {
@@ -623,34 +508,22 @@ describe("parseBuildingDefinitions", () => {
   it("ignores resource lines outside of Function section", () => {
     const result = parseBuildingDefinitions([
       "# MyBuilding",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
       "Iron 3",
       "->",
       "Steel 5",
-    ]);
+    ], { "MyBuilding/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].buildingFunctions).toEqual([]);
   });
 
-  it("parses construction render with its duration", () => {
+  it("parses construction render from its rendering file with the duration of its definition", () => {
     const result = parseBuildingDefinitions([
       "# Tower",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
-      "## Construction Render",
+      "## Construction",
       "",
       "duration=1500",
       "",
-      "```",
-      "box s(2,2,2)",
-      "cyl s(1,1,1)",
-      "```",
-    ]);
+    ], { "Tower/0.sgl": "box s(10,10,10)", "Tower/0.construction.sgl": "box s(2,2,2)\ncyl s(1,1,1)\n" });
 
     expect(result).toEqual([{
       name: "Tower",
@@ -664,15 +537,17 @@ describe("parseBuildingDefinitions", () => {
   it("ignores construction render without duration", () => {
     const result = parseBuildingDefinitions([
       "# Tower",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
-      "## Construction Render",
-      "```",
-      "box s(2,2,2)",
-      "```",
-    ]);
+    ], { "Tower/0.sgl": "box s(10,10,10)", "Tower/0.construction.sgl": "box s(2,2,2)" });
+
+    expect(result[0].constructionRender).toEqual(undefined);
+  });
+
+  it("ignores construction duration without a construction rendering file", () => {
+    const result = parseBuildingDefinitions([
+      "# Tower",
+      "## Construction",
+      "duration=1000",
+    ], { "Tower/0.sgl": "box s(10,10,10)" });
 
     expect(result[0].constructionRender).toEqual(undefined);
   });
@@ -680,21 +555,10 @@ describe("parseBuildingDefinitions", () => {
   it("keeps construction render to the building it belongs to", () => {
     const result = parseBuildingDefinitions([
       "# Tower",
-      "## Render",
-      "```",
-      "box s(10,10,10)",
-      "```",
-      "## Construction Render",
+      "## Construction",
       "duration=1000",
-      "```",
-      "box s(2,2,2)",
-      "```",
       "# Shed",
-      "## Render",
-      "```",
-      "box s(5,5,5)",
-      "```",
-    ]);
+    ], { "Tower/0.sgl": "box s(10,10,10)", "Tower/0.construction.sgl": "box s(2,2,2)", "Shed/0.sgl": "box s(5,5,5)" });
 
     expect(result.map(building => building.constructionRender)).toEqual([
       { renderingCode: "box s(2,2,2)", duration: 1000 },

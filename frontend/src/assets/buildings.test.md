@@ -1,19 +1,6 @@
 # Destroy
 
-## Render
-
-```
-pri4 s(30,20,12) t(0,0,3.4) c(#f0a41c)
-pri4 s(6,20,14) t(-1.95,0,3.5) r(0,0,90) c(#c70000)
-```
-
 # TestFactory
-
-## Render
-
-```
-pri4 s(30,30,30) t(0,0,-5.25) c(#4488cc)
-```
 
 ## Function
 
@@ -28,12 +15,6 @@ food
 water
 
 # TestMine
-
-## Render
-
-```
-cyl s(20,20,20) t(0,0,-6) c(#cc8844)
-```
 
 ## Function
 
@@ -52,13 +33,6 @@ industry
 
 # TestHouse
 
-## Render
-
-```
-pri4 s(20,20,25) t(0,0,-5.625) c(#eedd88)
-pri4 s(15,15,15) t(0,-8.625,-5) r(90,45,90) c(#eedd88)
-```
-
 ## Function
 
 Name: Living
@@ -73,12 +47,6 @@ food
 
 # TestProcessor
 
-## Render
-
-```
-pri4 s(22,22,22) t(0,0,-5.85) c(#66cc66)
-```
-
 ## Function
 
 Food 2
@@ -90,12 +58,6 @@ Wood 3
 food
 
 # TestRefinery
-
-## Render
-
-```
-pri4 s(25,25,35) t(0,0,-4.875) c(#aa5533)
-```
 
 ## Function
 
@@ -113,12 +75,6 @@ Fuel 3
 food
 
 # TestWorkshop
-
-## Render
-
-```
-pri4 s(24,24,18) t(0,0,-6.15) c(#9977cc)
-```
 
 ## Function
 
@@ -140,12 +96,6 @@ food
 
 # TestClinic
 
-## Render
-
-```
-pri4 s(26,26,16) t(0,0,-6.3) c(#dd6688)
-```
-
 ## Function
 
 Care 2
@@ -158,12 +108,6 @@ food
 
 # TestCarer
 
-## Render
-
-```
-pri4 s(22,22,20) t(0,0,-6) c(#66aacc)
-```
-
 ## Function
 
 Food 1
@@ -175,12 +119,6 @@ Care 4
 food
 
 # TestReactor
-
-## Render
-
-```
-pri4 s(24,24,22) t(0,0,-5.85) c(#55bb88)
-```
 
 ## Function
 
@@ -203,12 +141,6 @@ food
 
 # TestTower
 
-## Render
-
-```
-pri4 s(18,18,40) t(0,0,-4.5) c(#bb9944)
-```
-
 ## Function
 
 Energy 2
@@ -225,13 +157,6 @@ food
 
 # TestHabitat
 
-## Render
-
-```
-pri4 s(24,24,28) t(0,0,-5.4) c(#ffd1f4)
-pri4 s(18,18,14) t(0,-8.05,-0.5) r(90,45,90) c(#e8a9d5)
-```
-
 ## Function
 
 Name: Living well
@@ -245,12 +170,6 @@ Hapiness 5
 food
 
 # TestSmokestack
-
-## Render
-
-```
-cyl s(8,8,40) t(0,0,-4.5) c(#555555)
-```
 
 ## Function
 
@@ -268,12 +187,6 @@ industry
 
 # TestPurifier
 
-## Render
-
-```
-pri4 s(24,24,12) t(0,0,0) c(#66bbaa)
-```
-
 ## Function
 
 Energy 1
@@ -286,12 +199,6 @@ industry
 
 # TestOrchard
 
-## Render
-
-```
-cyl s(20,20,10) t(0,0,0) c(#669944)
-```
-
 ## Function
 
 Water 1
@@ -303,12 +210,6 @@ Food soil/3
 industry
 
 # TestHub
-
-## Render
-
-```
-pri4 s(28,28,14) t(0,0,-4) c(#ffedc2)
-```
 
 ## Function
 

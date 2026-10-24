@@ -12,9 +12,9 @@ instruction.
 ## SGL — Sektor Graphics Language
 
 The DSL described here is called **SGL**, short for **Sektor Graphics Language**. Wherever "SGL"
-appears — the `.sgl` files under `frontend/src/assets/` (e.g. the terrain elevation pieces), or the
-code blocks under the `## Render` headings in `frontend/src/assets/terrain.md` — it means this
-language, and everything below applies to it.
+appears — the `.sgl` files under `frontend/src/assets/` (e.g. the buildings in `buildings/<Name>/`,
+the terrain elevation pieces), or the code blocks under the `## Render` headings in
+`frontend/src/assets/terrain.md` — it means this language, and everything below applies to it.
 
 ### Generators
 
@@ -202,10 +202,11 @@ rather than emitting the same line many times.
 - **Generate repetitive geometry with a throwaway script** (rings, grids, rows) instead of typing
   out dozens of near-identical lines; then print the result back and sanity-check counts,
   duplicate positions, and the extremes.
-- **Look up named references in `frontend/src/assets/buildings.md`.** When the user names
+- **Look up named references in `frontend/src/assets/buildings/`.** When the user names
   something to copy a design from (e.g. "construct a well like in WaterWells"), that name is a
-  building in `buildings.md`. The SGL in that building's `## Render` section is the source for
-  the reference — read it from there and base the new drawing on it.
+  building with its own folder there, named after it. The SGL in that folder's `0.sgl` is the
+  source for the reference (`0.construction.sgl` holds what stands there while it goes up) —
+  read it from there and base the new drawing on it.
 - **Derive intent from what is already there.** Existing bodies encode the spacing, the inset from
   an edge, the alternation rhythm and the height band being used. Measure them and match.
 - Say plainly which bodies were touched and which were left alone.

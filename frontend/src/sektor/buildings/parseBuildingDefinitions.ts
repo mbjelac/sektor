@@ -71,32 +71,44 @@ export interface BuildingDefinition {
   properties: BuildingProperties;
 }
 
+// The SGL files of every building, by their path within the buildings folder: each building has a
+// folder named after it, holding the code it is drawn with.
+export type BuildingRenderingFiles = Record<string, string>;
+
+// The file in a building's folder holding the code the building is drawn with.
+const RENDERING_FILE = "0.sgl";
+
+// The file in a building's folder holding the code of what stands on its location while it goes up.
+const CONSTRUCTION_RENDERING_FILE = "0.construction.sgl";
+
 // A building can do several things at once, so every Function section of its definition
-// becomes a separate building function.
-export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] {
+// becomes a separate building function. A building is drawn with the code of its own folder of
+// SGL files, and a building without one is left out.
+export function parseBuildingDefinitions(lines: string[], renderingFiles: BuildingRenderingFiles): BuildingDefinition[] {
   const buildings: BuildingDefinition[] = [];
 
   let currentName: string | null = null;
-  let inCodeBlock = false;
-  let codeLines: string[] = [];
   let functionLineGroups: string[][] = [];
   let propertyLines: string[] = [];
-  let constructionCodeLines: string[] = [];
   let constructionPropertyLines: string[] = [];
   let tagLines: string[] = [];
-  let section: "none" | "render" | "constructionRender" | "function" | "properties" | "tags" = "none";
+  let section: "none" | "construction" | "function" | "properties" | "tags" = "none";
 
   function pushBuilding() {
-    if (currentName && codeLines.length > 0) {
+    const renderingCode = currentName ? renderingFiles[`${currentName}/${RENDERING_FILE}`] : undefined;
+    if (currentName && renderingCode !== undefined) {
       const building: BuildingDefinition = {
         name: currentName,
-        renderingCode: codeLines.join("\n"),
+        renderingCode: renderingCode.trim(),
         buildingFunctions: functionLineGroups.map(functionLines => parseBuildingFunction(functionLines)),
         properties: parseProperties(propertyLines),
       };
       const tags = parseTags(tagLines);
       if (tags.length > 0) building.properties.tags = tags;
-      const constructionRender = parseConstructionRender(constructionCodeLines, constructionPropertyLines);
+      const constructionRender = parseConstructionRender(
+        renderingFiles[`${currentName}/${CONSTRUCTION_RENDERING_FILE}`],
+        constructionPropertyLines,
+      );
       if (constructionRender) building.constructionRender = constructionRender;
       buildings.push(building);
     }
@@ -107,24 +119,16 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
     if (headingMatch) {
       pushBuilding();
       currentName = headingMatch[1].trim();
-      codeLines = [];
       functionLineGroups = [];
       propertyLines = [];
-      constructionCodeLines = [];
       constructionPropertyLines = [];
       tagLines = [];
-      inCodeBlock = false;
       section = "none";
       continue;
     }
 
-    if (line.match(/^##\s+Render/)) {
-      section = "render";
-      continue;
-    }
-
-    if (line.match(/^##\s+Construction Render/)) {
-      section = "constructionRender";
+    if (line.match(/^##\s+Construction\s*$/)) {
+      section = "construction";
       continue;
     }
 
@@ -144,16 +148,7 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
       continue;
     }
 
-    if (line.trim().startsWith("```")) {
-      inCodeBlock = !inCodeBlock;
-      continue;
-    }
-
-    if (inCodeBlock && section === "render") {
-      codeLines.push(line);
-    } else if (inCodeBlock && section === "constructionRender") {
-      constructionCodeLines.push(line);
-    } else if (section === "constructionRender") {
+    if (section === "construction") {
       constructionPropertyLines.push(line);
     } else if (section === "properties") {
       propertyLines.push(line);
@@ -170,13 +165,13 @@ export function parseBuildingDefinitions(lines: string[]): BuildingDefinition[] 
 }
 
 // A building without both the code of its construction and how long it lasts goes up at once.
-function parseConstructionRender(codeLines: string[], propertyLines: string[]): ConstructionRender | undefined {
-  if (codeLines.length === 0) return undefined;
+function parseConstructionRender(renderingCode: string | undefined, propertyLines: string[]): ConstructionRender | undefined {
+  if (renderingCode === undefined) return undefined;
   const durationMatch = propertyLines
     .map(line => line.trim().match(/^duration=(.+)$/))
     .find(match => match !== null && isAmount(match[1]));
   if (!durationMatch) return undefined;
-  return { renderingCode: codeLines.join("\n"), duration: parseInt(durationMatch[1]) };
+  return { renderingCode: renderingCode.trim(), duration: parseInt(durationMatch[1]) };
 }
 
 function parseProperties(lines: string[]): BuildingProperties {
