@@ -43,3 +43,7 @@ It's purpose is to let the player know what is the current state of the building
     - instead of warning emoji ⚠️
         - display "⚠️ Starved"
         - after function name (if any) with small spacing between
+- when some functions starved of local resources
+    - display warning message "Not enough local resources!"
+    - next to message draw eye icon
+    - on mouse over eye icon mark affected buildings in red on map
