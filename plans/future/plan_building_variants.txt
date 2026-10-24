@@ -1,2 +1,15 @@
 Some buildings have variants - different renderings of the same building.
 Example: Park, TownSquare, Habitats
+
+#1 Transform structure of building specifications
+- buildings.md currently has Render section with an SGL code block
+    - create a "buildings" folder in assets
+    - for each building in buildings.md create a folder buildings/BuildingName
+    - create a file in that folder named 0.sgl
+    - transfer all SGL code from that building's Render section into 0.sgl
+- adjust loading building specification to load SGL from SGL files in buildings subfolders
+- for construction animation (plan 47) move construction SGL from Construction Render section to 0.construction.sgl
+    - adjust construction rendering to use that file instead of Construction Render section
+- delete Render & Construction Render sections from buildings.md
+- adjust accordingly for test buildings
+
