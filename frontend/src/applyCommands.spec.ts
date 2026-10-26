@@ -19,11 +19,14 @@ function centreAt(body: CreateBody, elapsedMilliseconds: number): number[] {
   return translations[0];
 }
 
-// A sketch which draws nothing, only keeping the translations it is asked for.
+// A sketch which draws nothing, only keeping the translations it is asked for. A shape it is asked
+// to build comes out empty.
 function recordingSketch(translations: number[][]): p5 {
   return new Proxy({}, {
-    get: (_target, property) => property === "translate"
-      ? (...coordinates: number[]) => { translations.push(coordinates); }
-      : () => undefined,
+    get: (_target, property) => {
+      if (property === "translate") return (...coordinates: number[]) => { translations.push(coordinates); };
+      if (property === "buildGeometry") return () => ({ vertexColors: [], vertexStrokeColors: [] });
+      return () => undefined;
+    },
   }) as p5;
 }

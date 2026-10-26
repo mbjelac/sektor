@@ -120,27 +120,74 @@ function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsed
   if (command.shine) {
     applyShine(p, command.shine, color);
   }
+  p.fill(...colorToRgb(color));
+  p.model(shapeGeometry(p, command));
+  p.pop();
+}
+
+// Building a body's shape costs p5 a pass over every face of it, which for a hollow or cut off body
+// runs to hundreds of faces. Animated bodies are drawn anew every frame, and a map full of parks,
+// whose ripples are hollow cylinders, was brought down to a few frames a second building them.
+// A shape depends only on the kind of body and on how hollow and how cut off it is, never on where
+// the body stands, how big it is or what color it has, so each shape is built once for every
+// canvas and every body of it is drawn from it, placed, sized and colored as the body is.
+const shapeGeometriesByCanvas = new WeakMap<p5, Map<string, p5.Geometry>>();
+
+// A shape can not be built while a bake is being built, as p5 builds one geometry at a time, so a
+// bake has every shape of its bodies built before it starts.
+export function buildShapeGeometries(p: p5, commands: CreateBody[]) {
+  for (const command of commands) {
+    shapeGeometry(p, command);
+  }
+}
+
+function shapeGeometry(p: p5, command: CreateBody): p5.Geometry {
+  const shapeGeometries = shapeGeometriesByCanvas.get(p) ?? new Map<string, p5.Geometry>();
+  shapeGeometriesByCanvas.set(p, shapeGeometries);
+  const shapeName = `${command.type} ${command.hollow} ${command.frustum}`;
+  const alreadyBuilt = shapeGeometries.get(shapeName);
+  if (alreadyBuilt) return alreadyBuilt;
+  const builtShapeGeometry = buildShapeGeometry(p, command);
+  shapeGeometries.set(shapeName, builtShapeGeometry);
+  return builtShapeGeometry;
+}
+
+// The shape is built with its edges, so that a body drawn with a stroke — the wireframe of the
+// architect, the outline of the body under the caret — shows them, and without its colors, so that
+// it is drawn in the fill and stroke of the body drawn from it.
+function buildShapeGeometry(p: p5, command: CreateBody): p5.Geometry {
+  p.push();
+  p.stroke(0);
+  const builtShapeGeometry = p.buildGeometry(() => drawShape(p, command));
+  p.pop();
+  // p5's types leave out the colors a geometry carries, which it keeps one for every vertex.
+  const shapeColors = builtShapeGeometry as unknown as { vertexColors: number[]; vertexStrokeColors: number[] };
+  shapeColors.vertexColors.length = 0;
+  shapeColors.vertexStrokeColors.length = 0;
+  return builtShapeGeometry;
+}
+
+function drawShape(p: p5, command: CreateBody) {
   const pyrN = pyrSides[command.type];
   if (pyrN) {
-    drawPyramid(p, pyrN, color, command.hollow ?? undefined, command.frustum ?? undefined);
+    drawPyramid(p, pyrN, undefined, command.hollow ?? undefined, command.frustum ?? undefined);
   }
   const priN = priSides[command.type];
   if (priN) {
-    drawPrism(p, priN, color, command.hollow ?? undefined);
+    drawPrism(p, priN, undefined, command.hollow ?? undefined);
   }
   if (command.type === "sph") {
-    drawSphere(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
+    drawSphere(p, undefined, command.hollow ?? undefined, command.frustum ?? undefined);
   }
   if (command.type === "cyl") {
-    drawCylinder(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
+    drawCylinder(p, undefined, command.hollow ?? undefined, command.frustum ?? undefined);
   }
   if (command.type === "con") {
-    drawCone(p, color, command.hollow ?? undefined, command.frustum ?? undefined);
+    drawCone(p, undefined, command.hollow ?? undefined, command.frustum ?? undefined);
   }
   if (command.type === "tor") {
-    drawTorus(p, color, command.hollow ?? undefined);
+    drawTorus(p, undefined, command.hollow ?? undefined);
   }
-  p.pop();
 }
 
 // A shiny body glows with its own color, so that even its faces turned away from the light keep

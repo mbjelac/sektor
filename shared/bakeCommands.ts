@@ -1,6 +1,6 @@
 import p5 from "p5";
 import {CreateBody} from "./parseCommands";
-import {applyShine, drawBodies, opaqueBodies, transparentBodies, withoutDepthWrites} from "./applyCommands";
+import {applyShine, buildShapeGeometries, drawBodies, opaqueBodies, transparentBodies, withoutDepthWrites} from "./applyCommands";
 
 export interface BakedBodies {
   opaqueGeometry: p5.Geometry | null;
@@ -26,6 +26,7 @@ interface ShinyGeometry {
 // Opaque and transparent bodies are baked apart so that the two can keep being drawn in
 // separate passes, which is what stops transparent bodies from hiding what is behind them.
 export function bakeCommands(p: p5, commands: CreateBody[]): BakedBodies {
+  buildShapeGeometries(p, commands);
   const staticCommands = commands.filter(command => !isAnimated(command));
   const dullCommands = staticCommands.filter(command => !command.shine);
   const shinyCommands = staticCommands.filter(command => command.shine);
