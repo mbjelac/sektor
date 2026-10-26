@@ -324,17 +324,20 @@ people
 
 ## Function
 
-EnergyElectric 1
-Water 2
+Water 3
 WorkMaintenance 2
 ->
-HealthPhysical 2 pollution
-HealthMental 2 pollution
-HealthSocial 4 pollution
+HealthPhysical 1 pollution
+HealthMental 1 pollution
+HealthSocial 3 pollution
 
 ## Tags
 
 people
+
+## Construction
+
+duration=2000
 
 # Fertilizatron
 

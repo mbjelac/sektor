@@ -860,13 +860,16 @@ function bakedBuildingBodies(p: p5, type: string, renderingCode: string): BakedB
   return bakedBodies;
 }
 
-// A building whose definition does not say how it goes up is there finished the moment it is placed.
-// So is every building of a test run, whose screenshots would otherwise catch it half built.
-function startConstruction(type: string, startMillis: number): Construction | undefined {
+// A building goes up the way the variant it is drawn as does. One whose definition does not say how
+// that variant goes up is there finished the moment it is placed. So is every building of a test run,
+// whose screenshots would otherwise catch it half built.
+function startConstruction(type: string, variantIndex: number | undefined, startMillis: number): Construction | undefined {
   if (isTestMode) return undefined;
   const constructionRender = buildingDefinitions.find(definition => definition.name === type)?.constructionRender;
   if (!constructionRender) return undefined;
-  return { renderingCode: constructionRender.renderingCode, duration: constructionRender.duration, startMillis };
+  const renderingCode = constructionRender.renderingCodes[getBuildingVariantNumber(type, variantIndex)];
+  if (!renderingCode) return undefined;
+  return { renderingCode, duration: constructionRender.duration, startMillis };
 }
 
 // A building whose definition delays the start of its animations waits a random part of that delay,
@@ -884,7 +887,7 @@ function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingL
   if (building.construction) {
     const constructionMillis = p.millis() - building.construction.startMillis;
     if (constructionMillis < building.construction.duration) {
-      const constructionBodies = bakedBuildingBodies(p, `${building.type} construction`, building.construction.renderingCode);
+      const constructionBodies = bakedBuildingBodies(p, `${placedBuildingBakeName(building)} construction`, building.construction.renderingCode);
       drawBakedBodies(p, constructionBodies, constructionMillis);
       return;
     }
@@ -1355,7 +1358,7 @@ const sektorUi = (p: p5) => {
           location: building.location,
           variantIndex: building.variantIndex,
           code,
-          construction: startConstruction(building.type, p.millis()),
+          construction: startConstruction(building.type, building.variantIndex, p.millis()),
           animationStartDelayMillis: randomAnimationStartDelayMillis(building.type),
         });
         floorGeometryNeedsRebaking = true;

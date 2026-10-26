@@ -105,6 +105,10 @@ is there.
     standing on its green ring is fine.
   - Every search has a limit, so a park takes well under a second: when ponds leave too little
     dry ground, it says on stderr that fewer groves or trees fit instead of searching forever.
+- `tools/sgl/generator/park/park_constructions.py` — writes `<X>.construction.sgl` next to every
+  park variant `<X>.sgl`: the same park, with its trees (`sph` lines) dealt at random into 10
+  groups, group g getting `ashow(200·g,2000)`. Seeded by the variant number; rerun it after
+  regenerating or editing any park.
 
 ## The working file
 

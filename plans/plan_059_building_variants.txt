@@ -24,6 +24,6 @@ Example: Park, TownSquare, Habitats
         - this is so that variant sgl always exists
 
 #3 Render construction in different variants
-- when a building is constructed
+- [done] when a building is constructed
     - if there exists a .construction.sgl for the chosen variant, display it first as temporary construction render
     - if there does not exist, skip construction render

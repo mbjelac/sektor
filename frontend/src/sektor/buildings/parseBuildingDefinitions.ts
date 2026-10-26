@@ -56,9 +56,11 @@ export interface BuildingProperties {
 }
 
 // What stands on a building's location while the building is going up, before the building
-// itself is shown there.
+// itself is shown there. Each variant goes up in its own way, and a variant without a way of its own
+// is there finished the moment it is placed.
 export interface ConstructionRender {
-  renderingCode: string;
+  // The code of every variant's construction, the first variant first, null for a variant without one.
+  renderingCodes: (string | null)[];
   // How long the building takes to go up, in milliseconds.
   duration: number;
 }
@@ -76,8 +78,9 @@ export interface BuildingDefinition {
 // folder named after it, holding the code of each variant it is drawn as.
 export type BuildingRenderingFiles = Record<string, string>;
 
-// The file in a building's folder holding the code of what stands on its location while it goes up.
-const CONSTRUCTION_RENDERING_FILE = "0.construction.sgl";
+// The file in a building's folder holding the code of what stands on its location while a variant
+// of it goes up, named after the variant's own file.
+const CONSTRUCTION_RENDERING_FILE_SUFFIX = ".construction.sgl";
 
 // A building can do several things at once, so every Function section of its definition
 // becomes a separate building function. A building is drawn with the code of its own folder of
@@ -104,7 +107,7 @@ export function parseBuildingDefinitions(lines: string[], renderingFiles: Buildi
       const tags = parseTags(tagLines);
       if (tags.length > 0) building.properties.tags = tags;
       const constructionRender = parseConstructionRender(
-        renderingFiles[`${currentName}/${CONSTRUCTION_RENDERING_FILE}`],
+        constructionRenderingCodes(currentName, renderingCodes.length, renderingFiles),
         constructionPropertyLines,
       );
       if (constructionRender) building.constructionRender = constructionRender;
@@ -172,14 +175,21 @@ function variantRenderingCodes(buildingName: string, renderingFiles: BuildingRen
   return renderingCodes;
 }
 
-// A building without both the code of its construction and how long it lasts goes up at once.
-function parseConstructionRender(renderingCode: string | undefined, propertyLines: string[]): ConstructionRender | undefined {
-  if (renderingCode === undefined) return undefined;
+// Only a variant the building has can go up, so a construction file of a variant beyond them is left out.
+function constructionRenderingCodes(buildingName: string, numberOfVariants: number, renderingFiles: BuildingRenderingFiles): (string | null)[] {
+  return Array.from({ length: numberOfVariants }, (_, variantNumber) =>
+    renderingFiles[`${buildingName}/${variantNumber}${CONSTRUCTION_RENDERING_FILE_SUFFIX}`]?.trim() ?? null
+  );
+}
+
+// A building without both the code of a construction and how long it lasts goes up at once.
+function parseConstructionRender(renderingCodes: (string | null)[], propertyLines: string[]): ConstructionRender | undefined {
+  if (renderingCodes.every(renderingCode => renderingCode === null)) return undefined;
   const durationMatch = propertyLines
     .map(line => line.trim().match(/^duration=(.+)$/))
     .find(match => match !== null && isAmount(match[1]));
   if (!durationMatch) return undefined;
-  return { renderingCode: renderingCode.trim(), duration: parseInt(durationMatch[1]) };
+  return { renderingCodes, duration: parseInt(durationMatch[1]) };
 }
 
 function parseProperties(lines: string[]): BuildingProperties {

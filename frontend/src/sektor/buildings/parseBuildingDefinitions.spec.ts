@@ -552,7 +552,7 @@ describe("parseBuildingDefinitions", () => {
     expect(result).toEqual([{
       name: "Tower",
       renderingCodes: ["box s(10,10,10)"],
-      constructionRender: { renderingCode: "box s(2,2,2)\ncyl s(1,1,1)", duration: 1500 },
+      constructionRender: { renderingCodes: ["box s(2,2,2)\ncyl s(1,1,1)"], duration: 1500 },
       buildingFunctions: [],
       properties: {},
     }]);
@@ -585,8 +585,34 @@ describe("parseBuildingDefinitions", () => {
     ], { "Tower/0.sgl": "box s(10,10,10)", "Tower/0.construction.sgl": "box s(2,2,2)", "Shed/0.sgl": "box s(5,5,5)" });
 
     expect(result.map(building => building.constructionRender)).toEqual([
-      { renderingCode: "box s(2,2,2)", duration: 1000 },
+      { renderingCodes: ["box s(2,2,2)"], duration: 1000 },
       undefined,
     ]);
+  });
+
+  it("parses the construction of every variant, leaving out a variant without one", () => {
+    const result = parseBuildingDefinitions([
+      "# Tower",
+      "## Construction",
+      "duration=1000",
+    ], {
+      "Tower/0.sgl": "box s(10,10,10)",
+      "Tower/1.sgl": "box s(20,20,20)",
+      "Tower/2.sgl": "box s(30,30,30)",
+      "Tower/1.construction.sgl": "box s(2,2,2)",
+      "Tower/2.construction.sgl": "box s(3,3,3)",
+    });
+
+    expect(result[0].constructionRender).toEqual({ renderingCodes: [null, "box s(2,2,2)", "box s(3,3,3)"], duration: 1000 });
+  });
+
+  it("ignores the construction of a variant the building does not have", () => {
+    const result = parseBuildingDefinitions([
+      "# Tower",
+      "## Construction",
+      "duration=1000",
+    ], { "Tower/0.sgl": "box s(10,10,10)", "Tower/1.construction.sgl": "box s(2,2,2)" });
+
+    expect(result[0].constructionRender).toEqual(undefined);
   });
 });
