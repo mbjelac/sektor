@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { parseCommands } from "../../../../shared/parseCommands";
-import { applyCommands } from "../../../../shared/applyCommands";
+import { BakedBodies, bakeCommands, drawBakedBodies } from "../../../../shared/bakeCommands";
 import { drawFloor, drawFloorWireframe } from "../../../../shared/drawFloor";
 import { BLOCK_SIZE } from "../../../../shared/constants";
 import { trashIcon } from "../../icons";
@@ -63,10 +63,23 @@ function ensurePreviewP5(parent: HTMLElement) {
       } else {
         drawFloorWireframe(p, BLOCK_SIZE);
       }
-      const commands = parseCommands(currentDraw.code);
-      applyCommands(p, commands);
+      drawBakedBodies(p, bakedPreviewBodies(p, currentDraw.code), 0);
     };
   });
+}
+
+// The preview is redrawn every time a building is built or the panel refreshed, and drawing a
+// building body by body took long enough, for the biggest of them, to stall the page. Every
+// building is therefore baked once on the preview's own canvas, which its geometries belong to,
+// and drawn from the bake from then on.
+const bakedPreviews = new Map<string, BakedBodies>();
+
+function bakedPreviewBodies(p: p5, code: string): BakedBodies {
+  const alreadyBaked = bakedPreviews.get(code);
+  if (alreadyBaked) return alreadyBaked;
+  const bakedBodies = bakeCommands(p, parseCommands(code));
+  bakedPreviews.set(code, bakedBodies);
+  return bakedBodies;
 }
 
 export function showBuildingPanel({ name, code, buildingFunctions, disabled, outputDecreasedByPollution, locationProperties, floorColor, showFloor, drawFloorInstead, location, onDestroy, onToggleFunction }: {

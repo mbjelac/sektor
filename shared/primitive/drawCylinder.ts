@@ -28,6 +28,9 @@ function drawTube(p: p5, outerRadius: number, innerRadius: number, height: numbe
   const top = -height / 2;
   const bottom = height / 2;
 
+  // Every wall and ring goes into one shape of quads: p5 runs every shape of its own through a
+  // tessellator, which for hundreds of small faces took long enough to stall the page.
+  p.beginShape(p.QUADS);
   for (let segment = 0; segment < TUBE_SEGMENTS; segment++) {
     const angle = (2 * Math.PI * segment) / TUBE_SEGMENTS;
     const nextAngle = (2 * Math.PI * (segment + 1)) / TUBE_SEGMENTS;
@@ -37,41 +40,34 @@ function drawTube(p: p5, outerRadius: number, innerRadius: number, height: numbe
     const nextSin = Math.sin(nextAngle);
 
     // Outer wall (normal pointing outward)
-    p.beginShape();
     p.normal(cos, 0, sin);
     p.vertex(outerRadius * cos, bottom, outerRadius * sin);
     p.vertex(outerRadius * nextCos, bottom, outerRadius * nextSin);
     p.vertex(outerRadius * nextCos, top, outerRadius * nextSin);
     p.vertex(outerRadius * cos, top, outerRadius * sin);
-    p.endShape(p.CLOSE);
 
     // Inner wall (normal pointing inward, toward the axis)
-    p.beginShape();
     p.normal(-cos, 0, -sin);
     p.vertex(innerRadius * cos, top, innerRadius * sin);
     p.vertex(innerRadius * nextCos, top, innerRadius * nextSin);
     p.vertex(innerRadius * nextCos, bottom, innerRadius * nextSin);
     p.vertex(innerRadius * cos, bottom, innerRadius * sin);
-    p.endShape(p.CLOSE);
 
     // Top ring (normal pointing up)
-    p.beginShape();
     p.normal(0, -1, 0);
     p.vertex(outerRadius * cos, top, outerRadius * sin);
     p.vertex(outerRadius * nextCos, top, outerRadius * nextSin);
     p.vertex(innerRadius * nextCos, top, innerRadius * nextSin);
     p.vertex(innerRadius * cos, top, innerRadius * sin);
-    p.endShape(p.CLOSE);
 
     // Bottom ring (normal pointing down)
-    p.beginShape();
     p.normal(0, 1, 0);
     p.vertex(innerRadius * cos, bottom, innerRadius * sin);
     p.vertex(innerRadius * nextCos, bottom, innerRadius * nextSin);
     p.vertex(outerRadius * nextCos, bottom, outerRadius * nextSin);
     p.vertex(outerRadius * cos, bottom, outerRadius * sin);
-    p.endShape(p.CLOSE);
   }
+  p.endShape();
 }
 
 // A cylinder is cut off by a plane parallel to its axis, which takes away the side of it facing
@@ -96,49 +92,45 @@ function drawCutCylinder(
   const isHoleOpened = isHollow && cutX < innerRadius;
   const innerArc = isHollow ? arcAlongCut(innerRadius, cutX) : [];
 
+  // Every wall and ring goes into one shape of quads: p5 runs every shape of its own through a
+  // tessellator, which for hundreds of small faces took long enough to stall the page.
+  p.beginShape(p.QUADS);
   for (let segment = 0; segment < TUBE_SEGMENTS; segment++) {
     // Outer wall (normal pointing outward)
     const [outerX, outerZ] = outerArc[segment];
     const [nextOuterX, nextOuterZ] = outerArc[segment + 1];
-    p.beginShape();
     p.normal(outerX / outerRadius, 0, outerZ / outerRadius);
     p.vertex(outerX, bottom, outerZ);
     p.vertex(nextOuterX, bottom, nextOuterZ);
     p.vertex(nextOuterX, top, nextOuterZ);
     p.vertex(outerX, top, outerZ);
-    p.endShape(p.CLOSE);
 
     if (!isHollow) continue;
 
     // Inner wall (normal pointing inward, toward the axis)
     const [innerX, innerZ] = innerArc[segment];
     const [nextInnerX, nextInnerZ] = innerArc[segment + 1];
-    p.beginShape();
     p.normal(-innerX / innerRadius, 0, -innerZ / innerRadius);
     p.vertex(innerX, top, innerZ);
     p.vertex(nextInnerX, top, nextInnerZ);
     p.vertex(nextInnerX, bottom, nextInnerZ);
     p.vertex(innerX, bottom, innerZ);
-    p.endShape(p.CLOSE);
 
     // Top ring (normal pointing up)
-    p.beginShape();
     p.normal(0, -1, 0);
     p.vertex(outerX, top, outerZ);
     p.vertex(nextOuterX, top, nextOuterZ);
     p.vertex(nextInnerX, top, nextInnerZ);
     p.vertex(innerX, top, innerZ);
-    p.endShape(p.CLOSE);
 
     // Bottom ring (normal pointing down)
-    p.beginShape();
     p.normal(0, 1, 0);
     p.vertex(innerX, bottom, innerZ);
     p.vertex(nextInnerX, bottom, nextInnerZ);
     p.vertex(nextOuterX, bottom, nextOuterZ);
     p.vertex(outerX, bottom, outerZ);
-    p.endShape(p.CLOSE);
   }
+  p.endShape();
 
   const outerCutZ = Math.sqrt(outerRadius * outerRadius - cutX * cutX);
 

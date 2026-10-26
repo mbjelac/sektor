@@ -55,16 +55,16 @@ function drawConeWalls(
 
   if (isHollow) {
     // Base ring (normal pointing down)
+    p.beginShape(p.QUADS);
+    p.normal(0, 1, 0);
     for (let segment = 0; segment < CONE_SEGMENTS; segment++) {
       const nextSegment = (segment + 1) % CONE_SEGMENTS;
-      p.beginShape();
-      p.normal(0, 1, 0);
       p.vertex(...innerVertices[segment]);
       p.vertex(...innerVertices[nextSegment]);
       p.vertex(...baseVertices[nextSegment]);
       p.vertex(...baseVertices[segment]);
-      p.endShape(p.CLOSE);
     }
+    p.endShape();
   } else {
     // Base (normal pointing down)
     p.beginShape();
@@ -75,6 +75,10 @@ function drawConeWalls(
     p.endShape(p.CLOSE);
   }
 
+  // Every wall goes into one shape of quads: p5 runs every shape of its own through a tessellator,
+  // which for hundreds of small faces took long enough to stall the page. A wall running up to the
+  // tip is a triangle, made a quad by taking the tip twice.
+  p.beginShape(p.QUADS);
   for (let segment = 0; segment < CONE_SEGMENTS; segment++) {
     const nextSegment = (segment + 1) % CONE_SEGMENTS;
 
@@ -84,7 +88,6 @@ function drawConeWalls(
       baseVertices[nextSegment],
       isCutOff ? topVertices[nextSegment] : apex,
     );
-    p.beginShape();
     p.normal(...outerNormal);
     p.vertex(...baseVertices[segment]);
     p.vertex(...baseVertices[nextSegment]);
@@ -93,8 +96,8 @@ function drawConeWalls(
       p.vertex(...topVertices[segment]);
     } else {
       p.vertex(...apex);
+      p.vertex(...apex);
     }
-    p.endShape(p.CLOSE);
 
     if (!isHollow) continue;
 
@@ -104,33 +107,33 @@ function drawConeWalls(
       innerVertices[nextSegment],
       isOpenAtTop ? innerTopVertices[nextSegment] : innerApex,
     );
-    p.beginShape();
     p.normal(-innerNormal[0], -innerNormal[1], -innerNormal[2]);
     if (isOpenAtTop) {
       p.vertex(...innerTopVertices[segment]);
       p.vertex(...innerTopVertices[nextSegment]);
     } else {
       p.vertex(...innerApex);
+      p.vertex(...innerApex);
     }
     p.vertex(...innerVertices[nextSegment]);
     p.vertex(...innerVertices[segment]);
-    p.endShape(p.CLOSE);
   }
+  p.endShape();
 
   if (!isCutOff) return;
 
   if (isOpenAtTop) {
     // Top ring (normal pointing up)
+    p.beginShape(p.QUADS);
+    p.normal(0, -1, 0);
     for (let segment = 0; segment < CONE_SEGMENTS; segment++) {
       const nextSegment = (segment + 1) % CONE_SEGMENTS;
-      p.beginShape();
-      p.normal(0, -1, 0);
       p.vertex(...topVertices[segment]);
       p.vertex(...topVertices[nextSegment]);
       p.vertex(...innerTopVertices[nextSegment]);
       p.vertex(...innerTopVertices[segment]);
-      p.endShape(p.CLOSE);
     }
+    p.endShape();
     return;
   }
 

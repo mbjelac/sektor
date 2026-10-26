@@ -47,17 +47,17 @@ function drawSphereShell(p: p5, radius: number, innerRadius: number, cutOffScale
 
   if (isHollow && innerCutAngle < Math.PI) {
     // Top ring (normal pointing up)
+    p.beginShape(p.QUADS);
+    p.normal(0, -1, 0);
     for (let segment = 0; segment < SPHERE_SEGMENTS; segment++) {
       const angle = (2 * Math.PI * segment) / SPHERE_SEGMENTS;
       const nextAngle = (2 * Math.PI * (segment + 1)) / SPHERE_SEGMENTS;
-      p.beginShape();
-      p.normal(0, -1, 0);
       p.vertex(...surfacePoint(radius, cutAngle, angle));
       p.vertex(...surfacePoint(radius, cutAngle, nextAngle));
       p.vertex(...surfacePoint(innerRadius, innerCutAngle, nextAngle));
       p.vertex(...surfacePoint(innerRadius, innerCutAngle, angle));
-      p.endShape(p.CLOSE);
     }
+    p.endShape();
     return;
   }
 
@@ -73,7 +73,10 @@ function drawSphereShell(p: p5, radius: number, innerRadius: number, cutOffScale
 
 // The surface of a sphere from its bottom up to the ring at the given ring angle, with normals
 // pointing out of the sphere, or into it for a normal direction of -1.
+// The whole surface is one shape of quads: p5 runs every shape of its own through a tessellator,
+// which for a surface of a thousand shapes took long enough to stall the page.
 function drawSurface(p: p5, radius: number, topRingAngle: number, normalDirection: number) {
+  p.beginShape(p.QUADS);
   for (let ring = 0; ring < SPHERE_RINGS; ring++) {
     const ringAngle = (topRingAngle * ring) / SPHERE_RINGS;
     const nextRingAngle = (topRingAngle * (ring + 1)) / SPHERE_RINGS;
@@ -81,14 +84,13 @@ function drawSurface(p: p5, radius: number, topRingAngle: number, normalDirectio
     for (let segment = 0; segment < SPHERE_SEGMENTS; segment++) {
       const angle = (2 * Math.PI * segment) / SPHERE_SEGMENTS;
       const nextAngle = (2 * Math.PI * (segment + 1)) / SPHERE_SEGMENTS;
-      p.beginShape();
       surfaceVertex(p, radius, ringAngle, angle, normalDirection);
       surfaceVertex(p, radius, ringAngle, nextAngle, normalDirection);
       surfaceVertex(p, radius, nextRingAngle, nextAngle, normalDirection);
       surfaceVertex(p, radius, nextRingAngle, angle, normalDirection);
-      p.endShape(p.CLOSE);
     }
   }
+  p.endShape();
 }
 
 // A point on the sphere carries its own normal, pointing straight out from the centre (or straight
