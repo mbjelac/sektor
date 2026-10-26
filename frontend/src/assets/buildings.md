@@ -20,6 +20,10 @@ water
 
 # Habitats
 
+## Construction
+
+duration=4000
+
 ## Function
 
 Name: Basic needs
