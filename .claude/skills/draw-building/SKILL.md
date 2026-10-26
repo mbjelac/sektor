@@ -90,9 +90,11 @@ is there.
   - A pond is a green ring `cyl s(ring,0.12) h(60) c(#5bbf5a)` around a blue disc
     `cyl s(water,0.11) c(#61adff)` (water defaults to ring − 2), so the water shows only through
     the ring's hollow (0.6 × the ring).
-  - Ripples: 4 per pond, `cyl s(2,2,0.1) t(…,0.111) h(100) c(#ffffffff) sh(100)` with matching
+  - Ripples: 4 per pond, `tor s(1.5,1.5,7.5) t(…,0.111) h(100) c(#ffffffff) sh(100)` with matching
     `as1(g,g,0,grow,5000,start)` and `acg1(#ffffff00,grow,5000,start)`, so a ring grows and fades
-    out at once, then stays away 5 s. Random spots in the hollow, at least ¼ of its narrower width
+    out at once, then stays away 5 s. A `tor` is 4/3 of its `s` across, so a ripple d across is
+    `s(0.75·d)` and its growth g is 0.75 × the growth in diameter; `s` height 7.5 stands the tube
+    0.1 high. Random spots in the hollow, at least ¼ of its narrower width
     apart. Each ring grows only as far as its spot allows, stopping 0.5 inside the hollow's edge,
     because the ring (top 0.211) stands higher than the bank (0.12). Grow time is 3 s for a hollow
     under 30 wide and 4 s otherwise. Starts are random in 0–7 s, at least 0.7 s apart, and all

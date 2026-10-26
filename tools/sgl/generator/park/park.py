@@ -1,7 +1,7 @@
 # Generates a park: a flat green square, optionally with elliptical ponds, and trees standing in groves on the grass.
 #
 # A pond is a green ring (a cyl hollowed by h(60)) around a blue water disc a little smaller than the ring, so the
-# water shows only through the ring's hollow. On every pond, white rings like ripples start small at random spots,
+# water shows only through the ring's hollow. On every pond, white rings (thin tori) like ripples start small at random spots,
 # grow and fade out at once, then stay away for a while before they start again.
 #
 # The trees stand in groups spread over the park, with a few lone trees between them; none stands in a pond's hollow,
@@ -27,6 +27,8 @@ WATER_INSET = 2             # how much narrower the water is than its ring, when
 
 RIPPLES_PER_POND = 4
 RIPPLE_START_DIAMETER = 2
+RIPPLE_SIZE_PER_DIAMETER = 0.75   # a tor is 4/3 of its s() across, so a ripple d across is s(0.75 d)
+RIPPLE_HEIGHT = 7.5               # the s() height which stands the tube of a tor h(100) 0.1 high
 RIPPLE_BASE = 0.111         # just above the water's surface
 RIPPLE_EDGE_MARGIN = 0.5    # a full-grown ripple keeps this far inside the hollow: it stands higher than the ring
 RIPPLE_SMALLEST_SHARE = 0.45    # a ripple grows to at least this share of the hollow's narrower width
@@ -158,11 +160,17 @@ def ripples(pond):
     for start in starts:
         x, y, final_diameter = ripple_spot(pond, placed, smallest_diameter, spacing)
         placed.append((x, y))
-        growth = final_diameter - RIPPLE_START_DIAMETER
-        lines.append(f'cyl s({RIPPLE_START_DIAMETER},{RIPPLE_START_DIAMETER},0.1) t({x},{y},{RIPPLE_BASE}) h(100) '
+        start_size = ripple_size(RIPPLE_START_DIAMETER)
+        growth = ripple_size(final_diameter - RIPPLE_START_DIAMETER)
+        lines.append(f'tor s({start_size},{start_size},{RIPPLE_HEIGHT}) t({x},{y},{RIPPLE_BASE}) h(100) '
                      f'c(#ffffffff) sh(100) as1({growth},{growth},0,{grow_time},{RIPPLE_PAUSE},{start}) '
                      f'acg1(#ffffff00,{grow_time},{RIPPLE_PAUSE},{start})')
     return lines
+
+
+# A ripple is a torus hollowed all the way, which leaves a thin white line around the spot it grows from.
+def ripple_size(diameter):
+    return f'{diameter * RIPPLE_SIZE_PER_DIAMETER:.2f}'.rstrip('0').rstrip('.')
 
 
 # A spot inside the hollow, far enough from the other ripples, leaving room to grow. When none turns up, the ripple
