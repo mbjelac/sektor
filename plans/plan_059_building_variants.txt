@@ -22,3 +22,8 @@ Example: Park, TownSquare, Habitats
         - you can do this once per sektor load or game load as it won't change
     - when rendering building, choose the building sgl as variantIndex modulus numberOfBuildingVariants
         - this is so that variant sgl always exists
+
+#3 Render construction in different variants
+- when a building is constructed
+    - if there exists a .construction.sgl for the chosen variant, display it first as temporary construction render
+    - if there does not exist, skip construction render
