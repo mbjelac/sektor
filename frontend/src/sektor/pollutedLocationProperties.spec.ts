@@ -7,7 +7,7 @@ import { pollutedLocationProperties } from "./pollution";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Farm",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Wheat", locationProperty: "soil" }],

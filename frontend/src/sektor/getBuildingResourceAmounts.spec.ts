@@ -5,7 +5,7 @@ import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Farm",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Wheat", value: 4 }],
@@ -14,7 +14,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Mill",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Wheat", value: 4 }],
       outputs: [{ name: "Flour", value: 3 }],
@@ -23,7 +23,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "SolarFarm",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Energy", locationProperty: "insolation" }],
@@ -32,7 +32,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Clinic",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Wheat", value: 1 }, { name: "Care", value: 2 }],
       outputs: [{ name: "Health", value: 1 }],
@@ -41,7 +41,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Bakery",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Wheat", value: 2 }, { name: "Sugar", value: 1 }],
       outputs: [{ name: "Cake", value: 1 }],

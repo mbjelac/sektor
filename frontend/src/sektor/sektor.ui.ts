@@ -4,10 +4,11 @@ import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {withoutDepthWrites} from "../../../shared/applyCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
-import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
+import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, getBuildingVariantNumber, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
 import { BuildingLocation, BuildingResourceAmounts, Location, Sektor, SektorState } from "./Sektor";
 import { buildingDefinitions, everyBuildingDefinition } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
+import { randomVariantIndex } from "./buildings/buildingVariant";
 import { updateSektorStatePanel } from "./sektorStatePanel.ui";
 import { onResourceHover, ResourcePointing } from "../resourceHover.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
@@ -322,7 +323,7 @@ interface Construction {
   duration: number;
   startMillis: number;
 }
-const placedBuildings: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }[] = [];
+const placedBuildings: { type: string; location: BuildingLocation; variantIndex?: number; code: string; construction?: Construction; animationStartDelayMillis: number }[] = [];
 let notificationTimeout: ReturnType<typeof setTimeout> | null = null;
 
 // The region of the planet the sektor lies on, which the look of its ground, rock and forests is
@@ -485,9 +486,15 @@ function loadSavedState() {
   if (!sektorData) return;
   sektor.loadState({ buildings: sektorData.buildings });
   for (const building of sektorData.buildings) {
-    const code = placedBuildingCode(building.type, building.location);
+    const code = placedBuildingCode(building.type, building.location, building.variantIndex);
     if (code) {
-      placedBuildings.push({ type: building.type, location: building.location, code, animationStartDelayMillis: randomAnimationStartDelayMillis(building.type) });
+      placedBuildings.push({
+        type: building.type,
+        location: building.location,
+        variantIndex: building.variantIndex,
+        code,
+        animationStartDelayMillis: randomAnimationStartDelayMillis(building.type),
+      });
       floorGeometryNeedsRebaking = true;
     }
   }
@@ -515,10 +522,10 @@ function pointAtResource(resourcePointing: ResourcePointing | null) {
     ? sektor.getBuildingResourceAmounts(resourcePointing.resourceName, resourcePointing.fromBuildingPanel)
     : [];
 }
-function openBuildingPanel(placed: { type: string; location: BuildingLocation; code: string }) {
+function openBuildingPanel(placed: { type: string; location: BuildingLocation; variantIndex?: number; code: string }) {
   const buildingState = sektor.getBuildingState(placed.location);
   if (!buildingState) return;
-  const code = placedBuildingCode(placed.type, placed.location);
+  const code = placedBuildingCode(placed.type, placed.location, placed.variantIndex);
   if (!code) return;
   const placedFloorColor = floorColorAt(placed.location.x, placed.location.y);
   selectedBuildingLocation = placed.location;
@@ -841,7 +848,8 @@ function bakedElevationBodies(p: p5, location: BuildingLocation): BakedBodies {
   return bakedBuildingBodies(p, bakeName, elevationRenderingCode(variation, sides, terrainStyle, elevationCover));
 }
 
-// Every building of a type draws the same bodies, so one bake serves all of its locations.
+// Every building of a type drawn as the same variant draws the same bodies, so one bake serves all
+// of its locations.
 const bakedBuildings = new Map<string, BakedBodies>();
 
 function bakedBuildingBodies(p: p5, type: string, renderingCode: string): BakedBodies {
@@ -872,7 +880,7 @@ function randomAnimationStartDelayMillis(type: string): number {
 // from their beginning whenever the building goes up. Once the construction is over it is dropped
 // and the building is drawn finished from then on, its animations held at their start and its
 // ashow bodies hidden until its delay is over: the time handed on stays below zero until then.
-function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingLocation; code: string; construction?: Construction; animationStartDelayMillis: number }) {
+function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingLocation; variantIndex?: number; code: string; construction?: Construction; animationStartDelayMillis: number }) {
   if (building.construction) {
     const constructionMillis = p.millis() - building.construction.startMillis;
     if (constructionMillis < building.construction.duration) {
@@ -888,10 +896,12 @@ function drawPlacedBuilding(p: p5, building: { type: string; location: BuildingL
 
 // Forests standing in the same shape draw the same bodies, so they are baked under their shape
 // rather than under the name every one of them shares.
-function placedBuildingBakeName(building: { type: string; location: BuildingLocation }): string {
+// Buildings of a type drawn as the same variant draw the same bodies, so they are baked under their
+// variant as well as their type.
+function placedBuildingBakeName(building: { type: string; location: BuildingLocation; variantIndex?: number }): string {
   return building.type === FOREST_NAME
     ? `${FOREST_NAME} ${squareVariation(building.location.x, building.location.y)}`
-    : building.type;
+    : `${building.type} ${getBuildingVariantNumber(building.type, building.variantIndex)}`;
 }
 
 function showError(message: string) {
@@ -1335,14 +1345,15 @@ const sektorUi = (p: p5) => {
       return;
     }
 
-    const result = sektor.createBuilding({ type: selected, location: { x: grid.x, y: grid.y } });
+    const result = sektor.createBuilding({ type: selected, location: { x: grid.x, y: grid.y }, variantIndex: randomVariantIndex() });
 
     for (const building of result.addedBuildings) {
-      const code = placedBuildingCode(building.type, building.location);
+      const code = placedBuildingCode(building.type, building.location, building.variantIndex);
       if (code) {
         placedBuildings.push({
           type: building.type,
           location: building.location,
+          variantIndex: building.variantIndex,
           code,
           construction: startConstruction(building.type, p.millis()),
           animationStartDelayMillis: randomAnimationStartDelayMillis(building.type),
@@ -1460,10 +1471,10 @@ function isSelectedBuildingLocation(location: BuildingLocation): boolean {
 
 // A forest is not among the buildings of the toolbar, and is drawn in the shape its square is
 // counted down to; every other building is drawn the same wherever it stands.
-function placedBuildingCode(type: string, location: BuildingLocation): string | null {
+function placedBuildingCode(type: string, location: BuildingLocation, variantIndex: number | undefined): string | null {
   return type === FOREST_NAME
     ? forestRenderingCode(squareVariation(location.x, location.y), terrainStyle)
-    : getBuildingCode(type);
+    : getBuildingCode(type, variantIndex);
 }
 
 new p5(sektorUi);

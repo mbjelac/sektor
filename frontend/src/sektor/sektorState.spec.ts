@@ -6,7 +6,7 @@ import { TEST_HUB, TEST_HUB_DEFINITION } from "./testImportExportHub";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Well",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [
         { name: "Energy", value: 8 },
@@ -20,7 +20,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Farm",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [
         { name: "Water", value: 3 },
@@ -138,7 +138,7 @@ describe("getSektorState", () => {
 const poolDefinitions: BuildingDefinition[] = [
   {
     name: "Consumer",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Water", value: 5 }],
       outputs: [],
@@ -147,7 +147,7 @@ const poolDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Producer",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Water", value: 7 }],
@@ -156,7 +156,7 @@ const poolDefinitions: BuildingDefinition[] = [
   },
   {
     name: "BigProducer",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Water", value: 10 }],
@@ -251,7 +251,7 @@ describe("resource pool", () => {
 const locationPropertyDefinitions: BuildingDefinition[] = [
   {
     name: "SolarFarm",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [
         { name: "Work", value: 2 },
@@ -264,7 +264,7 @@ const locationPropertyDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Mine",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [
         { name: "Energy", value: 3 },

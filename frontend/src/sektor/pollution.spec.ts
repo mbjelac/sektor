@@ -5,19 +5,19 @@ import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Smokestack",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [],
     properties: { pollutionArea: 3 },
   },
   {
     name: "Chimney",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [],
     properties: { pollutionArea: 1 },
   },
   {
     name: "Bakery",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [],
     properties: {},
   },

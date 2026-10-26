@@ -133,16 +133,12 @@ export class Sektor {
   }
 
   loadState(state: { buildings: Building[] }) {
-    this.buildings = state.buildings.map(building => building.activeFunctions
-      ? {
-        type: building.type,
-        location: building.location,
-        activeFunctions: [...building.activeFunctions],
-      }
-      : {
-        type: building.type,
-        location: building.location,
-      });
+    this.buildings = state.buildings.map(building => {
+      const loadedBuilding: Building = { type: building.type, location: building.location };
+      if (building.variantIndex !== undefined) loadedBuilding.variantIndex = building.variantIndex;
+      if (building.activeFunctions) loadedBuilding.activeFunctions = [...building.activeFunctions];
+      return loadedBuilding;
+    });
   }
 
   getBuildingState(location: BuildingLocation): BuildingState | null {

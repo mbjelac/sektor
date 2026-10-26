@@ -65,25 +65,23 @@ export interface ConstructionRender {
 
 export interface BuildingDefinition {
   name: string;
-  renderingCode: string;
+  // The code of every variant the building can be drawn as, the first variant first.
+  renderingCodes: string[];
   constructionRender?: ConstructionRender;
   buildingFunctions: BuildingFunction[];
   properties: BuildingProperties;
 }
 
 // The SGL files of every building, by their path within the buildings folder: each building has a
-// folder named after it, holding the code it is drawn with.
+// folder named after it, holding the code of each variant it is drawn as.
 export type BuildingRenderingFiles = Record<string, string>;
-
-// The file in a building's folder holding the code the building is drawn with.
-const RENDERING_FILE = "0.sgl";
 
 // The file in a building's folder holding the code of what stands on its location while it goes up.
 const CONSTRUCTION_RENDERING_FILE = "0.construction.sgl";
 
 // A building can do several things at once, so every Function section of its definition
 // becomes a separate building function. A building is drawn with the code of its own folder of
-// SGL files, and a building without one is left out.
+// SGL files, and a building without any is left out.
 export function parseBuildingDefinitions(lines: string[], renderingFiles: BuildingRenderingFiles): BuildingDefinition[] {
   const buildings: BuildingDefinition[] = [];
 
@@ -95,11 +93,11 @@ export function parseBuildingDefinitions(lines: string[], renderingFiles: Buildi
   let section: "none" | "construction" | "function" | "properties" | "tags" = "none";
 
   function pushBuilding() {
-    const renderingCode = currentName ? renderingFiles[`${currentName}/${RENDERING_FILE}`] : undefined;
-    if (currentName && renderingCode !== undefined) {
+    const renderingCodes = currentName ? variantRenderingCodes(currentName, renderingFiles) : [];
+    if (currentName && renderingCodes.length > 0) {
       const building: BuildingDefinition = {
         name: currentName,
-        renderingCode: renderingCode.trim(),
+        renderingCodes,
         buildingFunctions: functionLineGroups.map(functionLines => parseBuildingFunction(functionLines)),
         properties: parseProperties(propertyLines),
       };
@@ -162,6 +160,16 @@ export function parseBuildingDefinitions(lines: string[], renderingFiles: Buildi
   pushBuilding();
 
   return buildings;
+}
+
+// The variants of a building are the files of its folder numbered from 0 up, and they end at the
+// first number without a file, so that every variant up to their count has its code.
+function variantRenderingCodes(buildingName: string, renderingFiles: BuildingRenderingFiles): string[] {
+  const renderingCodes: string[] = [];
+  for (let variantNumber = 0; renderingFiles[`${buildingName}/${variantNumber}.sgl`] !== undefined; variantNumber++) {
+    renderingCodes.push(renderingFiles[`${buildingName}/${variantNumber}.sgl`].trim());
+  }
+  return renderingCodes;
 }
 
 // A building without both the code of its construction and how long it lasts goes up at once.

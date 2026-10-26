@@ -15,7 +15,7 @@ export const ECOSYSTEM_SUPPORT_RESOURCE = "EcosystemSupport";
 // no rendering code of its own.
 export const FOREST_DEFINITION: BuildingDefinition = {
   name: FOREST_NAME,
-  renderingCode: "",
+  renderingCodes: [],
   // A forest takes nothing in: what it gives, it gives by standing there, and fouled ground gives
   // less of all of it.
   buildingFunctions: [{

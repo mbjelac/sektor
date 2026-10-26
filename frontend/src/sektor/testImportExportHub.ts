@@ -6,7 +6,7 @@ import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 // it takes no test building's place.
 export const TEST_HUB_DEFINITION: BuildingDefinition = {
   name: "TestHub",
-  renderingCode: "box s(1,1,1)",
+  renderingCodes: ["box s(1,1,1)"],
   buildingFunctions: [{
     inputs: [],
     outputs: [{ name: IMPORT_EXPORT_RESOURCE, value: 100 }],

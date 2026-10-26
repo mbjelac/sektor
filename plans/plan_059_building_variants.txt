@@ -13,8 +13,8 @@ Example: Park, TownSquare, Habitats
 - [done] delete Render & Construction Render sections from buildings.md
 - [done] adjust accordingly for test buildings
 
-#2 Render buildings in different variants
-- when a building is constructed
+#2 [done] Render buildings in different variants
+- [done] when a building is constructed
     - choose the building's "variantIndex" - a random number between 0 and 100
     - store variantIndex with other building data in sektor storage
         - this is so that once a building is constructed, it always uses that variant to render

@@ -8,6 +8,10 @@ export interface BuildingLocation {
 export interface BuildingCreation {
   type: string;
   location: BuildingLocation;
+  // Drawn at random when the building is put up and kept for good, so that the building is drawn
+  // as the same of its variants every time the sektor is opened. A building put up before buildings
+  // had variants carries none, and is drawn as its first variant.
+  variantIndex?: number;
 }
 
 // A building does every function of its definition which is activated. The activations are

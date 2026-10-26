@@ -7,7 +7,7 @@ import { ELEVATION, GROUND, RIVER_FROM_WEST, SEA } from "../../../shared/terrain
 function buildingDefinition(name: string, inputs: { name: string, value: number }[], outputs: { name: string, value: number }[]): BuildingDefinition {
   return {
     name,
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{ inputs, outputs }],
     properties: {},
   };

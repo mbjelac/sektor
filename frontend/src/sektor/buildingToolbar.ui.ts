@@ -8,6 +8,7 @@ import { BLOCK_SIZE } from "../../../shared/constants";
 import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 import { buildingTags } from "./buildings/buildingTags";
 import { isShownByBuildingTag } from "./buildings/buildingTagFilter";
+import { buildingVariantNumber } from "./buildings/buildingVariant";
 import * as icons from "../icons";
 
 const TOOLBAR_FUNCTION_PANEL_MARGIN = 8;
@@ -19,9 +20,9 @@ const THUMBNAIL_HEIGHT = 70;
 export const DESTRUCTION_TOOL = "Destroy";
 
 let selectedBuilding: string | null = null;
-// The code of a building is needed to draw it on the map, also when the map is shown without the
-// toolbar, so it is looked up straight from the definitions.
-const buildingCodeMap = new Map(buildingDefinitions.map(building => [building.name, building.renderingCode]));
+// The code of a building's variants is needed to draw it on the map, also when the map is shown
+// without the toolbar, so it is looked up straight from the definitions.
+const buildingCodesMap = new Map(buildingDefinitions.map(building => [building.name, building.renderingCodes]));
 let selectedBuildingTag: string = buildingTags[0];
 let selectionCallback: ((buildingName: string | null) => void) | null = null;
 
@@ -33,8 +34,13 @@ export function onBuildingSelected(callback: (buildingName: string | null) => vo
   selectionCallback = callback;
 }
 
-export function getBuildingCode(name: string): string | null {
-  return buildingCodeMap.get(name) ?? null;
+export function getBuildingCode(name: string, variantIndex: number | undefined): string | null {
+  const renderingCodes = buildingCodesMap.get(name) ?? [];
+  return renderingCodes[getBuildingVariantNumber(name, variantIndex)] ?? null;
+}
+
+export function getBuildingVariantNumber(name: string, variantIndex: number | undefined): number {
+  return buildingVariantNumber(variantIndex, buildingCodesMap.get(name)?.length ?? 0);
 }
 
 export function deselectBuilding(): void {
@@ -297,7 +303,7 @@ function drawBuildingThumbnail(sketch: p5, building: BuildingDefinition) {
   } else {
     drawFloorWireframe(sketch, BLOCK_SIZE);
   }
-  const commands = parseCommands(building.renderingCode);
+  const commands = parseCommands(building.renderingCodes[0]);
   applyCommands(sketch, commands);
 }
 

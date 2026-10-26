@@ -6,7 +6,7 @@ import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Mill",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [
         { name: "Wheat", value: 4 },
@@ -20,7 +20,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Farm",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Water", value: 2 }],
       outputs: [{ name: "Wheat", locationProperty: "soil" }],
@@ -29,7 +29,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Orchard",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Water", value: 1 }],
       outputs: [{ name: "Apples", locationProperty: "soil", locationPropertyDivisor: 4 }],

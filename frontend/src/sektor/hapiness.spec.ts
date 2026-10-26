@@ -10,7 +10,7 @@ const LOCAL_RESOURCES = ["Cheer", "Bread", "Hapiness"];
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Habitat",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Cheer", value: 2 }],
       outputs: [{ name: "Hapiness", value: 5 }],
@@ -19,7 +19,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "CheerWorks",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Cheer", value: 4 }],
@@ -28,7 +28,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "SmallCheerWorks",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Cheer", value: 2 }],
@@ -37,7 +37,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Almshouse",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Bread", value: 1 }],
       outputs: [{ name: "Hapiness", value: 2 }],
@@ -46,7 +46,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "CheerWorkshop",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Cheer", value: 3 }],
       outputs: [{ name: "Work", value: 1 }],
@@ -55,7 +55,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Well",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Water", value: 1 }],

@@ -7,7 +7,7 @@ import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Hub",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: IMPORT_EXPORT_RESOURCE, value: 4 }],
@@ -16,7 +16,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Well",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Water", value: 1 }],
@@ -25,7 +25,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Quarry",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Stone", value: 6 }],
@@ -34,7 +34,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Mine",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [],
       outputs: [{ name: "Ore", value: 4 }],
@@ -43,7 +43,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Mill",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Wheat", value: 3 }],
       outputs: [{ name: "Flour", value: 1 }],

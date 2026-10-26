@@ -21,7 +21,7 @@ describe("parseBuildingDefinitions", () => {
 
     expect(result).toEqual([{
       name: "MyBuilding",
-      renderingCode: "box s(10,10,10)",
+      renderingCodes: ["box s(10,10,10)"],
       buildingFunctions: [],
       properties: {},
     }]);
@@ -32,7 +32,7 @@ describe("parseBuildingDefinitions", () => {
       "# MyBuilding",
     ], { "MyBuilding/0.sgl": "box s(10,10,10)\ncyl s(5,5,5)" });
 
-    expect(result[0].renderingCode).toEqual("box s(10,10,10)\ncyl s(5,5,5)");
+    expect(result[0].renderingCodes).toEqual(["box s(10,10,10)\ncyl s(5,5,5)"]);
   });
 
   it("parses building function with inputs and outputs", () => {
@@ -137,7 +137,7 @@ describe("parseBuildingDefinitions", () => {
       "",
     ], { "MyBuilding/0.sgl": "box s(10,10,10)\n\ncyl s(5,5,5)" });
 
-    expect(result[0].renderingCode).toEqual("box s(10,10,10)\n\ncyl s(5,5,5)");
+    expect(result[0].renderingCodes).toEqual(["box s(10,10,10)\n\ncyl s(5,5,5)"]);
   });
 
   it("ignores blank lines in function section", () => {
@@ -316,7 +316,7 @@ describe("parseBuildingDefinitions", () => {
     expect(result).toEqual([
       {
         name: "BuildingA",
-        renderingCode: "box s(1,1,1)",
+        renderingCodes: ["box s(1,1,1)"],
         buildingFunctions: [{
           inputs: [{ name: "Water", value: 2 }],
           outputs: [{ name: "Steam", value: 1 }],
@@ -325,7 +325,7 @@ describe("parseBuildingDefinitions", () => {
       },
       {
         name: "BuildingB",
-        renderingCode: "cyl s(5,5,5)",
+        renderingCodes: ["cyl s(5,5,5)"],
         buildingFunctions: [{
           inputs: [{ name: "Iron", value: 4 }],
           outputs: [{ name: "Steel", value: 3 }],
@@ -359,7 +359,31 @@ describe("parseBuildingDefinitions", () => {
       "# MyBuilding",
     ], { "MyBuilding/0.sgl": "\nbox s(10,10,10)\n" });
 
-    expect(result[0].renderingCode).toEqual("box s(10,10,10)");
+    expect(result[0].renderingCodes).toEqual(["box s(10,10,10)"]);
+  });
+
+  it("parses the rendering files numbered from 0 up as the variants of the building", () => {
+    const result = parseBuildingDefinitions([
+      "# MyBuilding",
+    ], { "MyBuilding/1.sgl": "cyl s(5,5,5)", "MyBuilding/0.sgl": "box s(10,10,10)", "MyBuilding/2.sgl": "pri4 s(3,3,3)" });
+
+    expect(result[0].renderingCodes).toEqual(["box s(10,10,10)", "cyl s(5,5,5)", "pri4 s(3,3,3)"]);
+  });
+
+  it("ends the variants of the building at the first number without a rendering file", () => {
+    const result = parseBuildingDefinitions([
+      "# MyBuilding",
+    ], { "MyBuilding/0.sgl": "box s(10,10,10)", "MyBuilding/1.sgl": "cyl s(5,5,5)", "MyBuilding/3.sgl": "pri4 s(3,3,3)" });
+
+    expect(result[0].renderingCodes).toEqual(["box s(10,10,10)", "cyl s(5,5,5)"]);
+  });
+
+  it("does not take the construction rendering file for a variant of the building", () => {
+    const result = parseBuildingDefinitions([
+      "# MyBuilding",
+    ], { "MyBuilding/0.sgl": "box s(10,10,10)", "MyBuilding/0.construction.sgl": "box s(2,2,2)" });
+
+    expect(result[0].renderingCodes).toEqual(["box s(10,10,10)"]);
   });
 
   it("leaves out a building whose folder holds only other rendering files", () => {
@@ -527,7 +551,7 @@ describe("parseBuildingDefinitions", () => {
 
     expect(result).toEqual([{
       name: "Tower",
-      renderingCode: "box s(10,10,10)",
+      renderingCodes: ["box s(10,10,10)"],
       constructionRender: { renderingCode: "box s(2,2,2)\ncyl s(1,1,1)", duration: 1500 },
       buildingFunctions: [],
       properties: {},

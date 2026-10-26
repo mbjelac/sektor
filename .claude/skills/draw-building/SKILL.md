@@ -82,6 +82,27 @@ is there.
   rerunning them means re-copying to `grasslands` and rerunning this script.
 - `tools/sgl/generator/terrain/outcrop.py` — shared helpers: random core rocks, rock palette,
   tree sizes and colours, pri5 rock geometry, placing trees on rock roofs.
+- `tools/sgl/generator/park/park.py` — **the template for any park**. Prints one park (or writes
+  it with `--out=<file>`); `--seed` gives another layout. Without `--pond` it is a park without
+  ponds: only the ground `pri4 s(142,142,0.1) t(0,0,0) c(#5bbf5a)` and the trees. Each
+  `--pond=x,y,ring_width,ring_depth[,water_width,water_depth]` adds one; the template's two are
+  `--pond=-21,-25,43,43,40,40 --pond=18,13,60,70`. What it draws:
+  - A pond is a green ring `cyl s(ring,0.12) h(60) c(#5bbf5a)` around a blue disc
+    `cyl s(water,0.11) c(#61adff)` (water defaults to ring − 2), so the water shows only through
+    the ring's hollow (0.6 × the ring).
+  - Ripples: 4 per pond, `cyl s(2,2,0.1) t(…,0.111) h(100) c(#ffffffff) sh(100)` with matching
+    `as1(g,g,0,grow,5000,start)` and `acg1(#ffffff00,grow,5000,start)`, so a ring grows and fades
+    out at once, then stays away 5 s. Random spots in the hollow, at least ¼ of its narrower width
+    apart. Each ring grows only as far as its spot allows, stopping 0.5 inside the hollow's edge,
+    because the ring (top 0.211) stands higher than the bank (0.12). Grow time is 3 s for a hollow
+    under 30 wide and 4 s otherwise. Starts are random in 0–7 s, at least 0.7 s apart, and all
+    rings on a pond share one cycle.
+  - Trees: 96 `sph s(w,w,h) t(x,y,0)`, widths 3–5, heights w…2w, colours `#xxGGxx` (G 6d–f2, red
+    and blue 0.13–0.2 × G). 84 stand in 14 groves (centres ≥ 17 apart, reach 7–11, crown gaps
+    0.3–1.5) and 12 stand alone (≥ 6 from any other tree). No crown reaches into a pond's hollow;
+    standing on its green ring is fine.
+  - Every search has a limit, so a park takes well under a second: when ponds leave too little
+    dry ground, it says on stderr that fewer groves or trees fit instead of searching forever.
 
 ## The working file
 

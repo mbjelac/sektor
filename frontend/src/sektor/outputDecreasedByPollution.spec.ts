@@ -5,31 +5,31 @@ import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Farm",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{ inputs: [], outputs: [{ name: "Wheat", locationProperty: "soil" }] }],
     properties: {},
   },
   {
     name: "Well",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{ inputs: [], outputs: [{ name: "Water", locationProperty: "groundwater" }] }],
     properties: {},
   },
   {
     name: "Windmill",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{ inputs: [], outputs: [{ name: "Energy", locationProperty: "wind" }] }],
     properties: {},
   },
   {
     name: "Bakery",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{ inputs: [], outputs: [{ name: "Bread", value: 2 }] }],
     properties: {},
   },
   {
     name: "Orchard",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [
       { inputs: [], outputs: [{ name: "Wood", value: 1 }] },
       { inputs: [], outputs: [{ name: "Apples", locationProperty: "soil" }] },

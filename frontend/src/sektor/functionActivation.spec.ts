@@ -6,7 +6,7 @@ import { BuildingDefinition } from "./buildings/parseBuildingDefinitions";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Workshop",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [
       {
         name: "Tool making",
@@ -28,7 +28,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Reactor",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [
       {
         name: "Power making",
@@ -46,7 +46,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Mill",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Wheat", value: 4 }],
       outputs: [{ name: "Flour", value: 3 }],

@@ -7,7 +7,7 @@ import { ELEVATION, GROUND } from "../../../shared/terrain";
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Mill",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Wheat", value: 4 }],
       outputs: [{ name: "Flour", value: 3 }],
@@ -16,7 +16,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Farm",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Water", value: 2 }],
       outputs: [{ name: "Wheat", value: 5 }],

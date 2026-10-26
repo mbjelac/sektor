@@ -10,7 +10,7 @@ const LOCAL_RESOURCES = ["Care", "Water", IMPORT_EXPORT_RESOURCE];
 const testDefinitions: BuildingDefinition[] = [
   {
     name: "Carer",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Food", value: 1 }],
       outputs: [{ name: "Care", value: 4 }],
@@ -19,7 +19,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Home",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Care", value: 3 }],
       outputs: [{ name: "Work", value: 5 }],
@@ -28,7 +28,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "BigHome",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Care", value: 10 }],
       outputs: [{ name: "Work", value: 20 }],
@@ -37,7 +37,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "CareChain",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Care", value: 4 }],
       outputs: [{ name: "Care", value: 6 }],
@@ -46,7 +46,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Waterworks",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Care", value: 4 }],
       outputs: [{ name: "Water", value: 5 }],
@@ -55,7 +55,7 @@ const testDefinitions: BuildingDefinition[] = [
   },
   {
     name: "Washer",
-    renderingCode: "box s(1,1,1)",
+    renderingCodes: ["box s(1,1,1)"],
     buildingFunctions: [{
       inputs: [{ name: "Water", value: 5 }],
       outputs: [{ name: "Work", value: 2 }],
