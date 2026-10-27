@@ -1,0 +1,25 @@
+Bodies can shine: they glow with their own color, so that faces turned away from the light stay bright,
+and glare where the light catches them.
+Both architect & frontend use the shared rendering code, so both show shine and its animation.
+
+#1 [done] Objects can shine
+- [done] when shine specified, the body glows with its own color and glares where the light catches it
+    - shine specification is sh(v)
+        - v: shine strength, 0-100
+            - 0 is no shine; it is the default when sh is not present
+            - 100 adds 60% of the body's own color as glow on top of the light falling on it
+                - c(#ffffff) sh(100) is pure white
+        - the glare is a specular highlight whose strength follows v
+
+#2 Shine can be animated
+- when shine animation specified, the body's shine changes gradually from 0 to the specified strength and back
+    - shine animation specification is ash(v, duration, pause)
+        - v: shine strength to arrive to, 0-100
+        - duration: time in milliseconds during which shine changes from 0 to v
+        - pause: time in milliseconds during which shine stays unchanged at each end
+    - phases, repeating endlessly:
+        - shine increases from 0 to v during duration
+        - shine stays at v during pause
+        - shine decreases from v back to 0 during duration
+        - shine stays at 0 during pause
+    - animation is applied in animation steps, like the other animations (plan 13)
