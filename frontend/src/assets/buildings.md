@@ -349,6 +349,10 @@ duration=2000
 
 # Fertilizatron
 
+## Construction
+
+duration=1500
+
 ## Function
 
 Chemicals 4
