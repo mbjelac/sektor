@@ -226,7 +226,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, disabled, out
   // Set draw data and render
   currentDraw = { code, floorColor, showFloor: showFloor !== false, drawFloorInstead };
   ensurePreviewP5(previewContainer);
-  previewP5!.redraw();
+  redrawPreview();
 
   panelLocation = location;
   panelEl.scrollTop = scrollTop;
@@ -242,6 +242,28 @@ function propertyValueText(propertyName: string, propertyValue: number, location
     return `${formatNumber(pollutedValue)} / ${formatNumber(propertyValue)} ⚠️`;
   }
   return formatNumber(propertyValue);
+}
+
+// p5 waits between clearing the picture and drawing it, so two redraws asked for at once — the panel
+// of the building selected so far refreshed, then the panel of a building just put up opened — both
+// clear before either draws, and the second draws over the first: moved down twice and lit twice.
+// A redraw asked for while another is under way therefore waits for it, and as every redraw draws
+// what the panel shows by then, one redraw afterwards stands for all asked for in the meantime.
+let previewRedraw: Promise<void> | null = null;
+let previewRedrawWanted = false;
+
+function redrawPreview() {
+  previewRedrawWanted = true;
+  if (previewRedraw) return;
+  previewRedraw = redrawPreviewWhileWanted();
+}
+
+async function redrawPreviewWhileWanted() {
+  while (previewRedrawWanted) {
+    previewRedrawWanted = false;
+    await previewP5!.redraw();
+  }
+  previewRedraw = null;
 }
 
 export function hideBuildingPanel() {
