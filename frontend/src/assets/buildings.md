@@ -147,6 +147,10 @@ people
 
 # Agriplot
 
+## Construction
+
+duration=2000
+
 ## Function
 
 Water 4
