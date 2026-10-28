@@ -75,10 +75,9 @@ land: 10690 habitable triangles.
     - sektor map should have coastal edges with randomly 6-9 sea squares
     - the strip behind the coastal edge should have randomly 1-3 sea squares
         - these should be neighbours of the edge sea squares (diagonals don't count)
-- the coast edges should correspond approximately to the trianlge edges which are neigboring sea triangles
+- the coast edges should correspond approximately to the triangle edges which are neighboring sea triangles
     - if a triangle has one edge towards north (and the other two towards SW & SE)
-        - and it's north neighbor is a sea triangle
+        - and it's north neighbour is a sea triangle
         - then the map's north edge should be coastal
     - if the same triangle's SW neighbor is also sea
         - then it's south & west edges should be coastal
-
