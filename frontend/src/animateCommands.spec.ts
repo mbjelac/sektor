@@ -45,6 +45,27 @@ describe("animatedScale", () => {
 });
 
 describe("animatedColor", () => {
+  it("fades a gradually changing body there, holds the color, fades back, holds its own color, then fades there again", () => {
+    const [body] = parseCommands("sph c(#ffffffff) acg(#ffffff00,100,40,200)");
+
+    const colorsOverTime = [100, 200, 260, 300, 340, 400, 440, 480, 540].map(elapsedMilliseconds => ({
+      elapsedMilliseconds,
+      color: animatedColor(body, elapsedMilliseconds),
+    }));
+
+    expect(colorsOverTime).toEqual([
+      {elapsedMilliseconds: 100, color: "#ffffffff"},
+      {elapsedMilliseconds: 200, color: "#ffffffff"},
+      {elapsedMilliseconds: 260, color: "#ffffff66"},
+      {elapsedMilliseconds: 300, color: "#ffffff00"},
+      {elapsedMilliseconds: 340, color: "#ffffff00"},
+      {elapsedMilliseconds: 400, color: "#ffffff99"},
+      {elapsedMilliseconds: 440, color: "#ffffffff"},
+      {elapsedMilliseconds: 480, color: "#ffffffff"},
+      {elapsedMilliseconds: 540, color: "#ffffff66"},
+    ]);
+  });
+
   it("fades a one-way gradually changing body forward, holds the color, then jumps back to its own color", () => {
     const [body] = parseCommands("sph c(#ffffffff) acg1(#ffffff00,100,40,200)");
 

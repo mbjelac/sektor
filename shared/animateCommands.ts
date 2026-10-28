@@ -88,7 +88,7 @@ function graduallyChangedColor(baseColor: string | null, animateColorGradual: An
   const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateColorGradual.delay) / ANIMATION_STEP_MILLISECONDS);
   const forwardStep = animateColorGradual.oneWay
     ? oneWayForwardStep(elapsedStep, phaseSteps, pauseSteps)
-    : thereAndBackForwardStep(elapsedStep % (2 * phaseSteps), phaseSteps);
+    : translationForwardStep(elapsedStep % (2 * phaseSteps + 2 * pauseSteps), phaseSteps, pauseSteps);
   const progress = forwardStep / phaseSteps;
 
   const fromRgba = toRgba(baseColor);
@@ -106,10 +106,6 @@ function graduallyChangedColor(baseColor: string | null, animateColorGradual: An
 function oneWayForwardStep(elapsedStep: number, phaseSteps: number, pauseSteps: number): number {
   const cycleStep = elapsedStep % (phaseSteps + pauseSteps);
   return Math.min(cycleStep, phaseSteps);
-}
-
-function thereAndBackForwardStep(cycleStep: number, phaseSteps: number): number {
-  return cycleStep <= phaseSteps ? cycleStep : 2 * phaseSteps - cycleStep;
 }
 
 // A body with ash shines from none up to the shine of ash and back down, pausing at either end,

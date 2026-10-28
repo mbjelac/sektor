@@ -204,13 +204,14 @@ before placing anything along an edge.
 | `at(dx,dy,dz,dt[,pause[,start]])` | glide by (dx,dy,dz) over `dt` ms, then back, pausing `pause` ms at each end; first waits `start` ms after the building is loaded or constructed; every body with this runs **in step** |
 | `atr(...)` | same arguments, but each line gets its **own random start delay** of 0–2000 ms (added to `start`), so identical bodies drift apart |
 | `at1(...)` | same arguments as `at`, but **one way**: glide by (dx,dy,dz) over `dt` ms, pause `pause` ms, then jump back to the start and go again |
-| `ar(d1,d2,d3,stepDelay)` | add these degrees every `stepDelay` ms — an endless spin; random start delay |
+| `ar(d1,d2,d3,stepDelay)` | add these degrees every `stepDelay` ms — an endless spin; no start delay, so every spinning body of a building turns in step |
 | `act(#color,dt1,dt2[,dt3])` | hold the base color `dt1` ms, `#color` for `dt2` ms, base again for `dt3` ms; in sync across lines |
-| `acg(#color,dt)` | fade base ↔ `#color`, `dt` ms each way; random start delay |
+| `acg(#color,dt[,pause[,start]])` | fade base → `#color` over `dt` ms, hold `pause` ms, fade back, hold `pause` ms, repeat; first waits `start` ms. Same phases as `at` and `ash`, so with the same numbers they run **in step** |
+| `ash(v,dt,pause)` | shine 0 → `v` over `dt` ms, hold `pause` ms, back to 0, hold `pause` ms, repeat; in sync across lines. Overrides `sh()` while it runs |
 | `ashow(dt1,dt2[,dt3])` | hidden `dt1` ms, shown in the `c()` color for `dt2` ms, hidden again for `dt3` ms; in sync across lines. Use this, not a transparent `c()` with `act`, to hide a body for a while |
 
 Animation advances in 20 ms steps, so anything below that is invisible. To make a crowd of
-identical bodies feel alive, use `atr`/`ar` and also vary a number per line (a pause, a delay)
+identical bodies feel alive, use `atr`, or vary a number per line (a pause, a `start` delay, an `r` angle for `ar`)
 rather than emitting the same line many times.
 
 ## Hard rules

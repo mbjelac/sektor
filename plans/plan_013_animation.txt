@@ -52,17 +52,20 @@ because in a timespan of 200ms there will be 10 steps.
 
 #4 [done] Object colors can gradually change
 - [done] when gradual color change animation specified, object changes their color gradually from one color to another during the specified time
-    - gradual color change specification is acg(c, dt)
+    - gradual color change specification is acg(c, dt, pause, delay)
     - c: color to which to gradually change from object's original color, can also have transparency component
     - dt: duration of time during which to arrive to the specified color
+    - pause: optional, how long to keep the color at each end of the change; if not present, it is 0
+    - delay: optional, initial delay in milliseconds before the change starts; if not present, it is 0
 - [done] color changes back
     - after specified color achieved, object changes back to its original color during the same time duration
+- [done] pause and initial delay
+    - after initial delay, object changes to the specified color, keeps it for the pause, changes back to its original color, keeps that for the pause, then changes again
+        - same phases as translation (at) and shine animation (ash), so with the same dt, pause and delay they stay in step
+    - acg has no random start delay
+        - existing acg lines in buildings get a fixed delay of 0-2000ms instead, so they look as before
 
-#5 [done] Animations look natural
-- [done] each animation function should begin with a random delay of 0-2000ms
-    - exception: occurences of function act do not have random delay
-
-#6 [done] Some objects can be hollow
+#5 [done] Some objects can be hollow
 - [done] for certain object types, a "hollow" function can be specified
     - hollow function is h(p)
         - p: percentage (0 - 100) of hollowness
@@ -77,7 +80,7 @@ because in a timespan of 200ms there will be 10 steps.
         - hole is equal to prism base at h(100), sides still rendered but "paper thin"
 - [done] create visual tests for hollow objects
 
-#7 [done] Some objects can turn around
+#6 [done] Some objects can turn around
 - [done] when rotation animation specified, rotate object
     - function ar(d1,d2,d3,t) specifies object rotation
         - d params are deltas to increase params of r function
@@ -90,16 +93,18 @@ because in a timespan of 200ms there will be 10 steps.
         - dx, dy, dz: offset of the rotation point from the object's centre in the 3 axes, in the same units as t
         - applies to both rotation (r) and rotation animation (ar)
         - example: blades of a windmill all rotate about the hub, not about their own centres
+- [done] rotation animation has no random start delay
+    - all bodies with ar start turning at once, so bodies turning about one point stay together
 
-#8 [done] Objects move in one direction
+#7 [done] Objects move in one direction
 - [done] function at1 has same params as function at, but slightly different functionality:
     - after initial delay (if specified as 6th param) object moves in specified direction for specified duration
     - after movement, it pauses (if specified)
     - then it teleports back to original location
     - begins movement again
 
-#9 [done] Object colors can gradually change in one direction
-- [done] function acg1 has same first two params as function acg, but slightly different functionality:
+#8 [done] Object colors can gradually change in one direction
+- [done] function acg1 has same params as function acg, but slightly different functionality:
     - specification is acg1(c, dt, pause, delay)
         - c: color to which to gradually change from object's original color, can also have transparency component
         - dt: duration of time during which to arrive to the specified color
@@ -111,7 +116,7 @@ because in a timespan of 200ms there will be 10 steps.
     - begins changing again
     - acg1 has no random start delay, so with the same dt, pause and delay it stays in step with at1
 
-#10 [done] Objects change size in one direction
+#9 [done] Objects change size in one direction
 - [done] function as1 has same params as function at1, but changes size instead of translation:
     - specification is as1(dx, dy, dz, dt, pause, delay)
         - dx: how much to change x, 1st parameter of s function

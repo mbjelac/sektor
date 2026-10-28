@@ -55,6 +55,24 @@ describe("parseCommands", () => {
     expect(body.animateTranslate).toEqual({dx: 0, dy: 0, dz: 10, dt: 500, phaseSwitchDelay: 100, delay: 750, oneWay: true});
   });
 
+  it("reads a gradual color change with its optional pause and initial delay, without a random start delay", () => {
+    const [withoutOptionalArguments, withOptionalArguments] = parseCommands(
+      "sph acg(#ffffff00,3000)\n" +
+      "sph acg(#ffffff00,3000,100,700)"
+    );
+
+    expect([withoutOptionalArguments.animateColorGradual, withOptionalArguments.animateColorGradual]).toEqual([
+      {color: "#ffffff00", dt: 3000, pause: 0, delay: 0, oneWay: false},
+      {color: "#ffffff00", dt: 3000, pause: 100, delay: 700, oneWay: false},
+    ]);
+  });
+
+  it("reads a rotation animation without a random start delay", () => {
+    const [body] = parseCommands("pri4 ar(1,0,0,100)");
+
+    expect(body.animateRotate).toEqual({d1: 1, d2: 0, d3: 0, stepDelay: 100, delay: 0});
+  });
+
   it("reads a one-way gradual color change with its optional pause and initial delay", () => {
     const [withoutOptionalArguments, withOptionalArguments] = parseCommands(
       "sph acg1(#ffffff00,3000)\n" +
