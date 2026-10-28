@@ -1,5 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { createTerrainMatrix, ELEVATION_SHARES_OF_LAND, FEWEST_SEA_SQUARES, MOST_SEA_SQUARES } from "./terrainMatrix";
+import {
+  createTerrainMatrix,
+  ELEVATION_SHARES_OF_LAND,
+  FEWEST_SEA_SQUARES,
+  FEWEST_SEA_SQUARES_BEHIND_COASTAL_EDGE,
+  FEWEST_SEA_SQUARES_ON_COASTAL_EDGE,
+  MOST_SEA_SQUARES,
+  MOST_SEA_SQUARES_BEHIND_COASTAL_EDGE,
+  MOST_SEA_SQUARES_ON_COASTAL_EDGE,
+  SektorGround,
+} from "./terrainMatrix";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import {
   ELEVATION,
@@ -16,9 +26,11 @@ import {
 // happen to fall.
 const MAPS_LOOKED_AT = 200;
 
-const LAND_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false };
-const SEA_GROUND = { biome: "temperate", isOnLand: false, isDesert: false, isForest: false };
-const DESERT_GROUND = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false };
+const LAND_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false, coastalEdges: [] };
+const SEA_GROUND = { biome: "temperate", isOnLand: false, isDesert: false, isForest: false, coastalEdges: [] };
+const DESERT_GROUND = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] };
+const NORTH_COAST_GROUND = { ...LAND_GROUND, coastalEdges: ["north" as const] };
+const SOUTH_AND_WEST_COAST_GROUND = { ...LAND_GROUND, coastalEdges: ["south" as const, "west" as const] };
 
 describe("createTerrainMatrix", () => {
   // The terrain covers the map and no more of it: a matrix wider than the sektor describes ground
@@ -75,6 +87,16 @@ describe("createTerrainMatrix", () => {
 
   it("raises no rock out of the sea of a sektor on the sea", () => {
     expect(mapsWithRockStandingInTheSea()).toEqual([]);
+  });
+
+  // A sektor on land next to the sea has a coast along the edge of its map facing the sea: most of
+  // the edge is sea, and a few of the squares right behind the sea of the edge.
+  it("lays 6 to 9 squares of sea on an edge facing the sea, and 1 to 3 right behind them", () => {
+    expect(mapsWhoseNorthCoastIsOutOfShape()).toEqual([]);
+  });
+
+  it("lays a coast along every edge facing the sea and no sea anywhere else", () => {
+    expect(mapsWithSeaAwayFromTheirSouthAndWestCoasts()).toEqual([]);
   });
 
   // Whether a sektor on land has a river is a toss of a coin, so among many maps there are some
@@ -269,6 +291,48 @@ function mapsWithRockStandingInTheSea(): object[] {
 
     return counted === squareCount ? [] : [{ counted, squareCount }];
   });
+}
+
+// Every map drawn with a coast on its north edge, where z is 0, whose edge or the strip right behind
+// it holds too much or too little sea, whose strip has sea with no sea in front of it on the edge,
+// or which has sea further in.
+function mapsWhoseNorthCoastIsOutOfShape(): object[] {
+  return mapsDrawn(NORTH_COAST_GROUND).flatMap(terrain => {
+    const seaSquares = squaresOfSea(terrain);
+    const seaOnEdge = seaSquares.filter(([, z]) => z === 0);
+    const seaBehindEdge = seaSquares.filter(([, z]) => z === 1);
+    const seaBehindLand = seaBehindEdge.filter(([x]) => terrain[x]![0] !== SEA);
+    const seaFurtherIn = seaSquares.filter(([, z]) => z > 1);
+
+    const isInShape = seaOnEdge.length >= FEWEST_SEA_SQUARES_ON_COASTAL_EDGE
+      && seaOnEdge.length <= MOST_SEA_SQUARES_ON_COASTAL_EDGE
+      && seaBehindEdge.length >= FEWEST_SEA_SQUARES_BEHIND_COASTAL_EDGE
+      && seaBehindEdge.length <= MOST_SEA_SQUARES_BEHIND_COASTAL_EDGE
+      && seaBehindLand.length === 0
+      && seaFurtherIn.length === 0;
+    return isInShape ? [] : [{ seaOnEdge, seaBehindEdge, seaBehindLand, seaFurtherIn }];
+  });
+}
+
+// Every map drawn with coasts on its south edge, where z is highest, and its west edge, where x is
+// 0, which has sea further in than the strip behind either edge, or too much or too little sea on
+// either edge.
+function mapsWithSeaAwayFromTheirSouthAndWestCoasts(): object[] {
+  return mapsDrawn(SOUTH_AND_WEST_COAST_GROUND).flatMap(terrain => {
+    const seaSquares = squaresOfSea(terrain);
+    const seaAwayFromCoasts = seaSquares.filter(([x, z]) => x > 1 && z < SEKTOR_SIZE - 2);
+    const seaOnEdges = [
+      seaSquares.filter(([, z]) => z === SEKTOR_SIZE - 1).length,
+      seaSquares.filter(([x]) => x === 0).length,
+    ];
+    const isInShape = seaAwayFromCoasts.length === 0 && seaOnEdges.every(seaOnEdge =>
+      seaOnEdge >= FEWEST_SEA_SQUARES_ON_COASTAL_EDGE && seaOnEdge <= MOST_SEA_SQUARES_ON_COASTAL_EDGE);
+    return isInShape ? [] : [{ seaAwayFromCoasts, seaOnEdges }];
+  });
+}
+
+function mapsDrawn(ground: SektorGround): number[][][] {
+  return Array.from({ length: MAPS_LOOKED_AT }, () => createTerrainMatrix(ground, Math.random));
 }
 
 function landMapsDrawn(): number[][][] {

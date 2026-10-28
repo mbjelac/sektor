@@ -70,10 +70,10 @@ describe("plantForests", () => {
 });
 
 describe("drawForestShare", () => {
-  const FOREST = { biome: "temperate", isOnLand: true, isDesert: false, isForest: true };
-  const GRASSLAND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false };
-  const SEA_AREA = { biome: "temperate", isOnLand: false, isDesert: false, isForest: false };
-  const DESERT = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false };
+  const FOREST = { biome: "temperate", isOnLand: true, isDesert: false, isForest: true, coastalEdges: [] };
+  const GRASSLAND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false, coastalEdges: [] };
+  const SEA_AREA = { biome: "temperate", isOnLand: false, isDesert: false, isForest: false, coastalEdges: [] };
+  const DESERT = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] };
 
   // A forest is mostly forest, grassland has little of it, the sea less still and the desert none.
   it("draws 50%-90% for a forest, 0%-15% for grassland, 0%-10% for the sea and nothing for the desert", () => {

@@ -1,5 +1,6 @@
-// A sektor on the planet's land is dry land throughout. One on the sea is mostly sea, with a little
-// land left over. The sea is one body of water rather than a scattering of puddles, and it runs in
+// A sektor on the planet's land is dry land, apart from a coast along every edge of its map which
+// faces the sea: most of the squares of that edge are sea, and a few behind them. One on the sea is
+// mostly sea, with a little land left over. The sea is one body of water rather than a scattering of puddles, and it runs in
 // from an edge of the map rather than sitting in the middle of it, so that the water a sektor has
 // reads as a coast. How much of the map it takes is drawn anew for every sektor.
 //
@@ -40,13 +41,24 @@ export const MOST_SEA_SQUARES = Math.round(SEKTOR_SIZE * SEKTOR_SIZE * 0.9);
 // little land, has little rock.
 export const ELEVATION_SHARES_OF_LAND = [0, 1 / 10, 1 / 5];
 
-// What the planet is like where a sektor is made: its biome, whether it is land or sea, and whether
-// the land is desert or forest.
+// How many squares of an edge of the map facing the sea are sea, and how many of the squares right
+// behind those are sea too, anywhere from the fewest to the most, each count as likely as the next.
+export const FEWEST_SEA_SQUARES_ON_COASTAL_EDGE = 6;
+export const MOST_SEA_SQUARES_ON_COASTAL_EDGE = 9;
+export const FEWEST_SEA_SQUARES_BEHIND_COASTAL_EDGE = 1;
+export const MOST_SEA_SQUARES_BEHIND_COASTAL_EDGE = 3;
+
+// An edge of a sektor's map, by the way it faces: north is where z is 0, west where x is 0.
+export type MapEdge = "north" | "east" | "south" | "west";
+
+// What the planet is like where a sektor is made: its biome, whether it is land or sea, whether the
+// land is desert or forest, and which edges of the map of a sektor on land face the sea.
 export interface SektorGround {
   biome: string;
   isOnLand: boolean;
   isDesert: boolean;
   isForest: boolean;
+  coastalEdges: MapEdge[];
 }
 
 // What covers the ground of a sektor, which is what the forests on it and the sun reaching it go by.
@@ -62,8 +74,9 @@ export function createTerrainMatrix(ground: SektorGround, randomNumber: RandomNu
   const terrain = allGround();
   if (!ground.isOnLand) {
     floodWithSea(terrain, randomNumber);
-  } else if (!ground.isDesert) {
-    runRiver(terrain, randomNumber);
+  } else {
+    layCoasts(terrain, ground.coastalEdges, randomNumber);
+    if (!ground.isDesert) runRiver(terrain, randomNumber);
   }
   raiseElevations(terrain, randomNumber);
   return terrain;
@@ -83,6 +96,50 @@ function floodWithSea(terrain: number[][], randomNumber: RandomNumber) {
     terrain[flooded.x][flooded.z] = SEA;
     sea.push(flooded);
   }
+}
+
+// A coast is laid along every edge of the map facing the sea: some of the squares of the edge are
+// sea, drawn at random, and some of the squares right behind those, so that the water comes in a
+// little way here and there rather than standing in a straight line along the rim. Where two coasts
+// meet, the corner they share is laid with the first of them, and counts towards the other's squares
+// as it was laid, and the squares behind an edge are only ever inland, never on the other edge.
+function layCoasts(terrain: number[][], coastalEdges: MapEdge[], randomNumber: RandomNumber) {
+  const laid = new Set<string>();
+  for (const coastalEdge of coastalEdges) {
+    const { squares, inward } = MAP_EDGES[coastalEdge];
+    const seaSquareCount = randomCount(FEWEST_SEA_SQUARES_ON_COASTAL_EDGE, MOST_SEA_SQUARES_ON_COASTAL_EDGE, randomNumber);
+    const alreadySea = squares.filter(square => terrain[square.x][square.z] === SEA);
+    const notYetLaid = squares.filter(square => !laid.has(`${square.x},${square.z}`) && terrain[square.x][square.z] === GROUND);
+    squares.forEach(square => laid.add(`${square.x},${square.z}`));
+    const flooded = inRandomOrder(notYetLaid, randomNumber)
+      .slice(0, Math.max(0, seaSquareCount - alreadySea.length));
+    flooded.forEach(square => terrain[square.x][square.z] = SEA);
+    const seaOnEdge = [...alreadySea, ...flooded];
+
+    const behindSeaOnEdge = seaOnEdge
+      .map(square => ({ x: square.x + inward.x, z: square.z + inward.z }))
+      .filter(square => terrain[square.x][square.z] === GROUND && !isOnEdge(square));
+    inRandomOrder(behindSeaOnEdge, randomNumber)
+      .slice(0, randomCount(FEWEST_SEA_SQUARES_BEHIND_COASTAL_EDGE, MOST_SEA_SQUARES_BEHIND_COASTAL_EDGE, randomNumber))
+      .forEach(square => terrain[square.x][square.z] = SEA);
+  }
+}
+
+// The squares along every edge of the map, and the step from a square of the edge to the square
+// right behind it.
+const MAP_EDGES: Record<MapEdge, { squares: Square[]; inward: Square }> = {
+  north: { squares: squaresAlongEdge(index => ({ x: index, z: 0 })), inward: { x: 0, z: 1 } },
+  east: { squares: squaresAlongEdge(index => ({ x: SEKTOR_SIZE - 1, z: index })), inward: { x: -1, z: 0 } },
+  south: { squares: squaresAlongEdge(index => ({ x: index, z: SEKTOR_SIZE - 1 })), inward: { x: 0, z: -1 } },
+  west: { squares: squaresAlongEdge(index => ({ x: 0, z: index })), inward: { x: 1, z: 0 } },
+};
+
+function squaresAlongEdge(squareAt: (index: number) => Square): Square[] {
+  return Array.from({ length: SEKTOR_SIZE }, (_unused, index) => squareAt(index));
+}
+
+function randomCount(fewest: number, most: number, randomNumber: RandomNumber): number {
+  return fewest + Math.floor(randomNumber() * (most - fewest + 1));
 }
 
 // A draw falling below this leaves the sektor without a river.

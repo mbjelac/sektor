@@ -9,6 +9,7 @@ import { pickSektorLocation } from "./sektorLocation";
 import { getPlanet } from "../list/planet";
 import { TriangleCoordinate } from "../list/planetGrid";
 import { SektorGround } from "./terrainMatrix";
+import { coastalEdges } from "./coastalEdges";
 
 const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Sektors nobody has taken up pile up if they are made faster than they are claimed, so no more are
@@ -55,9 +56,16 @@ export function createSektorIfNeeded(): boolean {
   return true;
 }
 
-function groundAt({ ring, index }: TriangleCoordinate): SektorGround {
-  const region = getPlanet().regionRings[ring]![index]!;
-  return { biome: region.biome, isOnLand: region.isLand, isDesert: region.isDesert, isForest: region.isForest };
+function groundAt(location: TriangleCoordinate): SektorGround {
+  const { grid, regionRings } = getPlanet();
+  const region = regionRings[location.ring]![location.index]!;
+  return {
+    biome: region.biome,
+    isOnLand: region.isLand,
+    isDesert: region.isDesert,
+    isForest: region.isForest,
+    coastalEdges: coastalEdges(grid, regionRings, location),
+  };
 }
 
 // A sektor is waiting for somebody as long as nobody owns it, whatever already stands in it.

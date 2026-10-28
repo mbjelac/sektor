@@ -11,8 +11,8 @@ const RUNS = 50;
 
 const BIOMES = ["tropical", "temperate", "polar"];
 
-const GRASSLAND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false };
-const FOREST = { biome: "temperate", isOnLand: true, isDesert: false, isForest: true };
+const GRASSLAND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false, coastalEdges: [] };
+const FOREST = { biome: "temperate", isOnLand: true, isDesert: false, isForest: true, coastalEdges: [] };
 
 // Ground worth going out of the way for: it holds most of what a property is ever found holding.
 function isRich(value: number): boolean {
@@ -79,23 +79,23 @@ describe("createLocationPropertyMatrix", () => {
 
   // The desert and the sea lie open to the sun, so every location of the map sees the same of it.
   it("lights every location of a desert 12 in the tropics, 8 in temperate lands and 2 near the poles", () => {
-    expect(valuesByBiome("insolation", { isOnLand: true, isDesert: true, isForest: false }))
+    expect(valuesByBiome("insolation", { isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] }))
       .toEqual({ tropical: [12], temperate: [8], polar: [2] });
   });
 
   it("lights every location of the sea 10 in the tropics, 6 in temperate lands and 1 near the poles", () => {
-    expect(valuesByBiome("insolation", { isOnLand: false, isDesert: false, isForest: false }))
+    expect(valuesByBiome("insolation", { isOnLand: false, isDesert: false, isForest: false, coastalEdges: [] }))
       .toEqual({ tropical: [10], temperate: [6], polar: [1] });
   });
 
   // Forest and grassland are lit in pockets, the middle of which is as bright as it gets there.
   it("lights the pockets of a forest at most 12 in the tropics, 8 in temperate lands and 1 near the poles", () => {
-    expect(highestByBiome("insolation", { isOnLand: true, isDesert: false, isForest: true }))
+    expect(highestByBiome("insolation", { isOnLand: true, isDesert: false, isForest: true, coastalEdges: [] }))
       .toEqual({ tropical: [12], temperate: [8], polar: [1] });
   });
 
   it("lights the pockets of grassland at most 12 in the tropics, 8 in temperate lands and 1 near the poles", () => {
-    expect(highestByBiome("insolation", { isOnLand: true, isDesert: false, isForest: false }))
+    expect(highestByBiome("insolation", { isOnLand: true, isDesert: false, isForest: false, coastalEdges: [] }))
       .toEqual({ tropical: [12], temperate: [8], polar: [1] });
   });
 
@@ -133,10 +133,10 @@ describe("createLocationPropertyMatrix", () => {
   // few and the desert mostly none.
   it("gathers as many pockets of groundwater as the biome has", () => {
     expect({
-      sea: groundwaterPocketCountsByBiome({ isOnLand: false, isDesert: false, isForest: false }),
-      forest: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: false, isForest: true }),
-      grassland: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: false, isForest: false }),
-      desert: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: true, isForest: false }),
+      sea: groundwaterPocketCountsByBiome({ isOnLand: false, isDesert: false, isForest: false, coastalEdges: [] }),
+      forest: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: false, isForest: true, coastalEdges: [] }),
+      grassland: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: false, isForest: false, coastalEdges: [] }),
+      desert: groundwaterPocketCountsByBiome({ isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] }),
     }).toEqual({
       sea: { tropical: [1, 2, 3], temperate: [1, 2, 3], polar: [1, 2, 3] },
       forest: { tropical: [8, 9, 10, 11, 12, 13, 14, 15], temperate: [5, 6, 7, 8, 9, 10], polar: [3, 4, 5, 6, 7, 8] },
@@ -148,7 +148,7 @@ describe("createLocationPropertyMatrix", () => {
   // The desert has no pocket half the time, one 30% of the time and two 20% of the time.
   it("gathers no groundwater in half of the deserts, one pocket in 30% and two in 20%", () => {
     const pocketCounts = Array.from({ length: 1000 }, (_, run) =>
-      pocketCountOf(createLocationPropertyMatrix("groundwater", { biome: "temperate", isOnLand: true, isDesert: true, isForest: false }, drawingFirst((run + 0.5) / 1000))));
+      pocketCountOf(createLocationPropertyMatrix("groundwater", { biome: "temperate", isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] }, drawingFirst((run + 0.5) / 1000))));
 
     expect([0, 1, 2].map(pocketCount => pocketCounts.filter(count => count === pocketCount).length)).toEqual([500, 300, 200]);
   });
@@ -167,7 +167,7 @@ describe("createLocationPropertyMatrix", () => {
   });
 
   it("makes no soil at all in the desert", () => {
-    expect(valuesByBiome("soil", { isOnLand: true, isDesert: true, isForest: false }))
+    expect(valuesByBiome("soil", { isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] }))
       .toEqual({ tropical: [0], temperate: [0], polar: [0] });
   });
 
@@ -182,10 +182,10 @@ describe("createLocationPropertyMatrix", () => {
   // than grassland.
   it("blows the wind of its tracks 12 over the desert and the sea, 8/6/8 over forest and 10/8/10 over grassland", () => {
     expect({
-      desert: highestByBiome("wind", { isOnLand: true, isDesert: true, isForest: false }),
-      sea: highestByBiome("wind", { isOnLand: false, isDesert: false, isForest: false }),
-      forest: highestByBiome("wind", { isOnLand: true, isDesert: false, isForest: true }),
-      grassland: highestByBiome("wind", { isOnLand: true, isDesert: false, isForest: false }),
+      desert: highestByBiome("wind", { isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] }),
+      sea: highestByBiome("wind", { isOnLand: false, isDesert: false, isForest: false, coastalEdges: [] }),
+      forest: highestByBiome("wind", { isOnLand: true, isDesert: false, isForest: true, coastalEdges: [] }),
+      grassland: highestByBiome("wind", { isOnLand: true, isDesert: false, isForest: false, coastalEdges: [] }),
     }).toEqual({
       desert: { tropical: [12], temperate: [12], polar: [12] },
       sea: { tropical: [12], temperate: [12], polar: [12] },
