@@ -203,7 +203,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
         - ring is not in polar climate zone
         - triangle either
             - land
-            - sea next to land or 1 sea triangle away from land
+            - sea next to land
     - mark the sektor on the triangle as a small white hollow square
     - render sektor name hovering under the square
         - background rectangle, fill black 50% transparent

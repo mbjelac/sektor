@@ -20,13 +20,12 @@ const sorted = (coordinates: TriangleCoordinate[]) =>
     .sort((left, right) => left.ring - right.ring || left.index - right.index);
 
 describe("habitableTriangles", () => {
-  it("takes land, the sea next to it and the sea one triangle further out", () => {
+  it("takes land and the sea next to it, but not the sea further out", () => {
     const island = { ring: 2, index: 0 };
     const nextToLand = neighboursOf(island);
-    const oneFurtherOut = nextToLand.flatMap(neighboursOf);
 
     expect(sorted(habitableTriangles(grid, planetWith([island]))))
-      .toEqual(sorted([island, ...nextToLand, ...oneFurtherOut]));
+      .toEqual(sorted([island, ...nextToLand]));
   });
 
   it("leaves out the polar zones, even their land", () => {
