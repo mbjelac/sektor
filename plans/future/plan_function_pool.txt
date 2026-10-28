@@ -3,11 +3,42 @@ This unit can be multiplied. This means the function inputs & outputs are multip
 There is a "pool" value which specifies how much a function can be multiplied.
 The multiplier can be from 0 to that max pool value.
 However, multiple functions in a building can be like that.
-Unit multiplication for all functions uses the same pool. The total sum of all multipliers cannpt be greater then the pool value.
+Unit multiplication for all functions uses the same pool. The total sum of all multipliers cannot be greater then the pool value.
 
 #1 A building function can be specified to be multipliable
-- if a building function has property multiply=true in it's description before input & output amounts
+- if a building function has property "Pool: true" in it's description before input & output amounts
     - player can increase a multiplier for this function
-    - multiplier is an integer between 0 and maxMultiplication which is a property of the whole building in Properties section
-- in building panel below function inputs & outputs there is a function multiplication widget
-    -
+    - multiplier is an integer between 0 and poolSize which is a property for the whole building in Properties section
+- initially all functions have multipliers set to 0
+    - the building's pool is unused
+- in building panel below function inputs & outputs there is a function pool widget
+    - it is composed of three possible types of buttons/icons (characters used here for examples):
+        - x: set multiplier to zero
+        - 0: a used multiplier in pool
+        - O: an unused multiplier in pool
+    - example of every function's pool widget initially (all multipliers are set to zero):
+        - given poolSize=5
+        - widget: OOOOO
+        - there is no x icon because multiplier is already zero
+        - when the 4th (from left) O clicked:
+            - widget: x0000O
+            - all other functions' widgets: O
+        - when another function's widget clicked on it's only O left:
+            - widget: x0
+            - all other functions' widgets: (empty)
+            - the 1st function's widget: x0000
+        - when 1st function's x clicked:
+            - 1st function widget: OOOO
+            - 2nd function widget: x0OOOO
+            - all other widgets: OOOO
+    - in UI, the x, 0 & O icons should be:
+        - x: a standard white "times" symbol, used for closing stuff
+        - O: a thin white outline of a circle
+        - 0: like O but with a smaller filled circle in the center
+        - spacing between circles (outline & full) should be equal, 5px
+        - spacing between x and the rest 10px
+    - do not show x on functions which have multiplier zero
+- when multiplier zero, display function values same as starved
+    - gray values
+- when multiplier one, display function values same as non-pool functions
+- when multiplier greater than one, display function values as: <multiplied value> (<specified value>)
