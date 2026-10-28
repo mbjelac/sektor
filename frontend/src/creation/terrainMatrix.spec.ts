@@ -2,10 +2,10 @@ import { describe, it, expect } from "vitest";
 import {
   createTerrainMatrix,
   ELEVATION_SHARES_OF_LAND,
-  FEWEST_SEA_SQUARES,
+  FEWEST_LAND_SQUARES_ON_SEA,
   FEWEST_SEA_SQUARES_BEHIND_COASTAL_EDGE,
   FEWEST_SEA_SQUARES_ON_COASTAL_EDGE,
-  MOST_SEA_SQUARES,
+  MOST_LAND_SQUARES_ON_SEA,
   MOST_SEA_SQUARES_BEHIND_COASTAL_EDGE,
   MOST_SEA_SQUARES_ON_COASTAL_EDGE,
   SektorGround,
@@ -51,14 +51,15 @@ describe("createTerrainMatrix", () => {
     expect(seaSquareCounts).toEqual([]);
   });
 
-  // A sektor on the sea is sea with a coast on it, so its sea is one body of water which runs in
-  // from the rim rather than a scattering of pools.
-  it("makes the sea of every map of a sektor on the sea one body of water touching the edge of the map", () => {
-    expect(mapsWhoseSeaIsNotOneBodyComingInFromTheEdge()).toEqual([]);
+  // A sektor on the sea has its land scattered over the whole map rather than along one side, so
+  // among many maps every square of the map is land on some of them.
+  it("scatters the land of sektors on the sea anywhere over the map", () => {
+    expect(squaresNeverLandOnTheSea()).toEqual([]);
   });
 
-  it("covers 70% to 90% of every map of a sektor on the sea with sea", () => {
-    expect(seaMapsWithSeaOutsideTheRange()).toEqual([]);
+  // The land of a sektor on the sea is every square the sea leaves, rock included.
+  it("leaves 3 to 10 squares of land on every map of a sektor on the sea", () => {
+    expect(seaMapsWithLandOutsideTheRange()).toEqual([]);
   });
 
   // A sektor on the sea has too little land left for a river to run through.
@@ -242,26 +243,21 @@ function squaresOfRiver(terrain: number[][]): [number, number][] {
   );
 }
 
-// Every map drawn whose sea is in more than one piece, or which has sea nowhere on its rim.
-function mapsWhoseSeaIsNotOneBodyComingInFromTheEdge(): object[] {
-  return seaMapsDrawn().flatMap(terrain => {
-    const seaSquares = squaresOfSea(terrain);
-    if (seaSquares.length === 0) return [];
-
-    const oneBody = seaReachableFrom(seaSquares[0], terrain).length === seaSquares.length;
-    const onTheEdge = seaSquares.some(([x, z]) =>
-      x === 0 || z === 0 || x === SEKTOR_SIZE - 1 || z === SEKTOR_SIZE - 1
-    );
-
-    return oneBody && onTheEdge ? [] : [{ seaSquares, oneBody, onTheEdge }];
-  });
+// Every square of the map which is sea on every map of a sektor on the sea drawn.
+function squaresNeverLandOnTheSea(): [number, number][] {
+  const maps = seaMapsDrawn();
+  return squaresOf(allSea(), SEA).filter(([x, z]) => maps.every(terrain => terrain[x]![z] === SEA));
 }
 
-function seaMapsWithSeaOutsideTheRange(): object[] {
+function allSea(): number[][] {
+  return Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => SEA));
+}
+
+function seaMapsWithLandOutsideTheRange(): object[] {
   return seaMapsDrawn()
-    .map(terrain => squaresOfSea(terrain).length)
-    .filter(seaSquareCount => seaSquareCount < FEWEST_SEA_SQUARES || seaSquareCount > MOST_SEA_SQUARES)
-    .map(seaSquareCount => ({ seaSquareCount }));
+    .map(terrain => SEKTOR_SIZE * SEKTOR_SIZE - squaresOfSea(terrain).length)
+    .filter(landSquareCount => landSquareCount < FEWEST_LAND_SQUARES_ON_SEA || landSquareCount > MOST_LAND_SQUARES_ON_SEA)
+    .map(landSquareCount => ({ landSquareCount }));
 }
 
 // Every map drawn, on land or on the sea, whose rock is none of the shares of its land there are.
@@ -355,25 +351,4 @@ function squaresOf(terrain: number[][], madeOf: number): [number, number][] {
   return terrain.flatMap((row, x) =>
     row.flatMap((square, z): [number, number][] => square === madeOf ? [[x, z]] : [])
   );
-}
-
-// Every square of sea a walk over the water reaches from the square given, stepping only between
-// squares sharing a side. Sea meeting only at a corner is two bodies of water, so a walk never
-// crosses there.
-function seaReachableFrom([startX, startZ]: [number, number], terrain: number[][]): string[] {
-  const reached = new Set<string>([`${startX},${startZ}`]);
-  const toWalkFrom: [number, number][] = [[startX, startZ]];
-
-  while (toWalkFrom.length > 0) {
-    const [x, z] = toWalkFrom.pop()!;
-    for (const [alongX, alongZ] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-      const [nextX, nextZ] = [x + alongX, z + alongZ];
-      if (terrain[nextX]?.[nextZ] !== SEA) continue;
-      if (reached.has(`${nextX},${nextZ}`)) continue;
-      reached.add(`${nextX},${nextZ}`);
-      toWalkFrom.push([nextX, nextZ]);
-    }
-  }
-
-  return [...reached];
 }

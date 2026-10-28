@@ -1,8 +1,7 @@
 // A sektor on the planet's land is dry land, apart from a coast along every edge of its map which
 // faces the sea: most of the squares of that edge are sea, and a few behind them. One on the sea is
-// mostly sea, with a little land left over. The sea is one body of water rather than a scattering of puddles, and it runs in
-// from an edge of the map rather than sitting in the middle of it, so that the water a sektor has
-// reads as a coast. How much of the map it takes is drawn anew for every sektor.
+// sea with a few small islands, squares of land scattered anywhere over the map. How many there are
+// is drawn anew for every sektor.
 //
 // Half of all sektors on land have a river running through them. It comes in over the rim of the
 // map, wanders across the land a square at a time, and runs out again over the rim. A sektor on the
@@ -31,10 +30,10 @@ interface Square {
   z: number;
 }
 
-// How much of the map the sea of a sektor on the sea takes: anywhere from the fewest squares to the
-// most, each count as likely as the next.
-export const FEWEST_SEA_SQUARES = Math.round(SEKTOR_SIZE * SEKTOR_SIZE * 0.7);
-export const MOST_SEA_SQUARES = Math.round(SEKTOR_SIZE * SEKTOR_SIZE * 0.9);
+// How much land the sea of a sektor on the sea leaves: anywhere from the fewest squares to the most,
+// each count as likely as the next.
+export const FEWEST_LAND_SQUARES_ON_SEA = 3;
+export const MOST_LAND_SQUARES_ON_SEA = 10;
 
 // How much of the land stands up as rock, each helping as likely as the next: none of it, a tenth
 // of it, or a fifth. The land is what the sea and the river have left, so a sektor on the sea, with
@@ -73,7 +72,7 @@ export function groundCover(ground: SektorGround): GroundCover {
 export function createTerrainMatrix(ground: SektorGround, randomNumber: RandomNumber): number[][] {
   const terrain = allGround();
   if (!ground.isOnLand) {
-    floodWithSea(terrain, randomNumber);
+    scatterIslands(terrain, randomNumber);
   } else {
     layCoasts(terrain, ground.coastalEdges, randomNumber);
     if (!ground.isDesert) runRiver(terrain, randomNumber);
@@ -82,21 +81,18 @@ export function createTerrainMatrix(ground: SektorGround, randomNumber: RandomNu
   return terrain;
 }
 
-function floodWithSea(terrain: number[][], randomNumber: RandomNumber) {
-  const seaSquareCount = randomSeaSquareCount(randomNumber);
-
-  // The sea starts on an edge of the map and spreads a square at a time into the ground touching
-  // it, so however far it reaches it stays one body of water with a coastline on the rim.
-  const sea = [randomSquareOnEdge(randomNumber)];
-  terrain[sea[0].x][sea[0].z] = SEA;
-
-  while (sea.length < seaSquareCount) {
-    const flooded = randomSquareTheSeaCanSpreadTo(terrain, sea, randomNumber);
-    if (!flooded) break;
-    terrain[flooded.x][flooded.z] = SEA;
-    sea.push(flooded);
-  }
+// The whole map is sea apart from its islands, each square of land drawn at random from anywhere on
+// the map, so the land lies wherever it falls rather than along one side.
+function scatterIslands(terrain: number[][], randomNumber: RandomNumber) {
+  const landSquareCount = randomCount(FEWEST_LAND_SQUARES_ON_SEA, MOST_LAND_SQUARES_ON_SEA, randomNumber);
+  const land = inRandomOrder(ALL_SQUARES, randomNumber).slice(0, landSquareCount);
+  ALL_SQUARES.forEach(square => terrain[square.x][square.z] = SEA);
+  land.forEach(square => terrain[square.x][square.z] = GROUND);
 }
+
+const ALL_SQUARES: Square[] = Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>
+  Array.from({ length: SEKTOR_SIZE }, (_alsoUnused, z) => ({ x, z })))
+  .flat();
 
 // A coast is laid along every edge of the map facing the sea: some of the squares of the edge are
 // sea, drawn at random, and some of the squares right behind those, so that the water comes in a
@@ -294,45 +290,13 @@ function allGround(): number[][] {
   return Array.from({ length: SEKTOR_SIZE }, () => Array.from({ length: SEKTOR_SIZE }, () => GROUND));
 }
 
-function randomSeaSquareCount(randomNumber: RandomNumber): number {
-  return FEWEST_SEA_SQUARES + Math.floor(randomNumber() * (MOST_SEA_SQUARES - FEWEST_SEA_SQUARES + 1));
-}
-
 function randomElevationSquareCount(landSquareCount: number, randomNumber: RandomNumber): number {
   const shareOfLand = ELEVATION_SHARES_OF_LAND[Math.floor(randomNumber() * ELEVATION_SHARES_OF_LAND.length)];
   return Math.round(landSquareCount * shareOfLand);
 }
 
-function randomSquareOnEdge(randomNumber: RandomNumber): Square {
-  return SQUARES_ON_EDGE[Math.floor(randomNumber() * SQUARES_ON_EDGE.length)];
-}
-
-// Every square of the map lying on its rim, which is where the sea comes in from.
-const SQUARES_ON_EDGE: Square[] = Array.from({ length: SEKTOR_SIZE }, (_unused, x) =>
-  Array.from({ length: SEKTOR_SIZE }, (_alsoUnused, z) => ({ x, z })))
-  .flat()
-  .filter(square => square.x === 0 || square.z === 0 || square.x === SEKTOR_SIZE - 1 || square.z === SEKTOR_SIZE - 1);
-
-// Where the sea spreads next: any dry square touching the water it has already covered, drawn at
-// random so that a coastline is ragged rather than a block. A square touching the sea on more than
-// one side is still one square to draw, or the water would fill its own bays before reaching out
-// and come back round. There is nowhere left to spread to only once the whole map is under water.
-function randomSquareTheSeaCanSpreadTo(terrain: number[][], sea: Square[], randomNumber: RandomNumber): Square | null {
-  const coast = new Map<string, Square>();
-  for (const seaSquare of sea) {
-    for (const square of squaresTouching(seaSquare)) {
-      if (terrain[square.x][square.z] !== GROUND) continue;
-      coast.set(`${square.x},${square.z}`, square);
-    }
-  }
-  if (coast.size === 0) return null;
-
-  return [...coast.values()][Math.floor(randomNumber() * coast.size)];
-}
-
 // The squares a square shares a side with, as far as they are squares the map has. Squares meeting
-// only at a corner are not touching: water which spread that way would be two bodies pinched
-// together rather than one.
+// only at a corner are not touching.
 function squaresTouching(square: Square): Square[] {
   return SIDES
     .map(side => ({ x: square.x + side.x, z: square.z + side.z }))
