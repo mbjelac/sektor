@@ -25,7 +25,7 @@ export function regionCover(region: PlanetRegion): string {
 }
 
 function cover(region: PlanetRegion): string {
-  if (!region.isLand) return "🌊 Sea";
+  if (!region.isLand) return "🌊 Marine";
   if (region.isDesert) return "🏜 Desert";
   if (region.biome === "polar") return region.isForest ? "🌲 Taiga" : "🌱 Tundra";
   if (region.biome === "temperate") return region.isForest ? "🌳 Forest" : "🌾 Grassland";

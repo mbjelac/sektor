@@ -189,7 +189,7 @@ looking them up is `grid.rings[ring][index].neighbours`, in the order above.
                     - tropical L: "🌿 Savanna"
                     - tropical L F: "🌴 Jungle"
                     - any biome L D: "🏜 Desert"
-                - sea: "🌊 Sea"
+                - marine: "🌊 Marine"
         - for <spacing> use 30px
 
 

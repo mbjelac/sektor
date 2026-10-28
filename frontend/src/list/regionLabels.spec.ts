@@ -8,8 +8,8 @@ describe("regionLabels", () => {
   it("tells the biome type and what covers the triangle by its biome", () => {
     expect({
       polarLand: regionLabels({ ...land, climate: "polar", biome: "polar" }),
-      polarSea: regionLabels({ ...land, climate: "polar", biome: "polar", isLand: false }),
-      sea: regionLabels({ ...land, isLand: false }),
+      polarMarine: regionLabels({ ...land, climate: "polar", biome: "polar", isLand: false }),
+      marine: regionLabels({ ...land, isLand: false }),
       tundra: regionLabels({ ...land, climate: "sub-polar", biome: "polar" }),
       taiga: regionLabels({ ...land, climate: "sub-polar", biome: "polar", isForest: true }),
       subPolarGrassland: regionLabels({ ...land, climate: "sub-polar" }),
@@ -24,11 +24,11 @@ describe("regionLabels", () => {
       tropicalSavanna: regionLabels({ ...land, climate: "tropical", biome: "tropical" }),
       tropicalJungle: regionLabels({ ...land, climate: "tropical", biome: "tropical", isForest: true }),
       tropicalDesert: regionLabels({ ...land, climate: "tropical", biome: "tropical", isDesert: true }),
-      tropicalSea: regionLabels({ ...land, climate: "tropical", biome: "tropical", isLand: false }),
+      tropicalMarine: regionLabels({ ...land, climate: "tropical", biome: "tropical", isLand: false }),
     }).toEqual({
       polarLand: ["❄️ Polar"],
-      polarSea: ["❄️ Polar"],
-      sea: ["Temperate", "🌊 Sea"],
+      polarMarine: ["❄️ Polar"],
+      marine: ["Temperate", "🌊 Marine"],
       tundra: ["Polar", "🌱 Tundra"],
       taiga: ["Polar", "🌲 Taiga"],
       subPolarGrassland: ["Temperate", "🌾 Grassland"],
@@ -43,21 +43,21 @@ describe("regionLabels", () => {
       tropicalSavanna: ["Tropical", "🌿 Savanna"],
       tropicalJungle: ["Tropical", "🌴 Jungle"],
       tropicalDesert: ["Tropical", "🏜 Desert"],
-      tropicalSea: ["Tropical", "🌊 Sea"],
+      tropicalMarine: ["Tropical", "🌊 Marine"],
     });
   });
 
   it("tells only what covers the triangle where there is room for one word", () => {
     expect({
       polarLand: regionCover({ ...land, climate: "polar", biome: "polar" }),
-      sea: regionCover({ ...land, isLand: false }),
+      marine: regionCover({ ...land, isLand: false }),
       tundra: regionCover({ ...land, climate: "sub-polar", biome: "polar" }),
       forest: regionCover({ ...land, isForest: true }),
       desert: regionCover({ ...land, isDesert: true }),
       savanna: regionCover({ ...land, climate: "tropical", biome: "tropical" }),
     }).toEqual({
       polarLand: "❄️ Polar",
-      sea: "🌊 Sea",
+      marine: "🌊 Marine",
       tundra: "🌱 Tundra",
       forest: "🌳 Forest",
       desert: "🏜 Desert",

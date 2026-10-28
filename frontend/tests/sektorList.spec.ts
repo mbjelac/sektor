@@ -43,7 +43,7 @@ test("shows the biome type of every sektor", async ({ page }) => {
   await page.reload();
 
   expect(await page.locator(".sektor-list-item .sektor-list-biome").allTextContents())
-    .toEqual(["🌳 Forest", "❄️ Polar", "🌊 Sea", ""]);
+    .toEqual(["🌳 Forest", "❄️ Polar", "🌊 Marine", ""]);
 });
 
 // Everything known about a sektor apart from what stands in it: its id, the name it was given, and
