@@ -49,9 +49,9 @@ land: 10690 habitable triangles.
     - polar zones are rings 0–9 and 86–95
     - update the list page snapshots
 
-#2 Forests & deserts have smoother edges
-- forest and desert zones have blocky edges: clumps of 4 small triangles left from refining the planet
-- roughen forest edges like coastlines
+#2 [done] Forests & deserts have smoother edges
+- [done] forest and desert zones have blocky edges: clumps of 4 small triangles left from refining the planet
+- [done] roughen forest edges like coastlines
     - two passes
     - in each pass, of the land triangles on the border between forest and non-forest land, flip 30% of the smaller side to the other side, and as many from the other side
     - a triangle flipped to forest gets F
@@ -59,16 +59,16 @@ land: 10690 habitable triangles.
     - do not flip desert triangles
     - no forest in the polar climate zones
     - forest stays at the same share of land
-- roughen desert edges like coastlines
+- [done] roughen desert edges like coastlines
     - two passes
     - in each pass, of the land triangles on the border between desert and non-desert land, flip 30% of the smaller side to the other side, and as many from the other side
     - a triangle flipped to desert gets D and loses F
     - a triangle flipped out of desert loses D, and gets F if most of its land neighbours are forest
     - no desert in the polar and sub-polar climate zones
     - desert stays at the same share of land
-- a flipped triangle keeps its own biome
-- give every flipped triangle a new colour, by its new kind, from the colour ranges of plan 55 (#2–#5)
-- update the list page snapshots
+- [done] a flipped triangle keeps its own biome
+- [done] give every flipped triangle a new colour, by its new kind, from the colour ranges of plan 55 (#2–#5)
+- [done] update the list page snapshots
 
 #3 Coastal area sektors actually have a coast
 - when creating a sektor on a coastal area (land area next to sea area)
