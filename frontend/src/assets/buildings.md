@@ -168,6 +168,10 @@ water
 
 # Extractor
 
+## Construction
+
+duration=1900
+
 ## Function
 
 Name: Metals
