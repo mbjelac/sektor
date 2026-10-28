@@ -70,13 +70,17 @@ interface StarvationCandidate {
 export interface BuildingFunctionState {
   buildingFunction: BuildingFunction;
   outputAmounts: ResourceThroughput[];
-  active: boolean;
   starved: boolean;
+  // How many times over a function drawing on the building's pool is done. A function which does
+  // not draw on it has none.
+  multiplier?: number;
 }
 
 export interface BuildingState {
   buildingFunctions: BuildingFunctionState[];
   disabled: boolean;
+  // How much of the building's pool none of its functions draws on yet.
+  unusedPool: number;
 }
 
 // How much of one resource a building takes in and gives out.
@@ -126,17 +130,19 @@ export class Sektor {
 
   getState(): { buildings: Building[] } {
     return {
-      buildings: this.buildings.map(building => building.activeFunctions
-        ? { ...building, activeFunctions: [...building.activeFunctions] }
+      buildings: this.buildings.map(building => building.functionMultipliers
+        ? { ...building, functionMultipliers: [...building.functionMultipliers] }
         : { ...building }),
     };
   }
 
+  // A building saved before functions were always all done may still carry which of them were
+  // turned on, which is left behind.
   loadState(state: { buildings: Building[] }) {
     this.buildings = state.buildings.map(building => {
       const loadedBuilding: Building = { type: building.type, location: building.location };
       if (building.variantIndex !== undefined) loadedBuilding.variantIndex = building.variantIndex;
-      if (building.activeFunctions) loadedBuilding.activeFunctions = [...building.activeFunctions];
+      if (building.functionMultipliers) loadedBuilding.functionMultipliers = [...building.functionMultipliers];
       return loadedBuilding;
     });
   }
@@ -146,41 +152,38 @@ export class Sektor {
     if (!building) return null;
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return null;
-    const functionActivations = this.getFunctionActivations(building, buildingDefinition);
     const disabledBuildings = this.findDisabledBuildings();
     const starvedFunctions = this.findStarvedFunctions(this.findFunctionsOfBuildings(disabledBuildings));
+    const functionMultipliers = this.getFunctionMultipliers(building, buildingDefinition);
     return {
-      buildingFunctions: buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) => ({
-        buildingFunction: buildingFunction,
-        outputAmounts: this.getOutputAmounts(buildingFunction, location),
-        active: functionActivations[functionIndex],
-        starved: includesFunction(starvedFunctions, location, functionIndex),
-      })),
+      buildingFunctions: buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) => {
+        const buildingFunctionState: BuildingFunctionState = {
+          buildingFunction: buildingFunction,
+          outputAmounts: this.getOutputAmounts(buildingFunction, location),
+          starved: includesFunction(starvedFunctions, location, functionIndex),
+        };
+        if (buildingFunction.pool) buildingFunctionState.multiplier = functionMultipliers[functionIndex];
+        return buildingFunctionState;
+      }),
       disabled: includesLocation(disabledBuildings, location),
+      unusedPool: (buildingDefinition.properties.poolSize ?? 0) - usedPool(buildingDefinition, functionMultipliers),
     };
   }
 
-  activateFunction(buildingLocation: BuildingLocation, functionIndex: number) {
-    this.setFunctionActivation(buildingLocation, functionIndex, true);
-  }
-
-  deactivateFunction(buildingLocation: BuildingLocation, functionIndex: number) {
-    this.setFunctionActivation(buildingLocation, functionIndex, false);
-  }
-
-  // The single function of a building which has only one cannot be turned off, so the building
-  // always does something. Neither can a function the building always does.
-  private setFunctionActivation(buildingLocation: BuildingLocation, functionIndex: number, active: boolean) {
-    const building = this.findBuildingAt(buildingLocation);
+  // A function drawing on the building's pool is done anywhere from no times over up, a whole number
+  // of times, as long as all of the building's functions drawing on it together stay within the
+  // pool. Any other multiplier is not taken, and neither is one for a function not drawing on it.
+  setFunctionMultiplier(location: BuildingLocation, functionIndex: number, multiplier: number) {
+    const building = this.findBuildingAt(location);
     if (!building) return;
     const buildingDefinition = this.findBuildingDefinition(building.type);
-    if (!buildingDefinition) return;
-    if (buildingDefinition.buildingFunctions.length < 2) return;
-    if (functionIndex < 0 || functionIndex >= buildingDefinition.buildingFunctions.length) return;
-    if (buildingDefinition.buildingFunctions[functionIndex].alwaysActive) return;
-    const functionActivations = this.getFunctionActivations(building, buildingDefinition);
-    functionActivations[functionIndex] = active;
-    building.activeFunctions = functionActivations;
+    if (!buildingDefinition?.buildingFunctions[functionIndex]?.pool) return;
+    if (!Number.isInteger(multiplier) || multiplier < 0) return;
+    const functionMultipliers = this.getFunctionMultipliers(building, buildingDefinition);
+    const usedByOtherFunctions = usedPool(buildingDefinition, functionMultipliers) - functionMultipliers[functionIndex];
+    if (usedByOtherFunctions + multiplier > (buildingDefinition.properties.poolSize ?? 0)) return;
+    functionMultipliers[functionIndex] = multiplier;
+    building.functionMultipliers = functionMultipliers;
   }
 
   // All resources produced in the sektor are available to all its buildings, so a resource is
@@ -284,14 +287,15 @@ export class Sektor {
   }
 
   // Every habitat is counted as making all the Hapiness it is made to, whether it is given what it
-  // asks for or not, so this is how happy the sektor's people would be with nothing going short.
+  // asks for or not, so this is how happy the sektor's people would be with nothing going short. A
+  // function drawing on the pool makes it as many times over as it is done.
   private findPossibleHapiness(): number {
     const possibleHapiness = this.buildings
-      .map(building => this.findBuildingDefinition(building.type))
-      .flatMap(buildingDefinition => buildingDefinition?.buildingFunctions ?? [])
-      .flatMap(buildingFunction => buildingFunction.outputs)
-      .filter(output => output.name === HAPINESS_RESOURCE)
-      .reduce((total, output) => total + (output.value ?? 0), 0);
+      .flatMap(building => this.getMultipliedBuildingFunctions(building, []))
+      .flatMap(({ buildingFunction, multiplier }) => buildingFunction.outputs
+        .filter(output => output.name === HAPINESS_RESOURCE)
+        .map(output => (output.value ?? 0) * multiplier))
+      .reduce((total, hapiness) => total + hapiness, 0);
     return roundToOneDecimal(possibleHapiness);
   }
 
@@ -378,11 +382,10 @@ export class Sektor {
     for (const building of this.buildings) {
       const buildingDefinition = this.findBuildingDefinition(building.type);
       if (!buildingDefinition) continue;
-      const functionActivations = this.getFunctionActivations(building, buildingDefinition);
+      const functionMultipliers = this.getFunctionMultipliers(building, buildingDefinition);
       for (const [functionIndex, buildingFunction] of buildingDefinition.buildingFunctions.entries()) {
-        if (!functionActivations[functionIndex]) continue;
         if (includesFunction(stoppedFunctions, building.location, functionIndex)) continue;
-        const consumedAmount = this.findThroughputValue(buildingFunction.inputs, shortage.name);
+        const consumedAmount = this.findThroughputValue(buildingFunction.inputs, shortage.name) * functionMultipliers[functionIndex];
         if (consumedAmount <= 0) continue;
         starvationCandidates.push({
           buildingFunctionLocation: { buildingLocation: building.location, functionIndex },
@@ -410,9 +413,8 @@ export class Sektor {
     return Array.from(amountsByResource.entries()).map(([name, value]) => ({ name, value: roundToOneDecimal(value) }));
   }
 
-  // What every building takes in and gives out of the resource, by the functions turned on. Told
-  // what runs only, a function starved of a local resource, or of a building disabled for want of
-  // imports, takes in and gives out nothing, just as a function turned off does.
+  // What every building takes in and gives out of the resource. Told what runs only, a function starved of a local resource, or of a building disabled for want of
+  // imports, takes in and gives out nothing.
   getBuildingResourceAmounts(resourceType: string, runningOnly: boolean): BuildingResourceAmounts[] {
     const stoppedFunctions = runningOnly ? this.findStoppedFunctions() : [];
     return this.buildings.map(building => ({
@@ -435,18 +437,14 @@ export class Sektor {
   }
 
   // A building drawing what it makes out of a property pollution spoils makes less of it on fouled
-  // ground, and so does a building making an output pollution affects. Only what the building is
-  // doing counts: a function switched off makes nothing to lose.
+  // ground, and so does a building making an output pollution affects. A function drawing on the pool
+  // which is done no times over makes nothing to lose.
   isOutputDecreasedByPollution(location: BuildingLocation): boolean {
     const building = this.findBuildingAt(location);
     if (!building) return false;
-    const buildingDefinition = this.findBuildingDefinition(building.type);
-    if (!buildingDefinition) return false;
     const pollution = this.locations[location.x]?.[location.y]?.properties[POLLUTION_PROPERTY] ?? 0;
-    const functionActivations = this.getFunctionActivations(building, buildingDefinition);
-    return buildingDefinition.buildingFunctions
-      .filter((_, functionIndex) => functionActivations[functionIndex])
-      .flatMap(buildingFunction => buildingFunction.outputs)
+    return this.getMultipliedBuildingFunctions(building, [])
+      .flatMap(({ buildingFunction }) => buildingFunction.outputs)
       .some(output =>
         (output.locationProperty !== undefined && isAffectedByPollution(output.locationProperty, pollution))
         || isOutputAffectedByPollution(output, pollution)
@@ -458,45 +456,39 @@ export class Sektor {
   }
 
   // The amounts consumed and produced by all of the building's functions are added up per
-  // resource.
+  // resource, each function's as many times over as it is done.
   private getInputs(building: Building, stoppedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
-    const buildingDefinition = this.findBuildingDefinition(building.type);
-    if (!buildingDefinition) return [];
     return this.aggregateThroughputs(
-      this.getRunningBuildingFunctions(building, buildingDefinition, stoppedFunctions)
-        .map(buildingFunction => buildingFunction.inputs).flat()
+      this.getMultipliedBuildingFunctions(building, stoppedFunctions).flatMap(({ buildingFunction, multiplier }) =>
+        multipliedThroughputs(buildingFunction.inputs, multiplier))
     );
   }
 
   private getOutputs(building: Building, stoppedFunctions: BuildingFunctionLocation[]): ResourceThroughput[] {
+    return this.aggregateThroughputs(
+      this.getMultipliedBuildingFunctions(building, stoppedFunctions).flatMap(({ buildingFunction, multiplier }) =>
+        multipliedThroughputs(this.getOutputAmounts(buildingFunction, building.location), multiplier))
+    );
+  }
+
+  // A function starved of a local resource, or of a disabled building, consumes and produces
+  // nothing, and so does a function drawing on the pool which is done no times over, so they are
+  // left out of every amount the building contributes to the sektor.
+  private getMultipliedBuildingFunctions(building: Building, stoppedFunctions: BuildingFunctionLocation[]): { buildingFunction: BuildingFunction, multiplier: number }[] {
     const buildingDefinition = this.findBuildingDefinition(building.type);
     if (!buildingDefinition) return [];
-    return this.aggregateThroughputs(
-      this.getRunningBuildingFunctions(building, buildingDefinition, stoppedFunctions).map(buildingFunction =>
-        this.getOutputAmounts(buildingFunction, building.location)
-      ).flat()
-    );
+    const functionMultipliers = this.getFunctionMultipliers(building, buildingDefinition);
+    return buildingDefinition.buildingFunctions
+      .map((buildingFunction, functionIndex) => ({ buildingFunction, multiplier: functionMultipliers[functionIndex], functionIndex }))
+      .filter(({ multiplier, functionIndex }) => multiplier > 0 && !includesFunction(stoppedFunctions, building.location, functionIndex))
+      .map(({ buildingFunction, multiplier }) => ({ buildingFunction, multiplier }));
   }
 
-  // A function which is turned off, starved of a local resource, or of a disabled building
-  // consumes and produces nothing, so it is left out of every amount the building contributes to
-  // the sektor.
-  private getRunningBuildingFunctions(building: Building, buildingDefinition: BuildingDefinition, stoppedFunctions: BuildingFunctionLocation[]): BuildingFunction[] {
-    const functionActivations = this.getFunctionActivations(building, buildingDefinition);
-    return buildingDefinition.buildingFunctions.filter((_, functionIndex) =>
-      functionActivations[functionIndex] && !includesFunction(stoppedFunctions, building.location, functionIndex)
-    );
-  }
-
-  // A building with a single function is always doing it, while a building with several of them
-  // starts out doing only the first one, until the player activates the others. A function the
-  // building always does runs whichever one it is and whatever the player has switched.
-  private getFunctionActivations(building: Building, buildingDefinition: BuildingDefinition): boolean[] {
-    const buildingFunctionCount = buildingDefinition.buildingFunctions.length;
-    if (buildingFunctionCount < 2) return buildingDefinition.buildingFunctions.map(() => true);
+  // A function not drawing on the building's pool is done once. One drawing on it is done as many
+  // times over as the player has set, and not at all before they set anything.
+  private getFunctionMultipliers(building: Building, buildingDefinition: BuildingDefinition): number[] {
     return buildingDefinition.buildingFunctions.map((buildingFunction, functionIndex) =>
-      buildingFunction.alwaysActive === true
-      || (building.activeFunctions?.[functionIndex] ?? functionIndex === 0)
+      buildingFunction.pool ? building.functionMultipliers?.[functionIndex] ?? 0 : 1
     );
   }
 
@@ -655,6 +647,17 @@ function findWastedExportAmount(uncroppedExports: ResourceThroughput[], croppedE
 
 function sumThroughputValues(throughputs: ResourceThroughput[]): number {
   return roundToOneDecimal(throughputs.reduce((total, throughput) => total + throughput.value, 0));
+}
+
+function multipliedThroughputs(throughputs: ResourceThroughput[], multiplier: number): ResourceThroughput[] {
+  return throughputs.map(throughput => ({ name: throughput.name, value: throughput.value * multiplier }));
+}
+
+// How much of its pool a building's functions draw on: all their multipliers added up.
+function usedPool(buildingDefinition: BuildingDefinition, functionMultipliers: number[]): number {
+  return functionMultipliers
+    .filter((_, functionIndex) => buildingDefinition.buildingFunctions[functionIndex].pool)
+    .reduce((total, multiplier) => total + multiplier, 0);
 }
 
 function includesLocation(locations: BuildingLocation[], location: BuildingLocation): boolean {

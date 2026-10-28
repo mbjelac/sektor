@@ -96,7 +96,7 @@ test("selects the first building tag at the start, displaying only buildings hav
 
   expect({ selectedBuildingTags, shownBuildingNames }).toEqual({
     selectedBuildingTags: ["food"],
-    shownBuildingNames: ["Destroy", "TestFactory", "TestMine", "TestHouse", "TestProcessor", "TestRefinery", "TestWorkshop", "TestClinic", "TestCarer", "TestReactor", "TestHabitat", "TestHub"],
+    shownBuildingNames: ["Destroy", "TestFactory", "TestMine", "TestHouse", "TestProcessor", "TestRefinery", "TestWorkshop", "TestClinic", "TestCarer", "TestReactor", "TestHabitat", "TestHub", "TestKiln"],
   });
 });
 
@@ -424,7 +424,6 @@ test("displays building panel with an output named after a location property", a
           outputs: [{ name: "Energy", locationProperty: "insolation" }],
         },
         outputAmounts: [{ name: "Energy", value: 4 }],
-        active: true,
       }],
       locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
@@ -448,7 +447,6 @@ test("displays building panel with an output producing a fraction of a location 
           outputs: [{ name: "Food", locationProperty: "soil", locationPropertyDivisor: 4 }],
         },
         outputAmounts: [{ name: "Food", value: 3 }],
-        active: true,
       }],
       locationProperties: { soil: 11, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
@@ -472,7 +470,6 @@ test("displays building panel with an output named after a location property the
           outputs: [{ name: "Energy", locationProperty: "insolation" }],
         },
         outputAmounts: [{ name: "Energy", value: 0 }],
-        active: true,
       }],
       locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 0, wind: 1 },
       floorColor: [200, 200, 100],
@@ -496,7 +493,6 @@ test("displays building panel with an output produced in a written amount", asyn
           outputs: [{ name: "Goods", value: 4 }],
         },
         outputAmounts: [{ name: "Goods", value: 4 }],
-        active: true,
       }],
       locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
@@ -522,7 +518,6 @@ test("displays building panel with several building functions", async ({ page })
             outputs: [{ name: "Tools", value: 2 }],
           },
           outputAmounts: [{ name: "Tools", value: 2 }],
-          active: true,
         },
         {
           buildingFunction: {
@@ -530,13 +525,11 @@ test("displays building panel with several building functions", async ({ page })
             outputs: [{ name: "Tools", value: 3 }],
           },
           outputAmounts: [{ name: "Tools", value: 3 }],
-          active: false,
         },
       ],
       locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
       location: { x: 0, y: 0 },
-      onToggleFunction: () => {},
     });
   });
 
@@ -558,7 +551,6 @@ test("keeps the top of the building panel and its Inputs and Outputs headers in 
             outputs: [{ name: "Tools", value: 2 }],
           },
           outputAmounts: [{ name: "Tools", value: 2 }],
-          active: true,
         },
         {
           buildingFunction: {
@@ -566,14 +558,12 @@ test("keeps the top of the building panel and its Inputs and Outputs headers in 
             outputs: [{ name: "Tools", value: 3 }],
           },
           outputAmounts: [{ name: "Tools", value: 3 }],
-          active: false,
         },
       ],
       locationProperties: { soil: 2, groundwater: 3, ore: 0, insolation: 4, wind: 1 },
       floorColor: [200, 200, 100],
       location: { x: 3, y: 7 },
       onDestroy: () => {},
-      onToggleFunction: () => {},
     });
   });
   const viewport = page.viewportSize()!;
@@ -639,38 +629,83 @@ async function placeWorkshop(page: Page) {
   await page.waitForTimeout(200);
 }
 
-test("displays the first function of a placed building as active", async ({ page }) => {
+test("displays every function of a placed building as running", async ({ page }) => {
   await placeHub(page);
   await placeWorkshop(page);
 
-  await expectScreenshot(page, "building-function-initially-active", '#building-panel .bf-function-block[data-function-index="0"]');
+  await expectScreenshot(page, "building-functions-running", "#building-panel");
 });
 
-test("displays the other functions of a placed building as inactive", async ({ page }) => {
-  await placeHub(page);
-  await placeWorkshop(page);
-
-  await expectScreenshot(page, "building-function-initially-inactive", '#building-panel .bf-function-block[data-function-index="1"]');
-});
-
-test("activates a function when its toggle is clicked", async ({ page }) => {
-  await placeHub(page);
-  await placeWorkshop(page);
-
-  await page.locator('#building-panel .bf-function-block[data-function-index="1"] .bf-toggle').click();
+async function placeKiln(page: Page) {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestKiln"]').click();
+  await page.waitForTimeout(100);
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
   await page.waitForTimeout(200);
+}
 
-  await expectScreenshot(page, "building-function-toggled-active", '#building-panel .bf-function-block[data-function-index="1"]');
+// The pool widget of every function of the open building, as a row of characters: x for the cross,
+// 0 for a used share of the pool and O for an unused one.
+async function poolWidgets(page: Page): Promise<string[]> {
+  return page.locator("#building-panel .bf-function-block").evaluateAll(functionBlocks => functionBlocks.map(functionBlock =>
+    [...functionBlock.querySelectorAll(".bf-pool-button")].map(button =>
+      button.classList.contains("bf-pool-clear") ? "x" : button.classList.contains("bf-pool-used") ? "0" : "O"
+    ).join("")
+  ));
+}
+
+async function clickPoolButton(page: Page, functionIndex: number, buttonIndex: number) {
+  await page.locator(`#building-panel .bf-function-block[data-function-index="${functionIndex}"] .bf-pool-button`).nth(buttonIndex).click();
+  await page.waitForTimeout(200);
+}
+
+// TestKiln has three functions drawing on a pool of 5.
+test("shares the pool of a building between its functions as their circles are clicked", async ({ page }) => {
+  await placeHub(page);
+  await placeKiln(page);
+
+  const initially = await poolWidgets(page);
+  await clickPoolButton(page, 0, 3);
+  const afterFourthCircleOfFirst = await poolWidgets(page);
+  await clickPoolButton(page, 1, 0);
+  const afterOnlyCircleOfSecond = await poolWidgets(page);
+  await clickPoolButton(page, 0, 0);
+  const afterCrossOfFirst = await poolWidgets(page);
+  await clickPoolButton(page, 1, 3);
+  const afterThirdCircleOfSecond = await poolWidgets(page);
+
+  expect({ initially, afterFourthCircleOfFirst, afterOnlyCircleOfSecond, afterCrossOfFirst, afterThirdCircleOfSecond }).toEqual({
+    initially: ["OOOOO", "OOOOO", "OOOOO"],
+    afterFourthCircleOfFirst: ["x0000O", "O", "O"],
+    afterOnlyCircleOfSecond: ["x0000", "x0", ""],
+    afterCrossOfFirst: ["OOOO", "x0OOOO", "OOOO"],
+    afterThirdCircleOfSecond: ["OO", "x000OO", "OO"],
+  });
 });
 
-test("deactivates a function when its toggle is clicked", async ({ page }) => {
+test("displays the pool of a function in the top-right corner of the function", async ({ page }) => {
   await placeHub(page);
-  await placeWorkshop(page);
+  await placeKiln(page);
+  await clickPoolButton(page, 0, 2);
 
-  await page.locator('#building-panel .bf-function-block[data-function-index="0"] .bf-toggle').click();
-  await page.waitForTimeout(200);
+  await expectScreenshot(page, "function-pool", '#building-panel .bf-function-block[data-function-index="0"]');
+});
 
-  await expectScreenshot(page, "building-function-toggled-inactive", '#building-panel .bf-function-block[data-function-index="0"]');
+test("grays out the values of a function drawing on the pool while it is done no times over", async ({ page }) => {
+  await placeHub(page);
+  await placeKiln(page);
+
+  await expectScreenshot(page, "function-pool-unused", '#building-panel .bf-function-block[data-function-index="0"]');
+});
+
+test("displays the values of a function drawing on the pool done once as they are written", async ({ page }) => {
+  await placeHub(page);
+  await placeKiln(page);
+  await clickPoolButton(page, 0, 0);
+
+  await expectScreenshot(page, "function-pool-once", '#building-panel .bf-function-block[data-function-index="0"]');
 });
 
 test("marks a building starved of a local resource on the map", async ({ page }) => {
@@ -718,20 +753,6 @@ test("clears the starvation warning when the local resource is produced", async 
   await page.waitForTimeout(200);
 
   await expectMapScreenshot(page, "starvation-warning-cleared", MIDDLE_OF_MAP);
-});
-
-test("displays no activity label or toggle for a function the building always does", async ({ page }) => {
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  // TestReactor's second function is marked "Active: always"
-  await placeHub(page);
-  await page.locator('.building-item[data-building-name="TestReactor"]').click();
-  await page.waitForTimeout(100);
-  const canvas = page.locator("#canvas-container > canvas");
-  const box = await canvas.boundingBox();
-  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
-  await page.waitForTimeout(200);
-
-  await expectScreenshot(page, "always-active-function", "#building-panel");
 });
 
 test("displays building panel for empty location", async ({ page }) => {

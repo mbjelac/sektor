@@ -59,19 +59,10 @@ describe("buildings with output decreased by pollution", () => {
     expect(sektor.findBuildingsWithOutputDecreasedByPollution()).toEqual([{ x: 0, y: 0 }, { x: 1, y: 0 }]);
   });
 
-  // The Orchard grows its apples only once its second function is switched on.
-  it("leave out a building whose function drawing on soil is switched off", () => {
+  // The Orchard grows its apples with its second function.
+  it("include a building whose function drawing on soil is not its first", () => {
     const sektor = new Sektor(locationsPolluted([20]), testDefinitions, []);
     sektor.loadState({ buildings: [{ type: "Orchard", location: { x: 0, y: 0 } }] });
-
-    expect(sektor.isOutputDecreasedByPollution({ x: 0, y: 0 })).toEqual(false);
-  });
-
-  it("include a building once its function drawing on soil is switched on", () => {
-    const sektor = new Sektor(locationsPolluted([20]), testDefinitions, []);
-    sektor.loadState({ buildings: [{ type: "Orchard", location: { x: 0, y: 0 } }] });
-
-    sektor.activateFunction({ x: 0, y: 0 }, 1);
 
     expect(sektor.isOutputDecreasedByPollution({ x: 0, y: 0 })).toEqual(true);
   });

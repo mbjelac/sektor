@@ -69,10 +69,10 @@ describe("getBuildingState", () => {
         outputAmounts: [
           { name: "Flour", value: 3 },
         ],
-        active: true,
         starved: false,
       }],
       disabled: false,
+      unusedPool: 0,
     });
   });
 

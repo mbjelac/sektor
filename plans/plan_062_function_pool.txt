@@ -5,7 +5,7 @@ The multiplier can be from 0 to that max pool value.
 However, multiple functions in a building can be like that.
 Unit multiplication for all functions uses the same pool. The total sum of all multipliers cannot be greater then the pool value.
 
-#1 A building function can be specified to be multipliable
+#1 [done] A building function can be specified to be multipliable
 - [done] this is a REPLACEMENT of deactivation/activation, "Active: always", etc.
     - remove implementation (no need to modify past plans)
 - [done] if a building function has property "Pool: true" in it's description before input & output amounts
@@ -13,7 +13,7 @@ Unit multiplication for all functions uses the same pool. The total sum of all m
     - multiplier is an integer between 0 and poolSize which is a property for the whole building in Properties section
 - [done] initially all functions have multipliers set to 0
     - the building's pool is unused
-- in building panel below function inputs & outputs there is a function pool widget
+- [done] in building panel below function inputs & outputs there is a function pool widget
     - it is composed of three possible types of buttons/icons (characters used here for examples):
         - x: set multiplier to zero
         - 0: a used multiplier in pool
@@ -48,10 +48,10 @@ Unit multiplication for all functions uses the same pool. The total sum of all m
         - spacing between x and the rest 10px
         - display widget in top-right corner of function, in same row as function name, right aligned
     - do not show x on functions which have multiplier zero
-- when multiplier zero, display function values same as starved
+- [done] when multiplier zero, display function values same as starved
     - gray values
-- when multiplier one, display function values same as non-pool functions
-- when multiplier greater than one, display function values as: <multiplied value> (<specified value>)
-- when multiplier changes
+- [done] when multiplier one, display function values same as non-pool functions
+- [done] when multiplier greater than one, display function values as: <multiplied value> (<specified value>)
+- [done] when multiplier changes
     - multiply all inputs & outputs for that function
     - recalculate sektor imports, exports, local resources and any other sektor-level properties depending on inputs & outputs

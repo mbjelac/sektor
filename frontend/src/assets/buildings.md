@@ -71,6 +71,7 @@ Hapiness 1
 ## Function
 
 Name: Maintainers
+Pool: true
 
 EducationGeneral 2
 EducationTechnical 1
@@ -80,39 +81,43 @@ WorkMaintenance 6
 ## Function
 
 Name: Technicians
+Pool: true
 
 EducationGeneral 2
 EducationTechnical 2
-EducationAnalytical 1
+EducationMathematical 1
 ->
 WorkTechnical 6
 
 ## Function
 
 Name: Administrators
+Pool: true
 
 EducationGeneral 2
 EducationSocial 1
-EducationAnalytical 1
+EducationMathematical 1
 ->
 WorkAdministrative 6
 
 ## Function
 
 Name: Engineers
+Pool: true
 
 EducationGeneral 3
 EducationTechnical 4
-EducationAnalytical 2
+EducationMathematical 2
 -> 
 WorkEngineering 6
 
 ## Function
 
 Name: Educators
+Pool: true
 
 EducationGeneral 3
-EducationAnalytical 2
+EducationMathematical 2
 EducationSocial 4
 ->
 WorkEducational 6
@@ -120,9 +125,10 @@ WorkEducational 6
 ## Function
 
 Name: Scientists
+Pool: true
 
 EducationGeneral 4
-EducationAnalytical 4
+EducationMathematical 4
 EducationTechnical 3
 ->
 WorkScientific 6
@@ -130,6 +136,10 @@ WorkScientific 6
 ## Tags
 
 people
+
+## Properties
+
+poolSize=6
 
 # Library
 
@@ -175,6 +185,7 @@ duration=1900
 ## Function
 
 Name: Metals
+Pool: true
 
 EnergyElectric 5
 WorkTechnical 5
@@ -185,6 +196,7 @@ OreMetal metals
 ## Function
 
 Name: Minerals
+Pool: true
 
 EnergyElectric 3
 WorkTechnical 3
@@ -195,6 +207,7 @@ OreMineral minerals
 ## Function
 
 Name: Uranium
+Pool: true
 
 EnergyElectric 4
 Water 3
@@ -207,6 +220,7 @@ OreUranium uranium
 
 showFloor=false
 pollutionArea=3
+poolSize=4
 
 ## Tags
 
@@ -248,22 +262,6 @@ HealthSocial 20
 ## Tags
 
 people
-
-# Polytechnic
-
-## Function
-
-EnergyElectric 2
-Water 2
-WorkEducational 3
-WorkMaintenance 1
-->
-EducationTechnical 10
-Sewage 1
-
-## Tags
-
-education
 
 # Metal Smelter
 
@@ -509,9 +507,12 @@ Sewage 2
 
 education
 
-# SocialStudies
+# Academy
 
 ## Function
+
+Name: Social
+Pool: true
 
 WorkEducational 3
 EnergyElectric 4
@@ -521,26 +522,39 @@ WorkMaintenance 1
 EducationSocial 10
 Sewage 1
 
-## Tags
-
-education
-
-# HouseOfMath
-
 ## Function
+
+Name: Math
+Pool: true
 
 WorkEducational 3
 EnergyElectrical 2
 Water 2
 WorkMaintenance 1
 ->
-EducationAnalytical 10
+EducationMathematical 10
+Sewage 1
+
+## Function
+
+Name: Technical
+Pool: true
+
+EnergyElectric 2
+Water 2
+WorkEducational 3
+WorkMaintenance 1
+->
+EducationTechnical 10
 Sewage 1
 
 ## Tags
 
 education
 
+## Properties
+
+poolSize=8
 
 # BioFurnace
 

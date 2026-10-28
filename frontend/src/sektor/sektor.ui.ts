@@ -534,6 +534,7 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; v
     name: placed.type,
     code: code,
     buildingFunctions: buildingState.buildingFunctions,
+    unusedPool: buildingState.unusedPool,
     disabled: buildingState.disabled,
     outputDecreasedByPollution: sektor.isOutputDecreasedByPollution(placed.location),
     locationProperties: locations[placed.location.x]?.[placed.location.y]?.properties,
@@ -543,20 +544,14 @@ function openBuildingPanel(placed: { type: string; location: BuildingLocation; v
     // A sektor being looked at rather than played is only ever read, so it is shown without the
     // controls which would change it.
     onDestroy: isViewMode ? undefined : () => destroyBuilding(placed.location),
-    onToggleFunction: isViewMode ? undefined : functionIndex => toggleBuildingFunction(placed, functionIndex),
+    onSetFunctionMultiplier: isViewMode ? undefined : (functionIndex, multiplier) => setFunctionMultiplier(placed.location, functionIndex, multiplier),
   });
 }
 
-// Turning a function on or off changes what the building consumes and produces, so the panel is
-// redrawn and the sektor recalculated from the building's new set of functions.
-function toggleBuildingFunction(placed: { type: string; location: BuildingLocation; code: string }, functionIndex: number) {
-  const buildingState = sektor.getBuildingState(placed.location);
-  if (!buildingState) return;
-  if (buildingState.buildingFunctions[functionIndex].active) {
-    sektor.deactivateFunction(placed.location, functionIndex);
-  } else {
-    sektor.activateFunction(placed.location, functionIndex);
-  }
+// Doing a function more or fewer times over changes what the building consumes and produces, so the
+// sektor is recalculated, which redraws the panel too.
+function setFunctionMultiplier(location: BuildingLocation, functionIndex: number, multiplier: number) {
+  sektor.setFunctionMultiplier(location, functionIndex, multiplier);
   updateSektorState();
   saveState();
 }

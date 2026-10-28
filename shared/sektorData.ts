@@ -14,11 +14,11 @@ export interface BuildingCreation {
   variantIndex?: number;
 }
 
-// A building does every function of its definition which is activated. The activations are
-// absent on a building whose functions were never toggled, which then does the functions it
-// started out with.
+// A building does every function of its definition. A function drawing on the building's pool is
+// done as many times over as its multiplier says, and the multipliers are absent on a building whose
+// pool was never drawn on, which then does none of those functions.
 export interface Building extends BuildingCreation {
-  activeFunctions?: boolean[];
+  functionMultipliers?: number[];
 }
 
 export interface Location {

@@ -82,10 +82,11 @@ function bakedPreviewBodies(p: p5, code: string): BakedBodies {
   return bakedBodies;
 }
 
-export function showBuildingPanel({ name, code, buildingFunctions, disabled, outputDecreasedByPollution, locationProperties, floorColor, showFloor, drawFloorInstead, location, onDestroy, onToggleFunction }: {
+export function showBuildingPanel({ name, code, buildingFunctions, unusedPool, disabled, outputDecreasedByPollution, locationProperties, floorColor, showFloor, drawFloorInstead, location, onDestroy, onSetFunctionMultiplier }: {
   name: string,
   code: string,
   buildingFunctions: BuildingFunctionState[],
+  unusedPool?: number,
   disabled?: boolean,
   outputDecreasedByPollution?: boolean,
   locationProperties?: { [_: string]: number },
@@ -94,7 +95,7 @@ export function showBuildingPanel({ name, code, buildingFunctions, disabled, out
   drawFloorInstead?: (p: p5) => void,
   location: BuildingLocation,
   onDestroy?: () => void,
-  onToggleFunction?: (functionIndex: number) => void
+  onSetFunctionMultiplier?: (functionIndex: number, multiplier: number) => void,
 }) {
   // Reopening the panel of a location would put back a panel scrolled to its top, so the
   // scroll position is carried over to the panel of the same location.
@@ -150,21 +151,18 @@ export function showBuildingPanel({ name, code, buildingFunctions, disabled, out
     panelEl.appendChild(createColumnHeaders());
   }
 
-  // Only a building doing several things can be told which of them to do, so a building with a
-  // single function gets no activity label and no toggle, and neither does a function the
-  // building always does.
   buildingFunctions.forEach((buildingFunctionState, functionIndex) => {
-    const switchable = buildingFunctions.length > 1 && !buildingFunctionState.buildingFunction.alwaysActive;
     const functionBlock = createFunctionDisplay({
       buildingFunction: buildingFunctionState.buildingFunction,
       outputAmounts: buildingFunctionState.outputAmounts,
       pollution: locationProperties?.[POLLUTION_PROPERTY],
-      activation: switchable
-        ? {
-          active: buildingFunctionState.active,
-          onToggle: onToggleFunction && (() => onToggleFunction(functionIndex)),
-        }
-        : undefined,
+      pool: buildingFunctionState.multiplier === undefined
+        ? undefined
+        : {
+          multiplier: buildingFunctionState.multiplier,
+          unusedPool: unusedPool ?? 0,
+          onSetMultiplier: onSetFunctionMultiplier && (multiplier => onSetFunctionMultiplier(functionIndex, multiplier)),
+        },
       starved: buildingFunctionState.starved,
       disabled,
       pointAtResources: true,

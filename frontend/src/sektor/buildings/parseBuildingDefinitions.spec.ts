@@ -473,35 +473,37 @@ describe("parseBuildingDefinitions", () => {
     ]);
   });
 
-  it("marks a function with the Active always property as always active", () => {
+  it("marks a function with the Pool true property as drawing on the building's pool", () => {
     const result = parseBuildingDefinitions([
-      "# Reactor",
+      "# Workshop",
       "## Function",
-      "Water 2",
+      "Ore 2",
       "->",
-      "Energy 5",
+      "Tools 1",
       "## Function",
-      "Active: always",
-      "Energy 1",
+      "Pool: true",
+      "Wood 3",
       "->",
-      "Water 1",
-    ], { "Reactor/0.sgl": "box s(10,10,10)" });
+      "Tools 2",
+      "## Function",
+      "Pool: false",
+      "Iron 1",
+      "->",
+      "Tools 1",
+    ], { "Workshop/0.sgl": "box s(10,10,10)" });
 
-    expect(result[0].buildingFunctions.map(buildingFunction => buildingFunction.alwaysActive))
-      .toEqual([undefined, true]);
+    expect(result[0].buildingFunctions.map(buildingFunction => buildingFunction.pool))
+      .toEqual([undefined, true, undefined]);
   });
 
-  it("leaves a function with another Active value switchable", () => {
+  it("parses poolSize property", () => {
     const result = parseBuildingDefinitions([
-      "# Reactor",
-      "## Function",
-      "Active: sometimes",
-      "Water 2",
-      "->",
-      "Energy 5",
-    ], { "Reactor/0.sgl": "box s(10,10,10)" });
+      "# Workshop",
+      "## Properties",
+      "poolSize=5",
+    ], { "Workshop/0.sgl": "box s(10,10,10)" });
 
-    expect(result[0].buildingFunctions[0].alwaysActive).toEqual(undefined);
+    expect(result[0].properties).toEqual({ poolSize: 5 });
   });
 
   it("parses a building with two function sections", () => {

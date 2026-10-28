@@ -130,7 +130,6 @@ Energy 5
 ## Function
 
 Name: Cooling
-Active: always
 Energy 1
 ->
 Water 1
@@ -220,3 +219,40 @@ ImportExport 100
 
 food
 industry
+
+# TestKiln
+
+## Function
+
+Name: Bricks
+Pool: true
+
+Stone 2
+->
+Metal 1
+
+## Function
+
+Name: Tiles
+Pool: true
+
+Stone 1
+->
+Fuel 2
+
+## Function
+
+Name: Pots
+Pool: true
+
+Ore 1
+->
+Food 1
+
+## Properties
+
+poolSize=5
+
+## Tags
+
+food

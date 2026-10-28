@@ -28,7 +28,7 @@ EcosystemSupport 🌳 #2e8b3a local
 ImportExport 📦 #ffedc2 local
 EducationGeneral 🍎 #e63535
 EducationSocial 👥 #6363eb
-EducationAnalytical 📈 #f5f5f5
+EducationMathematical 📈 #f5f5f5
 EducationTechnical ⚙️ #915b27
 
 

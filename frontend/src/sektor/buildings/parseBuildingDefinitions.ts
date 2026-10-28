@@ -16,14 +16,12 @@ export interface BuildingFunctionOutput {
 
 export interface BuildingFunction {
   name?: string;
-  // A function the building always does: the player cannot turn it off, and it runs from the
-  // moment the building is built even when it is not the building's first function.
-  alwaysActive?: boolean;
+  // A function drawing on the building's pool, done as many times over as the player says, as long
+  // as all such functions of the building together stay within the pool.
+  pool?: boolean;
   inputs: ResourceThroughput[];
   outputs: BuildingFunctionOutput[];
 }
-
-const ALWAYS_ACTIVE_VALUE = "always";
 
 // Written after the amount of an output which pollution affects.
 const AFFECTED_BY_POLLUTION_MARKER = "pollution";
@@ -34,6 +32,9 @@ const LARGEST_POLLUTION_AREA = 4;
 // Written between a location property's name and the divisor of the fraction of its value an
 // output produces.
 const FRACTION_INDICATOR = "/";
+
+// The value of the Pool property of a function drawing on the building's pool.
+const POOL_VALUE = "true";
 
 // The line separating a function's inputs from its outputs.
 const OUTPUT_SEPARATOR = "->";
@@ -53,6 +54,8 @@ export interface BuildingProperties {
   // building waits for a random part of it, so that buildings of a kind do not move in step. A
   // building whose definition names none starts its animations at once.
   randomizedDelayAnimationStart?: number;
+  // How many times over, all together, the building can do its functions drawing on its pool.
+  poolSize?: number;
 }
 
 // What stands on a building's location while the building is going up, before the building
@@ -212,6 +215,9 @@ function parseProperties(lines: string[]): BuildingProperties {
     if (match[1] === "randomizedDelayAnimationStart" && /^\d+(\.\d+)?$/.test(match[2])) {
       props.randomizedDelayAnimationStart = parseFloat(match[2]);
     }
+    if (match[1] === "poolSize" && isAmount(match[2])) {
+      props.poolSize = parseInt(match[2]);
+    }
   }
   return props;
 }
@@ -225,7 +231,7 @@ function parseBuildingFunction(lines: string[]): BuildingFunction {
   const inputs: ResourceThroughput[] = [];
   const outputs: BuildingFunctionOutput[] = [];
   let functionName: string | undefined = undefined;
-  let alwaysActive = false;
+  let pool = false;
   let seenOutputSeparator = false;
 
   for (const line of lines) {
@@ -240,9 +246,9 @@ function parseBuildingFunction(lines: string[]): BuildingFunction {
       functionName = nameMatch[1].trim();
       continue;
     }
-    const activeMatch = trimmed.match(/^Active:\s*(.+)$/);
-    if (activeMatch) {
-      alwaysActive = activeMatch[1].trim() === ALWAYS_ACTIVE_VALUE;
+    const poolMatch = trimmed.match(/^Pool:\s*(.+)$/);
+    if (poolMatch) {
+      pool = poolMatch[1].trim() === POOL_VALUE;
       continue;
     }
     const match = trimmed.match(/^(\S+)\s+(\S+)(?:\s+(\S+))?$/);
@@ -264,7 +270,7 @@ function parseBuildingFunction(lines: string[]): BuildingFunction {
 
   const buildingFunction: BuildingFunction = { inputs, outputs };
   if (functionName !== undefined) buildingFunction.name = functionName;
-  if (alwaysActive) buildingFunction.alwaysActive = true;
+  if (pool) buildingFunction.pool = true;
 
   return buildingFunction;
 }
