@@ -42,3 +42,6 @@ Unit multiplication for all functions uses the same pool. The total sum of all m
     - gray values
 - when multiplier one, display function values same as non-pool functions
 - when multiplier greater than one, display function values as: <multiplied value> (<specified value>)
+- when multiplier changes
+    - multiply all inputs & outputs for that function
+    - recalculate sektor imports, exports, local resources and any other sektor-level properties depending on inputs & outputs
