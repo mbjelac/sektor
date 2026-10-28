@@ -33,6 +33,13 @@ Unit multiplication for all functions uses the same pool. The total sum of all m
             - 1st function widget: OOOO
             - 2nd function widget: x0OOOO
             - all other widgets: OOOO
+    - similar to example, multiplier can be set to any value not currently set
+        - if value >= 0
+        - if new total of multipliers <= poolSize
+        - if any icon clicked, multiplier is set to that icon's index + 1
+            - 3rd icon clicked, multiplier is 3
+        - adjust amount of O (empty, unused) icons to be equal to number of available unused points in the pool
+            - all functions should have same amount of unused points/icons
     - in UI, the x, 0 & O icons should be:
         - x: a standard white "times" symbol, used for closing stuff
         - O: a thin white outline of a circle
