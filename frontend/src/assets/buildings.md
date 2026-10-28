@@ -373,6 +373,10 @@ industry
 
 # ChildKeep
 
+## Construction
+
+duration=1800
+
 ## Function
 
 Water 5
