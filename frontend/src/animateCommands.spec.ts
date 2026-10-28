@@ -87,7 +87,7 @@ describe("animatedColor", () => {
 });
 
 describe("animatedShine", () => {
-  it("raises the shine from none, holds it, lowers it back to none, holds that, then raises it again", () => {
+  it("raises the shine from that of sh, holds it, lowers it back, holds that, then raises it again", () => {
     const [body] = parseCommands("sph sh(30) ash(80,100,40)");
 
     const shinesOverTime = [0, 60, 100, 140, 200, 240, 260, 280, 340].map(elapsedMilliseconds => ({
@@ -96,15 +96,72 @@ describe("animatedShine", () => {
     }));
 
     expect(shinesOverTime).toEqual([
-      {elapsedMilliseconds: 0, shine: 0},
-      {elapsedMilliseconds: 60, shine: 48},
+      {elapsedMilliseconds: 0, shine: 30},
+      {elapsedMilliseconds: 60, shine: 60},
       {elapsedMilliseconds: 100, shine: 80},
       {elapsedMilliseconds: 140, shine: 80},
-      {elapsedMilliseconds: 200, shine: 32},
-      {elapsedMilliseconds: 240, shine: 0},
-      {elapsedMilliseconds: 260, shine: 0},
-      {elapsedMilliseconds: 280, shine: 0},
-      {elapsedMilliseconds: 340, shine: 48},
+      {elapsedMilliseconds: 200, shine: 50},
+      {elapsedMilliseconds: 240, shine: 30},
+      {elapsedMilliseconds: 260, shine: 30},
+      {elapsedMilliseconds: 280, shine: 30},
+      {elapsedMilliseconds: 340, shine: 60},
+    ]);
+  });
+
+  it("starts from no shine without sh, and dims the shine when ash is below sh", () => {
+    const [withoutShine, dimmed] = parseCommands(
+      "sph ash(80,100,40)\n" +
+      "sph sh(80) ash(20,100,40)"
+    );
+
+    const shinesOverTime = [0, 60, 100].map(elapsedMilliseconds => ({
+      elapsedMilliseconds,
+      withoutShine: animatedShine(withoutShine, elapsedMilliseconds),
+      dimmed: animatedShine(dimmed, elapsedMilliseconds),
+    }));
+
+    expect(shinesOverTime).toEqual([
+      {elapsedMilliseconds: 0, withoutShine: 0, dimmed: 80},
+      {elapsedMilliseconds: 60, withoutShine: 48, dimmed: 44},
+      {elapsedMilliseconds: 100, withoutShine: 80, dimmed: 20},
+    ]);
+  });
+
+  it("keeps the shine of sh until its initial delay is over, then changes it as without the delay", () => {
+    const [body] = parseCommands("sph sh(30) ash(80,100,40,200)");
+
+    const shinesOverTime = [0, 100, 200, 260, 300].map(elapsedMilliseconds => ({
+      elapsedMilliseconds,
+      shine: animatedShine(body, elapsedMilliseconds),
+    }));
+
+    expect(shinesOverTime).toEqual([
+      {elapsedMilliseconds: 0, shine: 30},
+      {elapsedMilliseconds: 100, shine: 30},
+      {elapsedMilliseconds: 200, shine: 30},
+      {elapsedMilliseconds: 260, shine: 60},
+      {elapsedMilliseconds: 300, shine: 80},
+    ]);
+  });
+
+  it("rests at the shine of sh for the cycle pause after every cycle, before raising it again", () => {
+    const [body] = parseCommands("sph sh(30) ash(80,100,40,200,60)");
+
+    const shinesOverTime = [260, 300, 340, 400, 440, 480, 500, 520, 580].map(elapsedMilliseconds => ({
+      elapsedMilliseconds,
+      shine: animatedShine(body, elapsedMilliseconds),
+    }));
+
+    expect(shinesOverTime).toEqual([
+      {elapsedMilliseconds: 260, shine: 60},
+      {elapsedMilliseconds: 300, shine: 80},
+      {elapsedMilliseconds: 340, shine: 80},
+      {elapsedMilliseconds: 400, shine: 50},
+      {elapsedMilliseconds: 440, shine: 30},
+      {elapsedMilliseconds: 480, shine: 30},
+      {elapsedMilliseconds: 500, shine: 30},
+      {elapsedMilliseconds: 520, shine: 30},
+      {elapsedMilliseconds: 580, shine: 50},
     ]);
   });
 });

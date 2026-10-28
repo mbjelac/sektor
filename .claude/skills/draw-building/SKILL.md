@@ -207,7 +207,7 @@ before placing anything along an edge.
 | `ar(d1,d2,d3,stepDelay)` | add these degrees every `stepDelay` ms — an endless spin; no start delay, so every spinning body of a building turns in step |
 | `act(#color,dt1,dt2[,dt3])` | hold the base color `dt1` ms, `#color` for `dt2` ms, base again for `dt3` ms; in sync across lines |
 | `acg(#color,dt[,pause[,start]])` | fade base → `#color` over `dt` ms, hold `pause` ms, fade back, hold `pause` ms, repeat; first waits `start` ms. Same phases as `at` and `ash`, so with the same numbers they run **in step** |
-| `ash(v,dt,pause)` | shine 0 → `v` over `dt` ms, hold `pause` ms, back to 0, hold `pause` ms, repeat; in sync across lines. Overrides `sh()` while it runs |
+| `ash(v,dt,pause[,delay[,cyclePause]])` | shine `sh()` (0 without it) → `v` over `dt` ms, hold `pause` ms, back to `sh()`, hold `pause` ms, hold `cyclePause` ms more (default 0), repeat; in sync across lines. `v` below `sh()` dims. Optional `delay` ms (default 0) before it starts, at the `sh()` shine meanwhile |
 | `ashow(dt1,dt2[,dt3])` | hidden `dt1` ms, shown in the `c()` color for `dt2` ms, hidden again for `dt3` ms; in sync across lines. Use this, not a transparent `c()` with `act`, to hide a body for a while |
 
 Animation advances in 20 ms steps, so anything below that is invisible. To make a crowd of

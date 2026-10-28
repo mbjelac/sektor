@@ -90,8 +90,20 @@ describe("parseCommands", () => {
 
     expect({shine: body.shine, animateShine: body.animateShine}).toEqual({
       shine: null,
-      animateShine: {shine: 80.5, dt: 1000, pause: 200},
+      animateShine: {shine: 80.5, dt: 1000, pause: 200, delay: 0, cyclePause: 0},
     });
+  });
+
+  it("reads a shine animation with its optional initial delay and cycle pause", () => {
+    const [withDelay, withDelayAndCyclePause] = parseCommands(
+      "sph ash(80,1000,200,700)\n" +
+      "sph ash(80,1000,200,700,3000)"
+    );
+
+    expect([withDelay.animateShine, withDelayAndCyclePause.animateShine]).toEqual([
+      {shine: 80, dt: 1000, pause: 200, delay: 700, cyclePause: 0},
+      {shine: 80, dt: 1000, pause: 200, delay: 700, cyclePause: 3000},
+    ]);
   });
 
   it("reads a one-way size animation with its optional pause and initial delay", () => {
