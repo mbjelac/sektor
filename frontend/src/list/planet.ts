@@ -2,7 +2,7 @@ import planetMd from "../assets/planet.md?raw";
 import { createPlanetGrid, PlanetGrid } from "./planetGrid";
 import { parsePlanet, PlanetRegion } from "./parsePlanet";
 
-const EDGE_DIVISIONS = 16;
+const EDGE_DIVISIONS = 32;
 
 // The planet's grid of triangles, and what the planet is like at every one of them, ring by ring as
 // the grid has them. It is the same on every visit, as planet.md has it.

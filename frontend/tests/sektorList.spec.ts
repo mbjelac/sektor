@@ -34,9 +34,9 @@ test("shows the owner of every sektor", async ({ page }) => {
 test("shows the biome type of every sektor", async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem("sektors", JSON.stringify([
-      { id: "Alpha", name: "Alpha", owner: null, location: { ring: 10, index: 31 } },
-      { id: "Beta", name: "Beta", owner: null, location: { ring: 0, index: 0 } },
-      { id: "Gamma", name: "Gamma", owner: null, location: { ring: 20, index: 6 } },
+      { id: "Alpha", name: "Alpha", owner: null, location: { ring: 21, index: 64 } },
+      { id: "Beta", name: "Beta", owner: null, location: { ring: 1, index: 1 } },
+      { id: "Gamma", name: "Gamma", owner: null, location: { ring: 41, index: 11 } },
       { id: "Delta", name: "Delta", owner: null },
     ]));
   });
@@ -140,7 +140,7 @@ test("stands a tilted planet back upright on a double click", async ({ page }) =
   await expect(page.locator("#list-page")).toHaveScreenshot("list-page.png", { maxDiffPixelRatio: 0 });
 });
 
-// Unturned, the middle of the planet is triangle 23 : 112. A sektor's page is gone to and come back
+// Unturned, the middle of the planet is triangle 47 : 223. A sektor's page is gone to and come back
 // from in between.
 test("shows the planet turned as it was left when the page is come back to", async ({ page }) => {
   await page.mouse.move(640, 500);
@@ -159,8 +159,8 @@ test("shows the planet turned as it was left when the page is come back to", asy
     whenLeaving: triangleWhenLeaving,
     whenComingBack: await page.locator("#planet-region-info span").first().textContent(),
   }).toEqual({
-    whenLeaving: "36 : 99",
-    whenComingBack: "36 : 99",
+    whenLeaving: "72 : 203",
+    whenComingBack: "72 : 203",
   });
 });
 
@@ -427,21 +427,21 @@ function createSektorNow(page: Page) {
 }
 
 // A sektor is made on a triangle of the planet where it can be lived on, which is never in the
-// polar zones: the five rings around either pole.
+// polar zones: the ten rings around either pole.
 test("makes a new sektor on a triangle outside the polar zones", async ({ page }) => {
   await page.goto("/?test=true");
 
   await createSektorNow(page);
 
   const { location } = (await getStoredSektors(page)).at(-1);
-  expect({ isOutsidePolarZones: location.ring >= 5 && location.ring <= 42 }).toEqual({ isOutsidePolarZones: true });
+  expect({ isOutsidePolarZones: location.ring >= 10 && location.ring <= 85 }).toEqual({ isOutsidePolarZones: true });
 });
 
-// Ring 23, place 112 is the triangle in the middle of the planet as the page opens.
+// Ring 47, place 223 is the triangle in the middle of the planet as the page opens.
 async function storeSektorInMiddleOfPlanet(page: Page) {
   await page.evaluate(() => {
     const sektors = JSON.parse(localStorage.getItem("sektors")!);
-    localStorage.setItem("sektors", JSON.stringify([...sektors, { id: "Delta", name: "Delta", owner: null, location: { ring: 23, index: 112 } }]));
+    localStorage.setItem("sektors", JSON.stringify([...sektors, { id: "Delta", name: "Delta", owner: null, location: { ring: 47, index: 223 } }]));
   });
   await page.reload();
 }
@@ -459,7 +459,7 @@ test("marks a sektor where it lies on the planet, with its name", async ({ page 
     triangleUnderSquare: await page.locator("#planet-region-info span").first().textContent(),
   }).toEqual({
     names: ["Delta"],
-    triangleUnderSquare: "23 : 112",
+    triangleUnderSquare: "47 : 223",
   });
 });
 
@@ -481,11 +481,11 @@ test("hides the mark of a sektor on the far side of the planet", async ({ page }
   expect(await page.locator(".sektor-marker").count()).toEqual(0);
 });
 
-// Ring 15, place 40 starts out on the far side of the planet.
+// Ring 30, place 79 starts out on the far side of the planet.
 async function storeSektorOnFarSideOfPlanet(page: Page) {
   await page.evaluate(() => {
     const sektors = JSON.parse(localStorage.getItem("sektors")!);
-    localStorage.setItem("sektors", JSON.stringify([...sektors, { id: "Echo", name: "Echo", owner: null, location: { ring: 15, index: 40 } }]));
+    localStorage.setItem("sektors", JSON.stringify([...sektors, { id: "Echo", name: "Echo", owner: null, location: { ring: 30, index: 79 } }]));
   });
   await page.reload();
 }
@@ -503,7 +503,7 @@ test("turns the planet to show a sektor clicked on the list in the middle of it"
     await page.mouse.move(641, 360);
     await page.mouse.move(640, 360);
     return page.locator("#planet-region-info span").first().textContent();
-  }, { timeout: 3000 }).toEqual("15 : 40");
+  }, { timeout: 3000 }).toEqual("30 : 79");
 });
 
 // The last of more sektors than the window holds lies right of the middle of the planet, clear of the
@@ -512,7 +512,7 @@ test("brings a sektor clicked on the planet into view on the list, flashing", as
   await page.evaluate(() => {
     localStorage.setItem("sektors", JSON.stringify(Array.from({ length: 40 }, (_, sektorIndex) => ({
       id: `sektor${sektorIndex}`, name: `sektor-${sektorIndex}`, owner: null,
-      ...(sektorIndex === 39 ? { location: { ring: 23, index: 120 } } : {}),
+      ...(sektorIndex === 39 ? { location: { ring: 47, index: 239 } } : {}),
     }))));
   });
   await page.reload();
@@ -545,7 +545,7 @@ test("opens the map of a sektor double clicked on the list", async ({ page }) =>
 
 test("opens the map of a sektor double clicked on the planet", async ({ page }) => {
   await page.evaluate(() => {
-    localStorage.setItem("sektors", JSON.stringify([{ id: "Echo", name: "Echo", owner: null, location: { ring: 23, index: 112 } }]));
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Echo", name: "Echo", owner: null, location: { ring: 47, index: 223 } }]));
   });
   await page.reload();
 

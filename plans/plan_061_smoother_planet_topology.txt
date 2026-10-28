@@ -1,0 +1,71 @@
+The planet had 5120 triangles (EDGE_DIVISIONS = 16), of which about 2800 were habitable: 1960 land
+triangles outside the polar zones and 859 sea triangles next to land. To get more, smaller areas
+while keeping the land-sea ratio (38.8% land), the planet is refined to EDGE_DIVISIONS = 32: 20480
+triangles in 96 rings.
+
+The world is not generated anew but refined: every old triangle is split into 4 smaller ones which
+inherit what it was (climate, biome, land, forest, desert), so continents, biomes and sektor
+geography stay where they were. Split alone would look exactly like the old planet, so borders are
+then roughened at the new resolution: triangles on a border are flipped to the other side, as many
+one way as the other, so the shares stay the same.
+
+The topology rules of plan 55 still hold with 32 edge divisions: rings 0–31 northern cap
+(5 · (2N + 1) triangles), rings 32–63 band (320 triangles each), rings 64–95 southern cap.
+
+The refined planet has 7829 land triangles outside the polar zones and 2861 sea triangles next to
+land: 10690 habitable triangles.
+
+#1 [done] Planet has smaller triangles
+- [done] the planet is a geodesic sphere with EDGE_DIVISIONS = 32
+    - 20480 triangles in 96 rings
+    - the equator runs between ring 47 and ring 48
+- [done] planet.md is refined from the 16-division planet
+    - every new triangle takes everything from the old triangle its centre lies in: land, forest, desert, biome
+    - climate zones keep their share of rings, every zone twice as many rings as before (<zone>: <number of rings>)
+        - polar: 10
+        - sub-polar: 10
+        - temperate: 10
+        - sub-tropical: 10
+        - tropical: 16
+        - sub-tropical: 10
+        - temperate: 10
+        - sub-polar: 10
+        - polar: 10
+- [done] coastlines are roughened
+    - two passes
+    - in each pass, of the triangles on the land-sea border, flip 30% of the smaller side (land or sea) to the other side, and as many from the other side
+    - a triangle flipped to sea loses L, F and D
+    - a triangle flipped to land takes F or D from a land neighbour
+    - a flipped triangle keeps its own biome
+    - no forest or desert in the polar climate zones
+    - land stays at 38.8% of the planet: 7944 land triangles
+- [done] every triangle gets a new colour
+    - picked at random from the colours the 16-division planet had for the same kind of triangle: in a polar zone or not, land, forest, desert, biome
+- [done] update docs
+    - About section of planet.md: 20480 triangles, rings 0–95
+    - planet note in frontend/CLAUDE.md
+- [done] update tests
+    - fixed sektor locations in tests/sektorList.spec.ts moved to the new triangle at the same spot of the planet
+    - polar zones are rings 0–9 and 86–95
+    - update the list page snapshots
+
+#2 Forests & deserts have smoother edges
+- forest and desert zones have blocky edges: clumps of 4 small triangles left from refining the planet
+- roughen forest edges like coastlines
+    - two passes
+    - in each pass, of the land triangles on the border between forest and non-forest land, flip 30% of the smaller side to the other side, and as many from the other side
+    - a triangle flipped to forest gets F
+    - a triangle flipped out of forest loses F
+    - do not flip desert triangles
+    - no forest in the polar climate zones
+    - forest stays at the same share of land
+- roughen desert edges like coastlines
+    - two passes
+    - in each pass, of the land triangles on the border between desert and non-desert land, flip 30% of the smaller side to the other side, and as many from the other side
+    - a triangle flipped to desert gets D and loses F
+    - a triangle flipped out of desert loses D, and gets F if most of its land neighbours are forest
+    - no desert in the polar and sub-polar climate zones
+    - desert stays at the same share of land
+- a flipped triangle keeps its own biome
+- give every flipped triangle a new colour, by its new kind, from the colour ranges of plan 55 (#2–#5)
+- update the list page snapshots
