@@ -6,6 +6,8 @@ However, multiple functions in a building can be like that.
 Unit multiplication for all functions uses the same pool. The total sum of all multipliers cannot be greater then the pool value.
 
 #1 A building function can be specified to be multipliable
+- this is a REPLACEMENT of deactivation/activation, "Active: always", etc.
+    - remove implementation (no need to modify past plans)
 - if a building function has property "Pool: true" in it's description before input & output amounts
     - player can increase a multiplier for this function
     - multiplier is an integer between 0 and poolSize which is a property for the whole building in Properties section
