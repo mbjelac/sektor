@@ -81,3 +81,10 @@ land: 10690 habitable triangles.
         - then the map's north edge should be coastal
     - if the same triangle's SW neighbor is also sea
         - then it's south & west edges should be coastal
+
+#4 Marine sektors have small islands
+- reduce the amount of land in marine biome sektors
+    - when creating a marine biome sektor, randomly decide from 3-10 land squares
+    - no rivers
+    - map should not be flooded with sea from one side
+    - land should be randomly distributed accross the map
