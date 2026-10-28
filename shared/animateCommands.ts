@@ -1,4 +1,4 @@
-import {AnimateColorGradual, AnimateColorToggle, AnimateRotate, CreateBody} from "./parseCommands";
+import {AnimateColorGradual, AnimateColorToggle, CreateBody} from "./parseCommands";
 import {ANIMATION_STEP_MILLISECONDS} from "./constants";
 import {colorToRgb} from "./primitive/colorToRgb";
 
@@ -110,6 +110,19 @@ function oneWayForwardStep(elapsedStep: number, phaseSteps: number, pauseSteps: 
 
 function thereAndBackForwardStep(cycleStep: number, phaseSteps: number): number {
   return cycleStep <= phaseSteps ? cycleStep : 2 * phaseSteps - cycleStep;
+}
+
+// A body with ash shines from none up to the shine of ash and back down, pausing at either end,
+// like a translation going there and back; its own sh() is not used while it does.
+export function animatedShine(command: CreateBody, elapsedMilliseconds: number): number | null {
+  const animateShine = command.animateShine;
+  if (!animateShine) return command.shine;
+
+  const phaseSteps = animateShine.dt / ANIMATION_STEP_MILLISECONDS;
+  const pauseSteps = animateShine.pause / ANIMATION_STEP_MILLISECONDS;
+  const elapsedStep = Math.floor(Math.max(0, elapsedMilliseconds) / ANIMATION_STEP_MILLISECONDS);
+  const forwardStep = translationForwardStep(elapsedStep % (2 * phaseSteps + 2 * pauseSteps), phaseSteps, pauseSteps);
+  return animateShine.shine * forwardStep / phaseSteps;
 }
 
 // A body with ashow is hidden for dt1, shown for dt2 and hidden again for dt3, over and over.

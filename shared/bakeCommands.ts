@@ -90,6 +90,7 @@ function isAnimated(command: CreateBody): boolean {
     || command.animateRotate !== null
     || command.animateColorToggle !== null
     || command.animateColorGradual !== null
+    || command.animateShine !== null
     || command.animateShow !== null;
 }
 

@@ -11,8 +11,8 @@ Both architect & frontend use the shared rendering code, so both show shine and 
                 - c(#ffffff) sh(100) is pure white
         - the glare is a specular highlight whose strength follows v
 
-#2 Shine can be animated
-- when shine animation specified, the body's shine changes gradually from 0 to the specified strength and back
+#2 [done] Shine can be animated
+- [done] when shine animation specified, the body's shine changes gradually from 0 to the specified strength and back
     - shine animation specification is ash(v, duration, pause)
         - v: shine strength to arrive to, 0-100
         - duration: time in milliseconds during which shine changes from 0 to v

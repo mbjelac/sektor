@@ -67,6 +67,15 @@ describe("parseCommands", () => {
     ]);
   });
 
+  it("reads a shine animation, which is not mistaken for a shine", () => {
+    const [body] = parseCommands("sph ash(80.5,1000,200)");
+
+    expect({shine: body.shine, animateShine: body.animateShine}).toEqual({
+      shine: null,
+      animateShine: {shine: 80.5, dt: 1000, pause: 200},
+    });
+  });
+
   it("reads a one-way size animation with its optional pause and initial delay", () => {
     const [withoutOptionalArguments, withOptionalArguments] = parseCommands(
       "sph as1(1,2,3,3000)\n" +

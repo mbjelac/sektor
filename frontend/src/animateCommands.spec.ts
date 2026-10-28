@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseCommands } from "../../shared/parseCommands";
-import { animatedColor, animatedScale, animatedTranslate } from "../../shared/animateCommands";
+import { animatedColor, animatedScale, animatedShine, animatedTranslate } from "../../shared/animateCommands";
 
 describe("animatedTranslate", () => {
   it("moves a one-way animated body forward, pauses, then jumps back to its start", () => {
@@ -61,6 +61,29 @@ describe("animatedColor", () => {
       {elapsedMilliseconds: 320, color: "#ffffff00"},
       {elapsedMilliseconds: 340, color: "#ffffffff"},
       {elapsedMilliseconds: 400, color: "#ffffff66"},
+    ]);
+  });
+});
+
+describe("animatedShine", () => {
+  it("raises the shine from none, holds it, lowers it back to none, holds that, then raises it again", () => {
+    const [body] = parseCommands("sph sh(30) ash(80,100,40)");
+
+    const shinesOverTime = [0, 60, 100, 140, 200, 240, 260, 280, 340].map(elapsedMilliseconds => ({
+      elapsedMilliseconds,
+      shine: animatedShine(body, elapsedMilliseconds),
+    }));
+
+    expect(shinesOverTime).toEqual([
+      {elapsedMilliseconds: 0, shine: 0},
+      {elapsedMilliseconds: 60, shine: 48},
+      {elapsedMilliseconds: 100, shine: 80},
+      {elapsedMilliseconds: 140, shine: 80},
+      {elapsedMilliseconds: 200, shine: 32},
+      {elapsedMilliseconds: 240, shine: 0},
+      {elapsedMilliseconds: 260, shine: 0},
+      {elapsedMilliseconds: 280, shine: 0},
+      {elapsedMilliseconds: 340, shine: 48},
     ]);
   });
 });
