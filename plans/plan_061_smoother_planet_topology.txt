@@ -85,6 +85,6 @@ land: 10690 habitable triangles.
 #4 Marine sektors have small islands
 - reduce the amount of land in marine biome sektors
     - when creating a marine biome sektor, randomly decide from 3-10 land squares
-    - no rivers
-    - map should not be flooded with sea from one side
+- no rivers
+- map should not be flooded with sea from one side
     - land should be randomly distributed accross the map
