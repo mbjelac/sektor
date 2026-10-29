@@ -43,6 +43,14 @@ describe("squareVariation", () => {
 
     expect([...new Set(squaresPerShape)]).toEqual([SEKTOR_SIZE * SEKTOR_SIZE / SQUARE_VARIATION_COUNT]);
   });
+
+  // Two squares side by side in the same shape would read as one outcrop or forest stamped twice.
+  it("never gives two squares side by side the same shape", () => {
+    expect(everySquareOfTheMap().filter(square =>
+      [{ x: square.x + 1, z: square.z }, { x: square.x, z: square.z + 1 }]
+        .some(neighbour => neighbour.x < SEKTOR_SIZE && neighbour.z < SEKTOR_SIZE
+          && squareVariation(neighbour.x, neighbour.z) === squareVariation(square.x, square.z)))).toEqual([]);
+  });
 });
 
 describe("elevationSides", () => {

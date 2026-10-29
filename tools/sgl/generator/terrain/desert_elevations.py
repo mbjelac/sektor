@@ -5,8 +5,10 @@
 # at the height the rock reaches, so it tapers towards a flat top. Half as many trees are kept, made smaller and a dry
 # green; a tree that stood on a rock roof is set onto the flat top of the rock now under it. Trees that no longer have
 # a top under them, or stand on the ground inside a rock, cannot be kept, so the kept ones are picked from the rest.
-# Most of the kept ground trees are then moved up onto the top of the nearest rock of their own file that has room. A tree in one triangle can stand on a rock kept in
-# a neighbouring triangle, so the rocks of all four files of a variant are looked at.
+# Most of the kept ground trees are then moved up onto the top of the nearest rock of their own file that has room. A tree
+# only ever stands on a rock of its own file: a square of rock is drawn from files of both kinds, so the rock of a
+# neighbouring file may not be there to hold it up. The rocks of all four files of a variant are still looked at, so
+# that a tree is not set where the rock of a neighbouring file would bury it.
 #
 # Run from anywhere: python3 tools/sgl/generator/terrain/desert_elevations.py
 import math
@@ -54,14 +56,14 @@ def main():
         for file_name, lines in files.items():
             variant_rocks_geometry = [rock_geometry(*rock[:3]) for (other_name, index), rock in rocks.items()
                                       if other_name[1:] == file_name[1:]]
-            standing = {index: standing_tree(parse(line), variant_rocks_geometry)
+            file_rocks_geometry = [rock_geometry(*rock[:3]) for (other_name, index), rock in rocks.items()
+                                   if other_name == file_name]
+            standing = {index: standing_tree(parse(line), file_rocks_geometry, variant_rocks_geometry)
                         for index, line in enumerate(lines) if line.startswith('sph ')}
             standing = {index: tree for index, tree in standing.items() if tree}
             kept = set(tree_random.sample(sorted(standing),
                                           min(len(standing), round(len(tree_lines_of(lines)) * TREE_KEPT))))
             standing = {index: shrunk(tree) for index, tree in standing.items() if index in kept}
-            file_rocks_geometry = [rock_geometry(*rock[:3]) for (other_name, index), rock in rocks.items()
-                                   if other_name == file_name]
             move_onto_rocks(standing, file_rocks_geometry, variant_rocks_geometry, tree_random)
             desert = []
             for index, line in enumerate(lines):
@@ -110,16 +112,16 @@ def tree_lines_of(lines):
     return [line for line in lines if line.startswith('sph ')]
 
 
-def standing_tree(tree, rocks_geometry):
+def standing_tree(tree, file_rocks_geometry, variant_rocks_geometry):
     # The tree where it now stands, or None when it has nowhere to stand.
     scale, position, rotation, color = tree
     x, y, z = position
     if z >= ROOF_TREE_HEIGHT:
-        roofs = [roof_height(top, x, y) for top, bottom, rock_hull in rocks_geometry if inside(top, x, y)]
+        roofs = [roof_height(top, x, y) for top, bottom, rock_hull in file_rocks_geometry if inside(top, x, y)]
         if not roofs:
             return None
         return scale, [x, y, max(roofs)], rotation, color
-    if any(inside(rock_hull, x, y) for top, bottom, rock_hull in rocks_geometry):
+    if any(inside(rock_hull, x, y) for top, bottom, rock_hull in variant_rocks_geometry):
         return None
     return tree
 
@@ -161,10 +163,19 @@ def roof_spot(position, radius, file_rocks_geometry, variant_rocks_geometry, roo
                 continue
             if any(math.hypot(x - tree[1][0], y - tree[1][1]) < radius + tree[0][0] / 2 for tree in roof_trees):
                 continue
-            height = roof_under(variant_rocks_geometry, x, y, radius)
+            height = own_roof_under(file_rocks_geometry, variant_rocks_geometry, x, y, radius)
             if height is not None:
                 return [x, y, height]
     return None
+
+
+def own_roof_under(file_rocks_geometry, variant_rocks_geometry, x, y, radius):
+    # Height of the roof of a rock of the tree's own file it can stand on, or None when there is none, or the rock of a
+    # neighbouring file covers it.
+    height = roof_under(variant_rocks_geometry, x, y, radius)
+    if height is None or height != roof_under(file_rocks_geometry, x, y, radius):
+        return None
+    return height
 
 
 def tree_line(tree, tree_random):

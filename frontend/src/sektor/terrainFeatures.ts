@@ -42,11 +42,14 @@ export function elevationSides(terrain: number[][], x: number, y: number): Eleva
 // the same map always comes out the same, while its neighbours come out differently. Scrambling
 // the square's place before it is counted down to a shape is what spreads the shapes about instead
 // of laying them out in bands; 37 and 100 share no divisor, so no two squares of a map are
-// scrambled to the same number and every shape is given exactly its share of the map.
+// scrambled to the same number and every shape is given exactly its share of the map. The shape is
+// the tens of the scrambled number, not its units: a step east adds 370 to it, which leaves the
+// units as they were, while it moves the tens by 7, and a step south moves them by 3 or 4, so
+// squares side by side never share a shape.
 export function squareVariation(x: number, z: number): number {
   const placeOnMap = x * 10 + z;
   const scrambled = (placeOnMap * 37 + 11) % 100;
-  return scrambled % SQUARE_VARIATION_COUNT;
+  return Math.floor(scrambled / (100 / SQUARE_VARIATION_COUNT));
 }
 
 // Rock is drawn in the look of the sektor's terrain, each look having its own folder of side files.
