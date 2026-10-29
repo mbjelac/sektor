@@ -1,0 +1,9 @@
+In order to achieve a sense of progress in the game, players can claim assignments.
+An assignment is a set of criteria.
+An assignment is complete when a player's sektor or any combination of player's sektors fullfills the assignment criteria.
+
+Examples:
+- assignment X
+    - imports of A, B & C must be under 50 in total
+    - imports of D must be 0
+    - exports of E must be at least 20
