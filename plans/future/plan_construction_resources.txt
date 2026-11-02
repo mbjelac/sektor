@@ -22,3 +22,17 @@ Example:
         - 10 concrete
         - 10 glass
     - after a while (real time) of not building in the sektor, imports drop to 0 or almost 0
+
+
+EVEN SIMPLER way is to just sum up all resources required for construction, divide each by 10 (or some other constant) and add them to imports.
+
+Example:
+- building A uses Glass 5, Concrete 12 & Steal 7
+- building B uses Glass 3, Concrete 9 & Steal 9
+- after building one A & one B, imports are increased by:
+    - Glass 1 ((5 + 3) / 10 = 0.8 ~ 1)
+    - Concrete 2 ((12 + 9) / 10 = 2.1 ~ 2)
+    - Steal 2 ((7 + 9) / 10 = 1.6 ~ 2)
+
+Explanation: Since import are *flow* of materials, it has to be much lower than the actual amount of materials required.
+
