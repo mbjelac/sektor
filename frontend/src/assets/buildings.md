@@ -393,7 +393,7 @@ Sewage 6
 
 ## Tags
 
-people
+education
 
 # WaterTreatment
 
@@ -471,14 +471,17 @@ WasteBio 8
 
 food
 
-# FloaterTower
+## Properties
+
+pollutionArea=1
+
+# SkyTower
 
 ## Function
 
-EnergyElectric 6
+EnergyElectric 4
 WorkAdministrative 2
-WorkTechnical 1
-WorkMaintenance 3
+WorkMaintenance 2
 ->
 ImportExport 50
 
