@@ -457,6 +457,10 @@ people
 
 # FoodProcessor
 
+## Construction
+
+duration=3300
+
 ## Function
 
 EnergyElectric 10
