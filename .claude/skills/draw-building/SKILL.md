@@ -1,6 +1,6 @@
 ---
 name: draw-building
-description: Load SGL (Sektor Graphics Language), the Sektor shape DSL (bodies, height, placement, colors, animation) into context for drawing in the scratch file. Use when asked to draw, add, move, recolor or animate 3D objects — buildings, pyramids, rings of spheres, grids of cubes — in the scratch_sektor.txt DSL.
+description: Load SGL (Sektor Graphics Language), the Sektor shape DSL (bodies, height, placement, colors, animation) into context for drawing in the scratch file. Use when asked to draw, add, move, recolor or animate 3D objects — buildings, pyramids, rings of spheres, grids of cubes — in the scratch_sektor.txt DSL. Also use when asked to add or change a building's construction (0.construction.sgl and its duration in buildings.md).
 ---
 
 # draw-building
@@ -213,6 +213,60 @@ before placing anything along an edge.
 Animation advances in 20 ms steps, so anything below that is invisible. To make a crowd of
 identical bodies feel alive, use `atr`, or vary a number per line (a pause, a `start` delay, an `r` angle for `ar`)
 rather than emitting the same line many times.
+
+## Constructions
+
+A building's construction is what stands on its tile while it goes up: the SGL in
+`frontend/src/assets/buildings/<Name>/0.construction.sgl`, next to the finished `0.sgl`. The
+frontend draws it from the moment building starts until `duration` ms have passed (the
+`## Construction` section of the building in `frontend/src/assets/buildings.md`), then switches
+to `0.sgl`. All animation timings in the construction file count from the start of construction.
+
+Whenever asked to add or change a construction, always do all of the following without being
+asked separately:
+
+1. **Start from a copy of `0.sgl`.** Copy the building's `0.sgl` (it normally matches the scratch
+   file — check with a diff, and say if it does not) into `0.construction.sgl`, then edit that
+   copy: remove what is not built yet, hide or bury what appears later, add scaffolding. Write the
+   construction straight into the building folder, not into the scratch file. If the user does not
+   name the building, find the folder whose `0.sgl` matches the scratch file.
+2. **Calculate the duration.** Take the moment every animation finishes and use the latest:
+   - `ashow(dt1,…)` → `dt1` (the moment the body appears);
+   - `at`/`at1`/`atr`/`acg`/`acg1`/`as1` with a start → `start + dt` (`atr` adds up to 2000 ms of
+     random delay — count that in);
+   - a body that is visible and still from the start → 0.
+
+   The duration is that latest moment **plus 200 ms** (as in Gymnasium: last body shown at 2900 →
+   `duration=3100`). Print the timeline (what happens when) in the report, together with the
+   calculation.
+3. **Update `buildings.md`.** In the building's section put (or update)
+
+   ```
+   ## Construction
+
+   duration=<ms>
+   ```
+
+   right after the `# <Name>` heading, before `## Function`. Then run the frontend unit tests
+   (`nvm use` first; `npm run test:unit` in `frontend/`) — they parse `buildings.md` and every
+   construction file.
+
+Conventions used by the existing constructions (WaterWells, Gymnasium, FoodProcessor, Fissionaire):
+
+- **Scaffolding**: `#b64d07` bars, `pri4 s(2,2,h)` posts standing at `t z −1`, shown with
+  `ashow(700,…)`, and `pri4 s(2,L,2)` / `s(L,2,2)` crossbars across the post tops, top of the bar
+  0.65 above the post top, shown with `ashow(900,…)`. Posts stand just outside what they surround;
+  bigger structures get longer and higher bars, not thicker ones.
+- **Appearing**: `ashow(t,10000)` — hidden until `t`, then shown. Make the shown time (`dt2`) far
+  longer than the duration so nothing hides again before the switch to `0.sgl`.
+- **Rising out of the ground**: lower the body until its highest point is at `z −0.5` (under the
+  floor slab) and give it `at(0,0,dz,dt,10000,start)` — rise `dz` over `dt` ms after `start`, then
+  hold. For a rotated body, find its highest corner first.
+- **Staged parts**: show segments bottom first, a fixed step apart (e.g. 400 ms), and stagger
+  repeated structures by a smaller step (e.g. 200 ms) in the order the user asks.
+- Bodies that are never seen during construction (animated decorations such as steam, glints)
+  are left out of the construction entirely; details that belong to a part (stripes, panels on a
+  tower segment) appear together with that part.
 
 ## Hard rules
 
