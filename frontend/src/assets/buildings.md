@@ -10,6 +10,7 @@ StructuralAlloys 1
 Electronics 1
 Regolith 4
 Polymers 2
+Machinery 2
 
 ## Function
 
@@ -185,6 +186,8 @@ Glass 3
 StructuralAlloys 1
 Electronics 2
 Polymers 2
+Machinery 1
+Robotics 2
 
 ## Function
 
@@ -211,6 +214,8 @@ StructuralAlloys 10
 Electronics 3
 Ceramics 2
 Composites 2
+Machinery 4
+Robotics 1
 
 ## Function
 
@@ -323,6 +328,8 @@ StructuralAlloys 6
 Electronics 2
 Regolith 4
 Ceramics 6
+Machinery 4
+Robotics 1
 
 ## Function
 
@@ -350,6 +357,8 @@ StructuralAlloys 6
 Electronics 4
 Regolith 4
 Ceramics 6
+Machinery 3
+Robotics 1
 
 ## Function
 
@@ -415,6 +424,7 @@ Regolith 1
 Ceramics 3
 Composites 4
 Polymers 3
+Machinery 1
 
 ## Function
 
@@ -479,6 +489,8 @@ duration=1500
 StructuralAlloys 3
 Electronics 2
 Regolith 1
+Machinery 1
+Robotics 1
 
 ## Function
 
@@ -509,6 +521,7 @@ StructuralAlloys 3
 Electronics 3
 Regolith 2
 Polymers 1
+Robotics 1
 
 ## Function
 
@@ -536,6 +549,7 @@ Regolith 2
 Ceramics 1
 Composites 1
 Polymers 1
+Machinery 1
 
 ## Function
 
@@ -562,6 +576,8 @@ Regolith 10
 Ceramics 6
 Composites 2
 Polymers 2
+Machinery 1
+Robotics 1
 
 ## Function
 
@@ -635,6 +651,8 @@ Electronics 4
 Regolith 2
 Ceramics 1
 Polymers 1
+Machinery 1
+Robotics 2
 
 ## Function
 
@@ -662,6 +680,8 @@ Glass 6
 StructuralAlloys 8
 Electronics 4
 Regolith 4
+Machinery 1
+Robotics 3
 
 ## Function
 
@@ -689,6 +709,7 @@ StructuralAlloys 4
 Electronics 4
 Regolith 2
 Polymers 1
+Robotics 1
 
 ## Function
 
@@ -713,6 +734,7 @@ StructuralAlloys 5
 Electronics 5
 Regolith 3
 Polymers 1
+Robotics 1
 
 ## Function
 
@@ -769,6 +791,7 @@ StructuralAlloys 6
 Electronics 3
 Regolith 3
 Ceramics 3
+Machinery 2
 
 ## Function
 
@@ -797,6 +820,8 @@ StructuralAlloys 5
 Electronics 2
 Regolith 3
 Ceramics 6
+Machinery 2
+Robotics 1
 
 ## Function
 
@@ -844,6 +869,8 @@ Electronics 4
 Regolith 1
 Composites 2
 Polymers 2
+Machinery 1
+Robotics 2
 
 ## Function
 
@@ -853,3 +880,14 @@ EnergyElectrical 1
 WorkTechnical 1
 ->
 Polymers 5
+
+# Metalurgy
+
+## Function
+
+Metals
+Minerals
+EnergyElectric
+WorkTechnical
+->
+StructuralAlloys

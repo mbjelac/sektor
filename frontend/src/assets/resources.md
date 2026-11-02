@@ -39,3 +39,5 @@ Regolith 🧱
 Ceramics 🏺
 Composites 🚥
 Polymers 🧵
+Machinery 🕹️
+Robotics 🤖
