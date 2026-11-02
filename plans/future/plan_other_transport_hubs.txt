@@ -1,0 +1,12 @@
+RailTerminal:
+- more ImportExport capacity but also more inputs
+- can only be constructed on map edges
+- building has 4 orientations - rails always facing outward
+- animation of trains coming in/out
+- planet view has railway lines/network
+
+Docks:
+- capacity between SkyTower & RailTerminal
+- for marine sektors
+- floating port for ships
+- animation of ships coming in/out
