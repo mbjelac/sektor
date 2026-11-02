@@ -409,7 +409,7 @@ Water 10
 
 water
 
-# Fission Plant
+# Fissionaire
 
 ## Function
 
@@ -440,6 +440,10 @@ EnergyElectric 1
 energy
 
 # Gymnasium
+
+## Construction
+
+duration=3100
 
 ## Function
 
