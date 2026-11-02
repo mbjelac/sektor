@@ -6,6 +6,11 @@
 
 duration=2000
 
+StructuralAlloys 1
+Electronics 1
+Regolith 4
+Polymers 2
+
 ## Function
 
 EnergyElectric 3
@@ -23,6 +28,14 @@ water
 ## Construction
 
 duration=4000
+
+Glass 4
+StructuralAlloys 5
+Electronics 3
+Regolith 4
+Ceramics 2
+Composites 2
+Polymers 2
 
 ## Function
 
@@ -143,6 +156,13 @@ poolSize=6
 
 # Library
 
+## Construction
+
+Glass 6
+StructuralAlloys 4
+Electronics 2
+Polymers 1
+
 ## Function
 
 EnergyElectric 1
@@ -160,6 +180,11 @@ people
 ## Construction
 
 duration=2000
+
+Glass 3
+StructuralAlloys 1
+Electronics 2
+Polymers 2
 
 ## Function
 
@@ -181,6 +206,11 @@ water
 ## Construction
 
 duration=1900
+
+StructuralAlloys 10
+Electronics 3
+Ceramics 2
+Composites 2
 
 ## Function
 
@@ -228,6 +258,12 @@ industry
 
 # WindLoop
 
+## Construction
+
+StructuralAlloys 5
+Electronics 6
+Composites 4
+
 ## Function
 
 WorkTechnical 1
@@ -239,6 +275,14 @@ EnergyElectric wind
 energy
 
 # SunCatcher
+
+## Construction
+
+Glass 4
+StructuralAlloys 3
+Electronics 8
+Ceramics 2
+Composites 1
 
 ## Function
 
@@ -252,6 +296,14 @@ energy
 
 # Arena
 
+## Construction
+
+Glass 2
+StructuralAlloys 4
+Electronics 3
+Regolith 1
+Polymers 1
+
 ## Function
 
 EnergyElectric 10
@@ -264,6 +316,13 @@ HealthSocial 20
 people
 
 # Metal Smelter
+
+## Construction
+
+StructuralAlloys 6
+Electronics 2
+Regolith 4
+Ceramics 6
 
 ## Function
 
@@ -284,17 +343,61 @@ industry
 
 # Mineral Refinery
 
+## Construction
+
+Glass 1
+StructuralAlloys 6
+Electronics 4
+Regolith 4
+Ceramics 6
+
 ## Function
+
+Name: System core
 
 WorkTechnical 2
 EnergyElectric 3
-Water 2
-OreMineral 5
 ->
-Minerals 20
+
+## Function
+
+Name: Minerals
+Pool: true
+
+EnergyElectric 1
+Water 1
+OreMineral 1
+WorkMaintenance 1
+->
+Minerals 2
+
+## Function
+
+Name: Silica
+Pool: true
+
+EnergyElectric 1
+Water 1
+OreMineral 1
+WorkMaintenance 1
+->
+SilicaSand 2
+
+## Function
+
+Name: Clay
+Pool: true
+
+EnergyElectric 1
+Water 1
+OreMineral 1
+WorkMaintenance 1
+->
+Clay 2
 
 ## Properties
 
+poolSize=9
 pollutionArea=3
 
 ## Tags
@@ -302,6 +405,16 @@ pollutionArea=3
 industry
 
 # Uranium Mill
+
+## Construction
+
+Glass 1
+StructuralAlloys 7
+Electronics 4
+Regolith 1
+Ceramics 3
+Composites 4
+Polymers 3
 
 ## Function
 
@@ -317,6 +430,14 @@ Uranium 6
 industry
 
 # TownSquare
+
+## Construction
+
+StructuralAlloys 1
+Electronics 1
+Regolith 4
+Ceramics 1
+Polymers 1
 
 ## Function
 
@@ -355,6 +476,10 @@ duration=2000
 
 duration=1500
 
+StructuralAlloys 3
+Electronics 2
+Regolith 1
+
 ## Function
 
 Chemicals 4
@@ -379,6 +504,12 @@ industry
 
 duration=1800
 
+Glass 4
+StructuralAlloys 3
+Electronics 3
+Regolith 2
+Polymers 1
+
 ## Function
 
 Water 5
@@ -396,6 +527,15 @@ Sewage 6
 education
 
 # WaterTreatment
+
+## Construction
+
+StructuralAlloys 3
+Electronics 2
+Regolith 2
+Ceramics 1
+Composites 1
+Polymers 1
 
 ## Function
 
@@ -415,6 +555,14 @@ water
 
 duration=3200
 
+Glass 1
+StructuralAlloys 8
+Electronics 4
+Regolith 10
+Ceramics 6
+Composites 2
+Polymers 2
+
 ## Function
 
 Uranium 5
@@ -430,6 +578,13 @@ WasteNuclear 2
 energy
 
 # Nuclear Waste Depot
+
+## Construction
+
+StructuralAlloys 6
+Electronics 1
+Regolith 10
+Composites 1
 
 ## Function
 
@@ -448,6 +603,11 @@ energy
 ## Construction
 
 duration=3100
+
+Glass 8
+StructuralAlloys 4
+Electronics 1
+Regolith 1
 
 ## Function
 
@@ -469,6 +629,13 @@ people
 
 duration=3300
 
+Glass 1
+StructuralAlloys 6
+Electronics 4
+Regolith 2
+Ceramics 1
+Polymers 1
+
 ## Function
 
 EnergyElectric 10
@@ -489,6 +656,13 @@ pollutionArea=1
 
 # SkyTower
 
+## Construction
+
+Glass 6
+StructuralAlloys 8
+Electronics 4
+Regolith 4
+
 ## Function
 
 EnergyElectric 4
@@ -508,6 +682,14 @@ transport
 
 # School
 
+## Construction
+
+Glass 4
+StructuralAlloys 4
+Electronics 4
+Regolith 2
+Polymers 1
+
 ## Function
 
 WorkEducational 3
@@ -523,6 +705,14 @@ Sewage 2
 education
 
 # Academy
+
+## Construction
+
+Glass 6
+StructuralAlloys 5
+Electronics 5
+Regolith 3
+Polymers 1
 
 ## Function
 
@@ -573,6 +763,13 @@ poolSize=8
 
 # BioFurnace
 
+## Construction
+
+StructuralAlloys 6
+Electronics 3
+Regolith 3
+Ceramics 3
+
 ## Function
 
 WasteBio 10
@@ -589,3 +786,70 @@ pollutionArea=3
 ## Tags
 
 energy
+
+
+# MineralFurnace
+
+## Construction
+
+Glass 1
+StructuralAlloys 5
+Electronics 2
+Regolith 3
+Ceramics 6
+
+## Function
+
+Name: System core
+
+EnergyElectrical 4
+WorkTechnical 3
+WorkEngineering 1
+->
+
+## Function
+
+Name: Glass
+Pool: true
+
+SilicaSand 1
+EnergyElectrical 1
+WorkMainenance 1
+->
+Glass 1
+
+## Function
+
+Name: Ceramics
+Pool: true
+
+Clay 1
+EnergyElectrical 1 
+WorkMainenance 1
+->
+Ceramics 1
+
+## Properties
+
+poolSize=8
+
+
+# BioReactor
+
+## Construction
+
+Glass 2
+StructuralAlloys 2
+Electronics 4
+Regolith 1
+Composites 2
+Polymers 2
+
+## Function
+
+WasteBio 3
+Water 3
+EnergyElectrical 1
+WorkTechnical 1
+->
+Polymers 5
