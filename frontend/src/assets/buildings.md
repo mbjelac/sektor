@@ -409,7 +409,11 @@ Water 10
 
 water
 
-# Fissionaire
+# CoreSplitter
+
+## Construction
+
+duration=3200
 
 ## Function
 
