@@ -755,7 +755,7 @@ Name: Math
 Pool: true
 
 WorkEducational 3
-EnergyElectrical 2
+EnergyElectric 2
 Water 2
 WorkMaintenance 1
 ->
@@ -827,7 +827,7 @@ Robotics 1
 
 Name: System core
 
-EnergyElectrical 4
+EnergyElectric 4
 WorkTechnical 3
 WorkEngineering 1
 ->
@@ -838,7 +838,7 @@ Name: Glass
 Pool: true
 
 SilicaSand 1
-EnergyElectrical 1
+EnergyElectric 1
 WorkMainenance 1
 ->
 Glass 1
@@ -849,7 +849,7 @@ Name: Ceramics
 Pool: true
 
 Clay 1
-EnergyElectrical 1 
+EnergyElectric 1 
 WorkMainenance 1
 ->
 Ceramics 1
@@ -879,7 +879,7 @@ Robotics 2
 
 WasteBio 3
 Water 3
-EnergyElectrical 1
+EnergyElectric 1
 WorkTechnical 1
 ->
 Polymers 5
