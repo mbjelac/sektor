@@ -40,6 +40,18 @@ export function animatedScale(command: CreateBody, elapsedMilliseconds: number):
   ];
 }
 
+export function animatedFrustum(command: CreateBody, elapsedMilliseconds: number): number | null {
+  const animateFrustum = command.animateFrustum;
+  if (!animateFrustum) return command.frustum;
+
+  const startFrustum = command.frustum ?? 0;
+  const phaseSteps = animateFrustum.dt / ANIMATION_STEP_MILLISECONDS;
+  const pauseSteps = animateFrustum.pause / ANIMATION_STEP_MILLISECONDS;
+  const elapsedStep = Math.floor(delayedElapsed(elapsedMilliseconds, animateFrustum.delay) / ANIMATION_STEP_MILLISECONDS);
+  const progress = oneWayForwardStep(elapsedStep, phaseSteps, pauseSteps) / phaseSteps;
+  return startFrustum + (animateFrustum.frustum - startFrustum) * progress;
+}
+
 function translationForwardStep(cycleStep: number, phaseSteps: number, phaseSwitchDelaySteps: number): number {
   if (cycleStep <= phaseSteps) return cycleStep;
   if (cycleStep <= phaseSteps + phaseSwitchDelaySteps) return phaseSteps;

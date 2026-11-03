@@ -45,3 +45,17 @@ This describes extensions to the rendering code, applied in Architect & Frontend
     - value 100 means it is a paper-thin sphere
     - value 0 means it is full, like now
 - [done] combination of functions h & f must work
+
+#8 [done] Frustum can be animated
+- [done] when the af1 function is specified for a body which can be frustum (pyramid, cone, cylinder, sphere)
+    - af1(<value>,<duration>[,<pause>[,<delay>]])
+        - value: the final f value, reached by increasing or decreasing the body's own f value (0 if f is not specified)
+        - duration: milliseconds during which the change happens
+        - pause: milliseconds of pausing at the final value before starting again (default 0)
+        - delay: milliseconds before the animation first starts (default 0); until then the body keeps its own f value
+    - the animation is one way, like at1 & as1: after the pause, the f value jumps back to the body's own and the change starts again
+    - no random start delay, so it stays in step with at1 & as1 of the same timing
+    - the base of the body stays where t puts it, so e.g. f(95) af1(20,2000) grows a pyramid up from a sliver
+    - h & af1 can be specified on the same object, they have to work
+    - a body with af1 is animated, so it is never baked
+- [done] create unit tests for parsing af1 and for the f value over time

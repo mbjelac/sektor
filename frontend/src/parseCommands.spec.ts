@@ -117,4 +117,19 @@ describe("parseCommands", () => {
       {dx: 1, dy: 2, dz: 3, dt: 3000, pause: 100, delay: 700},
     ]);
   });
+
+  it("reads a one-way frustum animation with its optional pause and initial delay, apart from f()", () => {
+    const [withoutOptionalArguments, withOptionalArguments] = parseCommands(
+      "pyr4 f(95) af1(20,2000)\n" +
+      "pyr4 f(95) af1(20,2000,100,700)"
+    );
+
+    expect([
+      [withoutOptionalArguments.frustum, withoutOptionalArguments.animateFrustum],
+      [withOptionalArguments.frustum, withOptionalArguments.animateFrustum],
+    ]).toEqual([
+      [95, {frustum: 20, dt: 2000, pause: 0, delay: 0}],
+      [95, {frustum: 20, dt: 2000, pause: 100, delay: 700}],
+    ]);
+  });
 });

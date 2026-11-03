@@ -87,6 +87,7 @@ export function freeBakedBodies(p: p5, bakedBodies: BakedBodies) {
 function isAnimated(command: CreateBody): boolean {
   return command.animateTranslate !== null
     || command.animateScale !== null
+    || command.animateFrustum !== null
     || command.animateRotate !== null
     || command.animateColorToggle !== null
     || command.animateColorGradual !== null

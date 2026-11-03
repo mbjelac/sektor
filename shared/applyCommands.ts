@@ -8,7 +8,7 @@ import {drawTorus, torusTubeRadius} from "./primitive/drawTorus";
 import {colorToRgb} from "./primitive/colorToRgb";
 import {CreateBody} from "./parseCommands";
 import {BLOCK_SIZE} from "./constants";
-import {animatedColor, animatedRotate, animatedScale, animatedShine, animatedTranslate, isShown} from "./animateCommands";
+import {animatedColor, animatedFrustum, animatedRotate, animatedScale, animatedShine, animatedTranslate, isShown} from "./animateCommands";
 
 const pyrSides: Record<string, number> = {
   pyr3: 3, pyr4: 4, pyr5: 5, pyr6: 6, pyr7: 7, pyr8: 8, pyr9: 9,
@@ -82,7 +82,11 @@ function colorAlpha(color: string | undefined): number {
   return parseInt(color.slice(7, 9), 16);
 }
 
-function drawBody(p: p5, command: CreateBody, color: string | undefined, elapsedMilliseconds: number) {
+function drawBody(p: p5, animatedCommand: CreateBody, color: string | undefined, elapsedMilliseconds: number) {
+  // While af1 cuts a body, it is drawn as a body cut as far as af1 has got by now.
+  const command = animatedCommand.animateFrustum
+    ? {...animatedCommand, frustum: animatedFrustum(animatedCommand, elapsedMilliseconds)}
+    : animatedCommand;
   p.push();
   // A body's base stands on its t() point, and t() is measured from the top of the ground, so
   // t(x,y,0) stands a body of any height on the ground. Rotation turns it about its own centre,
