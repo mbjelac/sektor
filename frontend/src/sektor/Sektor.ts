@@ -103,6 +103,9 @@ export interface CreateBuildingResult {
 // How much more polluted a location is for every square nearer a polluting building it lies.
 const POLLUTION_STEP = 20;
 
+// How much of what went into building the sektor's buildings it imports.
+const CONSTRUCTION_COEFFICIENT = 0.1;
+
 export class Sektor {
   private buildings: Building[] = [];
   private readonly locations: Location[][];
@@ -347,15 +350,34 @@ export class Sektor {
       .find(shortage => shortage.value > 0);
   }
 
+  // What went into building the sektor's buildings is taken in alongside what their functions take
+  // in, so the sektor's own outputs cover it first and only the rest of it is imported.
   private aggregateSektorThroughputs(stoppedFunctions: BuildingFunctionLocation[]): { totalInputs: ResourceThroughput[], totalOutputs: ResourceThroughput[] } {
     return {
-      totalInputs: this.aggregateThroughputs(
-        this.buildings.map(building => this.getInputs(building, stoppedFunctions)).flat()
-      ),
+      totalInputs: this.aggregateThroughputs([
+        ...this.buildings.map(building => this.getInputs(building, stoppedFunctions)).flat(),
+        ...this.findConstructionInputs(),
+      ]),
       totalOutputs: this.aggregateThroughputs(
         this.buildings.map(building => this.getOutputs(building, stoppedFunctions)).flat()
       ),
     };
+  }
+
+  // Imports are a flow of resources, so what went into building the sektor's buildings comes in as
+  // a small fraction of it: every resource of every building's construction, all buildings
+  // together, cut down by CONSTRUCTION_COEFFICIENT to a whole amount. A building goes on counting
+  // once built, and whether its functions run or not, and a resource cut down to nothing is left out.
+  private findConstructionInputs(): ResourceThroughput[] {
+    const constructionAmounts = this.aggregateThroughputs(this.buildings.flatMap(building =>
+      this.findBuildingDefinition(building.type)?.constructionResources ?? []
+    ));
+    return constructionAmounts
+      .map(constructionAmount => ({
+        name: constructionAmount.name,
+        value: Math.round(constructionAmount.value * CONSTRUCTION_COEFFICIENT),
+      }))
+      .filter(constructionInput => constructionInput.value > 0);
   }
 
   // A local resource never travels far, so the functions closest to where it is made are the ones

@@ -364,8 +364,9 @@ test("draws the buildings of a sektor shown in view mode", async ({ page }) => {
 });
 
 test("shows a building of a sektor in view mode without the controls which would change it", async ({ page }) => {
-  // Polytechnic has several functions, so its panel is the one which would carry the toggles.
-  await storeSektor(page, "Beta", OTHER_PLAYER, [{ type: "Polytechnic", location: { x: 5, y: 5 } }]);
+  // Extractor's functions draw on its pool, so its panel is the one which would carry the controls
+  // setting how many times over each is done.
+  await storeSektor(page, "Beta", OTHER_PLAYER, [{ type: "Extractor", location: { x: 5, y: 5 } }]);
   await page.goto("/sektor.html?id=Beta");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 

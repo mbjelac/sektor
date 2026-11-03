@@ -36,8 +36,8 @@ Example:
 
 Explanation: Since import are *flow* of materials, it has to be much lower than the actual amount of materials required.
 
-#1 Building construction increases imports
-- when player constructs any building, include building construction resources into imports calculation
+#1 [done] Building construction increases imports
+- [done] when player constructs any building, include building construction resources into imports calculation
     - a building's construction resources are specified in building definition Construction section
         - <resource name> <resource amount>
     - before imports & exports are subtracted from each other
