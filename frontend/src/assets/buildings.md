@@ -858,6 +858,9 @@ Ceramics 1
 
 poolSize=8
 
+## Tags
+
+industry
 
 # BioReactor
 
@@ -881,6 +884,10 @@ WorkTechnical 1
 ->
 Polymers 5
 
+## Tags
+
+industry
+
 # Metalurgy
 
 ## Function
@@ -891,3 +898,7 @@ EnergyElectric 9
 WorkTechnical 1
 ->
 StructuralAlloys 5
+
+## Tags
+
+industry
