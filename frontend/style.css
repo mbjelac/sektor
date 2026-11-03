@@ -532,6 +532,37 @@ body > main {
     border-left: 1px solid #444;
 }
 
+/* What goes into building a building takes up the inputs column only, so its amounts line up with
+   the amounts of the inputs above it. */
+.bf-construction {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.bf-construction > :first-child {
+    padding-right: 6px;
+}
+
+.bf-construction-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.bf-construction-icon {
+    display: flex;
+}
+
+.bf-construction-icon svg {
+    width: 11px;
+    height: 11px;
+}
+
+/* The crane is drawn in black lines, which on the dark panel are turned white. */
+.bf-construction-icon svg .cls-1 {
+    stroke: #fff;
+}
+
 
 .bf-col {
     display: flex;

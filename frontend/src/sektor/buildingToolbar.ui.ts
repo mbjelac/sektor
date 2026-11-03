@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { buildingDefinitions } from "./buildings/buildings";
-import { createColumnHeaders, createFunctionDisplay } from "./buildingFunctionDisplay.ui";
+import { createColumnHeaders, createConstructionDisplay, createFunctionDisplay } from "./buildingFunctionDisplay.ui";
 import { parseCommands } from "../../../shared/parseCommands";
 import { applyCommands } from "../../../shared/applyCommands";
 import { drawFloor, drawFloorWireframe } from "../../../shared/drawFloor";
@@ -53,7 +53,8 @@ export function deselectBuilding(): void {
 let toolbarFunctionPanel: HTMLElement | null = null;
 
 // A building which has not been built yet stands on no location, so an output of its named
-// after a location property is shown by that property's name alone, without an amount.
+// after a location property is shown by that property's name alone, without an amount. What goes
+// into building it is shown below its functions.
 function showToolbarFunctionPanel(building: BuildingDefinition) {
   hideToolbarFunctionPanel();
 
@@ -73,6 +74,9 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   functionsContent.className = "fp-content";
   for (const buildingFunction of building.buildingFunctions) {
     functionsContent.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction }));
+  }
+  if (building.constructionResources) {
+    functionsContent.appendChild(createConstructionDisplay(building.constructionResources));
   }
   toolbarFunctionPanel.appendChild(functionsContent);
 

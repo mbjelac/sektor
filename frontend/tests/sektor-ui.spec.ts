@@ -803,6 +803,19 @@ test("displays function panel when building tool is selected", async ({ page }) 
   });
 });
 
+// TestKiln is built of Wood, which is shown below its functions.
+test("displays function panel with what goes into building the building", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestKiln"]').click();
+  await page.waitForTimeout(100);
+  const panel = page.locator("#toolbar-function-panel");
+  await expect(panel).toBeVisible();
+  await expect(panel).toHaveScreenshot("toolbar-function-panel-construction.png", {
+    maxDiffPixelRatio: 0,
+    timeout: 10000,
+  });
+});
+
 test("displays function panel with an output named after a location property", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestFactory"]').click();

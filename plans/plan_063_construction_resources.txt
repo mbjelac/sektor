@@ -55,8 +55,8 @@ Explanation: Since import are *flow* of materials, it has to be much lower than 
     - display construction value from building spec, not as modified by coefficient
 - [done] add constructionCrane icon to Construction toolbar in left corner (in front of title)
 
-#3 Construction resources are visible in building panel
-- when player selects a building in construction toolbar, resources required for building construction are visible in building panel
+#3 [done] Construction resources are visible in building panel
+- [done] when player selects a building in construction toolbar, resources required for building construction are visible in building panel
     - separate from functions with horizontal line
     - title "Construction" with constructionCrane icon in front
         - same color & size as function names
