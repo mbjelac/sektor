@@ -1,5 +1,5 @@
 Buildings are constructed without (visible) cost.
-However, it is realistic that this construction also requires resources like functioning of buildings.
+However, it is realistic that this construction also requires resources like functioning of buildings does.
 
 One way to solve this is to keep track of how fast (in real time) buildings are constructed and transform this into resource flow.
 
@@ -36,3 +36,13 @@ Example:
 
 Explanation: Since import are *flow* of materials, it has to be much lower than the actual amount of materials required.
 
+#1 Building construction increases imports
+- when player constructs any building, include building construction resources into imports calculation
+    - a building's construction resources are specified in building definition Construction section
+        - <resource name> <resource amount>
+    - before imports & exports are subtracted from each other
+        - for each construction resource type
+            - sum all buildings' construction resource amounts
+            - multiply sum by CONSTRUCTION_COEFFICIENT and round
+            - for now use CONSTRUCTION_COEFFICIENT value 0.1
+            - add as new import (or add to existing import)
