@@ -30,7 +30,7 @@ EducationGeneral 🍎 #e63535
 EducationSocial 👥 #6363eb
 EducationMathematical 📈 #f5f5f5
 EducationTechnical ⚙️ #915b27
-SilicaSand ⏳
+Silica ⏳
 Clay 🟫
 Glass 🫙
 StructuralAlloys 📏

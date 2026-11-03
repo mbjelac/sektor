@@ -390,7 +390,7 @@ Water 1
 OreMineral 1
 WorkMaintenance 1
 ->
-SilicaSand 2
+Silica 2
 
 ## Function
 
@@ -815,6 +815,8 @@ energy
 
 ## Construction
 
+duration=3200
+
 Glass 1
 StructuralAlloys 5
 Electronics 2
@@ -837,7 +839,7 @@ WorkEngineering 1
 Name: Glass
 Pool: true
 
-SilicaSand 1
+Silica 1
 EnergyElectric 1
 WorkMainenance 1
 ->
