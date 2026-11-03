@@ -47,7 +47,7 @@ Explanation: Since import are *flow* of materials, it has to be much lower than 
             - for now use CONSTRUCTION_COEFFICIENT value 0.1
             - add as new import (or add to existing import)
 
-#2 Players see which buildings require which imports for construction
+#2 [done] Players see which buildings require which imports for construction
 - [done] when player hovers mouse over a resource, mark buildings which need it for construction as consumers (as though they need it for input)
     - add construction icon to building label
         - display after value with same spacing as between value and resource icon

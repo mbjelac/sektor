@@ -83,11 +83,13 @@ export interface BuildingState {
   unusedPool: number;
 }
 
-// How much of one resource a building takes in and gives out.
+// How much of one resource a building takes in and gives out, and how much of it went into building
+// it, as its definition says, before it is cut down to the flow the sektor imports.
 export interface BuildingResourceAmounts {
   location: BuildingLocation;
   inputAmount: number;
   outputAmount: number;
+  constructionAmount: number;
 }
 
 export interface DestroyBuildingResult {
@@ -443,6 +445,7 @@ export class Sektor {
       location: building.location,
       inputAmount: this.findThroughputValue(this.getInputs(building, stoppedFunctions), resourceType),
       outputAmount: this.findThroughputValue(this.getOutputs(building, stoppedFunctions), resourceType),
+      constructionAmount: this.findThroughputValue(this.findBuildingDefinition(building.type)?.constructionResources ?? [], resourceType),
     }));
   }
 

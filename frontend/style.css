@@ -1173,6 +1173,21 @@ body > main {
     margin-bottom: 8px;
 }
 
+.construction-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+#construction-title-icon {
+    display: flex;
+}
+
+#construction-title-icon svg {
+    width: 12px;
+    height: 12px;
+}
+
 #property-toggler {
     flex: 0 0 auto;
     /* Sits at the bottom of the screen whether or not the construction panel is above it. */
@@ -1710,4 +1725,16 @@ body > main {
     padding: 4px 6px;
     white-space: nowrap;
     pointer-events: none;
+}
+
+.resource-amount-construction svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: bottom;
+}
+
+/* The crane is drawn in black lines, which on the dark label and panel are turned white. */
+.resource-amount-construction svg .cls-1,
+.construction-title svg .cls-1 {
+    stroke: #fff;
 }

@@ -1598,6 +1598,25 @@ test("highlights buildings making a resource in green and buildings taking it in
   await expectMapScreenshot(page, "output-hover-highlight", MIDDLE_OF_MAP);
 });
 
+// TestKiln is built of Wood but does nothing with it, so pointing at Wood marks it in red as a
+// building needing it, with a crane before its share of the import.
+test("marks a building needing the resource pointed at for having been built", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  const centerX = canvasBox!.width / 2;
+  const centerY = canvasBox!.height / 2;
+  await placeHub(page);
+  await placeBuildingAt(page, "TestProcessor", { x: centerX - 60, y: centerY - 20 });
+  await placeBuildingAt(page, "TestKiln", { x: centerX + 60, y: centerY - 20 });
+  await deselectEverything(page);
+
+  await page.locator(".ss-row", { hasText: "Wood" }).first().hover();
+  await page.waitForTimeout(200);
+
+  await expectMapScreenshot(page, "construction-hover-highlight", MIDDLE_OF_MAP);
+});
+
 async function placeBuildingAt(page: Page, buildingName: string, position: { x: number; y: number }) {
   await page.locator(`.building-item[data-building-name="${buildingName}"]`).click();
   await page.waitForTimeout(100);

@@ -222,6 +222,10 @@ industry
 
 # TestKiln
 
+## Construction
+
+Wood 4
+
 ## Function
 
 Name: Bricks

@@ -102,6 +102,7 @@ export function initToolbar(playerLevel: number, isViewMode = false) {
   toolbar.innerHTML = "";
   selectedBuilding = null;
   hideToolbarFunctionPanel();
+  showConstructionTitleIcon();
   showBuildingTagFilter();
   const thumbnails: Thumbnail[] = [];
 
@@ -152,6 +153,12 @@ export function initToolbar(playerLevel: number, isViewMode = false) {
 
   showBuildingsHavingSelectedTag();
   showBuildingThumbnails(thumbnails);
+}
+
+// The crane in front of the panel's title is the one marking, on the map, the buildings which need a
+// resource pointed at for having been built.
+function showConstructionTitleIcon() {
+  document.getElementById("construction-title-icon")!.innerHTML = icons.constructionCrane;
 }
 
 function showBuildingTagFilter() {

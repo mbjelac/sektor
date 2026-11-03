@@ -48,6 +48,16 @@ const testDefinitions: BuildingDefinition[] = [
     }],
     properties: {},
   },
+  {
+    name: "Tower",
+    renderingCodes: ["box s(1,1,1)"],
+    constructionResources: [{ name: "Glass", value: 5 }],
+    buildingFunctions: [{
+      inputs: [{ name: "Glass", value: 2 }],
+      outputs: [{ name: "View", value: 1 }],
+    }],
+    properties: {},
+  },
 ];
 
 const farmLocation = { x: 0, y: 0 };
@@ -64,8 +74,8 @@ describe("getBuildingResourceAmounts", () => {
     sektor.createBuilding({ type: "Mill", location: otherLocation });
 
     expect(sektor.getBuildingResourceAmounts("Wheat", true)).toEqual([
-      { location: farmLocation, inputAmount: 0, outputAmount: 4 },
-      { location: otherLocation, inputAmount: 4, outputAmount: 0 },
+      { location: farmLocation, inputAmount: 0, outputAmount: 4, constructionAmount: 0 },
+      { location: otherLocation, inputAmount: 4, outputAmount: 0, constructionAmount: 0 },
     ]);
   });
 
@@ -74,7 +84,7 @@ describe("getBuildingResourceAmounts", () => {
     sektor.createBuilding({ type: "SolarFarm", location: farmLocation });
 
     expect(sektor.getBuildingResourceAmounts("Energy", true)).toEqual([
-      { location: farmLocation, inputAmount: 0, outputAmount: 0 },
+      { location: farmLocation, inputAmount: 0, outputAmount: 0, constructionAmount: 0 },
     ]);
   });
 
@@ -84,8 +94,8 @@ describe("getBuildingResourceAmounts", () => {
     sektor.createBuilding({ type: "Clinic", location: otherLocation });
 
     expect(sektor.getBuildingResourceAmounts("Wheat", true)).toEqual([
-      { location: farmLocation, inputAmount: 0, outputAmount: 4 },
-      { location: otherLocation, inputAmount: 0, outputAmount: 0 },
+      { location: farmLocation, inputAmount: 0, outputAmount: 4, constructionAmount: 0 },
+      { location: otherLocation, inputAmount: 0, outputAmount: 0, constructionAmount: 0 },
     ]);
   });
 
@@ -95,8 +105,8 @@ describe("getBuildingResourceAmounts", () => {
     sektor.createBuilding({ type: "Clinic", location: otherLocation });
 
     expect(sektor.getBuildingResourceAmounts("Wheat", false)).toEqual([
-      { location: farmLocation, inputAmount: 0, outputAmount: 4 },
-      { location: otherLocation, inputAmount: 1, outputAmount: 0 },
+      { location: farmLocation, inputAmount: 0, outputAmount: 4, constructionAmount: 0 },
+      { location: otherLocation, inputAmount: 1, outputAmount: 0, constructionAmount: 0 },
     ]);
   });
 
@@ -106,8 +116,17 @@ describe("getBuildingResourceAmounts", () => {
     sektor.createBuilding({ type: "Bakery", location: otherLocation });
 
     expect(sektor.getBuildingResourceAmounts("Wheat", true)).toEqual([
-      { location: farmLocation, inputAmount: 0, outputAmount: 4 },
-      { location: otherLocation, inputAmount: 0, outputAmount: 0 },
+      { location: farmLocation, inputAmount: 0, outputAmount: 4, constructionAmount: 0 },
+      { location: otherLocation, inputAmount: 0, outputAmount: 0, constructionAmount: 0 },
+    ]);
+  });
+
+  it("tells how much of the resource went into building a building, even of a building disabled for want of imports", () => {
+    const sektor = createSektor();
+    sektor.createBuilding({ type: "Tower", location: farmLocation });
+
+    expect(sektor.getBuildingResourceAmounts("Glass", true)).toEqual([
+      { location: farmLocation, inputAmount: 0, outputAmount: 0, constructionAmount: 5 },
     ]);
   });
 });
