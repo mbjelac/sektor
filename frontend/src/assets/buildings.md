@@ -885,9 +885,9 @@ Polymers 5
 
 ## Function
 
-Metals
-Minerals
-EnergyElectric
-WorkTechnical
+Metals 5
+Minerals 2
+EnergyElectric 9
+WorkTechnical 1
 ->
-StructuralAlloys
+StructuralAlloys 5
