@@ -254,10 +254,10 @@ asked separately:
 
 Conventions used by the existing constructions (WaterWells, Gymnasium, FoodProcessor, Fissionaire):
 
-- **Scaffolding**: `#b64d07` bars, `pri4 s(2,2,h)` posts standing at `t z −1`, shown with
-  `ashow(700,…)`, and `pri4 s(2,L,2)` / `s(L,2,2)` crossbars across the post tops, top of the bar
-  0.65 above the post top, shown with `ashow(900,…)`. Posts stand just outside what they surround;
-  bigger structures get longer and higher bars, not thicker ones.
+- **Scaffolding**: `#b64d07` bars, `pri4 s(2,2,h)` posts standing at `t z −1`, and
+  `pri4 s(2,L,2)` / `s(L,2,2)` crossbars across the post tops, top of the bar 0.65 above the post
+  top. Posts stand just outside what they surround; bigger structures get longer and higher bars,
+  not thicker ones. Scaffolding is always shown immediately — no `ashow` or other delay.
 - **Appearing**: `ashow(t,10000)` — hidden until `t`, then shown. Make the shown time (`dt2`) far
   longer than the duration so nothing hides again before the switch to `0.sgl`.
 - **Rising out of the ground**: lower the body until its highest point is at `z −0.5` (under the

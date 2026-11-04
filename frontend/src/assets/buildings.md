@@ -729,6 +729,8 @@ education
 
 ## Construction
 
+duration=2700
+
 Glass 6
 StructuralAlloys 5
 Electronics 5
