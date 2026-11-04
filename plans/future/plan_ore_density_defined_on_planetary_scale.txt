@@ -1,0 +1,20 @@
+Ore density is defined on planetary scale.
+Areas where a type of ore is high in denisty span more than one sektor.
+
+For example, metal ore seams span 3-4 connected areas (regardless of climate zone or biome type) which makes metal ore of high density & amount in every sektor in those areas.
+
+#1 Planet's areas are given high-ore-density marks
+- mark: ore name
+    - one of: metals, uranium, minerals
+- an area cannot have multiple marks
+- generate marks based on algorithm:
+    -
+
+#2 Player can see ore density on globe
+- in list view, show on globe which area has which high ore density
+    - display this as a triangle in the color of the location property (metals, uranium, minerals)
+    - display triangle same as the area triangle, only a bit smaller and not filled with color, just outlined
+    - on area mouse over, display ore type in bottom data row
+        - after biome, wih same spacing as between climate zone & biome
+        - display: "<swatch> <ore name>"
+
