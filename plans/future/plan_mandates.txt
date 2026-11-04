@@ -31,5 +31,5 @@ Player score affects:
     - low score = fewer buildings
 - which biomes are available to the player
     - low score = fewer biomes
-- how many sektors a player is allowed to claim
+- how many sektors a player is allowed to own
     - low score = fewer sektors
