@@ -734,9 +734,13 @@ body > main {
     pointer-events: none;
 }
 
+/* The panel grows with the resources the sektor moves only up to half the window, from where on its
+   list scrolls, without a scrollbar, under the title, the column headers and the totals. */
 #sektor-state-panel {
     flex: none;
     margin-top: auto;
+    max-height: 50vh;
+    box-sizing: border-box;
     width: var(--import-export-panel-width);
     background: #2a2a2a;
     border: 1px solid #444;
@@ -772,6 +776,13 @@ body > main {
     display: grid;
     grid-template-columns: 1fr auto auto auto;
     gap: 2px 8px;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.ss-list::-webkit-scrollbar {
+    display: none;
 }
 
 .ss-row {
@@ -789,13 +800,17 @@ body > main {
 }
 
 .ss-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #2a2a2a;
     color: #999;
     font-size: 11px;
     margin-bottom: 2px;
 }
 
 .ss-header:hover {
-    background: none;
+    background: #2a2a2a;
 }
 
 .ss-row.ss-header .icon {
@@ -810,11 +825,15 @@ body > main {
 }
 
 .ss-total {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    background: #2a2a2a;
     margin-top: 2px;
 }
 
 .ss-total:hover {
-    background: none;
+    background: #2a2a2a;
 }
 
 .ss-total-score {
