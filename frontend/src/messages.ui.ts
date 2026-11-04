@@ -11,6 +11,7 @@ import { showGlobalStateDialog } from "./globalStateDialog.ui";
 import { sortGlobalStateList } from "./globalStatePanel.ui";
 import { selectProperty } from "./sektor/propertyToggler.ui";
 import { POLLUTION_PROPERTY } from "./sektor/pollution";
+import { selectBuildingTag } from "./sektor/buildingToolbar.ui";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -34,6 +35,7 @@ const SHOW_PLANET_IMPORTS_BUTTON_ID = "show-planet-imports-button";
 const DISABLED_BUILDINGS_MESSAGE_ID = "disabled-buildings-message";
 const IMPORT_CAPACITY_MESSAGE_ID = "import-capacity-message";
 const EXPORT_CAPACITY_MESSAGE_ID = "export-capacity-message";
+const TRANSPORT_BUILDING_TAG = "transport";
 const COLLAPSE_BUTTON_ID = "messages-collapse-button";
 const EXPAND_BUTTON_ID = "messages-expand-button";
 
@@ -126,7 +128,11 @@ function showImportCapacityMessage(disabledBuildingCount: number) {
   showMessage(
     IMPORT_CAPACITY_MESSAGE_ID,
     "warning",
-    `Import capacity exceeded: ${disabledBuildingCount} buildings disabled. Optimize sektor or build more transport hubs.`,
+    [
+      document.createTextNode(`Import capacity exceeded: ${disabledBuildingCount} buildings disabled. Optimize sektor or build more `),
+      createTransportHubsLink(),
+      document.createTextNode("."),
+    ],
     [],
   );
 }
@@ -142,9 +148,23 @@ function showExportCapacityMessage(wastedExportAmount: number) {
   showMessage(
     EXPORT_CAPACITY_MESSAGE_ID,
     "warning",
-    `Export capacity exceeded: ${wastedExportAmount} exports wasted. Optimize sektor or build more transport hubs.`,
+    [
+      document.createTextNode(`Export capacity exceeded: ${wastedExportAmount} exports wasted. Optimize sektor or build more `),
+      createTransportHubsLink(),
+      document.createTextNode("."),
+    ],
     [],
   );
+}
+
+// A player told to build more hubs is taken straight to the buildings which are hubs, picked out in
+// the toolbar just as if they had picked the transport tag there themselves.
+function createTransportHubsLink(): HTMLElement {
+  const transportHubsLink = document.createElement("span");
+  transportHubsLink.className = "message-link";
+  transportHubsLink.textContent = "\u{1f4e6} transport hubs";
+  transportHubsLink.addEventListener("click", () => selectBuildingTag(TRANSPORT_BUILDING_TAG));
+  return transportHubsLink;
 }
 
 // Whatever the planet is shortest of is what a player can do most good by sending out. A planet
@@ -212,15 +232,18 @@ function showOrHideMessage(
 // A message of a kind the player is already being told is written over rather than stood beside, so
 // that the same advice is never on the screen twice over. Advice which has not changed is left
 // exactly as it stands: a player who has read it is not made to read it again.
+// Advice is either plain words, or words with links among them, which take the player to what the
+// advice tells them to do.
 function showMessage(
   messageId: string,
   kind: MessageKind,
-  advice: string,
+  advice: string | Node[],
   resourceNames: string[],
   actionButtons: HTMLElement[] = [],
 ) {
   const shownMessage = document.getElementById(messageId);
-  const said = `${MESSAGE_EMOJI[kind]} ${advice} `;
+  const adviceNodes = typeof advice === "string" ? [document.createTextNode(advice)] : advice;
+  const said = `${MESSAGE_EMOJI[kind]} ${adviceNodes.map(adviceNode => adviceNode.textContent).join("")} `;
   const text = `${said}${resourceNames.map(resourceNameText).join(", ")}`;
 
   if (shownMessage?.textContent === text) {
@@ -232,7 +255,12 @@ function showMessage(
   }
 
   const message = shownMessage ?? createMessage(messageId, kind);
-  message.replaceChildren(document.createTextNode(said), ...resourceElements(resourceNames), ...actionButtons);
+  // Plain advice is written as one piece of text, as text split into pieces is laid out a little
+  // differently than the same text in one.
+  const saidNodes = typeof advice === "string"
+    ? [document.createTextNode(said)]
+    : [document.createTextNode(`${MESSAGE_EMOJI[kind]} `), ...adviceNodes, document.createTextNode(" ")];
+  message.replaceChildren(...saidNodes, ...resourceElements(resourceNames), ...actionButtons);
 
   // Something new to say goes to the top of the stack and flashes, so that a player looking at the
   // map rather than at the messages still catches that the advice has changed.

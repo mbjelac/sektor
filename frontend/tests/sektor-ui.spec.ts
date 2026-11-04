@@ -326,6 +326,19 @@ test("switches geography to pollution when the eye next to the pollution message
   expect(await getSelectedGeographyProperties(page)).toEqual(["pollution"]);
 });
 
+// Without a hub nothing is carried in, so the factory is disabled for exceeding the import capacity.
+test("selects the transport tag in the toolbar when the transport hubs in the import capacity message are clicked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeBuilding(page, "TestFactory");
+
+  await page.locator("#import-capacity-message .message-link").click();
+
+  const selectedBuildingTags = await page.locator(".building-tag.selected").evaluateAll(
+    tagButtons => tagButtons.map(tagButton => (tagButton as HTMLElement).dataset.buildingTag),
+  );
+  expect(selectedBuildingTags).toEqual(["transport"]);
+});
+
 // The names of the properties selected in the geography panel.
 function getSelectedGeographyProperties(page: Page) {
   return page.locator(".property-toggle.selected").evaluateAll(

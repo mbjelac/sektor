@@ -1550,6 +1550,18 @@ body > main {
     background: #fff;
 }
 
+/* A link in a message takes the player to what the message tells them to do, and is pointed at as a
+   resource named in a message is. */
+.message-link {
+    border-radius: 3px;
+    padding: 0 2px;
+    cursor: pointer;
+}
+
+.message-link:hover {
+    background: #fff;
+}
+
 /* A button standing next to what a message says, letting the player act on it straight away. */
 .message-action-button {
     display: inline-flex;

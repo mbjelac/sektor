@@ -180,19 +180,22 @@ function showBuildingTagFilter() {
     if (buildingTag === selectedBuildingTag) {
       tagButton.classList.add("selected");
     }
-    // The player looks for one kind of building at a time, so picking a tag lets go of the one
-    // picked before.
-    tagButton.addEventListener("click", () => {
-      buildingTagFilter.querySelectorAll(".building-tag").forEach(otherTagButton => otherTagButton.classList.remove("selected"));
-      selectedBuildingTag = buildingTag;
-      tagButton.classList.add("selected");
-      showSelectedBuildingTagName();
-      showBuildingsHavingSelectedTag();
-    });
+    tagButton.addEventListener("click", () => selectBuildingTag(buildingTag));
     buildingTagFilter.appendChild(tagButton);
   }
 
   showSelectedBuildingTagName();
+}
+
+// The player looks for one kind of building at a time, so picking a tag lets go of the one picked
+// before. A tag is picked by clicking it, or by following a message which points the player at it.
+export function selectBuildingTag(buildingTag: string) {
+  document.querySelectorAll(".building-tag").forEach(tagButton =>
+    tagButton.classList.toggle("selected", (tagButton as HTMLElement).dataset.buildingTag === buildingTag),
+  );
+  selectedBuildingTag = buildingTag;
+  showSelectedBuildingTagName();
+  showBuildingsHavingSelectedTag();
 }
 
 function showSelectedBuildingTagName() {

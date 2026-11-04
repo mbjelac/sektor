@@ -82,8 +82,8 @@ Imports and exports are limited separately:
     - if import capacity is exceeded, display current import with red background
     - if export capacity is exceeded, display current export with red background
 
-#3 Player can junmp to transport construction category from message
-- message "Optimize sektor or build more transport hubs" should link to transport construction toolbar category
+#3 [done] Player can junmp to transport construction category from message
+- [done] message "Optimize sektor or build more transport hubs" should link to transport construction toolbar category
     - prepend transport tags icon to "transport hubs"
         - if it is simpler, just prepend emoji 📦
     - "📦 transport hubs" acts as a link
