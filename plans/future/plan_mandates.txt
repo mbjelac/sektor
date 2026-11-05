@@ -32,17 +32,20 @@ Player score affects:
 - how many sektors a player is allowed to own
     - low score = fewer sektors
 
-# Sektor no longer has difficulty or score
+#1 Sektor no longer has difficulty or score
+- difficulty & score will be superseeded by mandates
+- player score will depend on completed mandates so should not result from sektor scores
+- remove score column in import export panel in map page
 
-# Player sees available mandates
+#2 Player sees available mandates
 
-# Mandates can be claimed
+#3 Mandates can be claimed
 
-# Player sees own mandates
+#4 Player sees own mandates
 
-# Player can complete a mandate
+#5 Player can complete a mandate
 
-# Player can un-complete a mandate
+#6 Player can un-complete a mandate
 
-# Mandates can be adandoned
+#7 Mandates can be adandoned
 
