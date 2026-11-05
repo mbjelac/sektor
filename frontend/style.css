@@ -1332,14 +1332,79 @@ body > main {
    two beside it, the list itself is nothing to look at: every resource stands in a panel of its own,
    with the page showing between them. It is as tall as the page whatever it holds, so that the
    column it stands in never changes size. */
-/* It stands against the right side of the window, between the player's name above it and the PURGE
-   button below it, rather than in a column beside the other lists. */
+/* It stands against the right side of the window, below the player's name and down to the middle of
+   the window, rather than in a column beside the other lists. */
 #global-state-panel {
     position: fixed;
     top: 56px;
+    bottom: 50%;
+    right: 16px;
+    width: 300px;
+}
+
+/* The mandates there are, in the lower half of the window below what the whole planet moves and down
+   to the PURGE button. */
+#mandate-panel {
+    position: fixed;
+    top: calc(50% + 16px);
     bottom: 56px;
     right: 16px;
     width: 300px;
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+#mandate-panel::-webkit-scrollbar {
+    display: none;
+}
+
+.mandate-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #1a1a1a;
+    padding: 0 13px 8px;
+}
+
+.mandate-header .list-title {
+    margin-bottom: 0;
+}
+
+.mandate-item {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 12px;
+    border-radius: 4px;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.mandate-number {
+    color: #fff;
+    font-weight: bold;
+}
+
+.mandate-criterion {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.mandate-criterion-direction {
+    display: inline-flex;
+}
+
+.mandate-criterion-direction .icon {
+    width: 14px;
+    height: 14px;
 }
 
 .global-state-list {

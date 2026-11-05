@@ -1,8 +1,10 @@
 import { clearSektorList } from "./sektorList.api";
 import { deleteAllSektorData } from "../sektor/sektor.api";
 import { stopCreatingSektors } from "../creation/sektorCreation";
+import { clearMandates } from "../mandates/mandates.api";
+import { stopCreatingMandates } from "../mandates/mandateCreation";
 
-// Wipes every sektor there is, for when the ones lying about are of no more use. The page is loaded
+// Wipes every sektor and mandate there is, for when the ones lying about are of no more use. The page is loaded
 // anew afterwards, so that nothing left over from the sektors which were is still to be seen.
 export function showPurgeButton(): void {
   const purgeButton = document.createElement("button");
@@ -16,11 +18,14 @@ export function showPurgeButton(): void {
   document.body.appendChild(purgeButton);
 }
 
-// The making of sektors is stopped first, so that none is made in between the emptying of the list
-// and the throwing away of what the sektors were. What a sektor was owned by and called goes with
-// its entry in the list, so the next sektor to be given a number already used comes up unclaimed.
+// The making of sektors and mandates is stopped first, so that none is made in between the emptying
+// of the list and the throwing away of what the sektors were. What a sektor was owned by and called
+// goes with its entry in the list, so the next sektor to be given a number already used comes up
+// unclaimed. Mandates are numbered from 1 again once they are all gone.
 function purgeSektors(): void {
   stopCreatingSektors();
+  stopCreatingMandates();
   clearSektorList();
   deleteAllSektorData();
+  clearMandates();
 }

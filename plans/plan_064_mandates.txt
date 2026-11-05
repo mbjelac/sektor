@@ -37,9 +37,9 @@ Player score affects:
 - [done] player score will depend on completed mandates so should not result from sektor scores
 - [done] remove score column in import export panel in map page
 
-#2 Mandates are created automatically
-- just like sektors, mandates should be automatically created
-- for now, keep generating one new mandate every second until there are at most 10 unclaimed mandates (all are unclaimed when generated)
+#2 [done] Mandates are created automatically
+- [done] just like sektors, mandates should be automatically created
+- [done] for now, keep generating one new mandate every second until there are at most 10 unclaimed mandates (all are unclaimed when generated)
     - a mandate has:
         - number, starting from 1, incrementing as mandates are created
         - owner, initially none
@@ -48,14 +48,14 @@ Player score affects:
         - choose a resource X at random
         - choose a random integer Y between 5 & 30
         - the only criteria is that exports of X must be at least Y
-- purge deletes mandates also
+- [done] purge deletes mandates also
 
-#3 Player sees available mandates
-- in list page the global imports & exports panel should take  up the upper half of the screen vertically
-- lower half of the screen on the right-hand side below imports & exports should contain a panel with a list of mandates
-- panel title: "Mandates"
-- panel has list of mandates which are not yet claimed
-- each item is one mandate
+#3 [done] Player sees available mandates
+- [done] in list page the global imports & exports panel should take  up the upper half of the screen vertically
+- [done] lower half of the screen on the right-hand side below imports & exports should contain a panel with a list of mandates
+- [done] panel title: "Mandates"
+- [done] panel has list of mandates which are not yet claimed
+- [done] each item is one mandate
     - row displayed as:
         - mandate number, white, bold
         - mandate criteria

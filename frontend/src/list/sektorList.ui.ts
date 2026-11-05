@@ -6,6 +6,8 @@ import { getSektorSummary } from "./sektorSummary";
 import { globeAsiaAustraliaIcon, userIcon } from "../icons";
 import { renderLeaderboard } from "./leaderboard.ui";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
+import { createMandateIfNeeded, startCreatingMandates } from "../mandates/mandateCreation";
+import { renderMandateList } from "../mandates/mandateList.ui";
 import { showPurgeButton } from "./purgeButton.ui";
 import { globalImportsAndExports } from "../globalImportsAndExports";
 import { updateGlobalStatePanel } from "../globalStatePanel.ui";
@@ -148,9 +150,9 @@ requireLogin();
 showUser();
 const planetBackground = showPlanetBackground(revealSektorInList);
 // A list which fills by itself cannot be looked at, as a sektor may appear on it at any moment. A
-// test therefore lays this out before the page loads and makes the sektors it wants by hand, one
-// call at a time, rather than sitting out the second between one round of making them and the next.
-// Nothing in the game lays it out, so a player's list goes on filling on its own.
+// test therefore lays this out before the page loads and makes the sektors and mandates it wants by
+// hand, one call at a time, rather than sitting out the second between one round of making them and
+// the next. Nothing in the game lays it out, so a player's list goes on filling on its own.
 const areSektorsMadeByHand = (window as unknown as { makeSektorsByHand?: boolean }).makeSektorsByHand === true;
 
 renderList();
@@ -158,9 +160,17 @@ planetBackground.showSektors(getSektorList());
 showPurgeButton();
 if (areSektorsMadeByHand) {
   (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded = createSektorIfNeeded;
+  // A mandate made by hand is shown as soon as it is made, as one made in the background is.
+  (window as unknown as { createMandateIfNeeded: () => boolean }).createMandateIfNeeded = () => {
+    const isCreated = createMandateIfNeeded();
+    renderMandateList();
+    return isCreated;
+  };
 } else {
   startCreatingSektors(refreshPage);
+  startCreatingMandates(renderMandateList);
 }
+renderMandateList();
 renderLeaderboard();
 
 // The standings are worked out from the sektors, so they are drawn anew whenever the sektors change.

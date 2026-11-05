@@ -244,6 +244,18 @@ test("lists nothing while the sektors move nothing", async ({ page }) => {
 
 // The panel stands in the corner at the size it has whatever it holds, so that the corner it stands
 // in never moves.
+// What the planet moves takes up the upper half of the window, leaving the lower half to the
+// mandates.
+test("ends what the whole planet moves halfway down the window", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  const panelBottom = await page.locator("#global-state-panel").evaluate(panel => ({
+    bottom: panel.getBoundingClientRect().bottom,
+    halfwayDown: window.innerHeight / 2,
+  }));
+  expect(panelBottom.bottom).toEqual(panelBottom.halfwayDown);
+});
+
 test("stands at the same size whatever it holds", async ({ page }) => {
   await page.goto("/?test=true");
   const sizeWhileMovingNothing = await getGlobalPanelSize(page);
@@ -615,6 +627,124 @@ test("gives every sektor it makes ground to build on with nothing but forests on
   }).toEqual({ hasGround: true, buildingsOtherThanForests: [] });
 });
 
+// A mandate is made on the list page as sektors are, numbered from 1 and owned by nobody.
+test("makes mandates numbered one after another, owned by nobody", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await createMandateNow(page);
+  await createMandateNow(page);
+
+  const mandates = await getStoredMandates(page);
+  expect(mandates.map((mandate: { number: number; owner: string | null }) => ({ number: mandate.number, owner: mandate.owner })))
+    .toEqual([{ number: 1, owner: null }, { number: 2, owner: null }]);
+});
+
+// Exports of a single resource, one which can be exported at all, of somewhere between 5 and 30.
+test("makes a mandate asking for at least so much of a resource to be exported", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await createMandateNow(page);
+
+  const [{ criteria }] = await getStoredMandates(page);
+  expect(criteria.map((criterion: { type: string; resourceName: string; amount: number }) => ({
+    type: criterion.type,
+    isExportable: !["Care", "Hapiness", "ImportExport"].includes(criterion.resourceName),
+    isWholeNumberInRange: Number.isInteger(criterion.amount) && criterion.amount >= 5 && criterion.amount <= 30,
+  }))).toEqual([{ type: "minimumExport", isExportable: true, isWholeNumberInRange: true }]);
+});
+
+test("stops making mandates while ten unclaimed ones are waiting", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem(
+    "mandates", JSON.stringify(Array.from({ length: 10 }, (_, index) => ({ number: index + 1, owner: null, criteria: [] })))
+  ));
+  await page.goto("/?test=true");
+
+  expect(await createMandateNow(page)).toEqual(false);
+});
+
+// The mandates stand in the lower half of the window, below what the whole planet moves.
+test("lists the mandates in the lower half of the window", async ({ page }) => {
+  await page.goto("/?test=true");
+  await createMandateNow(page);
+  await createMandateNow(page);
+
+  const mandatePanel = await page.locator("#mandate-panel").evaluate(panel => ({
+    isInLowerHalf: panel.getBoundingClientRect().top >= window.innerHeight / 2,
+    items: [...panel.querySelectorAll(".mandate-item .mandate-number")].map(mandateNumber => mandateNumber.textContent),
+  }));
+  expect(mandatePanel).toEqual({ isInLowerHalf: true, items: ["1", "2"] });
+});
+
+test("lists only the mandates nobody has claimed", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: "Ana", criteria: [] },
+    { number: 2, owner: null, criteria: [] },
+  ])));
+
+  await page.goto("/?test=true");
+
+  expect(await page.locator("#mandate-panel .mandate-number").evaluateAll(mandateNumbers => mandateNumbers.map(mandateNumber => mandateNumber.textContent)))
+    .toEqual(["2"]);
+});
+
+// A mandate is shown in short: its number, then every criterion as whether it is about exports or
+// imports, the resource and the amount.
+test("shows a mandate as its number followed by what it asks for in short", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    {
+      number: 3,
+      owner: null,
+      criteria: [
+        { type: "minimumExport", resourceName: "Wood", amount: 12 },
+        { type: "maximumImport", resourceName: "Water", amount: 7 },
+      ],
+    },
+  ])));
+
+  await page.goto("/?test=true");
+
+  await expect(page.locator("#mandate-panel .mandate-item")).toHaveScreenshot("mandate-item.png", { maxDiffPixelRatio: 0 });
+});
+
+// The pictures of a criterion say what they stand for on hovering them.
+test("names the direction and the resource of a mandate's criteria on hovering them", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    {
+      number: 3,
+      owner: null,
+      criteria: [
+        { type: "minimumExport", resourceName: "Wood", amount: 12 },
+        { type: "maximumImport", resourceName: "Water", amount: 7 },
+      ],
+    },
+  ])));
+
+  await page.goto("/?test=true");
+
+  expect(await page.locator("#mandate-panel .mandate-criterion").evaluateAll(criteria => criteria.map(criterion => ({
+    direction: criterion.querySelector<HTMLElement>(".mandate-criterion-direction")!.title,
+    resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.title,
+    amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
+  })))).toEqual([
+    { direction: "Export", resource: "Wood", amount: "12" },
+    { direction: "Import", resource: "Water", amount: "7" },
+  ]);
+});
+
+test("names the list of mandates Mandates", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  expect(await page.locator("#mandate-panel .list-title").textContent()).toEqual("Mandates");
+});
+
+function createMandateNow(page: Page) {
+  return page.evaluate(() => (window as unknown as { createMandateIfNeeded: () => boolean }).createMandateIfNeeded());
+}
+
+function getStoredMandates(page: Page) {
+  return page.evaluate(() => JSON.parse(localStorage.getItem("mandates")!));
+}
+
 test("stops making sektors while ten unclaimed ones are waiting", async ({ page }) => {
   await page.evaluate(() => localStorage.setItem(
     "sektors", JSON.stringify(Array.from({ length: 10 }, (_, index) => ({ id: `waiting${index}`, name: null, owner: null })))
@@ -624,9 +754,10 @@ test("stops making sektors while ten unclaimed ones are waiting", async ({ page 
   expect(await createSektorNow(page)).toEqual(false);
 });
 
-test("purges every sektor there is when PURGE is clicked", async ({ page }) => {
+test("purges every sektor and mandate there is when PURGE is clicked", async ({ page }) => {
   await page.goto("/?test=true");
   await createSektorNow(page);
+  await createMandateNow(page);
 
   await Promise.all([
     page.waitForEvent("load"),
@@ -636,11 +767,12 @@ test("purges every sektor there is when PURGE is clicked", async ({ page }) => {
   const storage = await page.evaluate(() => ({
     sektors: localStorage.getItem("sektors"),
     sektorDataKeys: Object.keys(localStorage).filter(key => key.startsWith("sektor_")),
+    mandates: localStorage.getItem("mandates"),
     rows: document.querySelectorAll(".sektor-list-item").length,
     players: document.querySelectorAll(".leaderboard-item").length,
   }));
 
-  expect(storage).toEqual({ sektors: null, sektorDataKeys: [], rows: 0, players: 0 });
+  expect(storage).toEqual({ sektors: null, sektorDataKeys: [], mandates: null, rows: 0, players: 0 });
 });
 
 test("shows the purge button on the list page", async ({ page }) => {

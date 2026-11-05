@@ -34,6 +34,13 @@ export function negativeScoringResourceNames(resourceDefinitions: ResourceDefini
     .map(resourceDefinition => resourceDefinition.name);
 }
 
+// A resource which is not local can be imported and exported.
+export function exportableResourceNames(resourceDefinitions: ResourceDefinition[]): string[] {
+  return resourceDefinitions
+    .filter(resourceDefinition => !resourceDefinition.local)
+    .map(resourceDefinition => resourceDefinition.name);
+}
+
 // A local resource cannot be imported or exported, so a sektor has to produce every unit of it
 // that its buildings consume.
 export function localResourceNames(resourceDefinitions: ResourceDefinition[]): string[] {
