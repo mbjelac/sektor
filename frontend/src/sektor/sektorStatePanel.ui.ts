@@ -1,9 +1,6 @@
 import { type SektorState } from "./Sektor";
-import { scoreColor } from "../score";
 import { findThroughputValue, ImportsAndExports, listedResourceNames } from "../globalImportsAndExports";
-import { currentResourceScore, currentScore } from "../currentScore";
-import { getNegativeScoringResources } from "../resources";
-import { arrowDownTrayIcon, arrowUpTrayIcon, globeAltIcon, starIcon } from "../icons";
+import { arrowDownTrayIcon, arrowUpTrayIcon, globeAltIcon } from "../icons";
 import { showGlobalStateDialog } from "../globalStateDialog.ui";
 import { formatNumber } from "../formatNumber";
 import { resourceNameText, throughputText } from "../throughputDisplay.ui";
@@ -11,20 +8,19 @@ import { pointAtResourceWhileHovered } from "../resourceHover.ui";
 
 let panelEl: HTMLElement | null = null;
 
-// What this sektor brings in and sends out, and what each of those is worth as things stand on the
-// planet. Nothing here is worth anything in itself: a resource is worth what moving it does for the
-// planet, which is why what the planet brings in and sends out is shown alongside.
+// What this sektor brings in and sends out, with what the whole planet brings in and sends out a
+// click away.
 export function updateSektorStatePanel(sektorState: SektorState, planetImportsAndExports: ImportsAndExports) {
   ensurePanel();
 
   panelEl!.innerHTML = "";
 
   panelEl!.appendChild(createTitle(planetImportsAndExports));
-  panelEl!.appendChild(createResourceList(sektorState, planetImportsAndExports));
+  panelEl!.appendChild(createResourceList(sektorState));
 }
 
 // What this sektor moves stands under the name of the panel, and the globe at the end of the same
-// row calls up what the whole planet moves, which is what any of it is worth measured against.
+// row calls up what the whole planet moves.
 function createTitle(planetImportsAndExports: ImportsAndExports): HTMLElement {
   const title = document.createElement("div");
   title.className = "panel-title sektor-state-title";
@@ -56,7 +52,7 @@ function ensurePanel() {
   document.getElementById("right-panels")!.appendChild(panelEl);
 }
 
-function createResourceList(sektorState: SektorState, planetImportsAndExports: ImportsAndExports): HTMLElement {
+function createResourceList(sektorState: SektorState): HTMLElement {
   const list = document.createElement("div");
   list.className = "ss-list";
 
@@ -66,10 +62,10 @@ function createResourceList(sektorState: SektorState, planetImportsAndExports: I
     imports: [...sektorState.imports, ...sektorState.uncroppedImports],
     exports: [...sektorState.exports, ...sektorState.uncroppedExports],
   })) {
-    list.appendChild(createResourceRow(resourceName, sektorState, planetImportsAndExports));
+    list.appendChild(createResourceRow(resourceName, sektorState));
   }
 
-  list.appendChild(createTotalRow(sektorState, planetImportsAndExports));
+  list.appendChild(createTotalRow(sektorState));
 
   return list;
 }
@@ -95,20 +91,10 @@ function createHeaderRow(): HTMLElement {
   exportHeader.title = "Exported";
   headerRow.appendChild(exportHeader);
 
-  const scoreHeader = document.createElement("span");
-  scoreHeader.className = "ss-cell-score";
-  scoreHeader.innerHTML = starIcon;
-  scoreHeader.title = "Score";
-  headerRow.appendChild(scoreHeader);
-
   return headerRow;
 }
 
-function createResourceRow(
-  resourceName: string,
-  sektorState: SektorState,
-  planetImportsAndExports: ImportsAndExports,
-): HTMLElement {
+function createResourceRow(resourceName: string, sektorState: SektorState): HTMLElement {
   const row = document.createElement("div");
   row.className = "ss-row";
   pointAtResourceWhileHovered(row, resourceName);
@@ -126,25 +112,17 @@ function createResourceRow(
     findThroughputValue(sektorState.exports, resourceName),
     findThroughputValue(sektorState.uncroppedExports, resourceName),
   ));
-  row.appendChild(createScoreCell(
-    currentResourceScore(resourceName, sektorState, planetImportsAndExports, getNegativeScoringResources()),
-    "ss-cell-score",
-  ));
 
   return row;
 }
 
-function createTotalRow(sektorState: SektorState, planetImportsAndExports: ImportsAndExports): HTMLElement {
+function createTotalRow(sektorState: SektorState): HTMLElement {
   const row = document.createElement("div");
   row.className = "ss-row ss-total";
 
   row.appendChild(document.createElement("span"));
   row.appendChild(createAmountCell(sumThroughputValues(sektorState.uncroppedImports), sektorState.importExportCapacity));
   row.appendChild(createAmountCell(sumThroughputValues(sektorState.uncroppedExports), sektorState.importExportCapacity));
-  row.appendChild(createScoreCell(
-    currentScore(sektorState, planetImportsAndExports, getNegativeScoringResources()),
-    "ss-cell-score ss-total-score",
-  ));
 
   return row;
 }
@@ -155,14 +133,6 @@ function createAmountCell(amount: number, capacity: number): HTMLElement {
   const cell = document.createElement("span");
   cell.className = amount > capacity ? "ss-cell-value ss-total-amount ss-capacity-exceeded" : "ss-cell-value ss-total-amount";
   cell.textContent = `${formatNumber(amount)} / ${formatNumber(capacity)}`;
-  return cell;
-}
-
-function createScoreCell(score: number, className: string): HTMLElement {
-  const cell = document.createElement("span");
-  cell.className = className;
-  cell.textContent = formatNumber(score);
-  cell.style.color = scoreColor(score);
   return cell;
 }
 

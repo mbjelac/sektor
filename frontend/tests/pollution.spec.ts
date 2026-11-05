@@ -16,7 +16,6 @@ test("marks a forest standing on polluted ground on the map", async ({ page }) =
     const pollution = groundOf(0);
     pollution[5][5] = 40;
     localStorage.setItem("sektor_Alpha", JSON.stringify({
-      level: 1,
       locationProperties: { soil: groundOf(6), groundwater: groundOf(6), pollution },
       buildings: [
         { type: "Forest", location: { x: 5, y: 5 } },

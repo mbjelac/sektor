@@ -32,20 +32,74 @@ Player score affects:
 - how many sektors a player is allowed to own
     - low score = fewer sektors
 
-#1 Sektor no longer has difficulty or score
-- difficulty & score will be superseeded by mandates
-- player score will depend on completed mandates so should not result from sektor scores
-- remove score column in import export panel in map page
+#1 [done] Sektor no longer has difficulty or score
+- [done] difficulty & score will be superseeded by mandates
+- [done] player score will depend on completed mandates so should not result from sektor scores
+- [done] remove score column in import export panel in map page
 
-#2 Player sees available mandates
+#2 Mandates are created automatically
+- just like sektors, mandates should be automatically created
+- for now, keep generating mandates until there are at most 10 unclaimed mandates (all are unclaimed when generated)
+- a mandate has:
+    - number, starting from 1, incrementing as mandates are created
+    - owner, initially none
+    - fulfillment criteria
+- for now, use only this algorithm to create fulfilment criteria:
+    - choose a resource X at random
+    - choose a random integer Y between 5 & 30
+    - the only criteria is that exports of X must be at least Y
 
-#3 Mandates can be claimed
+#3 Player sees available mandates
+- in list page the global imports & exports panel should take  up the upper half of the screen vertically
+- lower half of the screen on the right-hand side below imports & exports should contain a panel with a list of mandates
+- panel title: "Mandates"
+- panel has list of mandates which are not yet claimed
+- each item is one mandate
+    - row displayed as:
+        - mandate number, white, bold
+        - mandate criteria
+            - criteria is written in abbreviated form:
+                - minimum export: <export icon (up arrow tray, tooltip "Export")> <resource icon with resource name as tooltip> <amount>
+                - maximum import: <import icon (down arrow tray, tooltip "Import")> <resource icon with resource name as tooltip> <amount>
+                - other criteria abbreviations will be specified later
 
-#4 Player sees own mandates
+#4 Mandates can be claimed
+- in mandate list, each unclaimed mandate can be claimed
+    - list item has Claim button
+        - button style same as in sektor map
+- on click, a popup appears
+- popup has title: "Mandate"
+- popup has buttons
+    - Claim
+        - right-aligned
+        - style same as other Claim buttons
+        - hides popup
+        - sets player as owner of mandate
+    - Cancel
+        - left-aligned
+        - gray
+        - hides popup
+    - buttons are on bottom of popup
+- popup has mandate description
+    - between title & buttons
+    - full description of mandate, one description line per criteria:
+        - minimum export: Export at least <amount> of <resource icon> <resource name>
+        - maximum import: Import at most <amount> of <resource icon> <resource name>
+        - other criteria descriptions will be specified later
+    - list items left-aligned
+- popup takes up 30% of screen height
+    - if criteria list too big for popup height
+        - scroll list
+        - do not show scrollbar
 
-#5 Player can complete a mandate
+#5 Player sees own mandates
 
-#6 Player can un-complete a mandate
+#6 Player can complete a mandate
 
-#7 Mandates can be adandoned
+#7 Player can un-complete a mandate
 
+#8 Mandates can be adandoned
+
+#9 Mandates are visible in map
+- display player's current unfulfilled mandates as map messages
+- message text: "Mandate #<mandate number>:" followed by abbreviated mandate criteria in single line separated by pipe (|)

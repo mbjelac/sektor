@@ -3,14 +3,12 @@ import { getSektorData } from "../sektor/sektor.api";
 import { everyBuildingDefinition } from "../sektor/buildings/buildings";
 import { locationPropertiesToLocations } from "../sektor/locationProperties";
 import { getLocalResources } from "../resources";
-import { LOWEST_LEVEL } from "../playerLevel";
 import { ResourceThroughput } from "../../../shared/sektorData";
 
 export interface SektorSummary {
-  level: number;
   buildingCount: number;
   // What the sektor brings in and sends out of every resource it moves, which the sektors are added
-  // up by into what the whole planet brings in and sends out, and scored against.
+  // up by into what the whole planet brings in and sends out.
   imports: ResourceThroughput[];
   exports: ResourceThroughput[];
   importTotal: number;
@@ -22,7 +20,7 @@ export interface SektorSummary {
 export function getSektorSummary(sektorId: string): SektorSummary {
   const sektorData = getSektorData(sektorId);
   if (!sektorData) {
-    return { level: LOWEST_LEVEL, buildingCount: 0, imports: [], exports: [], importTotal: 0, exportTotal: 0 };
+    return { buildingCount: 0, imports: [], exports: [], importTotal: 0, exportTotal: 0 };
   }
 
   const sektor = new Sektor(
@@ -35,7 +33,6 @@ export function getSektorSummary(sektorId: string): SektorSummary {
   const sektorState = sektor.getSektorState();
 
   return {
-    level: sektorData.level,
     buildingCount: sektor.getState().buildings.length,
     imports: sektorState.imports,
     exports: sektorState.exports,

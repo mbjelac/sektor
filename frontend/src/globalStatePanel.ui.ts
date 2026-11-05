@@ -30,9 +30,7 @@ export function sortGlobalStateList(columnSortOrder: ResourceSortOrder) {
 // The header and every resource under it, put into whoever is showing the list: the list of the page
 // itself, or the dialog which calls the same list up over a sektor's map. Each names the list as its
 // own page has room to: beside the sektors it stands among lists which are all of the planet, and
-// over a map it has to say which of the two lists there it is. The list carries no score: what the
-// planet is short of and what it has over is the same for everybody playing, and a score is a thing
-// of a single sektor.
+// over a map it has to say which of the two lists there it is.
 export function fillGlobalStateList(
   list: HTMLElement,
   globalImportsAndExports: ImportsAndExports,

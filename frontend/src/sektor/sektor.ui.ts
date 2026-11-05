@@ -14,7 +14,7 @@ import { onResourceHover, ResourcePointing } from "../resourceHover.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
 import { updateMessages } from "../messages.ui";
-import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
+import { playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
 import { getGivenSektorName, getSektorLocation, getSektorOwner, getTakenSektorNames, removeSektorOwner, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
@@ -314,7 +314,6 @@ const terrainStyle = terrainStyleOfRegion(sektorRegion);
 const elevationCover = elevationCoverOfRegion(sektorRegion);
 const sektor = new Sektor(getLocations(), everyBuildingDefinition, getLocalResources(), terrain);
 const locations = sektor.getLocations();
-const sektorLevel = getSektorLevel();
 const initialEcosystemSupport = getInitialEcosystemSupport();
 // A building just put up is shown going up for a while, from the moment it was placed, before it
 // is shown standing there finished.
@@ -351,7 +350,6 @@ function saveState() {
   if (!sektorId) return;
   const state = sektor.getState();
   saveSektorData(sektorId, {
-    level: sektorLevel,
     // The terrain of a sektor is settled when it is made and never changes, so it is written back
     // on every save, which would otherwise drop it.
     terrain,
@@ -366,17 +364,6 @@ function saveState() {
 // does, it is the level of the player looking at it which says what its toolbar holds.
 function getBuilderLevel(): number {
   return playerLevel(scoreOfPlayer(getSektorOwnerName() ?? getUsername()));
-}
-
-// The level of a sektor is set when it is made and never changes, so it is read once and written
-// back on every save, which would otherwise drop it.
-function getSektorLevel(): number {
-  if (isTestMode) return LOWEST_LEVEL;
-  if (sektorId) {
-    const sektorData = getSektorData(sektorId);
-    if (sektorData) return sektorData.level;
-  }
-  return LOWEST_LEVEL;
 }
 
 // How much the ecosystem was supported when the sektor was made is settled then and never changes,
@@ -430,9 +417,8 @@ function refreshOpenBuildingPanel() {
 }
 
 // How far along a sektor is stands beside its name: how much of it is built over, how happy its
-// people are and how much of its ecosystem is gone. What the sektor is worth and how much it imports
-// and exports are left out: a sektor being built on is scored resource by resource in the panel on
-// the right, which also totals what it imports and exports against what its hubs can carry.
+// people are and how much of its ecosystem is gone. How much it imports and exports is left out: the
+// panel on the right lists it resource by resource and totals it against what its hubs can carry.
 function showSektorStats(sektorState: SektorState) {
   document.getElementById("sektor-stats")?.remove();
 

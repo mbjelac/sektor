@@ -382,7 +382,6 @@ async function storeSektor(page: import("@playwright/test").Page, sektorId: stri
   await page.evaluate(([sektorId, owner, buildings]) => {
     const emptyGrid = Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0));
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
-      level: 1,
       locationProperties: { soil: emptyGrid, groundwater: emptyGrid, ore: emptyGrid, insolation: emptyGrid, wind: emptyGrid },
       buildings,
     }));

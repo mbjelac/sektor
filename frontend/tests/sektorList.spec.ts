@@ -171,13 +171,11 @@ test("tells nothing once the mouse leaves the planet", async ({ page }) => {
   expect(await page.locator("#planet-region-info").isVisible()).toEqual(false);
 });
 
-// A sektor of mines, one on every piece of ore given, which the mines turn into an export the
-// sektor scores for — the more ore, the higher the score its player brings to the leaderboard. A
-// hub stands beside them to ship the ore out.
+// A sektor of mines, one on every piece of ore given, which the mines turn into an export. A hub
+// stands beside them to ship the ore out.
 async function storeMiningSektor(page: Page, sektorName: string, oreAmounts: number[]) {
   await page.evaluate(([sektorName, oreAmounts]) => {
     localStorage.setItem(`sektor_${sektorName}`, JSON.stringify({
-      level: 1,
       locationProperties: { ore: (oreAmounts as number[]).map(oreAmount => [oreAmount]) },
       buildings: [
         ...(oreAmounts as number[]).map((oreAmount, oreIndex) => ({
@@ -387,7 +385,6 @@ async function getGlobalSortColors(page: Page) {
 async function storeSektorWithBuildings(page: Page, sektorId: string, buildingTypes: string[], orePerLocation = 0) {
   await page.evaluate(([sektorId, buildingTypes, orePerLocation]) => {
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
-      level: 1,
       locationProperties: { ore: (buildingTypes as string[]).map(() => [orePerLocation]) },
       buildings: [
         ...(buildingTypes as string[]).map((buildingType, buildingIndex) => ({
@@ -420,7 +417,7 @@ function getGlobalPanelSize(page: Page) {
   }));
 }
 
-// The sektors of a player's own level are made in the background as they are claimed. A test calls
+// Sektors are made in the background as they are claimed. A test calls
 // the making of them itself, rather than sitting out the ten seconds between one round and the next.
 function createSektorNow(page: Page) {
   return page.evaluate(() => (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded());
@@ -606,17 +603,16 @@ test("numbers every sektor it makes above the last one", async ({ page }) => {
 });
 
 // Forests grow on a sektor before anybody gets to it, but nothing the player builds stands there yet.
-test("gives every sektor it makes a level and ground to build on with nothing but forests on it", async ({ page }) => {
+test("gives every sektor it makes ground to build on with nothing but forests on it", async ({ page }) => {
   await page.goto("/?test=true");
 
   await createSektorNow(page);
 
   const sektorData = await page.evaluate(() => JSON.parse(localStorage.getItem("sektor_0")!));
   expect({
-    hasLevel: Number.isInteger(sektorData.level),
     hasGround: Object.keys(sektorData.locationProperties).length > 0,
     buildingsOtherThanForests: sektorData.buildings.filter((building: { type: string }) => building.type !== "Forest"),
-  }).toEqual({ hasLevel: true, hasGround: true, buildingsOtherThanForests: [] });
+  }).toEqual({ hasGround: true, buildingsOtherThanForests: [] });
 });
 
 test("stops making sektors while ten unclaimed ones are waiting", async ({ page }) => {

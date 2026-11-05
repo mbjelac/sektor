@@ -952,9 +952,8 @@ test("shows error when destroying an empty location", async ({ page }) => {
   await expect(page.locator("#notification")).toHaveText("locationEmpty");
 });
 
-// What the sektor moves, resource by resource, and what each of those is worth as things stand on
-// the planet: a resource brought in which the planet has over and one it is short of, a resource
-// sent out of each, and Work, which does the planet harm and so turns the table around.
+// What the sektor moves, resource by resource, with what it would move beside what it does where
+// that was cut short.
 test("displays what the sektor imports and exports", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
@@ -1185,11 +1184,8 @@ test("shows error when destroying an elevation", async ({ page }) => {
   await expect(page.locator("#notification")).toHaveText("canNotDestroyElevations");
 });
 
-// A sektor is worth what it does for the planet, so the same Food brought in is worth different
-// things on different planets: two points off where the planet is short of Food, and only one where
-// another sektor already sends out more than enough of it.
-test("scores what the sektor moves against what the rest of the planet moves", async ({ page }) => {
-  await storeSektorSendingOutFood(page, "Beta");
+// A sektor is no longer scored, so the panel tells only what it brings in and sends out.
+test("lists what the sektor brings in and sends out without scoring it", async ({ page }) => {
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
@@ -1197,23 +1193,8 @@ test("scores what the sektor moves against what the rest of the planet moves", a
   await placeBuilding(page, "TestProcessor");
 
   expect(await getLocalThroughputRows(page)).toEqual([
-    { resource: "Food 🥕", imported: "2", exported: "", score: "-1" },
-    { resource: "Wood 🪵", imported: "", exported: "3", score: "1" },
-  ]);
-});
-
-// The same sektor on a planet with nothing else on it: the Food it brings in is Food the planet is
-// short of, which costs it twice as much.
-test("scores what the sektor moves against itself while it is the whole planet", async ({ page }) => {
-  await page.goto("/sektor.html?id=Alpha&test=true");
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-
-  await placeHub(page);
-  await placeBuilding(page, "TestProcessor");
-
-  expect(await getLocalThroughputRows(page)).toEqual([
-    { resource: "Food 🥕", imported: "2", exported: "", score: "-2" },
-    { resource: "Wood 🪵", imported: "", exported: "3", score: "1" },
+    { resource: "Food 🥕", imported: "2", exported: "", cellCount: 3 },
+    { resource: "Wood 🪵", imported: "", exported: "3", cellCount: 3 },
   ]);
 });
 
@@ -1226,7 +1207,6 @@ async function storeSektorSendingOutFood(page: Page, sektorId: string) {
       { id: sektorId, name: sektorId, owner: "Tester" },
     ]));
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
-      level: 1,
       locationProperties: { soil: [[10]] },
       buildings: [
         { type: "TestFactory", location: { x: 0, y: 0 } },
@@ -1245,7 +1225,7 @@ async function placeBuilding(page: Page, buildingName: string) {
 }
 
 // What every resource row of the sektor's own panel says, leaving out the header and the row which
-// adds the scores up.
+// adds the amounts up.
 function getLocalThroughputRows(page: Page) {
   return page.locator("#sektor-state-panel .ss-row:not(.ss-header):not(.ss-total)").evaluateAll(rows =>
     rows.map(row => {
@@ -1254,7 +1234,7 @@ function getLocalThroughputRows(page: Page) {
         resource: cells[0].textContent,
         imported: cells[1].textContent,
         exported: cells[2].textContent,
-        score: cells[3].textContent,
+        cellCount: cells.length,
       };
     })
   );
@@ -1363,7 +1343,6 @@ async function storeSektorMovingManyResources(page: Page, sektorId: string) {
       { id: sektorId, name: sektorId, owner: "Tester" },
     ]));
     localStorage.setItem(`sektor_${sektorId}`, JSON.stringify({
-      level: 1,
       locationProperties: { ore: [[6], [6], [6]] },
       buildings: [
         { type: "TestRefinery", location: { x: 0, y: 0 } },

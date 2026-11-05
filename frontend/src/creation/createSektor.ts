@@ -11,10 +11,9 @@ export type { RandomNumber };
 const SOIL_PROPERTY = "soil";
 
 // A sektor is the ground it stands on and what grows there: it is handed to the player as a piece
-// of land with a difficulty on it, and what is worth building there is theirs to work out. Nothing
+// of land, and what is worth building there is theirs to work out. Nothing
 // is asked of them, so nothing has to be laid out in advance to be sure the asking can be answered.
 export function createSektor(
-  level: number,
   locationPropertyNames: string[],
   ground: SektorGround,
   randomNumber: RandomNumber = Math.random,
@@ -26,7 +25,6 @@ export function createSektor(
     locationProperties[SOIL_PROPERTY] = soilWateredByRiver(locationProperties[SOIL_PROPERTY], terrain);
   }
   return {
-    level,
     terrain,
     locationProperties,
     buildings: forests,

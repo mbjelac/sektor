@@ -1,8 +1,6 @@
 import { addSektorToList, getSektorList } from "../list/sektorList.api";
 import { saveSektorData } from "../sektor/sektor.api";
 import { getLocationPropertyNames } from "../properties";
-import { getPlayers } from "../players";
-import { LOWEST_LEVEL, playerLevel } from "../playerLevel";
 import { createSektor } from "./createSektor";
 import { generateSektorName } from "./sektorName";
 import { pickSektorLocation } from "./sektorLocation";
@@ -35,9 +33,6 @@ export function stopCreatingSektors() {
 export function createSektorIfNeeded(): boolean {
   if (countUnclaimedSektors() >= MAXIMUM_UNCLAIMED_SEKTORS) return false;
 
-  const levels = neededLevels();
-  const level = levels[Math.floor(Math.random() * levels.length)];
-
   // The sektor's place on the planet is picked first, as whether it stands on land or on the sea,
   // and in the desert, a forest or grassland, shapes its ground.
   const location = pickSektorLocation();
@@ -45,7 +40,7 @@ export function createSektorIfNeeded(): boolean {
   // Whatever the ground turns out to hold, the sektor made on it is offered: what a player can do
   // with a sektor is theirs to work out, and no sektor is thrown away for being hard to get
   // anything out of with the buildings it happens to allow.
-  const sektorData = createSektor(level, getLocationPropertyNames(), groundAt(location));
+  const sektorData = createSektor(getLocationPropertyNames(), groundAt(location));
 
   const sektorName = generateSektorName();
   const sektorId = `${nextSektorId()}`;
@@ -71,23 +66,6 @@ function groundAt(location: TriangleCoordinate): SektorGround {
 // A sektor is waiting for somebody as long as nobody owns it, whatever already stands in it.
 function countUnclaimedSektors(): number {
   return getSektorList().filter(sektorListItem => sektorListItem.owner === null).length;
-}
-
-// Every player needs sektors of their own level to work on, and a couple of the level above so that
-// there is something waiting for them the moment they climb. Before anyone owns anything there are
-// no players to go by, and the sektors made are the easiest there are, for whoever arrives first.
-function neededLevels(): number[] {
-  const players = getPlayers();
-  if (players.length === 0) return [LOWEST_LEVEL];
-
-  const levels = new Set<number>();
-  for (const player of players) {
-    const level = playerLevel(player.score);
-    levels.add(level);
-    levels.add(level + 1);
-  }
-
-  return [...levels];
 }
 
 // Sektors are numbered, and the number carries on above the highest one already made so that a
