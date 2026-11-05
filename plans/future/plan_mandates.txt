@@ -21,8 +21,6 @@ The stricter the mandate, the higher the score.
 In such way a player's score is solely dependant on mandates. No mandate is linked to a specific sektor
 - a player may use however many sektors they wish to fulfill a mandate. However, all claimed mandates have to stay fulfilled to keep their scores.
 
-Optional: Claiming a mandate brings points in itself. Abandoning a mandate brings negative points.
-
 Player score affects:
 - which mandates are available to claim
     - high-score players cannot claim low-score mandates
@@ -33,3 +31,18 @@ Player score affects:
     - low score = fewer biomes
 - how many sektors a player is allowed to own
     - low score = fewer sektors
+
+# Sektor no longer has difficulty or score
+
+# Player sees available mandates
+
+# Mandates can be claimed
+
+# Player sees own mandates
+
+# Player can complete a mandate
+
+# Player can un-complete a mandate
+
+# Mandates can be adandoned
+
