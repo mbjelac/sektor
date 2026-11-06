@@ -147,7 +147,7 @@ Player score affects:
     - primary motivation for players are mandates now
 
 #8 Player can see which criteria are completed & which are not
-- in mandate list, criteria abbreviation is strikethrough if criteria completed
+- [done] in mandate list, criteria abbreviation is strikethrough if criteria completed
 - player can open mandate details in mandate list
     - mandate item has gray background on mouse over
     - click on mandate item (anywhere) opens mandate details popup
@@ -166,3 +166,16 @@ Player score affects:
 - in mandate message on map, criteria abbreviation is strikethrough if criteria completed
 
 #9 Mandates can be adandoned
+- if a mandate is abandoned it no longer has an owner
+    - no longer appears in current player mandate list
+    - appears in no-owner mandate list, meaning another player can claim it
+    - it's effects no longer apply to the previous owner
+- player can abandon a mandate from mandate details
+    - mandate details popup has "Abandon" button
+        - bottom, left aligned
+        - red
+    - when clicked
+        - mandate's owner is removed
+        - popup is hidden
+        - mandate list is updated (player mandate list no longer displays mandate)
+        - sketor map message is removed (if abandoned from sektor map)
