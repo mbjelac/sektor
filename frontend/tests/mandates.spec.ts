@@ -246,3 +246,110 @@ test("marks the player's completed mandates green and the others red", async ({ 
 
   await expect(page.locator("#mandate-panel")).toHaveScreenshot("own-mandates.png", { maxDiffPixelRatio: 0 });
 });
+
+// A criterion the player's sektors already fulfil stands on green, the others are left as they are.
+test("puts the completed criteria of the player's mandates on green", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    {
+      number: 1,
+      owner: currentPlayer,
+      completed: false,
+      criteria: [
+        { type: "minimumExport", resourceName: "Wood", amount: 12, completed: true },
+        { type: "maximumImport", resourceName: "Water", amount: 7, completed: false },
+      ],
+    },
+  ])), CURRENT_PLAYER);
+  await page.goto("/?test=true");
+
+  await page.locator('.mandate-filter-button[data-mandate-filter="own"]').click();
+
+  await expect(page.locator("#mandate-panel .mandate-item")).toHaveScreenshot("mandate-item-criterion-completed.png", { maxDiffPixelRatio: 0 });
+});
+
+// A mandate of the player with one criterion completed and one not.
+async function storeHalfCompletedMandate(page: Page) {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    {
+      number: 5,
+      owner: currentPlayer,
+      completed: false,
+      criteria: [
+        { type: "minimumExport", resourceName: "Wood", amount: 12, completed: true },
+        { type: "maximumImport", resourceName: "Water", amount: 7, completed: false },
+      ],
+    },
+  ])), CURRENT_PLAYER);
+}
+
+async function openOwnMandates(page: Page) {
+  await page.goto("/?test=true");
+  await page.locator('.mandate-filter-button[data-mandate-filter="own"]').click();
+}
+
+test("greys a mandate of the list under the pointer", async ({ page }) => {
+  await storeHalfCompletedMandate(page);
+  await openOwnMandates(page);
+
+  await page.locator("#mandate-panel .mandate-item").hover();
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluate(item => getComputedStyle(item).backgroundColor))
+    .toEqual("rgb(68, 68, 68)");
+});
+
+// Clicking a mandate anywhere opens it up in full: its number, and every criterion told in full with
+// whether it is completed in front of it.
+test("opens a mandate in full when it is clicked in the list", async ({ page }) => {
+  await storeHalfCompletedMandate(page);
+  await openOwnMandates(page);
+
+  await page.locator("#mandate-panel .mandate-number").click();
+
+  expect(await page.locator("#mandate-details-dialog").evaluate(dialog => ({
+    title: dialog.querySelector(".dialog-title")!.textContent,
+    criteria: [...dialog.querySelectorAll(".mandate-description-line")].map(line => ({
+      text: line.textContent,
+      completed: line.querySelector(".mandate-completion")!.classList.contains("mandate-completed"),
+    })),
+    buttons: [...dialog.querySelectorAll("button")].map(button => button.textContent),
+  }))).toEqual({
+    title: "Mandate 5",
+    criteria: [
+      { text: "Export at least 12 🪵 Wood", completed: true },
+      { text: "Import at most 7 💧 Water", completed: false },
+    ],
+    buttons: ["Close"],
+  });
+});
+
+test("shows a mandate in full with a dot in front of every criterion and Close in the bottom right", async ({ page }) => {
+  await storeHalfCompletedMandate(page);
+  await openOwnMandates(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  await expect(page.locator("#mandate-details-dialog")).toHaveScreenshot("mandate-details-dialog.png", { maxDiffPixelRatio: 0 });
+});
+
+test("closes the mandate opened in full when Close is clicked", async ({ page }) => {
+  await storeHalfCompletedMandate(page);
+  await openOwnMandates(page);
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  await page.locator("#mandate-close-button").click();
+
+  expect(await page.locator("#mandate-details-dialog").count()).toEqual(0);
+});
+
+// Claiming is asked about in its own popup, so clicking Claim opens only that one.
+test("opens only the claiming popup when Claim is clicked on a mandate", async ({ page }) => {
+  await storeUnclaimedMandate(page);
+  await page.goto("/?test=true");
+
+  await page.locator("#mandate-panel .claim-button").click();
+
+  expect({
+    claiming: await page.locator("#mandate-dialog").count(),
+    details: await page.locator("#mandate-details-dialog").count(),
+  }).toEqual({ claiming: 1, details: 0 });
+});

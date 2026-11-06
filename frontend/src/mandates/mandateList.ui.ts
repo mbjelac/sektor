@@ -4,7 +4,8 @@ import { sparklesIcon, userIcon } from "../icons";
 import { createCriterionAbbreviation } from "./criterionAbbreviation.ui";
 import { getUsername } from "../login/login.api";
 import { createClaimButton } from "../claimButton.ui";
-import { showMandateDialog } from "./mandateDialog.ui";
+import { showMandateDetailsDialog, showMandateDialog } from "./mandateDialog.ui";
+import { createCompletionDot } from "./completionDot.ui";
 import { filterMandates, MandateFilter } from "./mandateFilter";
 
 // The list opens on the mandates waiting to be claimed.
@@ -67,22 +68,26 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
 
 // A mandate is its number followed by what it asks for, every criterion in short, and at the end of
 // the row the button for claiming it while nobody owns it, or, on the player's own, whether it is
-// completed.
+// completed. Clicking anywhere else on it opens it up in full.
 function createMandateItem(mandate: Mandate): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
+  item.addEventListener("click", () => showMandateDetailsDialog(mandate));
 
   const mandateNumber = document.createElement("span");
   mandateNumber.className = "mandate-number";
   mandateNumber.textContent = `${mandate.number}`;
   item.appendChild(mandateNumber);
 
+  // A criterion the player's sektors already fulfil stands on green.
   for (const criterion of mandate.criteria) {
-    item.appendChild(createCriterionAbbreviation(criterion));
+    const criterionAbbreviation = createCriterionAbbreviation(criterion);
+    criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);
+    item.appendChild(criterionAbbreviation);
   }
 
   if (mandate.owner === null) item.appendChild(createMandateClaimButton(mandate));
-  else item.appendChild(createCompletionDot(mandate));
+  else item.appendChild(createCompletionDot(mandate.completed));
 
   return item;
 }
@@ -97,13 +102,7 @@ function createMandateClaimButton(mandate: Mandate): HTMLElement {
     },
   }));
   claimButton.classList.add("mandate-claim-button");
+  // Claiming is asked about in a popup of its own, not the one the rest of the row opens.
+  claimButton.addEventListener("click", event => event.stopPropagation());
   return claimButton;
-}
-
-// Green while the player's sektors fulfil the mandate, red while they do not.
-function createCompletionDot(mandate: Mandate): HTMLElement {
-  const completionDot = document.createElement("span");
-  completionDot.className = mandate.completed ? "mandate-completion mandate-completed" : "mandate-completion";
-  completionDot.title = mandate.completed ? "Complete" : "Not complete";
-  return completionDot;
 }

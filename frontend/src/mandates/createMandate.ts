@@ -18,7 +18,7 @@ export function createMandate(
   return {
     number: mandateNumber,
     owner: null,
-    criteria: [{ type: "minimumExport", resourceName, amount }],
+    criteria: [{ type: "minimumExport", resourceName, amount, completed: false }],
     completed: false,
   };
 }

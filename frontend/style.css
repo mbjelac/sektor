@@ -1447,6 +1447,18 @@ body > main {
     text-align: left;
 }
 
+/* Close stands in the bottom right of the popup. */
+.mandate-details-buttons {
+    margin-top: auto;
+}
+
+/* The dot telling whether a criterion is completed stands in front of it. */
+.mandate-description-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .mandate-description::-webkit-scrollbar {
     display: none;
 }
@@ -1461,8 +1473,17 @@ body > main {
     margin-left: auto;
 }
 
-.mandate-completion {
+.mandate-item:hover {
+    background: #444;
+    cursor: pointer;
+}
+
+.mandate-item .mandate-completion {
     margin-left: auto;
+}
+
+.mandate-completion {
+    flex-shrink: 0;
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -1477,6 +1498,19 @@ body > main {
     display: inline-flex;
     align-items: center;
     gap: 4px;
+}
+
+/* A completed criterion stands on a dark pastel green, in white to be read on it. */
+.mandate-criterion-completed {
+    background: #4e7d5b;
+    color: #fff;
+    border-radius: 3px;
+    padding: 0 3px;
+}
+
+/* Pointed at in a message, it is lit up white as any resource of a message is, and read as one. */
+.message-resource.mandate-criterion-completed:hover {
+    color: inherit;
 }
 
 .mandate-criterion-direction {

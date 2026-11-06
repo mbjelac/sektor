@@ -1284,6 +1284,58 @@ test("highlights a resource of a mandate message and the buildings moving it whe
   await expectMapScreenshot(page, "mandate-message-resource-hover", MIDDLE_OF_MAP);
 });
 
+// The eye at the end of a mandate message opens the mandate in full, over the map.
+test("opens a mandate in full when the eye of its message is clicked", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    {
+      number: 7,
+      owner: "Tester",
+      completed: false,
+      criteria: [
+        { type: "minimumExport", resourceName: "Wood", amount: 12, completed: true },
+        { type: "maximumImport", resourceName: "Water", amount: 4, completed: false },
+      ],
+    },
+  ])));
+  await page.goto("/sektor.html?test=true");
+
+  await page.locator("#mandate-message-7 .show-mandate-button").click();
+
+  expect(await page.locator("#mandate-details-dialog").evaluate(dialog => ({
+    title: dialog.querySelector(".dialog-title")!.textContent,
+    criteria: [...dialog.querySelectorAll(".mandate-description-line")].map(line => line.textContent),
+  }))).toEqual({
+    title: "Mandate 7",
+    criteria: ["Export at least 12 🪵 Wood", "Import at most 4 💧 Water"],
+  });
+});
+
+// The Wood the processor sends out completes the first criterion, which is put on green, while the
+// mandate as a whole is still told of, as no sektor sends out any Stone.
+test("puts a criterion of a mandate message on green once the player completes it", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
+    localStorage.setItem("mandates", JSON.stringify([
+      {
+        number: 7,
+        owner: "Tester",
+        completed: false,
+        criteria: [
+          { type: "minimumExport", resourceName: "Wood", amount: 3, completed: false },
+          { type: "minimumExport", resourceName: "Stone", amount: 50, completed: false },
+        ],
+      },
+    ]));
+  });
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeHub(page);
+  await placeBuilding(page, "TestProcessor");
+
+  await expectScreenshot(page, "mandate-message-criterion-completed", "#mandate-message-7");
+});
+
 // Completing a mandate leaves nothing more to tell of it.
 test("stops telling of a mandate once the player completes it", async ({ page }) => {
   await page.evaluate(() => {

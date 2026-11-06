@@ -1,5 +1,5 @@
 import { ImportsAndExports } from "../globalImportsAndExports";
-import { Mandate } from "./mandates.api";
+import { Mandate, MandateCriterion } from "./mandates.api";
 
 // What all of a player's sektors bring in and send out between them, resource by resource. Unlike
 // the planet's, what comes in of a resource is not set against what goes out of it: a mandate asks
@@ -11,14 +11,21 @@ export function summedImportsAndExports(sektorImportsAndExports: ImportsAndExpor
   };
 }
 
-// A mandate is complete when the player's sektors together fulfil every one of its criteria.
-export function isMandateComplete(mandate: Mandate, playerImportsAndExports: ImportsAndExports): boolean {
-  return mandate.criteria.every(criterion => {
-    if (criterion.type === "minimumExport") {
-      return summedValue(playerImportsAndExports.exports, criterion.resourceName) >= criterion.amount;
-    }
-    return summedValue(playerImportsAndExports.imports, criterion.resourceName) <= criterion.amount;
-  });
+// The mandate as the player's sektors together leave it: every criterion completed or not, and the
+// mandate complete when every one of its criteria is.
+export function completedMandate(mandate: Mandate, playerImportsAndExports: ImportsAndExports): Mandate {
+  const criteria = mandate.criteria.map(criterion => ({
+    ...criterion,
+    completed: isCriterionFulfilled(criterion, playerImportsAndExports),
+  }));
+  return { ...mandate, criteria, completed: criteria.every(criterion => criterion.completed) };
+}
+
+function isCriterionFulfilled(criterion: MandateCriterion, playerImportsAndExports: ImportsAndExports): boolean {
+  if (criterion.type === "minimumExport") {
+    return summedValue(playerImportsAndExports.exports, criterion.resourceName) >= criterion.amount;
+  }
+  return summedValue(playerImportsAndExports.imports, criterion.resourceName) <= criterion.amount;
 }
 
 function summedThroughputs(throughputs: { name: string; value: number }[]): { name: string; value: number }[] {

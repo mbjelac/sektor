@@ -146,9 +146,9 @@ Player score affects:
 - [done] remove message "This planet needs..."
     - primary motivation for players are mandates now
 
-#8 Player can see which criteria are completed & which are not
-- [done] in mandate list, criteria abbreviation is strikethrough if criteria completed
-- player can open mandate details in mandate list
+#8 [done] Player can see which criteria are completed & which are not
+- [done] in mandate list, criteria abbreviation has dark pastel green background if criteria completed
+- [done] player can open mandate details in mandate list
     - mandate item has gray background on mouse over
     - click on mandate item (anywhere) opens mandate details popup
     - popup similar to claim-mandate popup
@@ -160,10 +160,10 @@ Player score affects:
             - same as in mandate list
             - red if criteria not completed
             - green if criteria completed
-- player can open mandate details in sektor map
+- [done] player can open mandate details in sektor map
     - every mandate message has eye button after text
     - button opens mandate details popup for that mandate
-- in mandate message on map, criteria abbreviation is strikethrough if criteria completed
+- [done] in mandate message on map, criteria abbreviation has dark pastel green background if criteria completed
 
 #9 Mandates can be adandoned
 - if a mandate is abandoned it no longer has an owner
