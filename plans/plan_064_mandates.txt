@@ -147,11 +147,21 @@ Player score affects:
     - primary motivation for players are mandates now
 
 #8 Player can see which criteria are completed & which are not
+- in mandate list, criteria abbreviation is strikethrough if criteria completed
 - player can open mandate details in mandate list
     - mandate item has gray background on mouse over
     - click on mandate item (anywhere) opens mandate details popup
     - popup similar to claim-mandate popup
-    - title "Mandate <number>"
-
+        - title "Mandate <number>"
+        - single button in bottom right: "Close"
+            - hides popup
+        - criteria list same, but each criteria has red or green circle in front
+            - same as in mandate list
+            - red if criteria not completed
+            - green if criteria completed
+- player can open mandate details in sektor map
+    - every mandate message has eye button after text
+    - button opens mandate details popup for that mandate
+- in mandate message on map, criteria abbreviation is strikethrough if criteria completed
 
 #9 Mandates can be adandoned
