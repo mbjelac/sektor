@@ -93,7 +93,7 @@ Player score affects:
         - scroll list
         - do not show scrollbar
 
-#5 Player sees own mandates
+#5 [done] Player sees own mandates
 - [done] mandate list is filtered in one of two ways:
     - shows only mandates which have no owner (can be claimed)
     - shows only current player's mandates
@@ -110,19 +110,38 @@ Player score affects:
         - same style as construction tag button indicator in building toolbar
     - clicking no-owner button sets filtering to show just no-owner mandates
     - clicking current player button sets filtering to show just mandates owned by current player
-- panel title depends on filter type
+- [done] panel title depends on filter type
     - no-owner mandates has title: "Available mandates"
     - current player mandates has title: "My mandates"
-- if player has no mandates
+- [done] if player has no mandates
     - show with no-owner filter
     - do not show toggle buttons
 
-#6 Player can complete a mandate
+#6 Player can complete or un-complete a mandate
+- each mandate has a 'completed' flag which is a boolean
+- whenever a player changes a sektor (construct, destroy, modify function pools, etc.) all player's mandates have to be re-calculated
+- a mandate is complete if all it's criteria is fulfilled
+    - all player sektors are summed
+        - if criteria is minimum export, all player sektors' exports are summed to see if minimum export is reached
+        - if criteria is maximum import, all player sektors' imports are summed to see if maximum import is reached
+        - other criteria should be treated in the same way (when other criteria implemented)
+- if any criteria of a mandate are not fulfilled, mandate is not complete
+- player can see status of their mandates
+    - in mandate list on player's mandates filter
+        - mandate item has color dot
+            - right-aligned
+            - green if mandate complete
+            - red if mandate not complete
 
-#7 Player can un-complete a mandate
+#7 Mandates are visible in map
+- display player's current unfulfilled mandates as map messages
+- message text: "M-<mandate number>" followed by abbreviated mandate criteria in single line separated by pipe (|)
+- if criteria contains resources (abbreviated as resource icon & amount), highlight resources as in all other messages
+    - mouse over
+        - adds white background
+        - marks buildings consuming or producing that resource
+            - set green/red frame around building
+            - add label on building with resource icon & amount (with minus sign if resource is consumed)
+                - appended by construction icon if resource is consumed in building construction
 
 #8 Mandates can be adandoned
-
-#9 Mandates are visible in map
-- display player's current unfulfilled mandates as map messages
-- message text: "Mandate #<mandate number>:" followed by abbreviated mandate criteria in single line separated by pipe (|)
