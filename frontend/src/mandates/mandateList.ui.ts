@@ -66,8 +66,9 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
   return filterButton;
 }
 
-// A mandate is its number followed by what it asks for, every criterion in short, and, while nobody
-// owns it, the button for claiming it at the end of the row.
+// A mandate is its number followed by what it asks for, every criterion in short, and at the end of
+// the row the button for claiming it while nobody owns it, or, on the player's own, whether it is
+// completed.
 function createMandateItem(mandate: Mandate): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
@@ -82,6 +83,7 @@ function createMandateItem(mandate: Mandate): HTMLElement {
   }
 
   if (mandate.owner === null) item.appendChild(createMandateClaimButton(mandate));
+  else item.appendChild(createCompletionDot(mandate));
 
   return item;
 }
@@ -129,4 +131,12 @@ function createMandateClaimButton(mandate: Mandate): HTMLElement {
   }));
   claimButton.classList.add("mandate-claim-button");
   return claimButton;
+}
+
+// Green while the player's sektors fulfil the mandate, red while they do not.
+function createCompletionDot(mandate: Mandate): HTMLElement {
+  const completionDot = document.createElement("span");
+  completionDot.className = mandate.completed ? "mandate-completion mandate-completed" : "mandate-completion";
+  completionDot.title = mandate.completed ? "Complete" : "Not complete";
+  return completionDot;
 }

@@ -1198,6 +1198,34 @@ test("lists what the sektor brings in and sends out without scoring it", async (
   ]);
 });
 
+// Building on a sektor changes what the player's sektors do between them, so whether each of the
+// player's mandates is completed is worked out again: the Wood the processor sends out is enough for
+// the first, and the Food it brings in is too much for the second. Another player's mandate is left
+// as it was, however the sektor turns out.
+test("works out again whether the player's mandates are completed when the player builds", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
+    localStorage.setItem("mandates", JSON.stringify([
+      { number: 1, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 3 }] },
+      { number: 2, owner: "Tester", completed: true, criteria: [{ type: "maximumImport", resourceName: "Food", amount: 1 }] },
+      { number: 3, owner: "Ada", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 1 }] },
+    ]));
+  });
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeHub(page);
+  await placeBuilding(page, "TestProcessor");
+
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mandates")!)
+    .map((mandate: { number: number; completed: boolean }) => ({ number: mandate.number, completed: mandate.completed }))))
+    .toEqual([
+      { number: 1, completed: true },
+      { number: 2, completed: false },
+      { number: 3, completed: false },
+    ]);
+});
+
 // A sektor of one factory, which turns Water and Energy into as much Food as the ground it stands
 // on is worth.
 async function storeSektorSendingOutFood(page: Page, sektorId: string) {

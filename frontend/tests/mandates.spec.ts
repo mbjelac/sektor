@@ -233,3 +233,16 @@ test("shows the buttons once the player has claimed a mandate", async ({ page })
 
   expect(await page.locator("#mandate-panel .mandate-filter-button").count()).toEqual(2);
 });
+
+// The player's own mandates say at the end of their rows whether they are completed.
+test("marks the player's completed mandates green and the others red", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: true, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+    { number: 2, owner: currentPlayer, completed: false, criteria: [{ type: "maximumImport", resourceName: "Water", amount: 7 }] },
+  ])), CURRENT_PLAYER);
+  await page.goto("/?test=true");
+
+  await page.locator('.mandate-filter-button[data-mandate-filter="own"]').click();
+
+  await expect(page.locator("#mandate-panel")).toHaveScreenshot("own-mandates.png", { maxDiffPixelRatio: 0 });
+});

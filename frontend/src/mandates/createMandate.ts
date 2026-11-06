@@ -5,7 +5,8 @@ const LOWEST_AMOUNT = 5;
 const HIGHEST_AMOUNT = 30;
 
 // A mandate asks for a single thing for now: at least so much of one resource exported, the
-// resource being one which can be exported at all. Nobody owns it when it is made.
+// resource being one which can be exported at all. Nobody owns it when it is made, so nobody has
+// completed it either.
 export function createMandate(
   mandateNumber: number,
   exportableResourceNames: string[],
@@ -18,5 +19,6 @@ export function createMandate(
     number: mandateNumber,
     owner: null,
     criteria: [{ type: "minimumExport", resourceName, amount }],
+    completed: false,
   };
 }

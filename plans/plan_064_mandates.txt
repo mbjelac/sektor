@@ -69,7 +69,7 @@ Player score affects:
     - list item has Claim button
         - button style same as in sektor map
 - [done] on click, a popup appears
-- [done] popup has title: "Mandate"
+- popup has title: "Mandate <mandate-number>"
 - [done] popup has buttons
     - Claim
         - right-aligned
@@ -117,16 +117,16 @@ Player score affects:
     - show with no-owner filter
     - do not show toggle buttons
 
-#6 Player can complete or un-complete a mandate
-- each mandate has a 'completed' flag which is a boolean
-- whenever a player changes a sektor (construct, destroy, modify function pools, etc.) all player's mandates have to be re-calculated
-- a mandate is complete if all it's criteria is fulfilled
+#6 [done] Player can complete or un-complete a mandate
+- [done] each mandate has a 'completed' flag which is a boolean
+- [done] whenever a player changes a sektor (construct, destroy, modify function pools, etc.) all player's mandates have to be re-calculated
+- [done] a mandate is complete if all it's criteria is fulfilled
     - all player sektors are summed
         - if criteria is minimum export, all player sektors' exports are summed to see if minimum export is reached
         - if criteria is maximum import, all player sektors' imports are summed to see if maximum import is reached
         - other criteria should be treated in the same way (when other criteria implemented)
-- if any criteria of a mandate are not fulfilled, mandate is not complete
-- player can see status of their mandates
+- [done] if any criteria of a mandate are not fulfilled, mandate is not complete
+- [done] player can see status of their mandates
     - in mandate list on player's mandates filter
         - mandate item has color dot
             - right-aligned
@@ -134,7 +134,7 @@ Player score affects:
             - red if mandate not complete
 
 #7 Mandates are visible in map
-- display player's current unfulfilled mandates as map messages
+- display player's current un-completed mandates as map messages
 - message text: "M-<mandate number>" followed by abbreviated mandate criteria in single line separated by pipe (|)
 - if criteria contains resources (abbreviated as resource icon & amount), highlight resources as in all other messages
     - mouse over
@@ -143,5 +143,15 @@ Player score affects:
             - set green/red frame around building
             - add label on building with resource icon & amount (with minus sign if resource is consumed)
                 - appended by construction icon if resource is consumed in building construction
+- remove message "This planet needs..."
+    - primary motivation for players are mandates now
 
-#8 Mandates can be adandoned
+#8 Player can see which criteria are completed & which are not
+- player can open mandate details in mandate list
+    - mandate item has gray background on mouse over
+    - click on mandate item (anywhere) opens mandate details popup
+    - popup similar to claim-mandate popup
+    - title "Mandate <number>"
+
+
+#9 Mandates can be adandoned

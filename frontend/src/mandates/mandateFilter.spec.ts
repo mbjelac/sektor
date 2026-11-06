@@ -3,7 +3,7 @@ import { filterMandates } from "./mandateFilter";
 import { Mandate } from "./mandates.api";
 
 function mandateOf(mandateNumber: number, owner: string | null): Mandate {
-  return { number: mandateNumber, owner, criteria: [] };
+  return { number: mandateNumber, owner, criteria: [], completed: false };
 }
 
 const MANDATES = [mandateOf(1, null), mandateOf(2, "Ada"), mandateOf(3, "Bea"), mandateOf(4, null)];

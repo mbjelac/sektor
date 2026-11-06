@@ -8,11 +8,12 @@ function alwaysDrawing(draw: number): () => number {
 }
 
 describe("createMandate", () => {
-  it("asks for at least so much of a resource drawn at random to be exported, owned by nobody", () => {
+  it("asks for at least so much of a resource drawn at random to be exported, owned and completed by nobody", () => {
     expect(createMandate(7, EXPORTABLE_RESOURCES, alwaysDrawing(0.5))).toEqual({
       number: 7,
       owner: null,
       criteria: [{ type: "minimumExport", resourceName: "Cloth", amount: 18 }],
+      completed: false,
     });
   });
 

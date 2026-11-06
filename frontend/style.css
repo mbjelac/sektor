@@ -1461,6 +1461,18 @@ body > main {
     margin-left: auto;
 }
 
+.mandate-completion {
+    margin-left: auto;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #c70000;
+}
+
+.mandate-completed {
+    background: var(--color-good);
+}
+
 .mandate-criterion {
     display: inline-flex;
     align-items: center;

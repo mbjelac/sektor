@@ -16,6 +16,7 @@ import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExpo
 import { updateMessages } from "../messages.ui";
 import { playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
+import { recalculateMandates } from "../mandates/recalculateMandates";
 import { getGivenSektorName, getSektorLocation, getSektorOwner, getTakenSektorNames, removeSektorOwner, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
@@ -145,6 +146,8 @@ function claimSektor() {
     sektorName: getGivenSektorName(sektorId!) ?? sektorId!,
     onConfirmed: () => {
       setSektorOwner(sektorId!, getUsername()!);
+      // The sektor claimed now counts towards the player's mandates.
+      recalculateMandates(getUsername());
       // Edit mode is entered before the header is drawn again, as it is what puts the pencil for
       // renaming beside the name.
       enterEditMode();
@@ -184,6 +187,8 @@ function abandonSektor() {
     sektorName: getDisplayedSektorName(),
     onConfirmed: () => {
       if (sektorId) removeSektorOwner(sektorId);
+      // The sektor given up no longer counts towards the player's mandates.
+      recalculateMandates(getUsername());
       window.location.href = "/";
     },
   });
@@ -357,6 +362,8 @@ function saveState() {
     buildings: state.buildings,
     initialEcosystemSupport,
   });
+  // A sektor changed is a change to what its owner's sektors do between them.
+  recalculateMandates(getSektorOwnerName());
 }
 
 // Which buildings a toolbar offers depends on how far the player building on this sektor has come.
