@@ -46,13 +46,13 @@ test("shows the mandate in a popup when Claim is clicked", async ({ page }) => {
   }))).toEqual({ isVisible: true, mandateNumber: "3" });
 });
 
-test("titles the popup of a mandate Mandate", async ({ page }) => {
+test("titles the popup of a mandate Mandate followed by its number", async ({ page }) => {
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
   await page.locator("#mandate-panel .claim-button").click();
 
-  expect(await page.locator("#mandate-dialog .dialog-title").textContent()).toEqual("Mandate");
+  expect(await page.locator("#mandate-dialog .dialog-title").textContent()).toEqual("Mandate 3");
 });
 
 test("makes the player the owner of a mandate claimed from its popup and closes the popup", async ({ page }) => {

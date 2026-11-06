@@ -69,7 +69,7 @@ Player score affects:
     - list item has Claim button
         - button style same as in sektor map
 - [done] on click, a popup appears
-- popup has title: "Mandate <mandate-number>"
+- [done] popup has title: "Mandate <mandate-number>"
 - [done] popup has buttons
     - Claim
         - right-aligned

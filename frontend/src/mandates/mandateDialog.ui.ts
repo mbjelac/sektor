@@ -20,7 +20,7 @@ export function showMandateDialog({ mandate, onClaimed }: {
 
   const title = document.createElement("div");
   title.className = "dialog-title";
-  title.textContent = "Mandate";
+  title.textContent = `Mandate ${mandate.number}`;
   dialog.appendChild(title);
 
   dialog.appendChild(createDescription(mandate));
