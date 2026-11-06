@@ -21,17 +21,6 @@ The stricter the mandate, the higher the score.
 In such way a player's score is solely dependant on mandates. No mandate is linked to a specific sektor
 - a player may use however many sektors they wish to fulfill a mandate. However, all claimed mandates have to stay fulfilled to keep their scores.
 
-Player score affects:
-- which mandates are available to claim
-    - high-score players cannot claim low-score mandates
-    - low-score players cannot claim high-score mandates
-- which buildings are available to the player
-    - low score = fewer buildings
-- which biomes are available to the player
-    - low score = fewer biomes
-- how many sektors a player is allowed to own
-    - low score = fewer sektors
-
 #1 [done] Sektor no longer has difficulty or score
 - [done] difficulty & score will be superseeded by mandates
 - [done] player score will depend on completed mandates so should not result from sektor scores
@@ -179,3 +168,7 @@ Player score affects:
         - popup is hidden
         - mandate list is updated (player mandate list no longer displays mandate)
         - sketor map message is removed (if abandoned from sektor map)
+
+#10 Mandates with multiple export & import criteria are created
+
+#11 Completed mandates increase player's score
