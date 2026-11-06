@@ -1,8 +1,11 @@
-import { getMandates, Mandate, MandateCriterion } from "./mandates.api";
+import { getMandates, Mandate, MandateCriterion, setMandateOwner } from "./mandates.api";
 import { createListTitle } from "../listTitle.ui";
 import { arrowDownTrayIcon, arrowUpTrayIcon } from "../icons";
 import { getResourceIcon } from "../resources";
 import { formatNumber } from "../formatNumber";
+import { getUsername } from "../login/login.api";
+import { createClaimButton } from "../claimButton.ui";
+import { showMandateDialog } from "./mandateDialog.ui";
 
 // The mandates waiting to be claimed, standing under what the whole planet moves and named as the
 // other lists of the page are. Drawn again whenever a mandate appears, so what stands there is
@@ -22,7 +25,8 @@ function createHeader(): HTMLElement {
   return header;
 }
 
-// A mandate is its number followed by what it asks for, every criterion in short.
+// A mandate is its number followed by what it asks for, every criterion in short, and the button for
+// claiming it at the end of the row.
 function createMandateItem(mandate: Mandate): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
@@ -35,6 +39,17 @@ function createMandateItem(mandate: Mandate): HTMLElement {
   for (const criterion of mandate.criteria) {
     item.appendChild(createCriterion(criterion));
   }
+
+  const claimButton = createClaimButton(() => showMandateDialog({
+    mandate,
+    // A claimed mandate is the player's, and is no longer waiting in the list.
+    onClaimed: () => {
+      setMandateOwner(mandate.number, getUsername()!);
+      renderMandateList();
+    },
+  }));
+  claimButton.classList.add("mandate-claim-button");
+  item.appendChild(claimButton);
 
   return item;
 }

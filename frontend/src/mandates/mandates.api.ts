@@ -26,6 +26,10 @@ export function addMandate(mandate: Mandate): void {
   saveMandates([...getMandates(), mandate]);
 }
 
+export function setMandateOwner(mandateNumber: number, owner: string): void {
+  saveMandates(getMandates().map(mandate => mandate.number === mandateNumber ? { ...mandate, owner } : mandate));
+}
+
 export function clearMandates(): void {
   localStorage.removeItem(MANDATES_STORAGE_KEY);
 }

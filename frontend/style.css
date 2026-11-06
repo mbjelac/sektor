@@ -1392,6 +1392,41 @@ body > main {
     font-weight: bold;
 }
 
+/* The popup is the same height whatever the mandate asks for. */
+.mandate-dialog {
+    height: 30vh;
+}
+
+/* A mandate asking for more than the popup holds is scrolled through between the title and the
+   buttons, which stay where they are. The bar for doing it is left undrawn. */
+.mandate-description {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 4px 0 8px;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 14px;
+    text-align: left;
+}
+
+.mandate-description::-webkit-scrollbar {
+    display: none;
+}
+
+/* Cancel on the left and Claim on the right, along the bottom of the popup. */
+.dialog-buttons.mandate-dialog-buttons {
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.mandate-claim-button {
+    margin-left: auto;
+}
+
 .mandate-criterion {
     display: inline-flex;
     align-items: center;

@@ -64,7 +64,7 @@ Player score affects:
                 - maximum import: <import icon (down arrow tray, tooltip "Import")> <resource icon with resource name as tooltip> <amount>
                 - other criteria abbreviations will be specified later
 
-#4 Mandates can be claimed
+#4 [done] Mandates can be claimed
 - [done] in mandate list, each unclaimed mandate can be claimed
     - list item has Claim button
         - button style same as in sektor map
