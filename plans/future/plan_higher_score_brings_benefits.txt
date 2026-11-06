@@ -1,0 +1,10 @@
+Player score affects:
+- which mandates are available to claim
+    - high-score players cannot claim low-score mandates
+    - low-score players cannot claim high-score mandates
+- which buildings are available to the player
+    - low score = fewer buildings
+- which biomes are available to the player
+    - low score = fewer biomes
+- how many sektors a player is allowed to own
+    - low score = fewer sektors
