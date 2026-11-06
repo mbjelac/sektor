@@ -94,11 +94,11 @@ Player score affects:
         - do not show scrollbar
 
 #5 Player sees own mandates
-- mandate list is filtered in one of two ways:
+- [done] mandate list is filtered in one of two ways:
     - shows only mandates which have no owner (can be claimed)
     - shows only current player's mandates
     - initial filtering is mandates which have no owner
-- panel has toggle buttons next to title
+- [done] panel has toggle buttons next to title
     - right aligned
     - no labels, just icons
     - two buttons:
@@ -113,6 +113,9 @@ Player score affects:
 - panel title depends on filter type
     - no-owner mandates has title: "Available mandates"
     - current player mandates has title: "My mandates"
+- if player has no mandates
+    - show with no-owner filter
+    - do not show toggle buttons
 
 #6 Player can complete a mandate
 
