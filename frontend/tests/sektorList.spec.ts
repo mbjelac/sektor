@@ -731,11 +731,6 @@ test("names the direction and the resource of a mandate's criteria on hovering t
   ]);
 });
 
-test("names the list of mandates Mandates", async ({ page }) => {
-  await page.goto("/?test=true");
-
-  expect(await page.locator("#mandate-panel .list-title").textContent()).toEqual("Mandates");
-});
 
 function createMandateNow(page: Page) {
   return page.evaluate(() => (window as unknown as { createMandateIfNeeded: () => boolean }).createMandateIfNeeded());

@@ -1365,8 +1365,42 @@ body > main {
     position: sticky;
     top: 0;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* As tall as with the filter buttons in it, padding included, so that the title stays put whether
+       they are shown or not. */
+    min-height: 28px;
     background: #1a1a1a;
     padding: 0 13px 8px;
+}
+
+.mandate-filter-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+/* Drawn as the tags of the building toolbar are: every button keeps room for the line underneath,
+   so choosing one does not move the icons. */
+.mandate-filter-button {
+    display: flex;
+    align-items: center;
+    padding: 0 0 2px 0;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: lightgray;
+    cursor: pointer;
+}
+
+.mandate-filter-button.selected {
+    color: white;
+    border-bottom-color: white;
+}
+
+.mandate-filter-button svg {
+    width: 16px;
+    height: 16px;
 }
 
 .mandate-header .list-title {
