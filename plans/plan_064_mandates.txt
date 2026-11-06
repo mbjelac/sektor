@@ -110,6 +110,9 @@ Player score affects:
         - same style as construction tag button indicator in building toolbar
     - clicking no-owner button sets filtering to show just no-owner mandates
     - clicking current player button sets filtering to show just mandates owned by current player
+- panel title depends on filter type
+    - no-owner mandates has title: "Available mandates"
+    - current player mandates has title: "My mandates"
 
 #6 Player can complete a mandate
 
@@ -120,5 +123,3 @@ Player score affects:
 #9 Mandates are visible in map
 - display player's current unfulfilled mandates as map messages
 - message text: "Mandate #<mandate number>:" followed by abbreviated mandate criteria in single line separated by pipe (|)
-
-#10 Player can see what they have completed in the list
