@@ -84,8 +84,8 @@ Player score affects:
 - [done] popup has mandate description
     - between title & buttons
     - full description of mandate, one description line per criteria:
-        - minimum export: Export at least <amount> of <resource icon> <resource name>
-        - maximum import: Import at most <amount> of <resource icon> <resource name>
+        - minimum export: Export at least <amount> <resource icon> <resource name>
+        - maximum import: Import at most <amount> <resource icon> <resource name>
         - other criteria descriptions will be specified later
     - list items left-aligned
 - [done] popup takes up 30% of screen height
