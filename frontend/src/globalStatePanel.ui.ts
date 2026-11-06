@@ -21,12 +21,6 @@ export function updateGlobalStatePanel(globalImportsAndExports: ImportsAndExport
   fillGlobalStateList(document.getElementById("global-state-panel")!, globalImportsAndExports, "Imports/Exports");
 }
 
-// A list called up to answer a question is put in the order which answers it, as if the player had
-// asked for that column themselves.
-export function sortGlobalStateList(columnSortOrder: ResourceSortOrder) {
-  sortOrder = columnSortOrder;
-}
-
 // The header and every resource under it, put into whoever is showing the list: the list of the page
 // itself, or the dialog which calls the same list up over a sektor's map. Each names the list as its
 // own page has room to: beside the sektors it stands among lists which are all of the planet, and

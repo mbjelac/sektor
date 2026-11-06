@@ -13,10 +13,11 @@ import { updateSektorStatePanel } from "./sektorStatePanel.ui";
 import { onResourceHover, ResourcePointing } from "../resourceHover.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
-import { updateMessages } from "../messages.ui";
+import { showMandateMessages, updateMessages } from "../messages.ui";
 import { playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
 import { recalculateMandates } from "../mandates/recalculateMandates";
+import { getMandates } from "../mandates/mandates.api";
 import { getGivenSektorName, getSektorLocation, getSektorOwner, getTakenSektorNames, removeSektorOwner, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
@@ -364,6 +365,12 @@ function saveState() {
   });
   // A sektor changed is a change to what its owner's sektors do between them.
   recalculateMandates(getSektorOwnerName());
+  showPlayerMandateMessages();
+}
+
+// The mandates the player looking at the map still has to complete, whoever's sektor it is.
+function showPlayerMandateMessages() {
+  showMandateMessages(getMandates().filter(mandate => mandate.owner === getUsername() && !mandate.completed));
 }
 
 // Which buildings a toolbar offers depends on how far the player building on this sektor has come.
@@ -1519,6 +1526,7 @@ updateMessages(
   openedSektorState.disabledBuildings.length,
   openedSektorState.wastedExportAmount,
 );
+showPlayerMandateMessages();
 if (isTestMode) {
   (window as any).updateSektorStatePanel = updateSektorStatePanel;
   (window as any).showBuildingPanel = showBuildingPanel;

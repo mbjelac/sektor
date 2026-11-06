@@ -133,17 +133,17 @@ Player score affects:
             - green if mandate complete
             - red if mandate not complete
 
-#7 Mandates are visible in map
-- display player's current un-completed mandates as map messages
-- message text: "M-<mandate number>" followed by abbreviated mandate criteria in single line separated by pipe (|)
-- if criteria contains resources (abbreviated as resource icon & amount), highlight resources as in all other messages
+#7 [done] Mandates are visible in map
+- [done] display player's current un-completed mandates as map messages
+- [done] message text: "M-<mandate number>" followed by abbreviated mandate criteria in single line separated by pipe (|)
+- [done] if criteria contains resources (abbreviated as resource icon & amount), highlight resources as in all other messages
     - mouse over
         - adds white background
         - marks buildings consuming or producing that resource
             - set green/red frame around building
             - add label on building with resource icon & amount (with minus sign if resource is consumed)
                 - appended by construction icon if resource is consumed in building construction
-- remove message "This planet needs..."
+- [done] remove message "This planet needs..."
     - primary motivation for players are mandates now
 
 #8 Player can see which criteria are completed & which are not
@@ -154,6 +154,7 @@ Player score affects:
     - popup similar to claim-mandate popup
         - title "Mandate <number>"
         - single button in bottom right: "Close"
+            - gray
             - hides popup
         - criteria list same, but each criteria has red or green circle in front
             - same as in mandate list

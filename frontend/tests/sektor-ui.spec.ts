@@ -1226,6 +1226,83 @@ test("works out again whether the player's mandates are completed when the playe
     ]);
 });
 
+// The player's mandates not completed yet are told of on the map, one message to each. A mandate
+// already completed, or another player's, is not.
+test("tells of every mandate of the player not completed yet", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: "Tester", completed: false, criteria: [] },
+    { number: 2, owner: "Tester", completed: true, criteria: [] },
+    { number: 3, owner: "Ada", completed: false, criteria: [] },
+    { number: 4, owner: "Tester", completed: false, criteria: [] },
+  ])));
+
+  await page.goto("/sektor.html?test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  expect(await page.locator('[id^="mandate-message-"]').evaluateAll(messages => messages.map(message => message.id).sort()))
+    .toEqual(["mandate-message-1", "mandate-message-4"]);
+});
+
+// A mandate is told of on a single line: its number, then every criterion in short, set apart by bars.
+test("tells of a mandate by its number followed by what it asks for in short", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    {
+      number: 7,
+      owner: "Tester",
+      completed: false,
+      criteria: [
+        { type: "minimumExport", resourceName: "Wood", amount: 12 },
+        { type: "maximumImport", resourceName: "Water", amount: 4 },
+      ],
+    },
+  ])));
+
+  await page.goto("/sektor.html?test=true");
+  await page.locator("#mandate-message-7").waitFor();
+
+  await expectScreenshot(page, "mandate-message", "#mandate-message-7");
+});
+
+// A resource a mandate asks for is pointed at as any other named in a message: it is lit up, and
+// the buildings moving it are marked.
+test("highlights a resource of a mandate message and the buildings moving it when pointed at", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
+    localStorage.setItem("mandates", JSON.stringify([
+      { number: 7, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+    ]));
+  });
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
+  await placeBuilding(page, "TestProcessor");
+  await deselectEverything(page);
+
+  await page.locator("#mandate-message-7 .message-resource").hover();
+  await page.waitForTimeout(200);
+
+  await expectMapScreenshot(page, "mandate-message-resource-hover", MIDDLE_OF_MAP);
+});
+
+// Completing a mandate leaves nothing more to tell of it.
+test("stops telling of a mandate once the player completes it", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
+    localStorage.setItem("mandates", JSON.stringify([
+      { number: 1, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 3 }] },
+    ]));
+  });
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  const toldBeforeBuilding = await page.locator("#mandate-message-1").count();
+
+  await placeHub(page);
+  await placeBuilding(page, "TestProcessor");
+
+  expect({ toldBeforeBuilding, toldAfterBuilding: await page.locator("#mandate-message-1").count() })
+    .toEqual({ toldBeforeBuilding: 1, toldAfterBuilding: 0 });
+});
+
 // A sektor of one factory, which turns Water and Energy into as much Food as the ground it stands
 // on is worth.
 async function storeSektorSendingOutFood(page: Page, sektorId: string) {
@@ -1382,6 +1459,14 @@ async function storeSektorMovingManyResources(page: Page, sektorId: string) {
   }, sektorId);
 }
 
+// A mandate of the player asking for more Stone than any test sektor sends out, so that it is told of
+// on the map from the moment it opens, whatever is built.
+async function storeMandateNeverCompleted(page: Page) {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Stone", amount: 50 }] },
+  ])));
+}
+
 // What every resource row of the planet's list says while it stands over the map.
 function getGlobalDialogRows(page: Page) {
   return page.locator("#global-state-dialog .global-state-item").evaluateAll(items =>
@@ -1445,71 +1530,8 @@ function getGlobalDialogResourceNames(page: Page) {
     .evaluateAll(cells => cells.map(cell => cell.textContent));
 }
 
-// Whatever the planet is shortest of is what a player can do most good by sending out, so they are
-// told it as the map opens, before they have built anything at all.
-test("tells the player what the planet is shortest of as the map opens", async ({ page }) => {
-  await storeSektorMovingManyResources(page, "Beta");
-
-  await page.goto("/sektor.html?id=Alpha&test=true");
-
-  await expect(page.locator("#most-imported-message")).toHaveText("ℹ️ This planet needs: Ore 🪨, Water 💧, Food 🥕");
-});
-
-test("shows what the planet is shortest of over the map", async ({ page }) => {
-  await storeSektorMovingManyResources(page, "Beta");
-  await page.goto("/sektor.html?id=Alpha&test=true");
-
-  await page.locator("#most-imported-message").waitFor();
-
-  await expectScreenshot(page, "most-imported-message", "#messages");
-});
-
-// The planet's list was last put in the order of names, but the eye asks what the planet needs, so
-// the list comes up with what it brings in most at the top.
-test("shows the planet's list in the order of imports when the eye next to what the planet needs is clicked", async ({ page }) => {
-  await storeSektorMovingManyResources(page, "Beta");
-  await page.goto("/sektor.html?id=Alpha&test=true");
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await placeHub(page);
-  await page.locator("#global-state-button").click();
-  await page.locator('#global-state-dialog .global-state-sort[data-sort-order="resource"]').click();
-  await page.locator("#global-state-close-button").click();
-
-  await page.locator("#show-planet-imports-button").click();
-
-  expect(await getGlobalDialogSortColors(page)).toEqual({
-    resource: "rgb(153, 153, 153)",
-    imported: "rgb(255, 255, 255)",
-    exported: "rgb(153, 153, 153)",
-  });
-});
-
-// A building put up changes what the planet is short of, so the advice on the screen is written
-// over rather than stood beside: the player is never told two of the same thing at once.
-test("writes over what the player is told when what the planet is shortest of changes", async ({ page }) => {
-  await storeSektorMovingManyResources(page, "Beta");
-  await page.goto("/sektor.html?id=Alpha&test=true");
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await placeHub(page);
-  await placeBuilding(page, "TestProcessor");
-
-  expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
-    .toEqual([
-      "⚠️ Avoid importing scarse resources Food 🥕",
-      "ℹ️ This planet needs: Food 🥕, Ore 🪨, Water 💧",
-    ]);
-});
-
-// A planet short of nothing has nothing to advise, so nothing is said.
-test("tells the player nothing while the planet is short of nothing", async ({ page }) => {
-  await page.goto("/sektor.html?id=Alpha&test=true");
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-
-  await expect(page.locator("#most-imported-message")).toHaveCount(0);
-});
-
 // Bringing in what the planet is short of takes it from everybody else, so a sektor doing it is
-// told which of its own imports those are, under what the planet is asking for of anybody.
+// told which of its own imports those are.
 test("tells the player which of the sektor's imports the planet is short of", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
   await page.goto("/sektor.html?id=Alpha&test=true");
@@ -1519,10 +1541,7 @@ test("tells the player which of the sektor's imports the planet is short of", as
   await placeBuilding(page, "TestHouse");
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.textContent)))
-    .toEqual([
-      "⚠️ Avoid importing scarse resources Food 🥕, Water 💧",
-      "ℹ️ This planet needs: Food 🥕, Water 💧, Ore 🪨",
-    ]);
+    .toEqual(["⚠️ Avoid importing scarse resources Food 🥕, Water 💧"]);
 });
 
 // A sektor bringing in nothing the planet is short of is doing it no harm, so it is told nothing.
@@ -1538,15 +1557,16 @@ test("tells the player nothing about its imports while the planet is short of no
 // say goes to the top of the stack, so that the newest is always the one read first.
 test("puts the message it has just changed at the top of the stack", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await page.locator("#most-imported-message").waitFor();
+  await page.locator("#mandate-message-1").waitFor();
 
   await placeHub(page);
   await placeBuilding(page, "TestHouse");
 
   expect(await page.locator(".message").evaluateAll(messages => messages.map(message => message.id)))
-    .toEqual(["most-imported-scarce-message", "most-imported-message"]);
+    .toEqual(["most-imported-scarce-message", "mandate-message-1"]);
 });
 
 // A player looking at the map rather than at the messages still catches that the advice changed,
@@ -1566,7 +1586,6 @@ test("flashes a message with something new to say", async ({ page }) => {
     seconds: getComputedStyle(message).animationDuration,
     times: getComputedStyle(message).animationIterationCount,
   })))).toEqual([
-    { flashing: true, animation: "message-flash", seconds: "1s", times: "2" },
     { flashing: true, animation: "message-flash", seconds: "1s", times: "2" },
   ]);
 });
@@ -1768,6 +1787,7 @@ test("complains of nothing in a sektor with no habitat", async ({ page }) => {
 // the player is doing against the planet is warned of.
 test("tells what is worth knowing apart from what the player is warned of", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
@@ -1783,12 +1803,13 @@ test("tells what is worth knowing apart from what the player is warned of", asyn
   })))).toEqual([
     { id: "habitat-shortage-message-Care", kind: "message-information", saidFirst: "ℹ️" },
     { id: "most-imported-scarce-message", kind: "message-warning", saidFirst: "⚠️" },
-    { id: "most-imported-message", kind: "message-information", saidFirst: "ℹ️" },
+    { id: "mandate-message-1", kind: "message-information", saidFirst: "ℹ️" },
   ]);
 });
 
 test("shows what the player is told and what they are warned of", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
@@ -1814,9 +1835,10 @@ async function placeBuildingAtOffset(page: Page, buildingName: string, offsetFro
 // them away; a single message carries none.
 test("puts a collapse button on the top-most of several messages", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await page.locator("#most-imported-message").waitFor();
+  await page.locator("#mandate-message-1").waitFor();
   const collapseButtonsBeforeBuilding = await getMessageIdsWithCollapseButton(page);
 
   await placeHub(page);
@@ -1833,6 +1855,7 @@ test("puts a collapse button on the top-most of several messages", async ({ page
 
 test("stacks what the player is told one message beneath the other, the top-most carrying the collapse button", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
@@ -1845,6 +1868,7 @@ test("stacks what the player is told one message beneath the other, the top-most
 // A player who wants the map rather than the advice puts it away, all but the newest.
 test("hides all but the top-most message when the collapse button is clicked", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeHub(page);
@@ -1857,13 +1881,14 @@ test("hides all but the top-most message when the collapse button is clicked", a
     shown: getComputedStyle(message).display !== "none",
   })))).toEqual([
     { id: "most-imported-scarce-message", shown: true },
-    { id: "most-imported-message", shown: false },
+    { id: "mandate-message-1", shown: false },
   ]);
 });
 
 // With the messages put away there is nothing left for the collapse button to put away.
 test("hides the collapse button once the messages are collapsed", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeHub(page);
@@ -1878,6 +1903,7 @@ test("hides the collapse button once the messages are collapsed", async ({ page 
 // standing, and it flashes like any other so that the player catches that it changed.
 test("shows and flashes a message which changes while the messages are collapsed", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeHub(page);
@@ -1893,12 +1919,13 @@ test("shows and flashes a message which changes while the messages are collapsed
   })))).toEqual([
     { id: "habitat-shortage-message-Care", shown: true, flashing: true },
     { id: "most-imported-scarce-message", shown: false, flashing: true },
-    { id: "most-imported-message", shown: false, flashing: true },
+    { id: "mandate-message-1", shown: false, flashing: true },
   ]);
 });
 
 test("shows only the top-most message once the messages are collapsed", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeHub(page);
@@ -1918,6 +1945,7 @@ function getMessageIdsWithCollapseButton(page: Page) {
 // Messages put away can be brought back from the one left standing.
 test("puts an expand button on the message left standing once the messages are collapsed", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeHub(page);
@@ -1933,6 +1961,7 @@ test("puts an expand button on the message left standing once the messages are c
 
 test("shows the expand button on the message left standing", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeHub(page);
@@ -1947,6 +1976,7 @@ test("shows the expand button on the message left standing", async ({ page }) =>
 // again.
 test("shows all messages again when the expand button is clicked", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeHub(page);
@@ -1964,7 +1994,7 @@ test("shows all messages again when the expand button is clicked", async ({ page
   }).toEqual({
     shownMessages: [
       { id: "most-imported-scarce-message", shown: true },
-      { id: "most-imported-message", shown: true },
+      { id: "mandate-message-1", shown: true },
     ],
     toggleButtons: {
       collapse: ["most-imported-scarce-message"],
@@ -1976,9 +2006,10 @@ test("shows all messages again when the expand button is clicked", async ({ page
 // A single message has nothing behind it to bring back.
 test("puts no expand button on a single message", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
 
-  await page.locator("#most-imported-message").waitFor();
+  await page.locator("#mandate-message-1").waitFor();
 
   await expect(page.locator("#messages-expand-button")).toHaveCount(0);
 });
@@ -2003,6 +2034,7 @@ async function getShownToggleButtons(page: Page) {
 // The player is told how many messages are put away, all of them but the one left standing.
 test("tells on the expand button how many messages are collapsed", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
+  await storeMandateNeverCompleted(page);
   await page.goto("/sektor.html?id=Alpha&test=true");
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await placeHub(page);

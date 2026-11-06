@@ -1,17 +1,13 @@
-import {
-  ImportsAndExports,
-  mostImportedResourceNames,
-  mostImportedScarceResourceNames,
-} from "./globalImportsAndExports";
+import { ImportsAndExports, mostImportedScarceResourceNames } from "./globalImportsAndExports";
 import { resourceNameText } from "./throughputDisplay.ui";
 import { getNegativeScoringResources } from "./resources";
 import { pointAtResourceWhileHovered } from "./resourceHover.ui";
 import { chevronDownIcon, chevronUpIcon, eyeIcon } from "./icons";
-import { showGlobalStateDialog } from "./globalStateDialog.ui";
-import { sortGlobalStateList } from "./globalStatePanel.ui";
 import { selectProperty } from "./sektor/propertyToggler.ui";
 import { POLLUTION_PROPERTY } from "./sektor/pollution";
 import { selectBuildingTag } from "./sektor/buildingToolbar.ui";
+import { Mandate } from "./mandates/mandates.api";
+import { createCriterionAbbreviation } from "./mandates/criterionAbbreviation.ui";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -25,23 +21,23 @@ const MESSAGE_EMOJI: Record<MessageKind, string> = {
   warning: "\u26a0\ufe0f",
 };
 
-const MOST_IMPORTED_MESSAGE_ID = "most-imported-message";
 const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 // One complaint to a resource, each named after the resource it complains of.
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
 const POLLUTION_MESSAGE_ID = "pollution-message";
 const SHOW_POLLUTION_BUTTON_ID = "show-pollution-button";
-const SHOW_PLANET_IMPORTS_BUTTON_ID = "show-planet-imports-button";
 const DISABLED_BUILDINGS_MESSAGE_ID = "disabled-buildings-message";
 const IMPORT_CAPACITY_MESSAGE_ID = "import-capacity-message";
 const EXPORT_CAPACITY_MESSAGE_ID = "export-capacity-message";
 const TRANSPORT_BUILDING_TAG = "transport";
+// One message to a mandate, each named after the number of the mandate it tells of.
+const MANDATE_MESSAGE_ID = "mandate-message-";
 const COLLAPSE_BUTTON_ID = "messages-collapse-button";
 const EXPAND_BUTTON_ID = "messages-expand-button";
 
-// What a player could do here which would help the planet most, told to them as the map opens and
-// whenever anything changes what this sektor or the planet moves. What the planet wants of anybody
-// is said first, and what this sektor is doing against it under that.
+// What a player should know about this sektor, told to them as the map opens and whenever anything
+// changes what this sektor or the planet moves. What the planet wants of anybody is not told: what a
+// player works towards is their mandates.
 export function updateMessages(
   sektorImportsAndExports: ImportsAndExports,
   planetImportsAndExports: ImportsAndExports,
@@ -50,7 +46,6 @@ export function updateMessages(
   disabledBuildingCount: number,
   wastedExportAmount: number,
 ) {
-  showMostImportedMessage(planetImportsAndExports);
   showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
   showHabitatShortageMessages(habitatShortages);
   showPollutionMessage(anyBuildingAffectedByPollution);
@@ -58,6 +53,36 @@ export function updateMessages(
   showImportCapacityMessage(disabledBuildingCount);
   showExportCapacityMessage(wastedExportAmount);
   showToggleButtons();
+}
+
+// Every mandate the player has claimed and not completed yet is a thing still to be done, so each is
+// told of in a message of its own. A mandate completed is no longer told of.
+export function showMandateMessages(uncompletedMandates: Mandate[]) {
+  const uncompletedMandateIds = uncompletedMandates.map(mandate => `${MANDATE_MESSAGE_ID}${mandate.number}`);
+  for (const shownMandateMessage of document.querySelectorAll(`[id^="${MANDATE_MESSAGE_ID}"]`)) {
+    if (!uncompletedMandateIds.includes(shownMandateMessage.id)) shownMandateMessage.remove();
+  }
+
+  for (const mandate of uncompletedMandates) {
+    showMessage(`${MANDATE_MESSAGE_ID}${mandate.number}`, "information", mandateAdvice(mandate), []);
+  }
+
+  showToggleButtons();
+}
+
+// A mandate is told of on a single line: its number, and then what it asks for, every criterion in
+// short and set apart from the next by a bar. Every criterion is a resource to point at, as any other
+// named in a message is.
+function mandateAdvice(mandate: Mandate): Node[] {
+  return [
+    document.createTextNode(`M-${mandate.number} `),
+    ...mandate.criteria.flatMap((criterion, criterionIndex) => {
+      const criterionAbbreviation = createCriterionAbbreviation(criterion);
+      criterionAbbreviation.classList.add("message-resource");
+      pointAtResourceWhileHovered(criterionAbbreviation, criterion.resourceName);
+      return criterionIndex === 0 ? [criterionAbbreviation] : [document.createTextNode(" | "), criterionAbbreviation];
+    }),
+  ];
 }
 
 // The people of a sektor complain of each thing their habitats are going without, one complaint to
@@ -167,32 +192,6 @@ function createTransportHubsLink(): HTMLElement {
   return transportHubsLink;
 }
 
-// Whatever the planet is shortest of is what a player can do most good by sending out. A planet
-// short of nothing is a planet with nothing to ask for, and the message goes.
-function showMostImportedMessage(planetImportsAndExports: ImportsAndExports) {
-  showOrHideMessage(
-    MOST_IMPORTED_MESSAGE_ID,
-    "information",
-    "This planet needs:",
-    mostImportedResourceNames(planetImportsAndExports, getNegativeScoringResources(), MOST_TOLD_RESOURCE_COUNT),
-    [createShowPlanetImportsButton(planetImportsAndExports)],
-  );
-}
-
-// A player told what the planet needs is offered the whole of what it brings in, most first, so that
-// they see how the few named stand among all the rest.
-function createShowPlanetImportsButton(planetImportsAndExports: ImportsAndExports): HTMLElement {
-  const showPlanetImportsButton = document.createElement("button");
-  showPlanetImportsButton.id = SHOW_PLANET_IMPORTS_BUTTON_ID;
-  showPlanetImportsButton.className = "message-action-button";
-  showPlanetImportsButton.innerHTML = eyeIcon;
-  showPlanetImportsButton.addEventListener("click", () => {
-    sortGlobalStateList("imported");
-    showGlobalStateDialog(planetImportsAndExports);
-  });
-  return showPlanetImportsButton;
-}
-
 // Bringing in what the planet is short of takes it from everybody else, so a sektor doing it is
 // told which of its own imports those are.
 function showMostImportedScarceMessage(
@@ -219,14 +218,13 @@ function showOrHideMessage(
   kind: MessageKind,
   advice: string,
   resourceNames: string[],
-  actionButtons: HTMLElement[] = [],
 ) {
   if (resourceNames.length === 0) {
     hideMessage(messageId);
     return;
   }
 
-  showMessage(messageId, kind, advice, resourceNames, actionButtons);
+  showMessage(messageId, kind, advice, resourceNames);
 }
 
 // A message of a kind the player is already being told is written over rather than stood beside, so
