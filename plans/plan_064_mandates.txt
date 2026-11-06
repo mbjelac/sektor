@@ -65,12 +65,12 @@ Player score affects:
                 - other criteria abbreviations will be specified later
 
 #4 Mandates can be claimed
-- in mandate list, each unclaimed mandate can be claimed
+- [done] in mandate list, each unclaimed mandate can be claimed
     - list item has Claim button
         - button style same as in sektor map
-- on click, a popup appears
-- popup has title: "Mandate"
-- popup has buttons
+- [done] on click, a popup appears
+- [done] popup has title: "Mandate"
+- [done] popup has buttons
     - Claim
         - right-aligned
         - style same as other Claim buttons
@@ -81,19 +81,35 @@ Player score affects:
         - gray
         - hides popup
     - buttons are on bottom of popup
-- popup has mandate description
+- [done] popup has mandate description
     - between title & buttons
     - full description of mandate, one description line per criteria:
         - minimum export: Export at least <amount> of <resource icon> <resource name>
         - maximum import: Import at most <amount> of <resource icon> <resource name>
         - other criteria descriptions will be specified later
     - list items left-aligned
-- popup takes up 30% of screen height
+- [done] popup takes up 30% of screen height
     - if criteria list too big for popup height
         - scroll list
         - do not show scrollbar
 
 #5 Player sees own mandates
+- mandate list is filtered in one of two ways:
+    - shows only mandates which have no owner (can be claimed)
+    - shows only current player's mandates
+    - initial filtering is mandates which have no owner
+- panel has toggle buttons next to title
+    - right aligned
+    - no labels, just icons
+    - two buttons:
+        - no-owner (free to claim) mandates
+            - heroicon sparkles
+        - current player mandates
+            - heroicon user
+    - current filtering is indicated by a thick white line underneath the button
+        - same style as construction tag button indicator in building toolbar
+    - clicking no-owner button sets filtering to show just no-owner mandates
+    - clicking current player button sets filtering to show just mandates owned by current player
 
 #6 Player can complete a mandate
 
@@ -104,3 +120,5 @@ Player score affects:
 #9 Mandates are visible in map
 - display player's current unfulfilled mandates as map messages
 - message text: "Mandate #<mandate number>:" followed by abbreviated mandate criteria in single line separated by pipe (|)
+
+#10 Player can see what they have completed in the list
