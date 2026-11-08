@@ -24,21 +24,20 @@ async function storeUnclaimedMandate(page: Page) {
   ])));
 }
 
-test("offers every unclaimed mandate for claiming", async ({ page }) => {
+// A mandate is claimed only from its popup, so the row offers nothing to click but itself.
+test("offers no Claim button on a mandate of the list", async ({ page }) => {
   await storeUnclaimedMandate(page);
 
   await page.goto("/?test=true");
 
-  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items => items.map(item =>
-    item.querySelector(".claim-button")?.textContent ?? null
-  ))).toEqual(["Claim"]);
+  expect(await page.locator("#mandate-panel .mandate-item button").count()).toEqual(0);
 });
 
-test("shows the mandate in a popup when Claim is clicked", async ({ page }) => {
+test("shows a mandate free to claim in a popup when it is clicked", async ({ page }) => {
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
 
   expect(await page.locator("#mandate-dialog").evaluate(dialog => ({
     isVisible: dialog.checkVisibility(),
@@ -50,7 +49,7 @@ test("titles the popup of a mandate Mandate followed by its number", async ({ pa
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
 
   expect(await page.locator("#mandate-dialog .dialog-title").textContent()).toEqual("Mandate 3");
 });
@@ -59,7 +58,7 @@ test("makes the player the owner of a mandate claimed from its popup and closes 
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
   await page.locator("#mandate-claim-button").click();
 
   expect(await page.evaluate(() => ({
@@ -73,7 +72,7 @@ test("leaves the mandate unclaimed and closes the popup when Cancel is clicked",
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
   await page.locator("#mandate-cancel-button").click();
 
   expect(await page.evaluate(() => ({
@@ -86,7 +85,7 @@ test("shows Cancel on the left and Claim on the right along the bottom of the po
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
 
   await expect(page.locator("#mandate-dialog")).toHaveScreenshot("mandate-dialog.png", { maxDiffPixelRatio: 0 });
 });
@@ -95,7 +94,7 @@ test("tells what the mandate asks for in full in its popup, a line for every cri
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
 
   expect(await page.locator("#mandate-dialog .mandate-description-line").allTextContents()).toEqual([
     "Export at least 12 🪵 Wood",
@@ -107,7 +106,7 @@ test("makes the popup of a mandate 30% of the window high", async ({ page }) => 
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
 
   const heights = await page.locator("#mandate-dialog").evaluate(dialog => ({
     popup: dialog.getBoundingClientRect().height,
@@ -128,7 +127,7 @@ test("scrolls a long list of criteria in the popup without a bar", async ({ page
   ])));
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
 
   const buttonsBottomBeforeScrolling = (await page.locator("#mandate-claim-button").boundingBox())!.y;
   const scrolling = await page.locator("#mandate-dialog .mandate-description").evaluate(description => {
@@ -228,7 +227,7 @@ test("shows the buttons once the player has claimed a mandate", async ({ page })
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
   await page.locator("#mandate-claim-button").click();
 
   expect(await page.locator("#mandate-panel .mandate-filter-button").count()).toEqual(2);
@@ -335,12 +334,12 @@ test("closes the mandate opened in full when Close is clicked", async ({ page })
   expect(await page.locator("#mandate-details-dialog").count()).toEqual(0);
 });
 
-// Claiming is asked about in its own popup, so clicking Claim opens only that one.
-test("opens only the claiming popup when Claim is clicked on a mandate", async ({ page }) => {
+// A mandate nobody owns is opened in the popup claiming it, not the one of the player's own mandates.
+test("opens a mandate free to claim in the popup claiming it", async ({ page }) => {
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
-  await page.locator("#mandate-panel .claim-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
 
   expect({
     claiming: await page.locator("#mandate-dialog").count(),
@@ -381,7 +380,7 @@ test("offers no Abandon on a mandate free to claim opened in full", async ({ pag
 
   await page.locator("#mandate-panel .mandate-number").click();
 
-  expect(await page.locator("#mandate-details-dialog button").allTextContents()).toEqual(["Close"]);
+  expect(await page.locator("#mandate-dialog button").allTextContents()).toEqual(["Cancel", "Claim"]);
 });
 
 // A mandate given up is nobody's: it leaves the player's list, with nothing of it completed, and the

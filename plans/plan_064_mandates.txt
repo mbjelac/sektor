@@ -55,9 +55,8 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 
 #4 [done] Mandates can be claimed
 - [done] in mandate list, each unclaimed mandate can be claimed
-    - list item has Claim button
-        - button style same as in sektor map
-- [done] on click, a popup appears
+    - only from its mandate details popup: list items have no Claim button
+- [done] on click on an unclaimed mandate item (anywhere), its mandate details popup appears
 - [done] popup has title: "Mandate <mandate-number>"
 - [done] popup has buttons
     - Claim
@@ -140,7 +139,8 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 - [done] player can open mandate details in mandate list
     - mandate item has gray background on mouse over
     - click on mandate item (anywhere) opens mandate details popup
-    - popup similar to claim-mandate popup
+    - for a mandate nobody owns, the details popup is the one described in #4 (Cancel & Claim buttons, no circles)
+    - for the player's own mandate, the popup is similar to that one
         - title "Mandate <number>"
         - single button in bottom right: "Close"
             - gray
@@ -213,4 +213,18 @@ In such way a player's score is solely dependant on mandates. No mandate is link
             - "at least" for minimum import or export
             - "at most" for maximum import or export
 
-#11 Completed mandates increase player's score
+#11 Mandates are visually recognizable
+- mandate list has icon in front of title
+    - heroicon clipboard-document-check
+- mandate message has that same icon & mandate number instead of M-<number>
+
+#12 Mandate list reachable in sektor map
+- in front of user name in right-top corner is the mandate icon from #11
+- when clicked, mandate list panel appears immediately below so the icon is above the panel's top-right corner
+- when clicked again, panel hides
+- panel has same functionality
+    - current player & no-owner mandates
+    - opening mandate details
+    - claiming or abandoning mandates
+
+#13 Completed mandates increase player's score

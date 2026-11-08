@@ -3,7 +3,6 @@ import { createListTitle } from "../listTitle.ui";
 import { sparklesIcon, userIcon } from "../icons";
 import { createCriterionAbbreviation } from "./criterionAbbreviation.ui";
 import { getUsername } from "../login/login.api";
-import { createClaimButton } from "../claimButton.ui";
 import { showMandateDetailsDialog, showMandateDialog } from "./mandateDialog.ui";
 import { createCompletionDot } from "./completionDot.ui";
 import { filterMandates, MandateFilter } from "./mandateFilter";
@@ -66,14 +65,13 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
   return filterButton;
 }
 
-// A mandate is its number followed by what it asks for, every criterion in short, and at the end of
-// the row the button for claiming it while nobody owns it, or, on the player's own, whether it is
-// completed. Clicking anywhere else on it opens it up in full.
+// A mandate is its number followed by what it asks for, every criterion in short, and on the player's
+// own, whether it is completed at the end of the row. Clicking anywhere on it opens it up in full,
+// which is where a mandate nobody owns is claimed and the player's own is given up.
 function createMandateItem(mandate: Mandate): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
-  // A mandate given up is the player's no longer, so it leaves their list.
-  item.addEventListener("click", () => showMandateDetailsDialog(mandate, renderMandateList));
+  item.addEventListener("click", () => openMandate(mandate));
 
   const mandateNumber = document.createElement("span");
   mandateNumber.className = "mandate-number";
@@ -85,23 +83,24 @@ function createMandateItem(mandate: Mandate): HTMLElement {
     item.appendChild(createCriterionAbbreviation(criterion));
   }
 
-  if (mandate.owner === null) item.appendChild(createMandateClaimButton(mandate));
-  else item.appendChild(createCompletionDot(mandate.completed));
+  if (mandate.owner !== null) item.appendChild(createCompletionDot(mandate.completed));
 
   return item;
 }
 
-function createMandateClaimButton(mandate: Mandate): HTMLElement {
-  const claimButton = createClaimButton(() => showMandateDialog({
+// A claimed mandate is the player's, and is no longer waiting in the list; a mandate given up is the
+// player's no longer, so it leaves their list.
+function openMandate(mandate: Mandate) {
+  if (mandate.owner !== null) {
+    showMandateDetailsDialog(mandate, renderMandateList);
+    return;
+  }
+
+  showMandateDialog({
     mandate,
-    // A claimed mandate is the player's, and is no longer waiting in the list.
     onClaimed: () => {
       setMandateOwner(mandate.number, getUsername()!);
       renderMandateList();
     },
-  }));
-  claimButton.classList.add("mandate-claim-button");
-  // Claiming is asked about in a popup of its own, not the one the rest of the row opens.
-  claimButton.addEventListener("click", event => event.stopPropagation());
-  return claimButton;
+  });
 }

@@ -1475,10 +1475,6 @@ body > main {
     margin-top: auto;
 }
 
-.mandate-claim-button {
-    margin-left: auto;
-}
-
 .mandate-item:hover {
     background: #444;
     cursor: pointer;
