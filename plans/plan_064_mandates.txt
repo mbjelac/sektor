@@ -231,10 +231,27 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - current player & no-owner mandates
     - opening mandate details
     - claiming or abandoning mandates
+- player can see number of mandates
+    - next to mandate icon in top-right of map screen there are values
+        - number of incomplete sektors
+            - white bold
+            - dark red background
+            - hidden if 0
+        - number of complete sektors
+            - white
+            - dark green background
+            - hidden if 0
+        - number of claimed mandates
+            - white
+            - no background
+            - separated from first two numbers by " / "
+                - if any of first two numbers > 0
+            - entire icon, panel & all mandate numbers hidden if 0
 
 #13 Completed mandates increase player's score
 - player score is visible always in front of player name in top right
     - bold
+    - prepended by star icon
 - each mandate has points
 - in mandate list, points are displayed in bottom right of mandate list item panel
     - small
