@@ -22,10 +22,14 @@ export function completedMandate(mandate: Mandate, playerImportsAndExports: Impo
 }
 
 function isCriterionFulfilled(criterion: MandateCriterion, playerImportsAndExports: ImportsAndExports): boolean {
-  if (criterion.type === "minimumExport") {
-    return summedValue(playerImportsAndExports.exports, criterion.resourceName) >= criterion.amount;
+  const exported = summedValue(playerImportsAndExports.exports, criterion.resourceName);
+  const imported = summedValue(playerImportsAndExports.imports, criterion.resourceName);
+  switch (criterion.type) {
+    case "minimumExport": return exported >= criterion.amount;
+    case "maximumExport": return exported <= criterion.amount;
+    case "minimumImport": return imported >= criterion.amount;
+    case "maximumImport": return imported <= criterion.amount;
   }
-  return summedValue(playerImportsAndExports.imports, criterion.resourceName) <= criterion.amount;
 }
 
 function summedThroughputs(throughputs: { name: string; value: number }[]): { name: string; value: number }[] {

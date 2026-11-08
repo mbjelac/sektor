@@ -1,6 +1,6 @@
 import resourcesMd from "./assets/resources.md?raw";
 import testResourcesMd from "./assets/resources.test.md?raw";
-import { exportableResourceNames, localResourceNames, negativeScoringResourceNames, parseResources } from "./parseResources";
+import { localResourceNames, negativeScoringResourceNames, parseResources, tradableResourceNames } from "./parseResources";
 import { isTestMode } from "./testMode";
 
 const source = isTestMode ? testResourcesMd : resourcesMd;
@@ -23,6 +23,10 @@ export function getLocalResources(): string[] {
   return localResourceNames(resourceDefinitions);
 }
 
-export function getExportableResources(): string[] {
-  return exportableResourceNames(resourceDefinitions);
+export function getPositiveTradableResources(): string[] {
+  return tradableResourceNames(resourceDefinitions, false);
+}
+
+export function getNegativeTradableResources(): string[] {
+  return tradableResourceNames(resourceDefinitions, true);
 }

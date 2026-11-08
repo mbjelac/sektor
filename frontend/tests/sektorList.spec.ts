@@ -639,18 +639,23 @@ test("makes mandates numbered one after another, owned by nobody", async ({ page
     .toEqual([{ number: 1, owner: null }, { number: 2, owner: null }]);
 });
 
-// Exports of a single resource, one which can be exported at all, of somewhere between 5 and 30.
-test("makes a mandate asking for at least so much of a resource to be exported", async ({ page }) => {
+// Whichever way a mandate is made, it asks for amounts between 5 and 50 of resources which can be
+// imported and exported.
+test("makes mandates asking for amounts of tradable resources", async ({ page }) => {
   await page.goto("/?test=true");
 
-  await createMandateNow(page);
+  for (let mandateIndex = 0; mandateIndex < 10; mandateIndex++) await createMandateNow(page);
 
-  const [{ criteria }] = await getStoredMandates(page);
-  expect(criteria.map((criterion: { type: string; resourceName: string; amount: number }) => ({
-    type: criterion.type,
-    isExportable: !["Care", "Hapiness", "ImportExport"].includes(criterion.resourceName),
-    isWholeNumberInRange: Number.isInteger(criterion.amount) && criterion.amount >= 5 && criterion.amount <= 30,
-  }))).toEqual([{ type: "minimumExport", isExportable: true, isWholeNumberInRange: true }]);
+  const mandates: { number: number; criteria: { type: string; resourceName: string; amount: number }[] }[] =
+    await getStoredMandates(page);
+  expect({
+    mandatesAskingNothing: mandates.filter(mandate => mandate.criteria.length === 0).map(mandate => mandate.number),
+    unfitCriteria: mandates.flatMap(mandate => mandate.criteria).filter(criterion =>
+      !["minimumExport", "maximumExport", "minimumImport", "maximumImport"].includes(criterion.type)
+      || ["Care", "Hapiness", "ImportExport"].includes(criterion.resourceName)
+      || !Number.isInteger(criterion.amount) || criterion.amount < 5 || criterion.amount > 50
+    ),
+  }).toEqual({ mandatesAskingNothing: [], unfitCriteria: [] });
 });
 
 test("stops making mandates while ten unclaimed ones are waiting", async ({ page }) => {
@@ -726,8 +731,8 @@ test("names the direction and the resource of a mandate's criteria on hovering t
     resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.title,
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
   })))).toEqual([
-    { direction: "Export", resource: "Wood", amount: "12" },
-    { direction: "Import", resource: "Water", amount: "7" },
+    { direction: "Export", resource: "Wood", amount: "≥12" },
+    { direction: "Import", resource: "Water", amount: "≤7" },
   ]);
 });
 

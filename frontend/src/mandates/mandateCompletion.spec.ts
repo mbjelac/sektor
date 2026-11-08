@@ -14,6 +14,14 @@ function importingAtMost(resourceName: string, amount: number): MandateCriterion
   return { type: "maximumImport", resourceName, amount, completed: false };
 }
 
+function importingAtLeast(resourceName: string, amount: number): MandateCriterion {
+  return { type: "minimumImport", resourceName, amount, completed: false };
+}
+
+function exportingAtMost(resourceName: string, amount: number): MandateCriterion {
+  return { type: "maximumExport", resourceName, amount, completed: false };
+}
+
 describe("summedImportsAndExports", () => {
   // What one sektor brings in of a resource is not set against what another sends out of it.
   it("adds up what every sektor brings in and sends out, each on its own", () => {
@@ -42,6 +50,18 @@ describe("completedMandate", () => {
   it("completes a maximum import while all the player's sektors together import no more than that", () => {
     expect([6, 7, 8].map(amount =>
       completedMandate(mandateAsking(importingAtMost("Apples", amount)), playerImportsAndExports).completed
+    )).toEqual([false, true, true]);
+  });
+
+  it("completes a minimum import once all the player's sektors together import that much", () => {
+    expect([6, 7, 8].map(amount =>
+      completedMandate(mandateAsking(importingAtLeast("Apples", amount)), playerImportsAndExports).completed
+    )).toEqual([true, true, false]);
+  });
+
+  it("completes a maximum export while all the player's sektors together export no more than that", () => {
+    expect([9, 10, 11].map(amount =>
+      completedMandate(mandateAsking(exportingAtMost("Bricks", amount)), playerImportsAndExports).completed
     )).toEqual([false, true, true]);
   });
 

@@ -1,6 +1,8 @@
 import { addMandate, getMandates } from "./mandates.api";
-import { createMandate } from "./createMandate";
-import { getExportableResources } from "../resources";
+import { createMandate, MandateMaterials } from "./createMandate";
+import { getNegativeTradableResources, getPositiveTradableResources } from "../resources";
+import { everyBuildingDefinition } from "../sektor/buildings/buildings";
+import { resourceProductions } from "./resourceProductions";
 
 const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Mandates nobody has taken up pile up if they are made faster than they are claimed, so no more are
@@ -27,7 +29,7 @@ export function stopCreatingMandates() {
 export function createMandateIfNeeded(): boolean {
   if (countUnclaimedMandates() >= MAXIMUM_UNCLAIMED_MANDATES) return false;
 
-  addMandate(createMandate(nextMandateNumber(), getExportableResources()));
+  addMandate(createMandate(nextMandateNumber(), mandateMaterials()));
   return true;
 }
 
@@ -40,4 +42,14 @@ function countUnclaimedMandates(): number {
 function nextMandateNumber(): number {
   const mandateNumbers = getMandates().map(mandate => mandate.number);
   return mandateNumbers.length === 0 ? 1 : Math.max(...mandateNumbers) + 1;
+}
+
+// The resources and buildings stay the same while the page is open, but are only gathered once a
+// mandate is to be made.
+function mandateMaterials(): MandateMaterials {
+  return {
+    positiveResourceNames: getPositiveTradableResources(),
+    negativeResourceNames: getNegativeTradableResources(),
+    productions: resourceProductions(everyBuildingDefinition),
+  };
 }

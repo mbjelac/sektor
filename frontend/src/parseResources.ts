@@ -34,10 +34,11 @@ export function negativeScoringResourceNames(resourceDefinitions: ResourceDefini
     .map(resourceDefinition => resourceDefinition.name);
 }
 
-// A resource which is not local can be imported and exported.
-export function exportableResourceNames(resourceDefinitions: ResourceDefinition[]): string[] {
+// A resource which is not local can be imported and exported. One which does harm is negative, and
+// every other one positive.
+export function tradableResourceNames(resourceDefinitions: ResourceDefinition[], negative: boolean): string[] {
   return resourceDefinitions
-    .filter(resourceDefinition => !resourceDefinition.local)
+    .filter(resourceDefinition => !resourceDefinition.local && resourceDefinition.negativeScoring === negative)
     .map(resourceDefinition => resourceDefinition.name);
 }
 

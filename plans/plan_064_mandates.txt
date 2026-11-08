@@ -169,18 +169,22 @@ In such way a player's score is solely dependant on mandates. No mandate is link
         - mandate list is updated (player mandate list no longer displays mandate)
         - sektor map message is removed (if abandoned from sektor map)
 
-#10 Mandates with multiple export & import criteria are created
-- remove current algorithm of criteria creation
-- create mandate criteria using one of these strategies ("positive" resource means non-negative):
+#10 [done] Mandates with multiple export & import criteria are created
+- [done] remove current algorithm of criteria creation
+- [done] create mandate criteria using one of these strategies ("positive" resource means non-negative):
+    - strategy is chosen at random: 8/10 positive exports & imports, 1/10 negative imports, 1/10 negative exports
     - minimum positive exports & maximum positive imports
         - choose an export & an amount as a minimum export requirement
-        - choose several imports and amounts for minimum import requirements
+        - choose several imports and amounts for maximum import requirements
+            - 1 to 3 imports, how many chosen at random (never more than there are inputs to choose from)
+            - inputs with the largest amounts are restricted first
             - choose imports to restrict by following algorithm:
                 - find building definitions which output the chosen export
                 - choose imports from their inputs
         - choose amounts of exports & imports to be balanced
             - avoid chosing requiring very low exports & very high imports, and vice versa
                 - try to balance using the building function
+                - maximum import = minimum export × (input per unit of output in the building function) × random factor between 0.5 and 1.5, kept within the range of amount values
     - minimum negative imports
         - choose a negative resource
         - choose an amount
@@ -192,7 +196,7 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - amount values should be chosen randomly from a wide range
         - lowest value 5
         - highest value 50
-- as listed above, there are four types of import/export related criteria
+- [done] as listed above, there are four types of import/export related criteria
     - list
         - maximum import
         - maximum export

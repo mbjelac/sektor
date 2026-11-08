@@ -10,11 +10,11 @@ export interface Mandate {
   completed: boolean;
 }
 
-// What the player's sektors have to do, between them, for a mandate to be fulfilled: export at least
-// so much of a resource, or import at most so much of it. Whether they do is worked out anew along
-// with the mandate it belongs to.
+// What the player's sektors have to do, between them, for a mandate to be fulfilled: import or export
+// at least, or at most, so much of a resource. Whether they do is worked out anew along with the
+// mandate it belongs to.
 export interface MandateCriterion {
-  type: "minimumExport" | "maximumImport";
+  type: "minimumExport" | "maximumExport" | "minimumImport" | "maximumImport";
   resourceName: string;
   amount: number;
   completed: boolean;
