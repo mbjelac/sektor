@@ -224,20 +224,25 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 - [done] mandate number in mandate list preceded by same check-badge icon
 
 #12 Mandate list reachable in sektor map
-- in front of user name in right-top corner is the mandate icon from #11
-- when clicked, mandate list panel appears immediately below so the icon is above the panel's top-right corner
+- [done] in front of user name in right-top corner is the mandate icon from #11
+    - the mandate list's clipboard-document-check icon
+- [done] when clicked, mandate list panel appears immediately below so the icon is above the panel's top-right corner
 - when clicked again, panel hides
 - panel has same functionality
     - current player & no-owner mandates
     - opening mandate details
     - claiming or abandoning mandates
+- if player claims a mandate from map mandate list
+    - claimed mandate added as message
+- if player abandons a mandate from map mandate list
+    - abandoned mandate removed from messages
 - player can see number of mandates
     - next to mandate icon in top-right of map screen there are values
-        - number of incomplete sektors
+        - number of incomplete mandates
             - white bold
             - dark red background
             - hidden if 0
-        - number of complete sektors
+        - number of complete mandates
             - white
             - dark green background
             - hidden if 0
@@ -246,7 +251,8 @@ In such way a player's score is solely dependant on mandates. No mandate is link
             - no background
             - separated from first two numbers by " / "
                 - if any of first two numbers > 0
-            - entire icon, panel & all mandate numbers hidden if 0
+            - all mandate numbers hidden if 0
+                - the icon stays, so that available mandates can still be opened and claimed from the map
 
 #13 Completed mandates increase player's score
 - player score is visible always in front of player name in top right
