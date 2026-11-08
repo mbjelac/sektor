@@ -1500,19 +1500,6 @@ body > main {
     gap: 4px;
 }
 
-/* A completed criterion stands on a dark pastel green, in white to be read on it. */
-.mandate-criterion-completed {
-    background: #4e7d5b;
-    color: #fff;
-    border-radius: 3px;
-    padding: 0 3px;
-}
-
-/* Pointed at in a message, it is lit up white as any resource of a message is, and read as one. */
-.message-resource.mandate-criterion-completed:hover {
-    color: inherit;
-}
-
 .mandate-criterion-direction {
     display: inline-flex;
 }

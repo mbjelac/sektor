@@ -1310,9 +1310,9 @@ test("opens a mandate in full when the eye of its message is clicked", async ({ 
   });
 });
 
-// The Wood the processor sends out completes the first criterion, which is put on green, while the
+// The Wood the processor sends out completes the first criterion, which is then left out, while the
 // mandate as a whole is still told of, as no sektor sends out any Stone.
-test("puts a criterion of a mandate message on green once the player completes it", async ({ page }) => {
+test("leaves a criterion out of a mandate message once the player completes it", async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
     localStorage.setItem("mandates", JSON.stringify([
@@ -1333,7 +1333,9 @@ test("puts a criterion of a mandate message on green once the player completes i
   await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
-  await expectScreenshot(page, "mandate-message-criterion-completed", "#mandate-message-7");
+  expect(await page.locator("#mandate-message-7 .mandate-criterion-resource").evaluateAll(resources =>
+    resources.map(resource => (resource as HTMLElement).title)
+  )).toEqual(["Stone"]);
 });
 
 // Completing a mandate leaves nothing more to tell of it.
