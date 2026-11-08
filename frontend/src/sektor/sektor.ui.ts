@@ -161,6 +161,7 @@ function claimSektor() {
 function enterEditMode() {
   isViewMode = false;
   showToolbarToOwner();
+  showMessagesToOwner();
 }
 
 // Only the owner of a sektor builds on it, so nobody else is shown what could be built there.
@@ -170,6 +171,12 @@ function showToolbarToOwner() {
   const constructionPanel = document.getElementById("construction-panel")!;
   constructionPanel.hidden = !isSektorOwnedByCurrentPlayer();
   if (!constructionPanel.hidden) initToolbar(builderLevel, isViewMode);
+}
+
+// What the messages tell is advice to whoever builds on the sektor, so nobody else is shown them: not
+// the owner of another player's sektor, nor anybody looking at a sektor nobody has claimed yet.
+function showMessagesToOwner() {
+  document.getElementById("messages")!.hidden = !isSektorOwnedByCurrentPlayer();
 }
 
 function createAbandonButton(): HTMLElement {
@@ -1513,14 +1520,15 @@ new p5(sektorUi);
 showSektorName();
 showSektorOwner();
 showToolbarToOwner();
+showMessagesToOwner();
 initPropertyToggler();
 onBuildingSelected(selectBuildingProperty);
 onResourceHover(pointAtResource);
 if (!isTestMode) {
   loadSavedState();
 }
-// A player is told what would most help the planet from the moment the map is open, before they
-// have built anything at all: what the planet is short of is the doing of every sektor there is.
+// A player is told what is worth knowing about the sektor from the moment the map is open, before
+// they have built anything at all.
 const openedSektorState = sektor.getSektorState();
 updateMessages(
   openedSektorState,

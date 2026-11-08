@@ -65,3 +65,9 @@ In any point in time there is a thing to do in a sektor map which can mostly ben
             - if building is consumer use -
             - if building is producer use +
         - text white bold
+
+#8 [done] Messages are shown only to the sektor's owner
+- [done] map messages are not shown if the sektor is not owned by the current player
+    - sektor claimed by another player: no messages
+    - sektor claimed by nobody: no messages
+    - once the current player claims the sektor from the map, messages are shown

@@ -229,6 +229,46 @@ test("shows no building toolbar on a sektor claimed by nobody", async ({ page })
   await expect(page.locator("#construction-panel")).toBeHidden();
 });
 
+// A mandate of the current player not completed yet, which is told of on any sektor's map whose
+// messages are shown at all.
+async function storeMandateOfCurrentPlayer(page: import("@playwright/test").Page) {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 50 }] },
+  ])), CURRENT_PLAYER);
+}
+
+// Whether the messages are shown on the map of a sektor owned by whoever is given, with a message
+// there to be shown.
+async function areMessagesShownOnSektorOf(page: import("@playwright/test").Page, owner: string | null) {
+  await storeMandateOfCurrentPlayer(page);
+  await storeSektor(page, "Alpha", owner);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#mandate-message-1").waitFor({ state: "attached" });
+  return page.locator("#messages").isVisible();
+}
+
+// What the messages advise is for whoever builds on the sektor, so nobody else is shown them.
+test("shows the messages on a sektor of the current player", async ({ page }) => {
+  expect(await areMessagesShownOnSektorOf(page, CURRENT_PLAYER)).toEqual(true);
+});
+
+test("shows no messages on a sektor claimed by another player", async ({ page }) => {
+  expect(await areMessagesShownOnSektorOf(page, OTHER_PLAYER)).toEqual(false);
+});
+
+test("shows no messages on a sektor claimed by nobody", async ({ page }) => {
+  expect(await areMessagesShownOnSektorOf(page, null)).toEqual(false);
+});
+
+// A sektor claimed from the map is the player's to build on from then on, so its messages appear.
+test("shows the messages once the sektor is claimed from the map", async ({ page }) => {
+  await storeMandateOfCurrentPlayer(page);
+
+  await claimFromMap(page, "Gamma");
+
+  await expect(page.locator("#messages")).toBeVisible();
+});
+
 test("offers an unclaimed sektor for claiming", async ({ page }) => {
   await storeSektor(page, "Gamma", null);
 
