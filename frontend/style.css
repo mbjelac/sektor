@@ -1447,9 +1447,15 @@ body > main {
     text-align: left;
 }
 
-/* Close stands in the bottom right of the popup. */
-.mandate-details-buttons {
+/* Close stands in the bottom right of the popup, and Abandon, where there is one, in the bottom left. */
+.dialog-buttons.mandate-details-buttons {
+    justify-content: space-between;
     margin-top: auto;
+}
+
+/* Close keeps to the right when it is alone. */
+.mandate-details-buttons #mandate-close-button {
+    margin-left: auto;
 }
 
 /* The dot telling whether a criterion is completed stands in front of it. */
@@ -1921,6 +1927,14 @@ body > main {
     background: #3c4757;
     color: #8a8a8a;
     cursor: default;
+}
+
+.dialog-button-danger {
+    background: #c70000;
+}
+
+.dialog-button-danger:hover:enabled {
+    background: #e01010;
 }
 
 .dialog-button-plain {

@@ -59,7 +59,7 @@ export function updateMessages(
 // Every mandate the player has claimed and not completed yet is a thing still to be done, so each is
 // told of in a message of its own, which offers to open the mandate in full. A mandate completed is
 // no longer told of.
-export function showMandateMessages(uncompletedMandates: Mandate[]) {
+export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAbandoned: () => void) {
   const uncompletedMandateIds = uncompletedMandates.map(mandate => `${MANDATE_MESSAGE_ID}${mandate.number}`);
   for (const shownMandateMessage of document.querySelectorAll(`[id^="${MANDATE_MESSAGE_ID}"]`)) {
     if (!uncompletedMandateIds.includes(shownMandateMessage.id)) shownMandateMessage.remove();
@@ -67,7 +67,7 @@ export function showMandateMessages(uncompletedMandates: Mandate[]) {
 
   for (const mandate of uncompletedMandates) {
     showMessage(`${MANDATE_MESSAGE_ID}${mandate.number}`, "information", mandateAdvice(mandate), [], [
-      createShowMandateButton(mandate),
+      createShowMandateButton(mandate, onMandateAbandoned),
     ]);
   }
 
@@ -90,11 +90,11 @@ function mandateAdvice(mandate: Mandate): Node[] {
   ];
 }
 
-function createShowMandateButton(mandate: Mandate): HTMLElement {
+function createShowMandateButton(mandate: Mandate, onMandateAbandoned: () => void): HTMLElement {
   const showMandateButton = document.createElement("button");
   showMandateButton.className = "message-action-button show-mandate-button";
   showMandateButton.innerHTML = eyeIcon;
-  showMandateButton.addEventListener("click", () => showMandateDetailsDialog(mandate));
+  showMandateButton.addEventListener("click", () => showMandateDetailsDialog(mandate, onMandateAbandoned));
   return showMandateButton;
 }
 

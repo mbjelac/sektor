@@ -1338,6 +1338,23 @@ test("leaves a criterion out of a mandate message once the player completes it",
   )).toEqual(["Stone"]);
 });
 
+// A mandate given up from the map is no longer the player's, so it is no longer told of there.
+test("stops telling of a mandate given up from its message", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 7, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12, completed: false }] },
+  ])));
+  await page.goto("/sektor.html?test=true");
+
+  await page.locator("#mandate-message-7 .show-mandate-button").click();
+  await page.locator("#mandate-abandon-button").click();
+
+  expect(await page.evaluate(() => ({
+    owner: JSON.parse(localStorage.getItem("mandates")!)[0].owner,
+    isPopupShown: document.getElementById("mandate-details-dialog") !== null,
+    isMessageShown: document.getElementById("mandate-message-7") !== null,
+  }))).toEqual({ owner: null, isPopupShown: false, isMessageShown: false });
+});
+
 // Completing a mandate leaves nothing more to tell of it.
 test("stops telling of a mandate once the player completes it", async ({ page }) => {
   await page.evaluate(() => {

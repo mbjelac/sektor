@@ -1,3 +1,5 @@
+import { abandonedMandate } from "./abandonedMandate";
+
 // A set of criteria a player can claim, and which brings them points while every sektor they own
 // fulfils it. A mandate is made with nobody owning it, and is known by its number. Whether it is
 // completed is worked out anew whenever its owner changes one of their sektors.
@@ -37,6 +39,14 @@ export function addMandate(mandate: Mandate): void {
 
 export function setMandateOwner(mandateNumber: number, owner: string): void {
   saveMandates(getMandates().map(mandate => mandate.number === mandateNumber ? { ...mandate, owner } : mandate));
+}
+
+// A mandate given up is nobody's, so it waits to be claimed by anybody, the player who gave it up
+// included, and counts towards nobody's score.
+export function abandonMandate(mandateNumber: number): void {
+  replaceMandates(getMandates()
+    .filter(mandate => mandate.number === mandateNumber)
+    .map(abandonedMandate));
 }
 
 // Every mandate given is stored in place of the one of its number. The others are left as they were.

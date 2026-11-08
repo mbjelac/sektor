@@ -321,17 +321,8 @@ test("opens a mandate in full when it is clicked in the list", async ({ page }) 
       { text: "Export at least 12 🪵 Wood", completed: true },
       { text: "Import at most 7 💧 Water", completed: false },
     ],
-    buttons: ["Close"],
+    buttons: ["Abandon", "Close"],
   });
-});
-
-test("shows a mandate in full with a dot in front of every criterion and Close in the bottom right", async ({ page }) => {
-  await storeHalfCompletedMandate(page);
-  await openOwnMandates(page);
-
-  await page.locator("#mandate-panel .mandate-item").click();
-
-  await expect(page.locator("#mandate-details-dialog")).toHaveScreenshot("mandate-details-dialog.png", { maxDiffPixelRatio: 0 });
 });
 
 test("closes the mandate opened in full when Close is clicked", async ({ page }) => {
@@ -355,4 +346,82 @@ test("opens only the claiming popup when Claim is clicked on a mandate", async (
     claiming: await page.locator("#mandate-dialog").count(),
     details: await page.locator("#mandate-details-dialog").count(),
   }).toEqual({ claiming: 1, details: 0 });
+});
+
+// The half-completed mandate, and a second mandate of the player, so that the player still has a
+// mandate of their own after giving the first up.
+async function storeTwoOwnMandates(page: Page) {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    {
+      number: 5,
+      owner: currentPlayer,
+      completed: false,
+      criteria: [
+        { type: "minimumExport", resourceName: "Wood", amount: 12, completed: true },
+        { type: "maximumImport", resourceName: "Water", amount: 7, completed: false },
+      ],
+    },
+    { number: 6, owner: currentPlayer, completed: false, criteria: [{ type: "minimumExport", resourceName: "Ore", amount: 9, completed: false }] },
+  ])), CURRENT_PLAYER);
+}
+
+test("shows the player's own mandate in full, a dot in front of every criterion, Abandon in red in the bottom left and Close in the bottom right", async ({ page }) => {
+  await storeHalfCompletedMandate(page);
+  await openOwnMandates(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  await expect(page.locator("#mandate-details-dialog")).toHaveScreenshot("mandate-details-dialog-abandonable.png", { maxDiffPixelRatio: 0 });
+});
+
+// A mandate nobody owns is nobody's to give up.
+test("offers no Abandon on a mandate free to claim opened in full", async ({ page }) => {
+  await storeUnclaimedMandate(page);
+  await page.goto("/?test=true");
+
+  await page.locator("#mandate-panel .mandate-number").click();
+
+  expect(await page.locator("#mandate-details-dialog button").allTextContents()).toEqual(["Close"]);
+});
+
+// A mandate given up is nobody's: it leaves the player's list, with nothing of it completed, and the
+// popup goes.
+test("gives a mandate up when Abandon is clicked in it opened in full", async ({ page }) => {
+  await storeTwoOwnMandates(page);
+  await openOwnMandates(page);
+  await page.locator("#mandate-panel .mandate-item", { hasText: "5" }).click();
+
+  await page.locator("#mandate-abandon-button").click();
+
+  expect(await page.evaluate(() => ({
+    stored: JSON.parse(localStorage.getItem("mandates")!).map((mandate: {
+      number: number; owner: string | null; completed: boolean; criteria: { completed: boolean }[]
+    }) => ({
+      number: mandate.number,
+      owner: mandate.owner,
+      completed: mandate.completed,
+      criteriaCompleted: mandate.criteria.map(criterion => criterion.completed),
+    })),
+    isPopupShown: document.getElementById("mandate-details-dialog") !== null,
+    listed: [...document.querySelectorAll("#mandate-panel .mandate-number")].map(mandateNumber => mandateNumber.textContent),
+  }))).toEqual({
+    stored: [
+      { number: 5, owner: null, completed: false, criteriaCompleted: [false, false] },
+      { number: 6, owner: CURRENT_PLAYER, completed: false, criteriaCompleted: [false] },
+    ],
+    isPopupShown: false,
+    listed: ["6"],
+  });
+});
+
+// Given up, the mandate is free to claim again, by anybody.
+test("lists a mandate given up among those free to claim", async ({ page }) => {
+  await storeTwoOwnMandates(page);
+  await openOwnMandates(page);
+  await page.locator("#mandate-panel .mandate-item", { hasText: "5" }).click();
+  await page.locator("#mandate-abandon-button").click();
+
+  await page.locator('.mandate-filter-button[data-mandate-filter="unclaimed"]').click();
+
+  expect(await page.locator("#mandate-panel .mandate-number").allTextContents()).toEqual(["5"]);
 });

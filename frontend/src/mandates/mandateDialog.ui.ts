@@ -1,4 +1,5 @@
-import { Mandate } from "./mandates.api";
+import { abandonMandate, Mandate } from "./mandates.api";
+import { getUsername } from "../login/login.api";
 import { createClaimButton } from "../claimButton.ui";
 import { criterionDescription } from "./criterionDescription";
 import { getResourceIcon } from "../resources";
@@ -15,10 +16,11 @@ export function showMandateDialog({ mandate, onClaimed }: {
 }
 
 // A mandate is looked into to see which of its criteria the player's sektors already fulfil, each
-// told with a dot in front of it, as the mandate as a whole is in the list.
-export function showMandateDetailsDialog(mandate: Mandate) {
+// told with a dot in front of it, as the mandate as a whole is in the list. A mandate of the player's
+// own can be given up from here, and whoever opened it is told once it is.
+export function showMandateDetailsDialog(mandate: Mandate, onAbandoned?: () => void) {
   const overlay = createMandatePopup("mandate-details-dialog", mandate, createDescription(mandate, true));
-  overlay.firstElementChild!.appendChild(createCloseButton(overlay));
+  overlay.firstElementChild!.appendChild(createDetailsButtons(overlay, mandate, onAbandoned));
   document.body.appendChild(overlay);
 }
 
@@ -84,10 +86,24 @@ function createClaimButtons(overlay: HTMLElement, onClaimed: () => void): HTMLEl
   return buttons;
 }
 
-// A popup only looked at has nothing to do but go, from the bottom right.
-function createCloseButton(overlay: HTMLElement): HTMLElement {
+// A popup only looked at has nothing to do but go, from the bottom right. Giving the mandate up, where
+// it is the player's to give up, stands at the other end, in red.
+function createDetailsButtons(overlay: HTMLElement, mandate: Mandate, onAbandoned?: () => void): HTMLElement {
   const buttons = document.createElement("div");
   buttons.className = "dialog-buttons mandate-details-buttons";
+
+  if (onAbandoned && mandate.owner !== null && mandate.owner === getUsername()) {
+    const abandonButton = document.createElement("button");
+    abandonButton.id = "mandate-abandon-button";
+    abandonButton.className = "dialog-button dialog-button-danger";
+    abandonButton.textContent = "Abandon";
+    abandonButton.addEventListener("click", () => {
+      abandonMandate(mandate.number);
+      overlay.remove();
+      onAbandoned();
+    });
+    buttons.appendChild(abandonButton);
+  }
 
   const closeButton = document.createElement("button");
   closeButton.id = "mandate-close-button";

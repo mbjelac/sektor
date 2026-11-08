@@ -72,7 +72,8 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
 function createMandateItem(mandate: Mandate): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
-  item.addEventListener("click", () => showMandateDetailsDialog(mandate));
+  // A mandate given up is the player's no longer, so it leaves their list.
+  item.addEventListener("click", () => showMandateDetailsDialog(mandate, renderMandateList));
 
   const mandateNumber = document.createElement("span");
   mandateNumber.className = "mandate-number";

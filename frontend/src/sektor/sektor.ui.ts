@@ -368,9 +368,13 @@ function saveState() {
   showPlayerMandateMessages();
 }
 
-// The mandates the player looking at the map still has to complete, whoever's sektor it is.
+// The mandates the player looking at the map still has to complete, whoever's sektor it is. A mandate
+// given up is no longer the player's, so the messages are told anew once one is.
 function showPlayerMandateMessages() {
-  showMandateMessages(getMandates().filter(mandate => mandate.owner === getUsername() && !mandate.completed));
+  showMandateMessages(
+    getMandates().filter(mandate => mandate.owner === getUsername() && !mandate.completed),
+    showPlayerMandateMessages,
+  );
 }
 
 // Which buildings a toolbar offers depends on how far the player building on this sektor has come.

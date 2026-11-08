@@ -154,12 +154,12 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - button opens mandate details popup for that mandate
 - [done] in mandate message on map, completed criteria are not shown (only criteria not yet completed are abbreviated)
 
-#9 Mandates can be adandoned
-- if a mandate is abandoned it no longer has an owner
+#9 [done] Mandates can be adandoned
+- [done] if a mandate is abandoned it no longer has an owner
     - no longer appears in current player mandate list
     - appears in no-owner mandate list, meaning another player can claim it
     - it's effects no longer apply to the previous owner
-- player can abandon a mandate from mandate details
+- [done] player can abandon a mandate from mandate details
     - mandate details popup has "Abandon" button
         - bottom, left aligned
         - red
@@ -170,5 +170,35 @@ In such way a player's score is solely dependant on mandates. No mandate is link
         - sektor map message is removed (if abandoned from sektor map)
 
 #10 Mandates with multiple export & import criteria are created
+- remove current algorithm of criteria creation
+- create mandate criteria using one of these strategies ("positive" resource means non-negative):
+    - minimum positive exports & maximum positive imports
+        - choose an export & an amount as a minimum export requirement
+        - choose several imports and amounts for minimum import requirements
+            - choose imports to restrict by following algorithm:
+                - find building definitions which output the chosen export
+                - choose imports from their inputs
+    - minimum negative imports
+        - choose a negative resource
+        - choose an amount
+        - add a "minimum import" criteria for that resource & amount
+    - maximum negative exports
+        - choose a negative resource
+        - choose an amount
+        - add a "maximum export" criteria for that resource & amount
+- as listed above, there are four types of import/export related criteria
+    - list
+        - maximum import
+        - maximum export
+        - minimum import
+        - minimum export
+    - adjust display of abbreviated criteria
+        - add greater-or-equal and less-or-equal signs in front of resource amounts
+            - greater-or-equal for minimum import or export
+            - less-or-equal for maximum import or export
+    - adjust display of detailed criteria in mandate details
+        - put "at least" and "at most" in criteria description
+            - "at least" for minimum import or export
+            - "at most" for maximum import or export
 
 #11 Completed mandates increase player's score
