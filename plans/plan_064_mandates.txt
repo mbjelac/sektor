@@ -110,6 +110,11 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 - [done] whenever a player changes a sektor (construct, destroy, modify function pools, etc.) all player's mandates have to be re-calculated
 - [done] a mandate is complete if all it's criteria is fulfilled
     - all player sektors are summed
+        - all player sektors contribute to all criteria of all mandates
+        - imports & exports of the same resource are first subtracted from each other, over all player sektors
+            - a resource of which more is exported than imported counts only as an export, of the difference
+            - a resource of which more is imported than exported counts only as an import, of the difference
+            - a resource imported exactly as much as exported counts as neither
         - if criteria is minimum export, all player sektors' exports are summed to see if minimum export is reached
         - if criteria is maximum import, all player sektors' imports are summed to see if maximum import is reached
         - other criteria should be treated in the same way (when other criteria implemented)
@@ -264,8 +269,21 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - when any message tool (e.g. eye button) clicked
 - [done] open mandate list in player-mandates filter
 
+#13 Player can see their own total imports & exports
+- global imports/exports list on the list page can display current player's imports & exports
+    - similar mechanism as in mandates:
+        - two filters
+            - global imports/exports
+                - globe icon
+                - list title: "Global Imports/Exports"
+            - current player imports/exports
+                - user icon
+                - list title: "My Imports/Exports"
+    - initial filter on global
+    - if current player filter clicked
+        - display import & export list calculated (by subtracting imports from exports for same resource type) only for current player's sektors
 
-#13 Completed mandates increase player's score
+#14 Completed mandates increase player's score
 - player score is visible always in front of player name in top right
     - bold
     - prepended by star icon
