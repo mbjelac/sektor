@@ -123,6 +123,8 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 
 #7 [done] Mandates are visible in map
 - [done] display player's current un-completed mandates as map messages
+    - mandate messages have a soft pink background
+    - mandate messages have no (i) icon in front
 - [done] message text: "M-<mandate number>" followed by abbreviated mandate criteria in single line separated by pipe (|)
 - [done] if criteria contains resources (abbreviated as resource icon & amount), highlight resources as in all other messages
     - mouse over

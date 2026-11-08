@@ -1855,7 +1855,8 @@ test("complains of nothing in a sektor with no habitat", async ({ page }) => {
 });
 
 // A message says which kind it is before it says anything else: what is worth knowing is told, what
-// the player is doing against the planet is warned of.
+// the player is doing against the planet is warned of. A mandate says nothing in front of its number,
+// being told apart by its colour instead.
 test("tells what is worth knowing apart from what the player is warned of", async ({ page }) => {
   await storeSektorMovingManyResources(page, "Beta");
   await storeMandateNeverCompleted(page);
@@ -1874,7 +1875,7 @@ test("tells what is worth knowing apart from what the player is warned of", asyn
   })))).toEqual([
     { id: "habitat-shortage-message-Care", kind: "message-information", saidFirst: "ℹ️" },
     { id: "most-imported-scarce-message", kind: "message-warning", saidFirst: "⚠️" },
-    { id: "mandate-message-1", kind: "message-information", saidFirst: "ℹ️" },
+    { id: "mandate-message-1", kind: "message-mandate", saidFirst: "1" },
   ]);
 });
 

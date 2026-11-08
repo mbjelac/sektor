@@ -1713,6 +1713,10 @@ body > main {
     --message-background: #ffe187;
 }
 
+.message-mandate {
+    --message-background: #ffd6e7;
+}
+
 /* A resource a message names marks the buildings taking it in when it is pointed at, and turns white
    under the pointer so that the player sees it is a thing to point at. */
 /* A mandate is told of by its badge, the number of the mandate beside it. */

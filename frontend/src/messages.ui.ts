@@ -14,12 +14,14 @@ import { showMandateDetailsDialog } from "./mandates/mandateDialog.ui";
 const MOST_TOLD_RESOURCE_COUNT = 3;
 
 // A message either tells the player something worth knowing or warns them of something they are
-// doing, and says which it is before it says anything else.
-type MessageKind = "information" | "warning";
+// doing, and says which it is before it says anything else. A mandate still to be done is a kind of
+// its own, told apart by its colour and its badge rather than by anything said in front of it.
+type MessageKind = "information" | "warning" | "mandate";
 
-const MESSAGE_EMOJI: Record<MessageKind, string> = {
+const MESSAGE_EMOJI: Record<MessageKind, string | null> = {
   information: "\u2139\ufe0f",
   warning: "\u26a0\ufe0f",
+  mandate: null,
 };
 
 const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
@@ -66,7 +68,7 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
   }
 
   for (const mandate of uncompletedMandates) {
-    showMessage(`${MANDATE_MESSAGE_ID}${mandate.number}`, "information", mandateAdvice(mandate), [], [
+    showMessage(`${MANDATE_MESSAGE_ID}${mandate.number}`, "mandate", mandateAdvice(mandate), [], [
       createShowMandateButton(mandate, onMandateAbandoned),
     ]);
   }
@@ -260,7 +262,7 @@ function showMessage(
 ) {
   const shownMessage = document.getElementById(messageId);
   const adviceNodes = typeof advice === "string" ? [document.createTextNode(advice)] : advice;
-  const said = `${MESSAGE_EMOJI[kind]} ${adviceNodes.map(adviceNode => adviceNode.textContent).join("")} `;
+  const said = `${saidFirst(kind)}${adviceNodes.map(adviceNode => adviceNode.textContent).join("")} `;
   const text = `${said}${resourceNames.map(resourceNameText).join(", ")}`;
 
   if (shownMessage?.textContent === text) {
@@ -276,13 +278,19 @@ function showMessage(
   // differently than the same text in one.
   const saidNodes = typeof advice === "string"
     ? [document.createTextNode(said)]
-    : [document.createTextNode(`${MESSAGE_EMOJI[kind]} `), ...adviceNodes, document.createTextNode(" ")];
+    : [document.createTextNode(saidFirst(kind)), ...adviceNodes, document.createTextNode(" ")];
   message.replaceChildren(...saidNodes, ...resourceElements(resourceNames), ...actionButtons);
 
   // Something new to say goes to the top of the stack and flashes, so that a player looking at the
   // map rather than at the messages still catches that the advice has changed.
   document.getElementById("messages")!.prepend(message);
   flash(message);
+}
+
+// What a message of the kind says before anything else, if it says anything.
+function saidFirst(kind: MessageKind): string {
+  const emoji = MESSAGE_EMOJI[kind];
+  return emoji === null ? "" : `${emoji} `;
 }
 
 // Every resource a message names is a thing of its own rather than a word of the sentence, so that
