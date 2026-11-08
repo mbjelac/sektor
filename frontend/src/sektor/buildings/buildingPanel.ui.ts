@@ -13,6 +13,9 @@ import { formatNumber } from "../../formatNumber";
 let panelEl: HTMLElement | null = null;
 let panelLocation: BuildingLocation | null = null;
 let previewP5: p5 | null = null;
+// The canvas the preview is drawn on, kept from when it was made so that it can be moved over to
+// whichever panel is opened next.
+let previewCanvas: HTMLElement | null = null;
 let previewContainer: HTMLElement | null = null;
 // A floor which is not a plain block of ground — the bed of a river — is drawn by whoever opened the
 // panel, in place of the block, as only they know what it is.
@@ -26,7 +29,7 @@ let currentDraw: {
 function ensurePreviewP5(parent: HTMLElement) {
   if (previewP5) {
     // Re-parent the existing canvas
-    parent.appendChild(previewP5.canvas.parentElement ?? previewP5.canvas);
+    parent.appendChild(previewCanvas!.parentElement ?? previewCanvas!);
     return;
   }
 
@@ -35,6 +38,7 @@ function ensurePreviewP5(parent: HTMLElement) {
     p.setup = () => {
       const canvas = p.createCanvas(size, size, p.WEBGL);
       canvas.parent(parent);
+      previewCanvas = canvas.elt;
       const viewSize = size / 0.7;
       p.ortho(-viewSize / 2, viewSize / 2, -viewSize / 2, viewSize / 2);
 

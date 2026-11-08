@@ -1,4 +1,6 @@
-export type { ResourceThroughput } from "../../../../shared/sektorData";
+import type { ResourceThroughput } from "../../../../shared/sektorData";
+
+export type { ResourceThroughput };
 
 // An output is produced either in an amount the building makes wherever it stands, or in the
 // amount the location it stands on has of a location property, and never in both.

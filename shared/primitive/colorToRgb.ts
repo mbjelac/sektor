@@ -1,4 +1,5 @@
-export function colorToRgb(color: string | undefined): [number, number, number] | [number, number, number, number] {
+// The alpha is there only for a colour which gives one, which is how fill() takes it as well.
+export function colorToRgb(color: string | undefined): [number, number, number, number?] {
   if (!color) {
     return [160, 160, 160];
   }
