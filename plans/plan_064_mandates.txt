@@ -178,6 +178,9 @@ In such way a player's score is solely dependant on mandates. No mandate is link
             - choose imports to restrict by following algorithm:
                 - find building definitions which output the chosen export
                 - choose imports from their inputs
+        - choose amounts of exports & imports to be balanced
+            - avoid chosing requiring very low exports & very high imports, and vice versa
+                - try to balance using the building function
     - minimum negative imports
         - choose a negative resource
         - choose an amount
@@ -186,6 +189,9 @@ In such way a player's score is solely dependant on mandates. No mandate is link
         - choose a negative resource
         - choose an amount
         - add a "maximum export" criteria for that resource & amount
+    - amount values should be chosen randomly from a wide range
+        - lowest value 5
+        - highest value 50
 - as listed above, there are four types of import/export related criteria
     - list
         - maximum import
