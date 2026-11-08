@@ -843,7 +843,7 @@ Pool: true
 
 Silica 1
 EnergyElectric 1
-WorkMainenance 1
+WorkMaintenance 1
 ->
 Glass 1
 
@@ -854,7 +854,7 @@ Pool: true
 
 Clay 1
 EnergyElectric 1 
-WorkMainenance 1
+WorkMaintenance 1
 ->
 Ceramics 1
 
