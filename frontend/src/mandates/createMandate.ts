@@ -1,14 +1,16 @@
 import { RandomNumber } from "../creation/randomNumber";
 import { Mandate, MandateCriterion } from "./mandates.api";
 import { ResourceProduction } from "./resourceProductions";
+import { ResourceThroughput } from "../../../shared/sektorData";
 
 const LOWEST_AMOUNT = 5;
 const HIGHEST_AMOUNT = 50;
 const MOST_RESTRICTED_IMPORTS = 3;
 // How much of what a minimum export takes to make may be imported at most, as a share of what it
-// takes, drawn between these two: sometimes less than it takes, sometimes more.
+// takes, drawn from the first up to but never reaching the second: always less than it takes, so
+// that some of it has to be made in the player's own sektors.
 const LOWEST_IMPORT_SHARE = 0.5;
-const HIGHEST_IMPORT_SHARE = 1.5;
+const HIGHEST_IMPORT_SHARE = 1;
 // There are few negative resources to send out or take in, so most mandates ask for positive ones.
 const NEGATIVE_IMPORT_CHANCE = 0.1;
 const NEGATIVE_EXPORT_CHANCE = 0.1;
@@ -64,9 +66,11 @@ function negativeCriterion(
 }
 
 // A positive resource some building makes is to be sent out, and of what that building takes in to
-// make it, a few are imported only so much, those it takes most of first: about as much as making the
-// export takes, so that a small export never comes with a large allowance of imports, nor a large
-// export with a small one.
+// make it, a few are imported only so much, those it takes most of first: less than making the export
+// takes, so that some of it has to be made at home, yet in step with the export, so that a small
+// export never comes with a large allowance of imports, nor a large export with a small one. An input
+// the export takes no more than the lowest amount of cannot be held below what it takes, and is left
+// unrestricted.
 function positiveCriteria(mandateMaterials: MandateMaterials, randomNumber: RandomNumber): MandateCriterion[] {
   const madeResourceNames = mandateMaterials.positiveResourceNames.filter(resourceName =>
     mandateMaterials.productions.some(production => production.outputName === resourceName)
@@ -80,19 +84,22 @@ function positiveCriteria(mandateMaterials: MandateMaterials, randomNumber: Rand
     randomNumber,
   );
 
-  const importableInputs = production.inputs
+  const neededImport = (input: ResourceThroughput) => minimumExport * input.value / production.outputAmount;
+  const restrictableInputs = production.inputs
     .filter(input => input.name !== exportName && mandateMaterials.positiveResourceNames.includes(input.name))
+    .filter(input => neededImport(input) > LOWEST_AMOUNT)
     .sort((input, otherInput) => otherInput.value - input.value);
-  const restrictedImportCount = importableInputs.length === 0
+  const restrictedImportCount = restrictableInputs.length === 0
     ? 0
-    : 1 + Math.floor(randomNumber() * Math.min(MOST_RESTRICTED_IMPORTS, importableInputs.length));
+    : 1 + Math.floor(randomNumber() * Math.min(MOST_RESTRICTED_IMPORTS, restrictableInputs.length));
 
-  const importCriteria: MandateCriterion[] = importableInputs.slice(0, restrictedImportCount).map(input => {
+  // Rounded down, a share short of the whole is always less than what the export needs.
+  const importCriteria: MandateCriterion[] = restrictableInputs.slice(0, restrictedImportCount).map(input => {
     const importShare = LOWEST_IMPORT_SHARE + randomNumber() * (HIGHEST_IMPORT_SHARE - LOWEST_IMPORT_SHARE);
     return {
       type: "maximumImport",
       resourceName: input.name,
-      amount: withinAmountRange(Math.round(minimumExport * input.value / production.outputAmount * importShare)),
+      amount: withinAmountRange(Math.floor(neededImport(input) * importShare)),
       completed: false,
     };
   });

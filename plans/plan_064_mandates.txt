@@ -184,7 +184,9 @@ In such way a player's score is solely dependant on mandates. No mandate is link
         - choose amounts of exports & imports to be balanced
             - avoid chosing requiring very low exports & very high imports, and vice versa
                 - try to balance using the building function
-                - maximum import = minimum export × (input per unit of output in the building function) × random factor between 0.5 and 1.5, kept within the range of amount values
+                - maximum import = minimum export × (input per unit of output in the building function) × random factor between 0.5 and 1 (exclusive), kept within the range of amount values
+                - maximum import is always less than what the minimum export needs, so some local production of that input is needed
+                    - an input of which the minimum export needs no more than the lowest amount value is not restricted
     - minimum negative imports
         - choose a negative resource
         - choose an amount
