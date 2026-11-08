@@ -1,6 +1,6 @@
 import { getMandates, Mandate, setMandateOwner } from "./mandates.api";
 import { createListTitle } from "../listTitle.ui";
-import { sparklesIcon, userIcon } from "../icons";
+import { checkBadgeIcon, clipboardDocumentCheckIcon, sparklesIcon, userIcon } from "../icons";
 import { createCriterionAbbreviation } from "./criterionAbbreviation.ui";
 import { getUsername } from "../login/login.api";
 import { showMandateDetailsDialog, showMandateDialog } from "./mandateDialog.ui";
@@ -36,7 +36,7 @@ export function renderMandateList() {
 function createHeader(hasFilterButtons: boolean): HTMLElement {
   const header = document.createElement("div");
   header.className = "mandate-header";
-  header.appendChild(createListTitle(MANDATE_LIST_TITLES[mandateFilter]));
+  header.appendChild(createListTitle(MANDATE_LIST_TITLES[mandateFilter], clipboardDocumentCheckIcon));
   if (hasFilterButtons) header.appendChild(createFilterButtons());
   return header;
 }
@@ -65,9 +65,9 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
   return filterButton;
 }
 
-// A mandate is its number followed by what it asks for, every criterion in short, and on the player's
-// own, whether it is completed at the end of the row. Clicking anywhere on it opens it up in full,
-// which is where a mandate nobody owns is claimed and the player's own is given up.
+// A mandate is its badge and number followed by what it asks for, every criterion in short, and on
+// the player's own, whether it is completed at the end of the row. Clicking anywhere on it opens it
+// up in full, which is where a mandate nobody owns is claimed and the player's own is given up.
 function createMandateItem(mandate: Mandate): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
@@ -75,7 +75,8 @@ function createMandateItem(mandate: Mandate): HTMLElement {
 
   const mandateNumber = document.createElement("span");
   mandateNumber.className = "mandate-number";
-  mandateNumber.textContent = `${mandate.number}`;
+  mandateNumber.innerHTML = checkBadgeIcon;
+  mandateNumber.append(`${mandate.number}`);
   item.appendChild(mandateNumber);
 
   // A criterion the player's sektors already fulfil is left out: the row tells what is still to do.

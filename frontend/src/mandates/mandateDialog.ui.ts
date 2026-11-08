@@ -4,6 +4,7 @@ import { createClaimButton } from "../claimButton.ui";
 import { criterionDescription } from "./criterionDescription";
 import { getResourceIcon } from "../resources";
 import { createCompletionDot } from "./completionDot.ui";
+import { checkBadgeIcon } from "../icons";
 
 // A mandate is looked over before it is claimed, and is claimed only once the player says so.
 export function showMandateDialog({ mandate, onClaimed }: {
@@ -24,7 +25,8 @@ export function showMandateDetailsDialog(mandate: Mandate, onAbandoned?: () => v
   document.body.appendChild(overlay);
 }
 
-// Every popup of a mandate is titled with its number and tells what it asks for under the title.
+// Every popup of a mandate is titled with its number behind the badge of a mandate, and tells what it
+// asks for under the title.
 function createMandatePopup(dialogId: string, mandate: Mandate, description: HTMLElement): HTMLElement {
   const overlay = document.createElement("div");
   overlay.id = `${dialogId}-overlay`;
@@ -37,8 +39,9 @@ function createMandatePopup(dialogId: string, mandate: Mandate, description: HTM
   overlay.appendChild(dialog);
 
   const title = document.createElement("div");
-  title.className = "dialog-title";
+  title.className = "dialog-title mandate-dialog-title";
   title.textContent = `Mandate ${mandate.number}`;
+  title.insertAdjacentHTML("afterbegin", checkBadgeIcon);
   dialog.appendChild(title);
 
   dialog.appendChild(description);

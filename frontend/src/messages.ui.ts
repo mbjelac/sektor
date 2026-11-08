@@ -2,7 +2,7 @@ import { ImportsAndExports, mostImportedScarceResourceNames } from "./globalImpo
 import { resourceNameText } from "./throughputDisplay.ui";
 import { getNegativeScoringResources } from "./resources";
 import { pointAtResourceWhileHovered } from "./resourceHover.ui";
-import { chevronDownIcon, chevronUpIcon, eyeIcon } from "./icons";
+import { checkBadgeIcon, chevronDownIcon, chevronUpIcon, eyeIcon } from "./icons";
 import { selectProperty } from "./sektor/propertyToggler.ui";
 import { POLLUTION_PROPERTY } from "./sektor/pollution";
 import { selectBuildingTag } from "./sektor/buildingToolbar.ui";
@@ -74,13 +74,19 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
   showToggleButtons();
 }
 
-// A mandate is told of on a single line: its number, and then what is still to be done of it, every
-// criterion not completed yet in short and set apart from the next by a bar. A criterion completed is
-// left out, which changes what the message says, so the message is told anew. Every criterion is a
-// resource to point at, as any other named in a message is.
+// A mandate is told of on a single line: its badge and number, and then what is still to be done of
+// it, every criterion not completed yet in short and set apart from the next by a bar. A criterion
+// completed is left out, which changes what the message says, so the message is told anew. Every
+// criterion is a resource to point at, as any other named in a message is.
 function mandateAdvice(mandate: Mandate): Node[] {
+  const mandateNumber = document.createElement("span");
+  mandateNumber.className = "message-mandate-number";
+  mandateNumber.innerHTML = checkBadgeIcon;
+  mandateNumber.append(`${mandate.number}`);
+
   return [
-    document.createTextNode(`M-${mandate.number} `),
+    mandateNumber,
+    document.createTextNode(" "),
     ...mandate.criteria.filter(criterion => !criterion.completed).flatMap((criterion, criterionIndex) => {
       const criterionAbbreviation = createCriterionAbbreviation(criterion);
       criterionAbbreviation.classList.add("message-resource");

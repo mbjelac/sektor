@@ -213,12 +213,13 @@ In such way a player's score is solely dependant on mandates. No mandate is link
             - "at least" for minimum import or export
             - "at most" for maximum import or export
 
-#11 Mandates are visually recognizable
-- mandate list has icon in front of title
+#11 [done] Mandates are visually recognizable
+- [done] mandate list has icon in front of title
     - heroicon clipboard-document-check
-- mandate details title is preceeded by icon
+- [done] mandate details title is preceeded by icon
     - heroicon check-badge
-- mandate message has that same check-badge icon & mandate number instead of M-<number>
+- [done] mandate message has that same check-badge icon & mandate number instead of M-<number>
+- [done] mandate number in mandate list preceded by same check-badge icon
 
 #12 Mandate list reachable in sektor map
 - in front of user name in right-top corner is the mandate icon from #11
@@ -230,3 +231,10 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - claiming or abandoning mandates
 
 #13 Completed mandates increase player's score
+- player score is visible always in front of player name in top right
+    - bold
+- each mandate has points
+- in mandate list, points are displayed in bottom right of mandate list item panel
+    - small
+    - prepended by star icon
+-

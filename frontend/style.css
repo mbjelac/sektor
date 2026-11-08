@@ -1422,8 +1422,22 @@ body > main {
 }
 
 .mandate-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     color: #fff;
     font-weight: bold;
+}
+
+.mandate-dialog-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mandate-dialog-title .icon {
+    width: 18px;
+    height: 18px;
 }
 
 /* The popup is the same height whatever the mandate asks for. */
@@ -1701,6 +1715,14 @@ body > main {
 
 /* A resource a message names marks the buildings taking it in when it is pointed at, and turns white
    under the pointer so that the player sees it is a thing to point at. */
+/* A mandate is told of by its badge, the number of the mandate beside it. */
+.message-mandate-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    vertical-align: middle;
+}
+
 .message-resource {
     border-radius: 3px;
     padding: 0 2px;
