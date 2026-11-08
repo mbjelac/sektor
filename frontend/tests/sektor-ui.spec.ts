@@ -1443,6 +1443,22 @@ function getListedMandates(page: Page) {
   })));
 }
 
+// Both sektors are the player's, so the Food the processor brings in is set against the Food the
+// other sektor sends out, which is more: between them the player imports no Food at all.
+test("sets what one of the player's sektors imports against what another exports when completing mandates", async ({ page }) => {
+  await storeSektorSendingOutFood(page, "Beta");
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: "Tester", completed: false, criteria: [{ type: "maximumImport", resourceName: "Food", amount: 0 }] },
+  ])));
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await placeHub(page);
+  await placeBuilding(page, "TestProcessor");
+
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mandates")!)[0].completed)).toEqual(true);
+});
+
 // Completing a mandate leaves nothing more to tell of it.
 test("stops telling of a mandate once the player completes it", async ({ page }) => {
   await page.evaluate(() => {

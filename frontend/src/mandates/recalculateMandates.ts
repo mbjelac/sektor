@@ -1,6 +1,7 @@
 import { getSektorList } from "../list/sektorList.api";
 import { getSektorSummary } from "../list/sektorSummary";
-import { completedMandate, summedImportsAndExports } from "./mandateCompletion";
+import { completedMandate } from "./mandateCompletion";
+import { globalImportsAndExports } from "../globalImportsAndExports";
 import { getMandates, replaceMandates } from "./mandates.api";
 
 // Whether a player's mandates, and every criterion of them, are completed is worked out anew from every sektor they own, as they
@@ -8,7 +9,10 @@ import { getMandates, replaceMandates } from "./mandates.api";
 export function recalculateMandates(playerName: string | null) {
   if (!playerName) return;
 
-  const playerImportsAndExports = summedImportsAndExports(
+  // Every sektor of the player counts towards every mandate of theirs. What one of them brings in of a
+  // resource is set against what another sends out of it, just as it is for the whole planet, so a
+  // resource counts as imported or exported only by what is left over.
+  const playerImportsAndExports = globalImportsAndExports(
     getSektorList()
       .filter(sektorListItem => sektorListItem.owner === playerName)
       .map(sektorListItem => getSektorSummary(sektorListItem.id)),

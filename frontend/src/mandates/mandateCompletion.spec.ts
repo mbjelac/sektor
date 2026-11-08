@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { completedMandate, summedImportsAndExports } from "./mandateCompletion";
+import { completedMandate } from "./mandateCompletion";
+import { globalImportsAndExports } from "../globalImportsAndExports";
 import { Mandate, MandateCriterion } from "./mandates.api";
 
 function mandateAsking(...criteria: MandateCriterion[]): Mandate {
@@ -22,21 +23,8 @@ function exportingAtMost(resourceName: string, amount: number): MandateCriterion
   return { type: "maximumExport", resourceName, amount, completed: false };
 }
 
-describe("summedImportsAndExports", () => {
-  // What one sektor brings in of a resource is not set against what another sends out of it.
-  it("adds up what every sektor brings in and sends out, each on its own", () => {
-    expect(summedImportsAndExports([
-      { imports: [{ name: "Apples", value: 2 }], exports: [{ name: "Bricks", value: 5 }] },
-      { imports: [{ name: "Apples", value: 3 }], exports: [{ name: "Bricks", value: 4 }, { name: "Apples", value: 1 }] },
-    ])).toEqual({
-      imports: [{ name: "Apples", value: 5 }],
-      exports: [{ name: "Bricks", value: 9 }, { name: "Apples", value: 1 }],
-    });
-  });
-});
-
 describe("completedMandate", () => {
-  const playerImportsAndExports = summedImportsAndExports([
+  const playerImportsAndExports = globalImportsAndExports([
     { imports: [{ name: "Apples", value: 4 }], exports: [{ name: "Bricks", value: 6 }] },
     { imports: [{ name: "Apples", value: 3 }], exports: [{ name: "Bricks", value: 4 }] },
   ]);
@@ -84,6 +72,22 @@ describe("completedMandate", () => {
         ],
         completed: false,
       });
+  });
+
+  // One sektor sends out 10 Cloth and another brings in 6, which leaves the player sending out 4 and
+  // bringing in none; 4 Dyes brought in against 4 sent out leaves neither.
+  it("sets what the player's sektors import of a resource against what they export of it", () => {
+    const settledImportsAndExports = globalImportsAndExports([
+      { imports: [{ name: "Dyes", value: 4 }], exports: [{ name: "Cloth", value: 10 }] },
+      { imports: [{ name: "Cloth", value: 6 }], exports: [{ name: "Dyes", value: 4 }] },
+    ]);
+    expect([
+      completedMandate(mandateAsking(exportingAtLeast("Cloth", 4)), settledImportsAndExports).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Cloth", 5)), settledImportsAndExports).completed,
+      completedMandate(mandateAsking(importingAtMost("Cloth", 0)), settledImportsAndExports).completed,
+      completedMandate(mandateAsking(importingAtLeast("Dyes", 1)), settledImportsAndExports).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Dyes", 1)), settledImportsAndExports).completed,
+    ]).toEqual([true, false, true, false, false]);
   });
 
   // Nothing exported falls short of any minimum, and nothing imported stays under every maximum.
