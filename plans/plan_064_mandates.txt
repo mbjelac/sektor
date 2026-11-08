@@ -167,7 +167,7 @@ In such way a player's score is solely dependant on mandates. No mandate is link
         - mandate's owner is removed
         - popup is hidden
         - mandate list is updated (player mandate list no longer displays mandate)
-        - sketor map message is removed (if abandoned from sektor map)
+        - sektor map message is removed (if abandoned from sektor map)
 
 #10 Mandates with multiple export & import criteria are created
 
