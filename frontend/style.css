@@ -1528,6 +1528,14 @@ body > main {
     gap: 4px;
 }
 
+/* A completed criterion stands on pale green, in dark to be read on it. */
+.mandate-criterion-completed {
+    background: #bfe8c9;
+    color: #1a1a1a;
+    border-radius: 3px;
+    padding: 0 3px;
+}
+
 .mandate-criterion-direction {
     display: inline-flex;
 }

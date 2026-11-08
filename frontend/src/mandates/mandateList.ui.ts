@@ -97,9 +97,11 @@ function createMandateItem(mandate: Mandate): HTMLElement {
   mandateNumber.append(`${mandate.number}`);
   item.appendChild(mandateNumber);
 
-  // A criterion the player's sektors already fulfil is left out: the row tells what is still to do.
-  for (const criterion of mandate.criteria.filter(criterion => !criterion.completed)) {
-    item.appendChild(createCriterionAbbreviation(criterion));
+  // A criterion the player's sektors already fulfil stands on pale green.
+  for (const criterion of mandate.criteria) {
+    const criterionAbbreviation = createCriterionAbbreviation(criterion);
+    criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);
+    item.appendChild(criterionAbbreviation);
   }
 
   if (mandate.owner !== null) item.appendChild(createCompletionDot(mandate.completed));

@@ -60,7 +60,8 @@ export function updateMessages(
 
 // Every mandate the player has claimed and not completed yet is a thing still to be done, so each is
 // told of in a message of its own, which offers to open the mandate in full. A mandate completed is
-// no longer told of.
+// no longer told of. A criterion completed or no longer completed is something new to say even
+// though the words of the message stay the same, so the message is then told anew.
 export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAbandoned: () => void) {
   const uncompletedMandateIds = uncompletedMandates.map(mandate => `${MANDATE_MESSAGE_ID}${mandate.number}`);
   for (const shownMandateMessage of document.querySelectorAll(`[id^="${MANDATE_MESSAGE_ID}"]`)) {
@@ -68,17 +69,20 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
   }
 
   for (const mandate of uncompletedMandates) {
-    showMessage(`${MANDATE_MESSAGE_ID}${mandate.number}`, "mandate", mandateAdvice(mandate), [], [
-      createShowMandateButton(mandate, onMandateAbandoned),
-    ]);
+    const messageId = `${MANDATE_MESSAGE_ID}${mandate.number}`;
+    const criteriaCompleted = mandate.criteria.map(criterion => criterion.completed).join(",");
+    const shownMessage = document.getElementById(messageId);
+    if (shownMessage && shownMessage.dataset.criteriaCompleted !== criteriaCompleted) shownMessage.remove();
+
+    showMessage(messageId, "mandate", mandateAdvice(mandate), [], [createShowMandateButton(mandate, onMandateAbandoned)]);
+    document.getElementById(messageId)!.dataset.criteriaCompleted = criteriaCompleted;
   }
 
   showToggleButtons();
 }
 
-// A mandate is told of on a single line: its badge and number, and then what is still to be done of
-// it, every criterion not completed yet in short and set apart from the next by a bar. A criterion
-// completed is left out, which changes what the message says, so the message is told anew. Every
+// A mandate is told of on a single line: its badge and number, and then what it asks for, every
+// criterion in short, set apart from the next by a bar and on pale green once it is completed. Every
 // criterion is a resource to point at, as any other named in a message is.
 function mandateAdvice(mandate: Mandate): Node[] {
   const mandateNumber = document.createElement("span");
@@ -89,9 +93,10 @@ function mandateAdvice(mandate: Mandate): Node[] {
   return [
     mandateNumber,
     document.createTextNode(" "),
-    ...mandate.criteria.filter(criterion => !criterion.completed).flatMap((criterion, criterionIndex) => {
+    ...mandate.criteria.flatMap((criterion, criterionIndex) => {
       const criterionAbbreviation = createCriterionAbbreviation(criterion);
       criterionAbbreviation.classList.add("message-resource");
+      criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);
       pointAtResourceWhileHovered(criterionAbbreviation, criterion.resourceName);
       return criterionIndex === 0 ? [criterionAbbreviation] : [document.createTextNode(" | "), criterionAbbreviation];
     }),

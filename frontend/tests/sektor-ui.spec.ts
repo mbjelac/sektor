@@ -1310,9 +1310,9 @@ test("opens a mandate in full when the eye of its message is clicked", async ({ 
   });
 });
 
-// The Wood the processor sends out completes the first criterion, which is then left out, while the
-// mandate as a whole is still told of, as no sektor sends out any Stone.
-test("leaves a criterion out of a mandate message once the player completes it", async ({ page }) => {
+// The Wood the processor sends out completes the first criterion, which is put on pale green, while
+// the mandate as a whole is still told of, as no sektor sends out any Stone.
+test("puts a criterion of a mandate message on pale green once the player completes it", async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
     localStorage.setItem("mandates", JSON.stringify([
@@ -1333,9 +1333,7 @@ test("leaves a criterion out of a mandate message once the player completes it",
   await placeHub(page);
   await placeBuilding(page, "TestProcessor");
 
-  expect(await page.locator("#mandate-message-7 .mandate-criterion-resource").evaluateAll(resources =>
-    resources.map(resource => (resource as HTMLElement).title)
-  )).toEqual(["Stone"]);
+  await expectScreenshot(page, "mandate-message-criterion-completed", "#mandate-message-7");
 });
 
 // A mandate given up from the map is no longer the player's, so it is no longer told of there.
@@ -1357,8 +1355,8 @@ test("stops telling of a mandate given up from its message", async ({ page }) =>
 
 // Building on the sektor changes what the player's sektors do between them, so the open list of
 // their mandates follows: the Wood the processor sends out completes the first mandate, whose
-// criterion then leaves the row as the mandate turns green, while the second asks for more Wood than
-// that and stays as it was.
+// criterion then stands on pale green as the mandate turns green, while the second asks for more Wood
+// than that and stays as it was.
 test("shows in the open list of mandates what building on the sektor completes", async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
@@ -1383,12 +1381,12 @@ test("shows in the open list of mandates what building on the sektor completes",
 
   expect({ listedBeforeBuilding, listedAfterBuilding: await getListedMandates(page) }).toEqual({
     listedBeforeBuilding: [
-      { number: "1", criteria: ["Wood"], completed: false },
-      { number: "2", criteria: ["Wood"], completed: false },
+      { number: "1", criteria: [{ resource: "Wood", completed: false }], completed: false },
+      { number: "2", criteria: [{ resource: "Wood", completed: false }], completed: false },
     ],
     listedAfterBuilding: [
-      { number: "1", criteria: [], completed: true },
-      { number: "2", criteria: ["Wood"], completed: false },
+      { number: "1", criteria: [{ resource: "Wood", completed: true }], completed: true },
+      { number: "2", criteria: [{ resource: "Wood", completed: false }], completed: false },
     ],
   });
 });
@@ -1433,12 +1431,15 @@ test("closes the open list of mandates when anything of a message is clicked", a
   expect(await page.locator("#mandate-panel").count()).toEqual(0);
 });
 
-// Every mandate of the open list of mandates: its number, the resources of the criteria it still
-// shows, and whether it is marked completed.
+// Every mandate of the open list of mandates: its number, the resource of every criterion and whether
+// the criterion is marked completed, and whether the mandate is.
 function getListedMandates(page: Page) {
   return page.locator("#mandate-panel .mandate-item").evaluateAll(items => items.map(item => ({
     number: item.querySelector(".mandate-number")!.textContent,
-    criteria: [...item.querySelectorAll(".mandate-criterion-resource")].map(resource => (resource as HTMLElement).title),
+    criteria: [...item.querySelectorAll(".mandate-criterion")].map(criterion => ({
+      resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.title,
+      completed: criterion.classList.contains("mandate-criterion-completed"),
+    })),
     completed: item.querySelector(".mandate-completion")!.classList.contains("mandate-completed"),
   })));
 }

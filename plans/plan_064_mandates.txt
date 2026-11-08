@@ -142,7 +142,7 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - primary motivation for players are mandates now
 
 #8 [done] Player can see which criteria are completed & which are not
-- [done] in mandate list, completed criteria are not shown (only criteria not yet completed are abbreviated)
+- [done] in mandate list, criteria abbreviation has pale green background if criteria completed
 - [done] player can open mandate details in mandate list
     - mandate item has gray background on mouse over
     - click on mandate item (anywhere) opens mandate details popup
@@ -159,7 +159,7 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 - [done] player can open mandate details in sektor map
     - every mandate message has eye button after text
     - button opens mandate details popup for that mandate
-- [done] in mandate message on map, completed criteria are not shown (only criteria not yet completed are abbreviated)
+- [done] in mandate message on map, criteria abbreviation has pale green background if criteria completed
 
 #9 [done] Mandates can be adandoned
 - [done] if a mandate is abandoned it no longer has an owner
@@ -261,8 +261,8 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 - [done] change in mandate & criteria completness status is visible on list
     - if mandate becomes complete, it is marked green instead of red
     - if mandate becomes incomplete, it is marked red instead of green
-    - if a criteria becomes complete, it's abbreviation is hidden in mandate list
-    - if a criteria becomes incomplete, it's abbreviation is shown in mandate list
+    - if a criteria becomes complete, it's abbreviation gets a pale green background in mandate list
+    - if a criteria becomes incomplete, it's abbreviation loses the pale green background in mandate list
 - [done] opened mandate list is closed
     - when a building selected on map
     - when a building selected on toolbar

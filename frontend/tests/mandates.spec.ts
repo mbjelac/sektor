@@ -246,9 +246,8 @@ test("marks the player's completed mandates green and the others red", async ({ 
   await expect(page.locator("#mandate-panel")).toHaveScreenshot("own-mandates.png", { maxDiffPixelRatio: 0 });
 });
 
-// A criterion the player's sektors already fulfil is left out of the row, which tells only what is
-// still to do.
-test("leaves the completed criteria out of the player's mandates in the list", async ({ page }) => {
+// A criterion the player's sektors already fulfil stands on pale green, the others are left as they are.
+test("puts the completed criteria of the player's mandates on pale green", async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
     {
       number: 1,
@@ -264,9 +263,7 @@ test("leaves the completed criteria out of the player's mandates in the list", a
 
   await page.locator('.mandate-filter-button[data-mandate-filter="own"]').click();
 
-  expect(await page.locator("#mandate-panel .mandate-criterion-resource").evaluateAll(resources =>
-    resources.map(resource => (resource as HTMLElement).title)
-  )).toEqual(["Water"]);
+  await expect(page.locator("#mandate-panel .mandate-item")).toHaveScreenshot("mandate-item-criterion-completed.png", { maxDiffPixelRatio: 0 });
 });
 
 // A mandate of the player with one criterion completed and one not.
