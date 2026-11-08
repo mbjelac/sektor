@@ -216,7 +216,9 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 #11 Mandates are visually recognizable
 - mandate list has icon in front of title
     - heroicon clipboard-document-check
-- mandate message has that same icon & mandate number instead of M-<number>
+- mandate details title is preceeded by icon
+    - heroicon check-badge
+- mandate message has that same check-badge icon & mandate number instead of M-<number>
 
 #12 Mandate list reachable in sektor map
 - in front of user name in right-top corner is the mandate icon from #11
