@@ -78,7 +78,7 @@ test("displays the logged in player in the top right corner of a sektor map", as
 
   await page.goto("/sektor.html?test=true");
 
-  await expect(page.locator("#user-display")).toHaveScreenshot("user-display.png", { maxDiffPixelRatio: 0 });
+  await expect(page.locator("#user-display")).toHaveScreenshot("map-user-display.png", { maxDiffPixelRatio: 0 });
 });
 
 test("forgets the player and routes to the login page when logging out", async ({ page }) => {

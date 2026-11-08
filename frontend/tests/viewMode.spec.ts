@@ -438,3 +438,150 @@ async function nameStoredSektor(page: import("@playwright/test").Page, sektorId:
     )));
   }, [sektorId, givenName]);
 }
+
+// The mandates of the player, and one free to claim, for the list of mandates to show over the map.
+async function storeMandatesForMap(page: import("@playwright/test").Page) {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: false, criteria: [{ type: "minimumExport", resourceName: "Water", amount: 50 }] },
+    { number: 2, owner: null, completed: false, criteria: [{ type: "minimumExport", resourceName: "EnergyElectric", amount: 12 }] },
+  ])), CURRENT_PLAYER);
+}
+
+// The list of mandates opens right under its icon, the icon standing over the panel's top right corner.
+test("opens the list of mandates under its icon when the icon is clicked", async ({ page }) => {
+  await storeMandatesForMap(page);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+
+  await page.locator("#mandate-button").click();
+
+  const placing = await page.evaluate(() => {
+    const iconBox = document.querySelector("#mandate-button .icon")!.getBoundingClientRect();
+    const panelBox = document.getElementById("mandate-panel")!.getBoundingClientRect();
+    return { panelIsUnderIcon: panelBox.top > iconBox.bottom, rightEdgesMeet: panelBox.right === iconBox.right };
+  });
+  expect(placing).toEqual({ panelIsUnderIcon: true, rightEdgesMeet: true });
+});
+
+test("shows the list of mandates over the map", async ({ page }) => {
+  await storeMandatesForMap(page);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+
+  await page.locator("#mandate-button").click();
+
+  await expectScreenshot(page, "map-mandate-panel", "body");
+});
+
+test("hides the list of mandates when its icon is clicked again", async ({ page }) => {
+  await storeMandatesForMap(page);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#mandate-button").click();
+
+  await page.locator("#mandate-button").click();
+
+  expect(await page.locator("#mandate-panel").count()).toEqual(0);
+});
+
+// The list over the map does what the list beside the sektors does: a mandate claimed there becomes
+// the player's to complete, and so is told of on the map.
+test("tells of a mandate claimed from the list of mandates over the map", async ({ page }) => {
+  await storeMandatesForMap(page);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#mandate-button").click();
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
+
+  await page.locator("#mandate-panel .mandate-item").click();
+  await page.locator("#mandate-claim-button").click();
+
+  expect(await page.evaluate(() => ({
+    owners: JSON.parse(localStorage.getItem("mandates")!).map((mandate: { owner: string | null }) => mandate.owner),
+    messages: [...document.querySelectorAll('[id^="mandate-message-"]')].map(message => message.id).sort(),
+  }))).toEqual({ owners: [CURRENT_PLAYER, CURRENT_PLAYER], messages: ["mandate-message-1", "mandate-message-2"] });
+});
+
+// A mandate given up from the list over the map is the player's no longer, so it leaves both their
+// list and the map.
+test("stops telling of a mandate given up from the list of mandates over the map", async ({ page }) => {
+  await storeMandatesForMap(page);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#mandate-button").click();
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+
+  await page.locator("#mandate-panel .mandate-item").click();
+  await page.locator("#mandate-abandon-button").click();
+
+  expect(await page.evaluate(() => ({
+    owners: JSON.parse(localStorage.getItem("mandates")!).map((mandate: { owner: string | null }) => mandate.owner),
+    messages: document.querySelectorAll('[id^="mandate-message-"]').length,
+    listed: [...document.querySelectorAll("#mandate-panel .mandate-number")].map(mandateNumber => mandateNumber.textContent),
+  }))).toEqual({ owners: [null, null], messages: 0, listed: ["1", "2"] });
+});
+
+// Two mandates of the player not completed yet and one completed, out of three claimed; another
+// player's mandate counts for nothing.
+test("counts the player's mandates beside the icon of the list of mandates", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: false, criteria: [] },
+    { number: 2, owner: currentPlayer, completed: true, criteria: [] },
+    { number: 3, owner: currentPlayer, completed: false, criteria: [] },
+    { number: 4, owner: "Ana", completed: false, criteria: [] },
+  ])), CURRENT_PLAYER);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+
+  await page.goto("/sektor.html?id=Alpha");
+
+  await expect(page.locator("#mandate-button")).toHaveScreenshot("mandate-counts.png", { maxDiffPixelRatio: 0 });
+});
+
+test("counts nothing beside the icon while the player has claimed no mandate", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, completed: false, criteria: [] },
+  ])));
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+
+  await page.goto("/sektor.html?id=Alpha");
+
+  expect(await page.locator("#mandate-counts").textContent()).toEqual("");
+});
+
+// Claiming a mandate from the list over the map counts it at once.
+test("counts a mandate claimed from the list of mandates over the map", async ({ page }) => {
+  await storeMandatesForMap(page);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#mandate-button").click();
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
+
+  await page.locator("#mandate-panel .mandate-item").click();
+  await page.locator("#mandate-claim-button").click();
+
+  expect(await page.locator("#mandate-counts").textContent()).toEqual("2 / 2");
+});
+
+// Over the map the player is building towards their own mandates, so the list opens on those.
+test("opens the list of mandates over the map on the player's own mandates", async ({ page }) => {
+  await storeMandatesForMap(page);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+
+  await page.locator("#mandate-button").click();
+
+  expect(await page.locator("#mandate-panel .mandate-number").allTextContents()).toEqual(["1"]);
+});
+
+// A player with no mandates of their own has only those free to claim to look at.
+test("opens the list of mandates over the map on those free to claim while the player has none", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 2, owner: null, completed: false, criteria: [{ type: "minimumExport", resourceName: "EnergyElectric", amount: 12 }] },
+  ])));
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+
+  await page.locator("#mandate-button").click();
+
+  expect(await page.locator("#mandate-panel .mandate-number").allTextContents()).toEqual(["2"]);
+});

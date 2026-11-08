@@ -424,3 +424,17 @@ test("lists a mandate given up among those free to claim", async ({ page }) => {
 
   expect(await page.locator("#mandate-panel .mandate-number").allTextContents()).toEqual(["5"]);
 });
+
+// Nothing is imported while the player has no sektor of their own, so a mandate asking for at most so
+// much imported is completed the moment it is claimed.
+test("works out whether a mandate is completed the moment it is claimed", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 4, owner: null, completed: false, criteria: [{ type: "maximumImport", resourceName: "Water", amount: 7, completed: false }] },
+  ])));
+  await page.goto("/?test=true");
+
+  await page.locator("#mandate-panel .mandate-item").click();
+  await page.locator("#mandate-claim-button").click();
+
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mandates")!)[0].completed)).toEqual(true);
+});

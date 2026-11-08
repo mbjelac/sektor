@@ -1355,6 +1355,94 @@ test("stops telling of a mandate given up from its message", async ({ page }) =>
   }))).toEqual({ owner: null, isPopupShown: false, isMessageShown: false });
 });
 
+// Building on the sektor changes what the player's sektors do between them, so the open list of
+// their mandates follows: the Wood the processor sends out completes the first mandate, whose
+// criterion then leaves the row as the mandate turns green, while the second asks for more Wood than
+// that and stays as it was.
+test("shows in the open list of mandates what building on the sektor completes", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
+    localStorage.setItem("mandates", JSON.stringify([
+      { number: 1, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 3 }] },
+      { number: 2, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 50 }] },
+    ]));
+  });
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await placeHub(page);
+  // Picking a building from the toolbar puts the list away, so the processor is picked before the
+  // list is opened, and put up on the map while it is open.
+  await page.locator('.building-item[data-building-name="TestProcessor"]').click();
+  await page.locator("#mandate-button").click();
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+  const listedBeforeBuilding = await getListedMandates(page);
+
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = (await canvas.boundingBox())!;
+  await canvas.click({ position: { x: canvasBox.width / 2, y: canvasBox.height / 2 } });
+  await page.waitForTimeout(200);
+
+  expect({ listedBeforeBuilding, listedAfterBuilding: await getListedMandates(page) }).toEqual({
+    listedBeforeBuilding: [
+      { number: "1", criteria: ["Wood"], completed: false },
+      { number: "2", criteria: ["Wood"], completed: false },
+    ],
+    listedAfterBuilding: [
+      { number: "1", criteria: [], completed: true },
+      { number: "2", criteria: ["Wood"], completed: false },
+    ],
+  });
+});
+
+// A mandate of the player told of on the map, and the list of mandates opened over it.
+async function openMandateListOverMap(page: Page) {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 7, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+  ])));
+  await page.goto("/sektor.html?test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator("#mandate-button").click();
+}
+
+// The player turning to something else on the map is done with the mandates for now.
+test("closes the open list of mandates when a building is picked from the toolbar", async ({ page }) => {
+  await openMandateListOverMap(page);
+
+  await page.locator('.building-item[data-building-name="TestFactory"]').click();
+
+  expect(await page.locator("#mandate-panel").count()).toEqual(0);
+});
+
+test("closes the open list of mandates when a building is picked on the map", async ({ page }) => {
+  await openMandateListOverMap(page);
+  await page.locator("#mandate-button").click();
+  await placeHub(page);
+  await page.locator("#mandate-button").click();
+
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = (await canvas.boundingBox())!;
+  await canvas.click({ position: { x: canvasBox.width / 2 - 300, y: canvasBox.height / 2 } });
+
+  expect(await page.locator("#mandate-panel").count()).toEqual(0);
+});
+
+test("closes the open list of mandates when anything of a message is clicked", async ({ page }) => {
+  await openMandateListOverMap(page);
+
+  await page.locator("#mandate-message-7 .show-mandate-button").click();
+
+  expect(await page.locator("#mandate-panel").count()).toEqual(0);
+});
+
+// Every mandate of the open list of mandates: its number, the resources of the criteria it still
+// shows, and whether it is marked completed.
+function getListedMandates(page: Page) {
+  return page.locator("#mandate-panel .mandate-item").evaluateAll(items => items.map(item => ({
+    number: item.querySelector(".mandate-number")!.textContent,
+    criteria: [...item.querySelectorAll(".mandate-criterion-resource")].map(resource => (resource as HTMLElement).title),
+    completed: item.querySelector(".mandate-completion")!.classList.contains("mandate-completed"),
+  })));
+}
+
 // Completing a mandate leaves nothing more to tell of it.
 test("stops telling of a mandate once the player completes it", async ({ page }) => {
   await page.evaluate(() => {

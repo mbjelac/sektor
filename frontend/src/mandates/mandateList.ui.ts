@@ -6,9 +6,23 @@ import { getUsername } from "../login/login.api";
 import { showMandateDetailsDialog, showMandateDialog } from "./mandateDialog.ui";
 import { createCompletionDot } from "./completionDot.ui";
 import { filterMandates, MandateFilter } from "./mandateFilter";
+import { recalculateMandates } from "./recalculateMandates";
 
 // The list opens on the mandates waiting to be claimed.
 let mandateFilter: MandateFilter = "unclaimed";
+
+// Whoever else shows the player's mandates, told whenever the player claims or gives one up from the
+// list, so that they can show it too.
+let mandatesChangedCallback: (() => void) | null = null;
+
+export function onMandatesChanged(callback: () => void) {
+  mandatesChangedCallback = callback;
+}
+
+// The list shows the player's own mandates the next time it is drawn, where the player has any.
+export function showOwnMandates() {
+  mandateFilter = "own";
+}
 
 // The list is named after the mandates it is showing.
 const MANDATE_LIST_TITLES: Record<MandateFilter, string> = {
@@ -19,13 +33,17 @@ const MANDATE_LIST_TITLES: Record<MandateFilter, string> = {
 // The mandates waiting to be claimed, or the player's own, standing under what the whole planet
 // moves and named as the other lists of the page are. Drawn again whenever a mandate appears, so
 // what stands there is cleared away first. A player with no mandates of their own has nothing to
-// choose between, so they are shown the mandates waiting to be claimed and no buttons.
+// choose between, so they are shown the mandates waiting to be claimed and no buttons. Where the list
+// is not open, there is nothing to draw.
 export function renderMandateList() {
+  const mandatePanel = document.getElementById("mandate-panel");
+  if (!mandatePanel) return;
+
   const mandates = getMandates();
   const hasOwnMandates = filterMandates(mandates, "own", getUsername()).length > 0;
   if (!hasOwnMandates) mandateFilter = "unclaimed";
 
-  document.getElementById("mandate-panel")!.replaceChildren(
+  mandatePanel.replaceChildren(
     createHeader(hasOwnMandates),
     ...filterMandates(mandates, mandateFilter, getUsername()).map(createMandateItem),
   );
@@ -90,10 +108,11 @@ function createMandateItem(mandate: Mandate): HTMLElement {
 }
 
 // A claimed mandate is the player's, and is no longer waiting in the list; a mandate given up is the
-// player's no longer, so it leaves their list.
+// player's no longer, so it leaves their list. A mandate just claimed may be completed already by the
+// sektors the player has, so that is worked out at once.
 function openMandate(mandate: Mandate) {
   if (mandate.owner !== null) {
-    showMandateDetailsDialog(mandate, renderMandateList);
+    showMandateDetailsDialog(mandate, showChangedMandates);
     return;
   }
 
@@ -101,7 +120,13 @@ function openMandate(mandate: Mandate) {
     mandate,
     onClaimed: () => {
       setMandateOwner(mandate.number, getUsername()!);
-      renderMandateList();
+      recalculateMandates(getUsername());
+      showChangedMandates();
     },
   });
+}
+
+function showChangedMandates() {
+  renderMandateList();
+  mandatesChangedCallback?.();
 }

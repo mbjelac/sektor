@@ -1361,6 +1361,18 @@ body > main {
     display: none;
 }
 
+/* Over the map the list is a panel of its own, placed under the icon opening it, and only as tall as
+   what it holds, up to half the window. */
+#mandate-panel.mandate-panel-on-map {
+    bottom: auto;
+    z-index: 250;
+    max-height: 50vh;
+    padding: 12px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
 .mandate-header {
     position: sticky;
     top: 0;
@@ -1653,6 +1665,56 @@ body > main {
     color: #ccc;
     font-family: sans-serif;
     font-size: 14px;
+}
+
+/* The way to the mandates from the map, in front of the player's name. */
+.mandate-button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 10px;
+    padding: 0;
+    background: none;
+    border: none;
+    color: #ccc;
+    font-family: sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.mandate-button:hover {
+    color: #fff;
+}
+
+.mandate-counts {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: #fff;
+    white-space: pre;
+}
+
+/* With nothing to count, the counts take up no room beside the icon. */
+.mandate-counts:empty {
+    display: none;
+}
+
+.mandate-count {
+    padding: 0 4px;
+    border-radius: 3px;
+}
+
+.mandate-count-incomplete {
+    background: #8b0000;
+    font-weight: bold;
+}
+
+.mandate-count-complete {
+    background: #1e6b2e;
+}
+
+.mandate-count-claimed {
+    padding: 0;
 }
 
 .user-icon {

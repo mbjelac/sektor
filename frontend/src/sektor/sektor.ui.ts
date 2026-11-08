@@ -47,9 +47,12 @@ import { showAbandonDialog } from "./abandonDialog.ui";
 import { showUser } from "../login/userDisplay.ui";
 import { isTestMode } from "../testMode";
 import { showRenameDialog } from "../renameDialog.ui";
+import { hideMandatePanel, showMandateButton, showMandateCounts } from "../mandates/mandateButton.ui";
+import { onMandatesChanged, renderMandateList } from "../mandates/mandateList.ui";
 
 requireLogin();
 showUser();
+showMandateButton();
 
 const FLOOR_PROPERTY = "soil";
 const sektorId = new URLSearchParams(window.location.search).get("id");
@@ -372,15 +375,19 @@ function saveState() {
   });
   // A sektor changed is a change to what its owner's sektors do between them.
   recalculateMandates(getSektorOwnerName());
-  showPlayerMandateMessages();
+  showPlayerMandates();
 }
 
-// The mandates the player looking at the map still has to complete, whoever's sektor it is. A mandate
-// given up is no longer the player's, so the messages are told anew once one is.
-function showPlayerMandateMessages() {
+// The mandates the player looking at the map still has to complete, whoever's sektor it is, how many
+// they have, beside the icon of the list of mandates, and the list itself, where it is open, so that
+// a mandate or criterion completed or no longer completed shows there at once. A mandate given up
+// is no longer the player's, so all of it is shown anew once one is.
+function showPlayerMandates() {
+  showMandateCounts();
+  renderMandateList();
   showMandateMessages(
     getMandates().filter(mandate => mandate.owner === getUsername() && !mandate.completed),
-    showPlayerMandateMessages,
+    showPlayerMandates,
   );
 }
 
@@ -1358,6 +1365,7 @@ const sektorUi = (p: p5) => {
       // No building tool selected — check if there's a placed building to inspect
       const placed = placedBuildings.find(b => b.location.x === grid.x && b.location.y === grid.y);
       if (placed) {
+        hideMandatePanel();
         openBuildingPanel(placed);
       } else {
         openTerrainPanel({ x: grid.x, y: grid.y });
@@ -1522,7 +1530,15 @@ showSektorOwner();
 showToolbarToOwner();
 showMessagesToOwner();
 initPropertyToggler();
-onBuildingSelected(selectBuildingProperty);
+onBuildingSelected(buildingName => {
+  selectBuildingProperty(buildingName);
+  // A building picked from the toolbar is something else to look at than the mandates.
+  if (buildingName) hideMandatePanel();
+});
+// Whatever the player does with a message takes them away from the mandates, so they are put away.
+document.getElementById("messages")!.addEventListener("click", event => {
+  if ((event.target as HTMLElement).closest("button, .message-link")) hideMandatePanel();
+});
 onResourceHover(pointAtResource);
 if (!isTestMode) {
   loadSavedState();
@@ -1538,7 +1554,9 @@ updateMessages(
   openedSektorState.disabledBuildings.length,
   openedSektorState.wastedExportAmount,
 );
-showPlayerMandateMessages();
+showPlayerMandates();
+// A mandate claimed or given up from the list of mandates over the map changes what is told of there.
+onMandatesChanged(showPlayerMandates);
 if (isTestMode) {
   (window as any).updateSektorStatePanel = updateSektorStatePanel;
   (window as any).showBuildingPanel = showBuildingPanel;

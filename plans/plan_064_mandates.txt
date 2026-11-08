@@ -223,7 +223,7 @@ In such way a player's score is solely dependant on mandates. No mandate is link
 - [done] mandate message has that same check-badge icon & mandate number instead of M-<number>
 - [done] mandate number in mandate list preceded by same check-badge icon
 
-#12 Mandate list reachable in sektor map
+#12 [done] Mandate list reachable in sektor map
 - [done] in front of user name in right-top corner is the mandate icon from #11
     - the mandate list's clipboard-document-check icon
 - [done] when clicked, mandate list panel appears immediately below so the icon is above the panel's top-right corner
@@ -236,7 +236,7 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - claimed mandate added as message
 - [done] if player abandons a mandate from map mandate list
     - abandoned mandate removed from messages
-- player can see number of mandates
+- [done] player can see number of mandates
     - next to mandate icon in top-right of map screen there are values
         - number of incomplete mandates
             - white bold
@@ -253,11 +253,17 @@ In such way a player's score is solely dependant on mandates. No mandate is link
                 - if any of first two numbers > 0
             - all mandate numbers hidden if 0
                 - the icon stays, so that available mandates can still be opened and claimed from the map
-- change in mandate & criteria completness status is visible on list
+- [done] change in mandate & criteria completness status is visible on list
     - if mandate becomes complete, it is marked green instead of red
     - if mandate becomes incomplete, it is marked red instead of green
     - if a criteria becomes complete, it's abbreviation is hidden in mandate list
     - if a criteria becomes incomplete, it's abbreviation is shown in mandate list
+- [done] opened mandate list is closed
+    - when a building selected on map
+    - when a building selected on toolbar
+    - when any message tool (e.g. eye button) clicked
+- [done] open mandate list in player-mandates filter
+
 
 #13 Completed mandates increase player's score
 - player score is visible always in front of player name in top right
