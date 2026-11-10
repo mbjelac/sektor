@@ -176,32 +176,29 @@ In such way a player's score is solely dependant on mandates. No mandate is link
         - mandate list is updated (player mandate list no longer displays mandate)
         - sektor map message is removed (if abandoned from sektor map)
 
-#10 [done] Mandates with multiple export & import criteria are created
+#10 [done] Mandates with export or import criteria are created
 - [done] remove current algorithm of criteria creation
 - [done] create mandate criteria using one of these strategies ("positive" resource means non-negative):
-    - strategy is chosen at random: 8/10 positive exports & imports, 1/10 negative imports, 1/10 negative exports
-    - minimum positive exports & maximum positive imports
-        - choose an export & an amount as a minimum export requirement
-        - choose several imports and amounts for maximum import requirements
-            - 1 to 3 imports, how many chosen at random (never more than there are inputs to choose from)
-            - inputs with the largest amounts are restricted first
-            - choose imports to restrict by following algorithm:
-                - find building definitions which output the chosen export
-                - choose imports from their inputs
-        - choose amounts of exports & imports to be balanced
-            - avoid chosing requiring very low exports & very high imports, and vice versa
-                - try to balance using the building function
-                - maximum import = minimum export × (input per unit of output in the building function) × random factor between 0.5 and 1 (exclusive), kept within the range of amount values
-                - maximum import is always less than what the minimum export needs, so some local production of that input is needed
-                    - an input of which the minimum export needs no more than the lowest amount value is not restricted
-    - minimum negative imports
+    - each mandate has exactly one criteria
+    - strategy is chosen at random: 2/3 minimum positive export, 1/3 minimum negative import
+        - if there are no negative resources, always minimum positive export
+    - minimum positive export
+        - choose a positive resource
+            - chosen from resources with higher global import amounts
+                - the larger the resource's global import, the more likely it is chosen
+                - resources not globally imported are not chosen
+                - if no positive resource is globally imported, choose any at random
+        - choose an amount
+        - add a "minimum export" criteria for that resource & amount
+    - minimum negative import
         - choose a negative resource
+            - chosen from resources with higher global export amounts
+                - the larger the resource's global export, the more likely it is chosen
+                - resources not globally exported are not chosen
+                - if no negative resource is globally exported, choose any at random
         - choose an amount
         - add a "minimum import" criteria for that resource & amount
-    - maximum negative exports
-        - choose a negative resource
-        - choose an amount
-        - add a "maximum export" criteria for that resource & amount
+    - global imports & exports are those of the whole planet (all sektors), at the time the mandate is created
     - amount values should be chosen randomly from a wide range
         - lowest value 5
         - highest value 50
