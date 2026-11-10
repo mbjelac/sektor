@@ -83,8 +83,16 @@ export function sortedResourceNames(
   importsAndExports: ImportsAndExports,
   sortOrder: ResourceSortOrder,
 ): string[] {
-  const resourceNames = listedResourceNames(importsAndExports);
+  return sortResourceNames(listedResourceNames(importsAndExports), importsAndExports, sortOrder);
+}
 
+// The resources given, in the order of the column asked for by what is moved of them. Those given are
+// expected in the order their names put them in, which is kept for any tied in both columns.
+export function sortResourceNames(
+  resourceNames: string[],
+  importsAndExports: ImportsAndExports,
+  sortOrder: ResourceSortOrder,
+): string[] {
   if (sortOrder === "imported") {
     return resourceNames.sort((first, second) =>
       movedDifference(importsAndExports.imports, second, first) || movedDifference(importsAndExports.exports, first, second));

@@ -1,5 +1,11 @@
 import { type SektorState } from "./Sektor";
-import { findThroughputValue, ImportsAndExports, listedResourceNames } from "../globalImportsAndExports";
+import {
+  findThroughputValue,
+  ImportsAndExports,
+  listedResourceNames,
+  ResourceSortOrder,
+  sortResourceNames,
+} from "../globalImportsAndExports";
 import { arrowDownTrayIcon, arrowUpTrayIcon, globeAltIcon } from "../icons";
 import { showGlobalStateDialog } from "../globalStateDialog.ui";
 import { formatNumber } from "../formatNumber";
@@ -7,6 +13,9 @@ import { resourceNameText, throughputText } from "../throughputDisplay.ui";
 import { pointAtResourceWhileHovered } from "../resourceHover.ui";
 
 let panelEl: HTMLElement | null = null;
+// Which column the sektor's resources are put in order by, kept while the player builds on, until
+// they ask for another. It begins with the order their names put them in.
+let sortOrder: ResourceSortOrder = "resource";
 
 // What this sektor brings in and sends out, with what the whole planet brings in and sends out a
 // click away.
@@ -16,7 +25,7 @@ export function updateSektorStatePanel(sektorState: SektorState, planetImportsAn
   panelEl!.innerHTML = "";
 
   panelEl!.appendChild(createTitle(planetImportsAndExports));
-  panelEl!.appendChild(createResourceList(sektorState));
+  panelEl!.appendChild(createResourceList(sektorState, () => updateSektorStatePanel(sektorState, planetImportsAndExports)));
 }
 
 // What this sektor moves stands under the name of the panel, and the globe at the end of the same
@@ -52,16 +61,19 @@ function ensurePanel() {
   document.getElementById("right-panels")!.appendChild(panelEl);
 }
 
-function createResourceList(sektorState: SektorState): HTMLElement {
+// Every resource the sektor moves, or would move were nothing cut down, in the order of what it
+// actually moves.
+function createResourceList(sektorState: SektorState, onSorted: () => void): HTMLElement {
   const list = document.createElement("div");
   list.className = "ss-list";
 
-  list.appendChild(createHeaderRow());
+  list.appendChild(createHeaderRow(onSorted));
 
-  for (const resourceName of listedResourceNames({
+  const resourceNames = listedResourceNames({
     imports: [...sektorState.imports, ...sektorState.uncroppedImports],
     exports: [...sektorState.exports, ...sektorState.uncroppedExports],
-  })) {
+  });
+  for (const resourceName of sortResourceNames(resourceNames, sektorState, sortOrder)) {
     list.appendChild(createResourceRow(resourceName, sektorState));
   }
 
@@ -70,28 +82,44 @@ function createResourceList(sektorState: SektorState): HTMLElement {
   return list;
 }
 
-function createHeaderRow(): HTMLElement {
+// Every column name is clicked to put the resources in the order of that column, as in the list of
+// the whole planet, and the column they stand in the order of is named in white.
+function createHeaderRow(onSorted: () => void): HTMLElement {
   const headerRow = document.createElement("div");
   headerRow.className = "ss-row ss-header";
 
-  const resourceHeader = document.createElement("span");
-  resourceHeader.className = "ss-cell-resource";
-  resourceHeader.textContent = "Resource";
-  headerRow.appendChild(resourceHeader);
-
-  const importHeader = document.createElement("span");
-  importHeader.className = "ss-cell-value";
-  importHeader.innerHTML = arrowDownTrayIcon;
-  importHeader.title = "Imported";
-  headerRow.appendChild(importHeader);
-
-  const exportHeader = document.createElement("span");
-  exportHeader.className = "ss-cell-value";
-  exportHeader.innerHTML = arrowUpTrayIcon;
-  exportHeader.title = "Exported";
-  headerRow.appendChild(exportHeader);
+  headerRow.appendChild(createSortButton("resource", "Resource", "ss-cell-resource", onSorted));
+  headerRow.appendChild(createSortButton("imported", arrowDownTrayIcon, "ss-cell-value", onSorted, "Imported"));
+  headerRow.appendChild(createSortButton("exported", arrowUpTrayIcon, "ss-cell-value", onSorted, "Exported"));
 
   return headerRow;
+}
+
+// A column is named by a picture where a word would not fit, and then carries the word it stands for
+// to be read on hovering it.
+function createSortButton(
+  columnSortOrder: ResourceSortOrder,
+  nameOrIcon: string,
+  className: string,
+  onSorted: () => void,
+  tooltip?: string,
+): HTMLElement {
+  const sortButton = document.createElement("button");
+  sortButton.className = `${className} ss-sort`;
+  sortButton.classList.toggle("ss-sort-selected", columnSortOrder === sortOrder);
+  sortButton.dataset.sortOrder = columnSortOrder;
+  if (tooltip) {
+    sortButton.innerHTML = nameOrIcon;
+    sortButton.title = `${tooltip} — sort by this`;
+  } else {
+    sortButton.textContent = nameOrIcon;
+    sortButton.title = `${nameOrIcon} — sort by this`;
+  }
+  sortButton.addEventListener("click", () => {
+    sortOrder = columnSortOrder;
+    onSorted();
+  });
+  return sortButton;
 }
 
 function createResourceRow(resourceName: string, sektorState: SektorState): HTMLElement {
