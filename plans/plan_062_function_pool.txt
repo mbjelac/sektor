@@ -57,10 +57,9 @@ Unit multiplication for all functions uses the same pool. The total sum of all m
     - recalculate sektor imports, exports, local resources and any other sektor-level properties depending on inputs & outputs
 
 #2 Player can see building's pool size before constructing it
-- in function panel, display pool size
+- [done] in function panel, display pool size
     - only display if poolSize exists
-    - add a row directly beneath functions
-    - separate from functions & construction with horizontal lines
-    - row contents: "Capacity:<spacing>O<spacing>O<spacing>O"
-    - after "Capacity:<spacing>" put filled circles in the amount of poolSize
-    - same filled circles as used to indicate multiplier in building panel
+    - add a row directly beneath title
+    - row contents: "Capacity: <poolSize>"
+        - label: small, light gray
+        - value: small, bold, white
