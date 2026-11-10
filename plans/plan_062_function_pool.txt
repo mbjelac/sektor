@@ -60,6 +60,7 @@ Unit multiplication for all functions uses the same pool. The total sum of all m
 - [done] in function panel, display pool size
     - only display if poolSize exists
     - add a row directly beneath title
+        - center horizontally
     - row contents: "Capacity: <poolSize>"
         - label: small, light gray
         - value: small, bold, white
