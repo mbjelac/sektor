@@ -56,11 +56,11 @@ Unit multiplication for all functions uses the same pool. The total sum of all m
     - multiply all inputs & outputs for that function
     - recalculate sektor imports, exports, local resources and any other sektor-level properties depending on inputs & outputs
 
-#2 Player can see building's pool size before constructing it
+#2 [done] Player can see building's pool size before constructing it
 - [done] in function panel, display pool size
     - only display if poolSize exists
     - add a row directly beneath title
         - center horizontally
-    - row contents: "Capacity: <poolSize>"
+    - row contents: "MultiBlock: <poolSize>"
         - label: small, light gray
         - value: small, bold, white

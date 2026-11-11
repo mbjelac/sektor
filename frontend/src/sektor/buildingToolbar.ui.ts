@@ -53,8 +53,9 @@ export function deselectBuilding(): void {
 let toolbarFunctionPanel: HTMLElement | null = null;
 
 // A building which has not been built yet stands on no location, so an output of its named
-// after a location property is shown by that property's name alone, without an amount. What goes
-// into building it is shown below its functions.
+// after a location property is shown by that property's name alone, without an amount. How many
+// times over its functions can be done between them is shown under its name, and what goes into
+// building it below its functions.
 function showToolbarFunctionPanel(building: BuildingDefinition) {
   hideToolbarFunctionPanel();
 
@@ -65,6 +66,10 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   buildingTitle.className = "fp-title";
   buildingTitle.textContent = building.name;
   toolbarFunctionPanel.appendChild(buildingTitle);
+
+  if (building.properties.poolSize) {
+    toolbarFunctionPanel.appendChild(createCapacityRow(building.properties.poolSize));
+  }
 
   toolbarFunctionPanel.appendChild(createColumnHeaders());
 
@@ -88,6 +93,23 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   const constructionPanelRect = constructionPanel.getBoundingClientRect();
   toolbarFunctionPanel.style.left = `${constructionPanelRect.right + TOOLBAR_FUNCTION_PANEL_MARGIN}px`;
   toolbarFunctionPanel.style.top = `${constructionPanelRect.top}px`;
+}
+
+function createCapacityRow(poolSize: number): HTMLElement {
+  const capacityRow = document.createElement("div");
+  capacityRow.className = "fp-capacity";
+
+  const capacityLabel = document.createElement("span");
+  capacityLabel.className = "fp-capacity-label";
+  capacityLabel.textContent = "MultiBlock: ";
+  capacityRow.appendChild(capacityLabel);
+
+  const capacityValue = document.createElement("span");
+  capacityValue.className = "fp-capacity-value";
+  capacityValue.textContent = String(poolSize);
+  capacityRow.appendChild(capacityValue);
+
+  return capacityRow;
 }
 
 function hideToolbarFunctionPanel() {

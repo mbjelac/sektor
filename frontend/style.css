@@ -317,6 +317,22 @@ body > main {
     margin-bottom: 6px;
 }
 
+.fp-capacity {
+    font-family: sans-serif;
+    font-size: 11px;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.fp-capacity-label {
+    color: #aaa;
+}
+
+.fp-capacity-value {
+    color: #fff;
+    font-weight: bold;
+}
+
 .bf-column-headers {
     align-self: stretch;
     display: grid;
