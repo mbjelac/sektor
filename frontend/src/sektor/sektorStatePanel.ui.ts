@@ -110,10 +110,10 @@ function createSortButton(
   sortButton.dataset.sortOrder = columnSortOrder;
   if (tooltip) {
     sortButton.innerHTML = nameOrIcon;
-    sortButton.title = `${tooltip} — sort by this`;
+    sortButton.title = tooltip;
   } else {
     sortButton.textContent = nameOrIcon;
-    sortButton.title = `${nameOrIcon} — sort by this`;
+    sortButton.title = nameOrIcon;
   }
   sortButton.addEventListener("click", () => {
     sortOrder = columnSortOrder;
