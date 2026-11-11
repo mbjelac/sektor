@@ -1,0 +1,5 @@
+An even simpler construction system would be that there is a resource "Construction".
+Every building has buildingSize property in it's Construction section.
+A sektor's Construction import is the sum of all buildingSize values of all constructed buildings.
+
+The Construction resource can be output by a specialised building, e.g. "Construction yard" and having simplified inputs like Glass, Metals, Minerals, etc.
