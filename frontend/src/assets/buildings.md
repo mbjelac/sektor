@@ -180,7 +180,7 @@ people
 
 ## Construction
 
-duration=2000
+duration=2200
 
 Glass 3
 StructuralAlloys 1
