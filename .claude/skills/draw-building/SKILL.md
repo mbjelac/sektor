@@ -110,6 +110,13 @@ is there.
   groups, group g getting `ashow(200·g,2000)`. Seeded by the variant number; rerun it after
   regenerating or editing any park.
 
+- `tools/sgl/generator/agriplot/agriplot.py` — writes Agriplot variants `1`–`9` (`<n>.sgl` and
+  `<n>.construction.sgl`); the hand-made `0` is left alone, and the script's layout reproduces it
+  exactly. The 9 crop sections of 0.sgl each get a shade of `#1c750b` (only lightness varies, 9
+  levels 15–35% dealt at random), and 2–5 random sections are rows of `s(4)` spheres instead of
+  half-sunk cylinders. Constructions raise each section 2.05 at its fixed start (last 1800, so
+  `duration=2200` fits all). Seeded by the variant number; rerunning reproduces the files.
+
 ## The working file
 
 `scratch_sektor.txt` in the scratch folder of the **current** IntelliJ — the newest
