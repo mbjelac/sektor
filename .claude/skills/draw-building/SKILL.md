@@ -112,8 +112,12 @@ is there.
 
 ## The working file
 
+`scratch_sektor.txt` in the scratch folder of the **current** IntelliJ — the newest
+`IntelliJIdea<version>` folder that has one. Each IntelliJ upgrade gets a new folder and the old
+ones keep their stale copies, so never hard-code the version; find the file with:
+
 ```
-/Users/mbjelac/Library/Application Support/JetBrains/IntelliJIdea2026.2/scratches/scratch_sektor.txt
+ls -d "$HOME/Library/Application Support/JetBrains"/IntelliJIdea*/scratches/scratch_sektor.txt | sort -V | tail -1
 ```
 
 Always this file, regardless of the working directory. Nothing in the repo reads it — the user
