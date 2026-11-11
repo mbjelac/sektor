@@ -317,18 +317,18 @@ body > main {
     margin-bottom: 6px;
 }
 
-.fp-capacity {
+.fp-pool-size {
     font-family: sans-serif;
     font-size: 11px;
     text-align: center;
     margin-bottom: 6px;
 }
 
-.fp-capacity-label {
+.fp-pool-size-label {
     color: #aaa;
 }
 
-.fp-capacity-value {
+.fp-pool-size-value {
     color: #fff;
     font-weight: bold;
 }
@@ -669,6 +669,19 @@ body > main {
     /* As tall as a row carrying the ⚠️ of a property pollution has spoiled, so that every row is
        spaced the same whether or not it carries one. */
     min-height: 20px;
+}
+
+.bp-used-pool {
+    color: #aaa;
+    font-family: sans-serif;
+    font-size: 11px;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.bp-used-pool-value {
+    color: #fff;
+    font-weight: bold;
 }
 
 .bp-pollution-warning,

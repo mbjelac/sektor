@@ -68,7 +68,7 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   toolbarFunctionPanel.appendChild(buildingTitle);
 
   if (building.properties.poolSize) {
-    toolbarFunctionPanel.appendChild(createCapacityRow(building.properties.poolSize));
+    toolbarFunctionPanel.appendChild(createPoolSizeRow(building.properties.poolSize));
   }
 
   toolbarFunctionPanel.appendChild(createColumnHeaders());
@@ -95,21 +95,21 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   toolbarFunctionPanel.style.top = `${constructionPanelRect.top}px`;
 }
 
-function createCapacityRow(poolSize: number): HTMLElement {
-  const capacityRow = document.createElement("div");
-  capacityRow.className = "fp-capacity";
+function createPoolSizeRow(poolSize: number): HTMLElement {
+  const poolSizeRow = document.createElement("div");
+  poolSizeRow.className = "fp-pool-size";
 
-  const capacityLabel = document.createElement("span");
-  capacityLabel.className = "fp-capacity-label";
-  capacityLabel.textContent = "MultiBlock: ";
-  capacityRow.appendChild(capacityLabel);
+  const poolSizeLabel = document.createElement("span");
+  poolSizeLabel.className = "fp-pool-size-label";
+  poolSizeLabel.textContent = "MultiBlock: ";
+  poolSizeRow.appendChild(poolSizeLabel);
 
-  const capacityValue = document.createElement("span");
-  capacityValue.className = "fp-capacity-value";
-  capacityValue.textContent = String(poolSize);
-  capacityRow.appendChild(capacityValue);
+  const poolSizeValue = document.createElement("span");
+  poolSizeValue.className = "fp-pool-size-value";
+  poolSizeValue.textContent = String(poolSize);
+  poolSizeRow.appendChild(poolSizeValue);
 
-  return capacityRow;
+  return poolSizeRow;
 }
 
 function hideToolbarFunctionPanel() {

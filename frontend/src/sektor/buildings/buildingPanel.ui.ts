@@ -142,6 +142,14 @@ export function showBuildingPanel({ name, code, buildingFunctions, unusedPool, d
   previewContainer.className = "bf-preview";
   panelEl.appendChild(previewContainer);
 
+  // A building whose functions draw on a pool tells under its picture how much of the pool they draw
+  // on between them, out of all of it.
+  const poolFunctionStates = buildingFunctions.filter(buildingFunctionState => buildingFunctionState.multiplier !== undefined);
+  if (poolFunctionStates.length > 0) {
+    const usedPool = poolFunctionStates.reduce((total, buildingFunctionState) => total + buildingFunctionState.multiplier!, 0);
+    panelEl.appendChild(createUsedPoolRow(usedPool, usedPool + (unusedPool ?? 0)));
+  }
+
   // A disabled building is warned of right under its name, since nothing it is shown to consume or
   // produce below holds while it stands idle.
   if (disabled) {
@@ -232,6 +240,20 @@ export function showBuildingPanel({ name, code, buildingFunctions, unusedPool, d
 
   panelLocation = location;
   panelEl.scrollTop = scrollTop;
+}
+
+function createUsedPoolRow(usedPool: number, poolSize: number): HTMLElement {
+  const usedPoolRow = document.createElement("div");
+  usedPoolRow.className = "bp-used-pool";
+  usedPoolRow.append("Used blocks: ", createUsedPoolValue(usedPool), " / ", createUsedPoolValue(poolSize));
+  return usedPoolRow;
+}
+
+function createUsedPoolValue(poolAmount: number): HTMLElement {
+  const value = document.createElement("span");
+  value.className = "bp-used-pool-value";
+  value.textContent = String(poolAmount);
+  return value;
 }
 
 // Pollution is how much of a location is fouled rather than how much it holds, so it is a

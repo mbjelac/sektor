@@ -698,6 +698,32 @@ test("shares the pool of a building between its functions as their circles are c
   });
 });
 
+// TestKiln has three functions drawing on a pool of 5, of which none is used when it is built.
+test("tells how much of a building's pool its functions use, as their circles are clicked", async ({ page }) => {
+  await placeHub(page);
+  await placeKiln(page);
+  const usedPool = () => page.locator("#building-panel .bp-used-pool").textContent();
+
+  const initially = await usedPool();
+  await clickPoolButton(page, 0, 2);
+  const afterThirdCircleOfFirst = await usedPool();
+  await clickPoolButton(page, 1, 0);
+  const afterFirstCircleOfSecond = await usedPool();
+
+  expect({ initially, afterThirdCircleOfFirst, afterFirstCircleOfSecond }).toEqual({
+    initially: "Used blocks: 0 / 5",
+    afterThirdCircleOfFirst: "Used blocks: 3 / 5",
+    afterFirstCircleOfSecond: "Used blocks: 4 / 5",
+  });
+});
+
+test("displays the used pool of a building under its picture", async ({ page }) => {
+  await placeHub(page);
+  await placeKiln(page);
+  await clickPoolButton(page, 0, 2);
+  await expectScreenshot(page, "used-pool", "#building-panel .bp-used-pool");
+});
+
 test("displays the pool of a function in the top-right corner of the function", async ({ page }) => {
   await placeHub(page);
   await placeKiln(page);
@@ -817,8 +843,8 @@ test("displays function panel when building tool is selected", async ({ page }) 
 });
 
 // TestKiln is built of Wood, which is shown below its functions, and its functions share a pool of 5,
-// shown as its MultiBlock under its name.
-test("displays function panel with the building's capacity and what goes into building it", async ({ page }) => {
+// shown as its pool size under its name.
+test("displays function panel with the building's pool size and what goes into building it", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestKiln"]').click();
   await page.waitForTimeout(100);
