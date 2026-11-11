@@ -64,3 +64,14 @@ Unit multiplication for all functions uses the same pool. The total sum of all m
     - row contents: "MultiBlock: <poolSize>"
         - label: small, light gray
         - value: small, bold, white
+
+#3 Player can see number of used & total function multipliers on constructed building
+- display number of used & total multipliers in building panel
+    - display row "Used blocks: <used> / <total>"
+        - used = sum of applied multipliers across all building functions
+        - total = poolSize
+        - display directly below building image
+        - center horizontally
+        - text light gray
+        - values bold white
+- update values when multipliers changed
