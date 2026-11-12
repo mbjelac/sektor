@@ -1,0 +1,16 @@
+Completed mandates bring points to the player.
+
+The stricter the mandate, the higher the score.
+
+In such way a player's score is solely dependant on mandates. No mandate is linked to a specific sektor
+- a player may use however many sektors they wish to fulfill a mandate. However, all claimed mandates have to stay fulfilled to keep their scores.
+
+#14 Completed mandates increase player's score
+- player score is visible always in front of player name in top right
+    - bold
+    - prepended by star icon
+- each mandate has points
+- in mandate list, points are displayed in bottom right of mandate list item panel
+    - small
+    - prepended by star icon
+-

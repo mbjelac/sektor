@@ -2,7 +2,6 @@ In order to achieve a sense of progress in the game, players can claim Mandates.
 A mandate is a set of criteria.
 A mandate is completed when all player's sektors fullfills the criteria.
 A mandate is *again* incomplete when all player's sektors *no longer* fullfills the criteria.
-Completed mandates bring points to the player.
 
 Examples:
 - mandate 1
@@ -15,11 +14,6 @@ Examples:
     - hapiness must be at least 70%
 - mandate 4
     - ecological damage must be under 50%
-
-The stricter the mandate, the higher the score.
-
-In such way a player's score is solely dependant on mandates. No mandate is linked to a specific sektor
-- a player may use however many sektors they wish to fulfill a mandate. However, all claimed mandates have to stay fulfilled to keep their scores.
 
 #1 [done] Sektor no longer has difficulty or score
 - [done] difficulty & score will be superseeded by mandates
@@ -279,13 +273,3 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - initial filter on global
     - if current player filter clicked
         - display import & export list calculated (by subtracting imports from exports for same resource type) only for current player's sektors
-
-#14 Completed mandates increase player's score
-- player score is visible always in front of player name in top right
-    - bold
-    - prepended by star icon
-- each mandate has points
-- in mandate list, points are displayed in bottom right of mandate list item panel
-    - small
-    - prepended by star icon
--
