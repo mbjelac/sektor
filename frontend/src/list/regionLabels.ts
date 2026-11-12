@@ -24,6 +24,11 @@ export function regionCover(region: PlanetRegion): string {
   return cover(region);
 }
 
+// The picture of what covers a triangle alone, for where there is room for no word at all.
+export function regionCoverIcon(region: PlanetRegion): string {
+  return regionCover(region).split(" ")[0];
+}
+
 function cover(region: PlanetRegion): string {
   if (!region.isLand) return "🌊 Marine";
   if (region.isDesert) return "🏜 Desert";

@@ -1867,6 +1867,18 @@ body > main {
     background: #fff;
 }
 
+/* A criterion of a mandate message is clicked to see which of the player's sektors move its
+   resource. */
+.message-resource.mandate-criterion {
+    cursor: pointer;
+}
+
+/* A sektor of the list of those moving a resource is double clicked to be opened. */
+.resource-sektor-item {
+    cursor: pointer;
+    user-select: none;
+}
+
 /* A link in a message takes the player to what the message tells them to do, and is pointed at as a
    resource named in a message is. */
 .message-link {
@@ -1975,6 +1987,45 @@ body > main {
        ever growing to the edges of the map behind it. */
     height: 70vh;
     padding: 12px;
+}
+
+/* As high as a mandate opened in full, which it is called up from. */
+.global-state-dialog.resource-sektors-dialog {
+    height: 30vh;
+}
+
+/* The list is named as the planet's is, with the resource it is about right under its name, and the
+   columns below both. */
+.resource-sektors-dialog .list-title {
+    margin-bottom: 10px;
+}
+
+.resource-sektors-resource {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+/* What the player's sektors move of the resource between them, a little apart from its name. */
+.resource-sektors-total {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 12px;
+    font-weight: bold;
+}
+
+.resource-sektors-total-direction {
+    display: inline-flex;
+}
+
+.resource-sektors-total-direction .icon {
+    width: 14px;
+    height: 14px;
 }
 
 /* Sits in the corner of the dialog, over the end of the row naming the list, where there is nothing

@@ -1537,7 +1537,7 @@ onBuildingSelected(buildingName => {
 });
 // Whatever the player does with a message takes them away from the mandates, so they are put away.
 document.getElementById("messages")!.addEventListener("click", event => {
-  if ((event.target as HTMLElement).closest("button, .message-link")) hideMandatePanel();
+  if ((event.target as HTMLElement).closest("button, .message-link, .mandate-criterion")) hideMandatePanel();
 });
 onResourceHover(pointAtResource);
 if (!isTestMode) {

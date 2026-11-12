@@ -260,7 +260,7 @@ Examples:
     - when any message tool (e.g. eye button) clicked
 - [done] open mandate list in player-mandates filter
 
-#13 Player can see which of their sektors import or export how many of a criteria's resource
+#13 [done] Player can see which of their sektors import or export how many of a criteria's resource
 - [done] when player clicks on a resource in mandate message criteria
     - display a modal panel
     - panel title: "Imports & exports of <resource icon> <resource name>"
@@ -282,7 +282,7 @@ Examples:
     - below title: resource icon & resource name in normal sized font
     - spacing between title (with resource) & list header
 - [done] if player doubleclicks the current sektor in panel list, just hide panel
-- player can see total impoirt or export amount
+- [done] player can see total impoirt or export amount
     - next to resource name display: <import or export icon> <total value>
     - total value calculated so:
         - sum all player sektors' export of that resource

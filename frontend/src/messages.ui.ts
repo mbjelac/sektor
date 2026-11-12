@@ -9,6 +9,7 @@ import { selectBuildingTag } from "./sektor/buildingToolbar.ui";
 import { Mandate } from "./mandates/mandates.api";
 import { createCriterionAbbreviation } from "./mandates/criterionAbbreviation.ui";
 import { showMandateDetailsDialog } from "./mandates/mandateDialog.ui";
+import { showResourceSektorsDialog } from "./mandates/resourceSektorsDialog.ui";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -83,7 +84,8 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
 
 // A mandate is told of on a single line: its badge and number, and then what it asks for, every
 // criterion in short, set apart from the next by a bar and on pale green once it is completed. Every
-// criterion is a resource to point at, as any other named in a message is.
+// criterion is a resource to point at, as any other named in a message is, and clicked tells which of
+// the player's sektors bring it in or send it out.
 function mandateAdvice(mandate: Mandate): Node[] {
   const mandateNumber = document.createElement("span");
   mandateNumber.className = "message-mandate-number";
@@ -98,6 +100,7 @@ function mandateAdvice(mandate: Mandate): Node[] {
       criterionAbbreviation.classList.add("message-resource");
       criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);
       pointAtResourceWhileHovered(criterionAbbreviation, criterion.resourceName);
+      criterionAbbreviation.addEventListener("click", () => showResourceSektorsDialog(criterion.resourceName));
       return criterionIndex === 0 ? [criterionAbbreviation] : [document.createTextNode(" | "), criterionAbbreviation];
     }),
   ];
