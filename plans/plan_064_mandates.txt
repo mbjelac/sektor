@@ -261,7 +261,7 @@ Examples:
 - [done] open mandate list in player-mandates filter
 
 #13 Player can see which of their sektors import or export how many of a criteria's resource
-- when player clicks on a resource in mandate message criteria
+- [done] when player clicks on a resource in mandate message criteria
     - display a modal panel
     - panel title: "Imports & exports of <resource icon> <resource name>"
     - panel contains a list of player's sektors which have either import or export of resource greater than 0
@@ -269,9 +269,31 @@ Examples:
         - has import & export columns with same header (tray icons)
         - instead of name column is a "Sektor" column
         - sektor column displays name of sektor
-- player can navigate to sektor from panel
+- [done] player can navigate to sektor from panel
     - when player doubleclicks on sektor in panel list
         - navigate to map page for that sektor
+- [done] panel is as high as mandate details panel
+- [done] list header columns are active: clicking one sorts the list
+    - Sektor: by sektor name
+    - import icon: by descending import amount
+    - export icon: by descending export amount
+- [done] after sektor name is icon of sektor biome, like in list page
+- [done] panel title: "Imports/Exports"
+    - below title: resource icon & resource name in normal sized font
+    - spacing between title (with resource) & list header
+- [done] if player doubleclicks the current sektor in panel list, just hide panel
+- player can see total impoirt or export amount
+    - next to resource name display: <import or export icon> <total value>
+    - total value calculated so:
+        - sum all player sektors' export of that resource
+        - subtract all player sektors' export of that resource
+        - if result less than 0, display import icon and (positive) amount
+        - if result greater than 0, display export icon and amount
+    - display positive value (absolute value of result)
+    - if imports & exports cancel each other out and result is 0
+        - display only 0
+        - do not display import or export icon
+    - amount displayed white bold
 
 #14 Player can see their own total imports & exports
 - global imports/exports list on the list page can display current player's imports & exports
