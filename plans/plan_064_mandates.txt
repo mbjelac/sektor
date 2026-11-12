@@ -260,7 +260,20 @@ Examples:
     - when any message tool (e.g. eye button) clicked
 - [done] open mandate list in player-mandates filter
 
-#13 Player can see their own total imports & exports
+#13 Player can see which of their sektors import or export how many of a criteria's resource
+- when player clicks on a resource in mandate message criteria
+    - display a modal panel
+    - panel title: "Imports & exports of <resource icon> <resource name>"
+    - panel contains a list of player's sektors which have either import or export of resource greater than 0
+    - panel similar to import/export panel:
+        - has import & export columns with same header (tray icons)
+        - instead of name column is a "Sektor" column
+        - sektor column displays name of sektor
+- player can navigate to sektor from panel
+    - when player doubleclicks on sektor in panel list
+        - navigate to map page for that sektor
+
+#14 Player can see their own total imports & exports
 - global imports/exports list on the list page can display current player's imports & exports
     - similar mechanism as in mandates:
         - two filters
@@ -273,3 +286,4 @@ Examples:
     - initial filter on global
     - if current player filter clicked
         - display import & export list calculated (by subtracting imports from exports for same resource type) only for current player's sektors
+- same functionality in map page imports/exports modal panel
