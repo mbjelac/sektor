@@ -10,7 +10,10 @@ Other categories & criteria:
 
 Deforestation:
 Current ecosystem support damage can be transformed to deforestation.
-deforestation= initial EcosystemSupport - current EcosystemSupport
+deforestation = initial EcosystemSupport - current EcosystemSupport
+deforestationPercentage = 100 * (initial EcosystemSupport - current EcosystemSupport) / initial EcosystemSupport
+Total player's deforestation across all player's sektors can be calculated as:
+deforestationPercentageTotal = 100 *  sum(initial EcosystemSupport - current EcosystemSupport) / sum(initial EcosystemSupport))
 
 Pollution:
 A sektor's pollution metric is a value based on number of buildings (including forests) affected by pollution on their square and the percentage of the pollution.
@@ -24,5 +27,6 @@ A sektor has:
 - 1 WaterWells with pollution 20%
 - 2 Habitats with pollution 20% & 60%
 Total sektor pollution: 120
+Total player's pollution metric is then the sum of all player's sektors pollutions.
 
 Population density:
