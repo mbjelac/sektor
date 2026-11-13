@@ -1448,14 +1448,16 @@ body > main {
     padding: 0 13px 8px;
 }
 
-.mandate-filter-buttons {
+.mandate-filter-buttons,
+.global-state-filter-buttons {
     display: flex;
     gap: 6px;
 }
 
 /* Drawn as the tags of the building toolbar are: every button keeps room for the line underneath,
    so choosing one does not move the icons. */
-.mandate-filter-button {
+.mandate-filter-button,
+.global-state-filter-button {
     display: flex;
     align-items: center;
     padding: 0 0 2px 0;
@@ -1466,18 +1468,39 @@ body > main {
     cursor: pointer;
 }
 
-.mandate-filter-button.selected {
+.mandate-filter-button.selected,
+.global-state-filter-button.selected {
     color: white;
     border-bottom-color: white;
 }
 
-.mandate-filter-button svg {
+.mandate-filter-button svg,
+.global-state-filter-button svg {
     width: 16px;
     height: 16px;
 }
 
 .mandate-header .list-title {
     margin-bottom: 0;
+}
+
+/* The name of the list of imports and exports, with the buttons choosing whose they are at the other
+   end of it, across the whole width of the list. */
+.global-state-title-row {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.global-state-title-row .list-title {
+    margin-bottom: 0;
+}
+
+/* Over the map the x putting the list away stands in the corner, so the buttons leave room for it. */
+.global-state-dialog .global-state-filter-buttons {
+    margin-right: 24px;
 }
 
 .mandate-item {

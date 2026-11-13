@@ -28,6 +28,10 @@ function renderList() {
   // Every sektor there is adds to what the planet brings in and sends out, whoever owns it and
   // whether anybody owns it at all.
   const planetImportsAndExports = globalImportsAndExports(summaries);
+  // The player's own sektors are set against each other just as the planet's are.
+  const playerImportsAndExports = globalImportsAndExports(
+    summaries.filter((summary, sektorIndex) => sektors[sektorIndex].owner === getUsername()),
+  );
 
   container.appendChild(createHeader());
 
@@ -35,7 +39,7 @@ function renderList() {
     container.appendChild(createListItem(sektor));
   }
 
-  updateGlobalStatePanel(planetImportsAndExports);
+  updateGlobalStatePanel({ globalImportsAndExports: planetImportsAndExports, playerImportsAndExports });
 }
 
 function createHeader(): HTMLElement {

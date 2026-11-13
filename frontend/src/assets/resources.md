@@ -16,7 +16,6 @@ HealthPhysical 🫀 #F03818 local people
 HealthSocial 🧑🏽‍🤝‍🧑🏽 #F0B618 local people
 Fertilizer 🌱 #ad8257
 Chemicals 🧪 #eb52d9
-MachineParts ⚙️#d5e5e6
 Metals ⚓ #c5c9c9
 Uranium ☢️ #ffb236
 Minerals 🪨 #d6713e

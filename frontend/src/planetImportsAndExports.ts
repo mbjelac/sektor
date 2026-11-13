@@ -16,3 +16,19 @@ export function getPlanetImportsAndExportsWhileBuilding(
 
   return globalImportsAndExports([...otherSektors, sektorImportsAndExports]);
 }
+
+// What the player's own sektors bring in and send out between them while they are building on one of
+// the planet's sektors, set against each other just as the planet's are. The sektor being built on is
+// taken as it stands, as it is for the planet, and counts only if it is the player's.
+export function getPlayerImportsAndExportsWhileBuilding(
+  sektorId: string | null,
+  sektorImportsAndExports: ImportsAndExports,
+  isShownSektorPlayers: boolean,
+  playerName: string | null,
+): ImportsAndExports {
+  const otherPlayerSektors = getSektorList()
+    .filter(sektorListItem => sektorListItem.id !== sektorId && playerName !== null && sektorListItem.owner === playerName)
+    .map(sektorListItem => getSektorSummary(sektorListItem.id));
+
+  return globalImportsAndExports(isShownSektorPlayers ? [...otherPlayerSektors, sektorImportsAndExports] : otherPlayerSektors);
+}

@@ -12,7 +12,7 @@ import { randomVariantIndex } from "./buildings/buildingVariant";
 import { updateSektorStatePanel } from "./sektorStatePanel.ui";
 import { onResourceHover, ResourcePointing } from "../resourceHover.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
-import { getPlanetImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
+import { getPlanetImportsAndExportsWhileBuilding, getPlayerImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
 import { showMandateMessages, updateMessages } from "../messages.ui";
 import { playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
@@ -415,7 +415,13 @@ function updateSektorState() {
   // What this sektor moves is worth what it does for the planet, so the planet is worked out anew
   // with this sektor as it now stands every time anything here changes.
   const planetImportsAndExports = getPlanetImportsAndExportsWhileBuilding(sektorId, sektorState);
-  updateSektorStatePanel(sektorState, planetImportsAndExports);
+  const playerImportsAndExports = getPlayerImportsAndExportsWhileBuilding(
+    sektorId,
+    sektorState,
+    getSektorOwnerName() === getUsername(),
+    getUsername(),
+  );
+  updateSektorStatePanel(sektorState, { globalImportsAndExports: planetImportsAndExports, playerImportsAndExports });
   pointAtResource(hoveredResource);
   const buildingsWithOutputDecreasedByPollution = sektor.findBuildingsWithOutputDecreasedByPollution();
   updateMessages(

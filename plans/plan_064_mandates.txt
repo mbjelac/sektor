@@ -295,8 +295,8 @@ Examples:
         - do not display import or export icon
     - amount displayed white bold
 
-#14 Player can see their own total imports & exports
-- global imports/exports list on the list page can display current player's imports & exports
+#14 [done] Player can see their own total imports & exports
+- [done] global imports/exports list on the list page can display current player's imports & exports
     - similar mechanism as in mandates:
         - two filters
             - global imports/exports
@@ -308,4 +308,4 @@ Examples:
     - initial filter on global
     - if current player filter clicked
         - display import & export list calculated (by subtracting imports from exports for same resource type) only for current player's sektors
-- same functionality in map page imports/exports modal panel
+- [done] same functionality in map page imports/exports modal panel

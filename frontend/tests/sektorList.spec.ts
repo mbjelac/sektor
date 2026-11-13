@@ -330,6 +330,52 @@ test("shows what a building put up in a sektor does to what the planet moves", a
   ]);
 });
 
+// Whose imports and exports are listed is chosen by the buttons at the end of the list's name: the
+// list opens on the whole planet's, and the user button lists the player's own.
+test("lists the whole planet's imports and exports first and the player's own once asked for", async ({ page }) => {
+  await page.goto("/?test=true");
+  const shownBeforeFiltering = await getGlobalStateTitleAndFilter(page);
+
+  await page.locator('#global-state-panel .global-state-filter-button[data-imports-and-exports-filter="own"]').click();
+
+  expect({ shownBeforeFiltering, shownAfterFiltering: await getGlobalStateTitleAndFilter(page) }).toEqual({
+    shownBeforeFiltering: { title: "Global Imports/Exports", selectedFilters: ["global"] },
+    shownAfterFiltering: { title: "My Imports/Exports", selectedFilters: ["own"] },
+  });
+});
+
+function getGlobalStateTitleAndFilter(page: Page) {
+  return page.locator("#global-state-panel").evaluate(globalStatePanel => ({
+    title: globalStatePanel.querySelector(".list-title")!.textContent,
+    selectedFilters: [...globalStatePanel.querySelectorAll<HTMLElement>(".global-state-filter-button.selected")]
+      .map(filterButton => filterButton.dataset.importsAndExportsFilter),
+  }));
+}
+
+test("shows the buttons choosing whose imports and exports are listed beside the list's name", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await expect(page.locator("#global-state-panel .global-state-header"))
+    .toHaveScreenshot("global-imports-and-exports-filter.png", { maxDiffPixelRatio: 0 });
+});
+
+// Only Alpha is the player's, so once the player's own are asked for, the Ore its mine sends out is
+// listed along with the Energy it brings in, though the processor on Beta takes all that Ore in and
+// the planet as a whole only brings in Energy.
+test("lists only what the player's own sektors move once their button is clicked", async ({ page }) => {
+  await storeSektorWithBuildings(page, "Alpha", ["TestMine"], 6);
+  await storeSektorWithBuildings(page, "Beta", ["TestProcessor"]);
+  await storeSektorWithBuildings(page, "Gamma", ["TestHouse"]);
+  await page.goto("/?test=true");
+
+  await page.locator('#global-state-panel .global-state-filter-button[data-imports-and-exports-filter="own"]').click();
+
+  expect(await getGlobalThroughputRows(page)).toEqual([
+    { resource: "Energy ⚡", imported: "4", exported: "" },
+    { resource: "Ore 🪨", imported: "", exported: "6" },
+  ]);
+});
+
 // A player looking for what the planet is shortest of, or has most of over, asks for it by clicking
 // the column it stands in. The resources stand with the most brought in first until they do.
 test("puts the planet's most brought in resources first to begin with", async ({ page }) => {

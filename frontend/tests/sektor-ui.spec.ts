@@ -1010,8 +1010,11 @@ test("displays what the sektor imports and exports", async ({ page }) => {
         importExportCapacity: 11,
       },
       {
-        imports: [{ name: "Energy", value: 20 }, { name: "Food", value: 8 }, { name: "Work", value: 6 }],
-        exports: [{ name: "Water", value: 12 }, { name: "Ore", value: 9 }],
+        globalImportsAndExports: {
+          imports: [{ name: "Energy", value: 20 }, { name: "Food", value: 8 }, { name: "Work", value: 6 }],
+          exports: [{ name: "Water", value: 12 }, { name: "Ore", value: 9 }],
+        },
+        playerImportsAndExports: { imports: [], exports: [] },
       },
     );
   });
@@ -1037,7 +1040,7 @@ test("marks the imports and exports which exceed the capacity of the hubs", asyn
         uncroppedExports: [{ name: "Food", value: 3 }],
         importExportCapacity: 4,
       },
-      { imports: [], exports: [] },
+      { globalImportsAndExports: { imports: [], exports: [] }, playerImportsAndExports: { imports: [], exports: [] } },
     );
   });
 
@@ -1653,6 +1656,40 @@ test("shows what the whole planet moves when the globe beside the panel title is
     { resource: "Wood 🪵", imported: "", exported: "3" },
     { resource: "Food 🥕", imported: "", exported: "8" },
   ]);
+});
+
+// The player's own sektors are Alpha, being built on, and Beta, while Gamma, stored as Beta is, is
+// another player's: so only Beta's 8 Food of the planet's 16 is listed once the player's own are asked
+// for over the map.
+test("lists only what the player's own sektors move over the map once their button is clicked", async ({ page }) => {
+  await storeSektorSendingOutFood(page, "Beta");
+  await page.evaluate(() => {
+    localStorage.setItem("sektor_Gamma", localStorage.getItem("sektor_Beta")!);
+    localStorage.setItem("sektors", JSON.stringify([
+      ...JSON.parse(localStorage.getItem("sektors")!),
+      { id: "Gamma", name: "Gamma", owner: "Ada" },
+    ]));
+  });
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
+  await placeBuilding(page, "TestProcessor");
+
+  await page.locator("#global-state-button").click();
+  await page.locator('#global-state-dialog .global-state-filter-button[data-imports-and-exports-filter="own"]').click();
+
+  expect({
+    title: await page.locator("#global-state-dialog .list-title").textContent(),
+    rows: await getGlobalDialogRows(page),
+  }).toEqual({
+    title: "My Imports/Exports",
+    rows: [
+      { resource: "Water 💧", imported: "3", exported: "" },
+      { resource: "Energy ⚡", imported: "1", exported: "" },
+      { resource: "Wood 🪵", imported: "", exported: "3" },
+      { resource: "Food 🥕", imported: "", exported: "8" },
+    ],
+  });
 });
 
 // Over a map the planet's list begins with what the planet brings in most of, which is what a player

@@ -1,13 +1,13 @@
 import { type SektorState } from "./Sektor";
 import {
   findThroughputValue,
-  ImportsAndExports,
   listedResourceNames,
   ResourceSortOrder,
   sortResourceNames,
 } from "../globalImportsAndExports";
 import { arrowDownTrayIcon, arrowUpTrayIcon, globeAltIcon } from "../icons";
 import { showGlobalStateDialog } from "../globalStateDialog.ui";
+import { GlobalAndPlayerImportsAndExports } from "../globalStatePanel.ui";
 import { formatNumber } from "../formatNumber";
 import { resourceNameText, throughputText } from "../throughputDisplay.ui";
 import { pointAtResourceWhileHovered } from "../resourceHover.ui";
@@ -17,20 +17,20 @@ let panelEl: HTMLElement | null = null;
 // they ask for another. It begins with the order their names put them in.
 let sortOrder: ResourceSortOrder = "resource";
 
-// What this sektor brings in and sends out, with what the whole planet brings in and sends out a
-// click away.
-export function updateSektorStatePanel(sektorState: SektorState, planetImportsAndExports: ImportsAndExports) {
+// What this sektor brings in and sends out, with what the whole planet, or the player's own sektors,
+// bring in and send out a click away.
+export function updateSektorStatePanel(sektorState: SektorState, globalAndPlayerImportsAndExports: GlobalAndPlayerImportsAndExports) {
   ensurePanel();
 
   panelEl!.innerHTML = "";
 
-  panelEl!.appendChild(createTitle(planetImportsAndExports));
-  panelEl!.appendChild(createResourceList(sektorState, () => updateSektorStatePanel(sektorState, planetImportsAndExports)));
+  panelEl!.appendChild(createTitle(globalAndPlayerImportsAndExports));
+  panelEl!.appendChild(createResourceList(sektorState, () => updateSektorStatePanel(sektorState, globalAndPlayerImportsAndExports)));
 }
 
 // What this sektor moves stands under the name of the panel, and the globe at the end of the same
 // row calls up what the whole planet moves.
-function createTitle(planetImportsAndExports: ImportsAndExports): HTMLElement {
+function createTitle(globalAndPlayerImportsAndExports: GlobalAndPlayerImportsAndExports): HTMLElement {
   const title = document.createElement("div");
   title.className = "panel-title sektor-state-title";
 
@@ -38,18 +38,18 @@ function createTitle(planetImportsAndExports: ImportsAndExports): HTMLElement {
   titleText.textContent = "Imports/Exports";
   title.appendChild(titleText);
 
-  title.appendChild(createGlobeButton(planetImportsAndExports));
+  title.appendChild(createGlobeButton(globalAndPlayerImportsAndExports));
 
   return title;
 }
 
-function createGlobeButton(planetImportsAndExports: ImportsAndExports): HTMLElement {
+function createGlobeButton(globalAndPlayerImportsAndExports: GlobalAndPlayerImportsAndExports): HTMLElement {
   const globeButton = document.createElement("button");
   globeButton.id = "global-state-button";
   globeButton.className = "sektor-state-globe";
   globeButton.title = "Imports & exports of the whole planet";
   globeButton.innerHTML = globeAltIcon;
-  globeButton.addEventListener("click", () => showGlobalStateDialog(planetImportsAndExports));
+  globeButton.addEventListener("click", () => showGlobalStateDialog(globalAndPlayerImportsAndExports));
   return globeButton;
 }
 
