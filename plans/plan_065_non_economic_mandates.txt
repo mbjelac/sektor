@@ -1,0 +1,28 @@
+Existing mandate criteria are import & export. These are "economic" mandates.
+
+Other categories & criteria:
+- ecological
+    - deforestation
+    - pollution
+- social
+    - population density
+    - hapiness
+
+Deforestation:
+Current ecosystem support damage can be transformed to deforestation.
+deforestation= initial EcosystemSupport - current EcosystemSupport
+
+Pollution:
+A sektor's pollution metric is a value based on number of buildings (including forests) affected by pollution on their square and the percentage of the pollution.
+An empty square with pollution does not add to the pollution metric.
+Affected: Squares with forests or other buildings affected by pollution (buildings with groundwater & soil inputs, habitats, etc.)
+Pollution metric: amount of the square's pollution percentage.
+Example:
+A sektor has:
+- 2 empty squares with pollutions 40% & 80%
+- 1 forest with pollutions 20%
+- 1 WaterWells with pollution 20%
+- 2 Habitats with pollution 20% & 60%
+Total sektor pollution: 120
+
+Population density:
