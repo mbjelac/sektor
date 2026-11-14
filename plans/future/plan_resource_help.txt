@@ -2,3 +2,14 @@ Player can see a resource in mandates or in global imports exports, however they
 
 A "help" panel would be useful to display information about a resource.
 
+Points of entry:
+- list
+    - mandate details: on resource click
+    - imports/exports (global & my): on resource click
+- map
+    - import/export panel: on resource click
+    - resource sektors list panel: on resource click
+    - building panel: on resource click
+        - note: building panel resources have highlight but it doesn't mark existing buildings
+    - function panel: on resource click
+        - note: function panel resources don't have highlight to mark existing buildings
