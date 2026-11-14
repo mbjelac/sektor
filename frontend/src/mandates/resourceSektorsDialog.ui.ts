@@ -97,10 +97,10 @@ function createCloseButton(onClosed: () => void): HTMLElement {
   return closeButton;
 }
 
-// The title names the list as the planet's is named, with the resource it is about under it, over
-// the same columns as the planet's list has, the first of them naming sektors rather than resources.
-// Every column name is clicked to put the sektors in its order, and the one they stand in the order
-// of is named in white.
+// The title names the list as the player's own imports and exports are named, with the resource it
+// is about under it, over the same columns as the planet's list has, the first of them naming sektors
+// rather than resources. Every column name is clicked to put the sektors in its order, and the one
+// they stand in the order of is named in white.
 function createHeader(
   resourceName: string,
   total: ResourceTotal,
@@ -110,7 +110,7 @@ function createHeader(
   const header = document.createElement("div");
   header.className = "global-state-header";
 
-  header.appendChild(createListTitle("Imports/Exports"));
+  header.appendChild(createListTitle("My Imports/Exports"));
   header.appendChild(createResourceName(resourceName, total));
   header.appendChild(createSortButton("sektor", sortOrder, "Sektor", "global-state-resource", onSorted));
   header.appendChild(createSortButton("imported", sortOrder, arrowDownTrayIcon, "global-state-value", onSorted, "Imported"));

@@ -1416,7 +1416,7 @@ test("lists the player's sektors moving the resource of a mandate criterion clic
     sektors: [...dialog.querySelectorAll(".resource-sektor-item")].map(item =>
       [...item.querySelectorAll(":scope > span")].map(cell => cell.textContent)),
   }))).toEqual({
-    title: "Imports/Exports",
+    title: "My Imports/Exports",
     resource: "🪵 Wood3",
     totalDirection: "Export",
     sektors: [["Alpha 🌊", "", "3"]],

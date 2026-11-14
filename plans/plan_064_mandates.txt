@@ -281,7 +281,7 @@ Examples:
     - import icon: by descending import amount
     - export icon: by descending export amount
 - [done] after sektor name is icon of sektor biome, like in list page
-- [done] panel title: "Imports/Exports"
+- [done] panel title: "My Imports/Exports"
     - below title: resource icon & resource name in normal sized font
     - spacing between title (with resource) & list header
 - [done] if player doubleclicks the current sektor in panel list, just hide panel
