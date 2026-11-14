@@ -1,0 +1,4 @@
+Player can see a resource in mandates or in global imports exports, however they may not know what is it & what buildings consume & produce it.
+
+A "help" panel would be useful to display information about a resource.
+
