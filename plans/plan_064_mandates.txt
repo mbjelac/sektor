@@ -312,3 +312,10 @@ Examples:
     - if current player filter clicked
         - display import & export list calculated (by subtracting imports from exports for same resource type) only for current player's sektors
 - [done] same functionality in map page imports/exports modal panel
+
+#15 Player does not have to open resource import/export sektors list to see the current state
+- next to resource-related criteria (import or export) in a mandate-message, display current amount of resource import/export total for all player's sektors
+    - this is the same number displayed in resource import/export panel next to resource name
+    - display in round brackets
+    - if mandate criteria is to export, and total amount is imported, display with minus sign
+    - if mandate criteria is to import, and total amount is exported, display with minus sign
