@@ -74,7 +74,7 @@ Examples:
     - if criteria list too big for popup height
         - scroll list
         - do not show scrollbar
-- when a mandate is claimed, it is visible in list
+- [done] when a mandate is claimed, it is visible in list
     - switch mandate list to player filter
     - scroll list to newly claimed mandate if neccessary
 

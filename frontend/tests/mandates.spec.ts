@@ -65,7 +65,36 @@ test("makes the player the owner of a mandate claimed from its popup and closes 
     owners: JSON.parse(localStorage.getItem("mandates")!).map((mandate: { owner: string | null }) => mandate.owner),
     isPopupShown: document.getElementById("mandate-dialog") !== null,
     listedMandates: document.querySelectorAll("#mandate-panel .mandate-item").length,
-  }))).toEqual({ owners: [CURRENT_PLAYER], isPopupShown: false, listedMandates: 0 });
+  }))).toEqual({ owners: [CURRENT_PLAYER], isPopupShown: false, listedMandates: 1 });
+});
+
+// A mandate just claimed is shown among the player's own, the list turning to them and scrolling down
+// to it below the many the player already has.
+test("lists the player's own mandates with the one just claimed in view", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    ...Array.from({ length: 20 }, (_, mandateIndex) => ({
+      number: mandateIndex + 1,
+      owner: currentPlayer,
+      criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 5 }],
+    })),
+    { number: 21, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+  ])), CURRENT_PLAYER);
+  await page.goto("/?test=true");
+
+  await page.locator("#mandate-panel .mandate-item").click();
+  await page.locator("#mandate-claim-button").click();
+
+  expect(await page.locator("#mandate-panel").evaluate(mandatePanel => {
+    const panelBox = mandatePanel.getBoundingClientRect();
+    const headerBox = mandatePanel.querySelector(".mandate-header")!.getBoundingClientRect();
+    const claimedBox = mandatePanel.querySelector('.mandate-item[data-mandate-number="21"]')!.getBoundingClientRect();
+    return {
+      selectedFilters: [...mandatePanel.querySelectorAll<HTMLElement>(".mandate-filter-button.selected")]
+        .map(filterButton => filterButton.dataset.mandateFilter),
+      isScrolled: mandatePanel.scrollTop > 0,
+      isClaimedInView: claimedBox.top >= headerBox.bottom && claimedBox.bottom <= panelBox.bottom,
+    };
+  })).toEqual({ selectedFilters: ["own"], isScrolled: true, isClaimedInView: true });
 });
 
 test("leaves the mandate unclaimed and closes the popup when Cancel is clicked", async ({ page }) => {

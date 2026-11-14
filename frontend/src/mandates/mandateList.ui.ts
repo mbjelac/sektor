@@ -89,6 +89,7 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
 function createMandateItem(mandate: Mandate): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
+  item.dataset.mandateNumber = `${mandate.number}`;
   item.addEventListener("click", () => openMandate(mandate));
 
   const mandateNumber = document.createElement("span");
@@ -111,7 +112,8 @@ function createMandateItem(mandate: Mandate): HTMLElement {
 
 // A claimed mandate is the player's, and is no longer waiting in the list; a mandate given up is the
 // player's no longer, so it leaves their list. A mandate just claimed may be completed already by the
-// sektors the player has, so that is worked out at once.
+// sektors the player has, so that is worked out at once. The list then turns to the player's own
+// mandates, where the one just claimed is brought into view.
 function openMandate(mandate: Mandate) {
   if (mandate.owner !== null) {
     showMandateDetailsDialog(mandate, showChangedMandates);
@@ -123,7 +125,9 @@ function openMandate(mandate: Mandate) {
     onClaimed: () => {
       setMandateOwner(mandate.number, getUsername()!);
       recalculateMandates(getUsername());
+      mandateFilter = "own";
       showChangedMandates();
+      revealMandateInList(mandate.number);
     },
   });
 }
@@ -131,4 +135,15 @@ function openMandate(mandate: Mandate) {
 function showChangedMandates() {
   renderMandateList();
   mandatesChangedCallback?.();
+}
+
+// The mandate is scrolled to only if it is out of view, and then to just below the header standing
+// over the list, which would otherwise hide it.
+function revealMandateInList(mandateNumber: number) {
+  const item = document.querySelector<HTMLElement>(`#mandate-panel .mandate-item[data-mandate-number="${mandateNumber}"]`);
+  if (!item) return;
+
+  const header = document.querySelector<HTMLElement>("#mandate-panel .mandate-header");
+  item.style.scrollMarginTop = `${header?.offsetHeight ?? 0}px`;
+  item.scrollIntoView({ block: "nearest" });
 }
