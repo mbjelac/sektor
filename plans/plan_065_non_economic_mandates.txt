@@ -62,13 +62,30 @@ Only one type of mandate:
     - with sub-row "Currently <current amount>"
 
 #2 Pollution can be mandate criteria
-- mandates can have "pollution" criteria
+- [done] mandates can have "pollution" criteria
     - pollution is at most X
     - calculate total player's sektors pollution as described in the "Pollution" preamble above
     - when setting the pollution criteria amount, take into account possible pollution numbers corellated with player's pollution-producing buildings
-- pollution criteria described in mandates
+- [done] pollution criteria described in mandates
     - 🏭 ≤ <amount>
     - emoji has tooltip "Pollution"
 - pollution mandate details has criteria description:
     - "Pollution at most <amount>"
+    - with sub-row "Currently <current amount>"
+
+#3 Population can be mandate criteria
+- mandates can have "population" criteria
+    - pollution is at most X
+    - pollution is at least X
+    - calculate total player's sektors population as described in the "Population" preamble above
+    - when setting the population criteria amount, take into account possible population numbers corellated with player's population buildings
+        - for now only Habitats
+        - HABITATS_CAPACITY = 40
+- population criteria described in mandates
+    - 👶🏽 ≤ <amount> (for at-most criteria)
+    - 👶🏽 ≥ <amount> (for at-least criteria)
+    - emoji has tooltip "Population"
+- population mandate details has criteria description:
+    - "Population at most <amount>" or
+    - "Population at least <amount>"
     - with sub-row "Currently <current amount>"
