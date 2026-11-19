@@ -5,10 +5,12 @@ import { ELEVATION, isRiver, SEA } from "../../../shared/terrain";
 import {
   MOST_POLLUTION,
   POLLUTION_PROPERTY,
+  POLLUTION_STEP,
   isAffectedByPollution,
   isOutputAffectedByPollution,
   pollutedLocationProperties,
   pollutedOutputAmount,
+  pollutionFootprint,
 } from "./pollution";
 import { ECOSYSTEM_SUPPORT_RESOURCE } from "./forest";
 
@@ -101,9 +103,6 @@ export interface CreateBuildingResult {
   error: undefined | string;
   addedBuildings: Building[];
 }
-
-// How much more polluted a location is for every square nearer a polluting building it lies.
-const POLLUTION_STEP = 20;
 
 // How much of what went into building the sektor's buildings it imports.
 const CONSTRUCTION_COEFFICIENT = 0.1;
@@ -452,6 +451,21 @@ export class Sektor {
   private findStoppedFunctions(): BuildingFunctionLocation[] {
     const disabledFunctions = this.findFunctionsOfBuildings(this.findDisabledBuildings());
     return [...disabledFunctions, ...this.findStarvedFunctions(disabledFunctions)];
+  }
+
+  // How polluted the sektor is where it does harm: the pollution of the square of every building
+  // pollution makes less of what it makes. Fouled ground with nothing on it, or with a building
+  // pollution does not touch, adds nothing.
+  findPollution(): number {
+    return this.findBuildingsWithOutputDecreasedByPollution()
+      .reduce((total, location) => total + (this.locations[location.x]?.[location.y]?.properties[POLLUTION_PROPERTY] ?? 0), 0);
+  }
+
+  // The most all of the sektor's polluting buildings can foul the ground around them.
+  findPollutionFootprint(): number {
+    return this.buildings
+      .filter(building => this.isPolluting(building))
+      .reduce((total, building) => total + pollutionFootprint(this.findBuildingDefinition(building.type)?.properties.pollutionArea ?? 0), 0);
   }
 
   // Every building whose output pollution has decreased, so that all of them can be marked.

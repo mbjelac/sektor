@@ -4,6 +4,8 @@ import { BuildingFunctionOutput } from "./buildings/parseBuildingDefinitions";
 export const POLLUTION_PROPERTY = "pollution";
 // Ground cannot be fouled more than all the way.
 export const MOST_POLLUTION = 100;
+// How much more polluted a location is for every square nearer a polluting building it lies.
+export const POLLUTION_STEP = 20;
 
 // What fouled ground spoils: whatever is drawn out of the ground itself. Wind, sunlight and what
 // lies deep in the rock are none the worse for it.
@@ -35,4 +37,21 @@ export function isOutputAffectedByPollution(output: BuildingFunctionOutput, poll
 // comes to, as a property pollution spoils is: what the fouled percentage takes away is lost.
 export function pollutedOutputAmount(amount: number, pollution: number): number {
   return Math.round(amount * (MOST_POLLUTION - pollution) / MOST_POLLUTION);
+}
+
+// All the pollution a building polluting so far around it puts on the ground: the squares at every
+// distance within its area, four more of them for every square further out, each fouled by one step
+// less than those a square nearer. The edge of the sektor and the most a square can be fouled are
+// left out of it, so it is the most the building can foul.
+export function pollutionFootprint(pollutionArea: number): number {
+  let footprint = 0;
+  for (let distance = 1; distance <= pollutionArea; distance++) {
+    footprint += 4 * distance * (pollutionArea - distance + 1) * POLLUTION_STEP;
+  }
+  return footprint;
+}
+
+// Sektors are polluted between them by all of their pollution added up.
+export function totalPollution(sektorPollutions: number[]): number {
+  return sektorPollutions.reduce((total, sektorPollution) => total + sektorPollution, 0);
 }

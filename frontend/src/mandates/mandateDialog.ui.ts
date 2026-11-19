@@ -9,7 +9,7 @@ import { getPlayerSektors } from "./playerSektors";
 import { PlayerSektor, resourceTotal, sektorsMovingResource } from "./sektorsMovingResource";
 import { MandateCriterion } from "./mandates.api";
 import { isAboutResource } from "./criterionType";
-import { totalDeforestation } from "../sektor/deforestation";
+import { measureOf } from "./measures";
 import { formatNumber } from "../formatNumber";
 
 // Which way the player's sektors move a resource, said in words, or nothing said where they move none.
@@ -64,7 +64,7 @@ function createMandatePopup(dialogId: string, mandate: Mandate, description: HTM
 
 // What the mandate asks for, told in full, a line for every criterion, which may be told along with
 // whether it is completed. Under every criterion stands what the player's sektors move of its
-// resource now, or how much they are deforested now.
+// resource now, or how much they come to of the measure it is about now.
 function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElement {
   const description = document.createElement("div");
   description.className = "mandate-description";
@@ -85,7 +85,8 @@ function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElem
 
 // Set in under the criterion it belongs to, a little smaller than it: what the player's sektors move
 // of the resource between them, which way it goes and the amount, or the bare amount where nothing
-// goes either way; or how much they are deforested between them.
+// goes either way; or how much they come to of the measure, such as deforestation or pollution,
+// between them.
 function createCurrentLine(criterion: MandateCriterion, playerSektors: PlayerSektor[], showsCompletion: boolean): HTMLElement {
   const currentLine = document.createElement("div");
   currentLine.className = "mandate-description-current";
@@ -95,10 +96,7 @@ function createCurrentLine(criterion: MandateCriterion, playerSektors: PlayerSek
 }
 
 function currentWords(criterion: MandateCriterion, playerSektors: PlayerSektor[]): string {
-  if (!isAboutResource(criterion)) {
-    const playerDeforestation = totalDeforestation(playerSektors.map(playerSektor => playerSektor.ecosystem));
-    return `Currently ${formatNumber(playerDeforestation)}`;
-  }
+  if (!isAboutResource(criterion)) return `Currently ${formatNumber(measureOf(criterion).playerAmount(playerSektors))}`;
   const total = resourceTotal(sektorsMovingResource(playerSektors, criterion.resourceName));
   return ["Currently", CURRENT_DIRECTION_WORDS[total.direction ?? "none"], formatNumber(total.amount)]
     .filter(segment => segment !== null)

@@ -538,8 +538,8 @@ test("tells a deforestation criterion in the list in short, by a burning forest 
   await storeDeforestedSektorAndMandate(page);
 
   expect(await page.locator("#mandate-panel .mandate-criterion").evaluate(criterion => ({
-    picture: criterion.querySelector(".mandate-criterion-deforestation")!.textContent,
-    tooltip: criterion.querySelector(".mandate-criterion-deforestation")!.getAttribute("title"),
+    picture: criterion.querySelector(".mandate-criterion-measure")!.textContent,
+    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
   }))).toEqual({ picture: "🌳🔥", tooltip: "Deforestation", amount: "≤15", current: "(12)" });
@@ -554,4 +554,42 @@ test("tells a deforestation criterion in full, and how deforested the player's s
     line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
     current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
   }).toEqual({ line: "Deforestation at most 15", current: "Currently 12" });
+});
+
+// Alpha, the player's sektor, has a forest standing on ground fouled 40.
+async function storePollutedSektorAndMandate(page: Page) {
+  await page.evaluate(currentPlayer => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: currentPlayer }]));
+    localStorage.setItem("sektor_Alpha", JSON.stringify({
+      locationProperties: { pollution: [[40]] },
+      buildings: [{ type: "Forest", location: { x: 0, y: 0 } }],
+    }));
+    localStorage.setItem("mandates", JSON.stringify([
+      { number: 1, owner: currentPlayer, criteria: [{ type: "maximumPollution", amount: 60 }] },
+    ]));
+  }, CURRENT_PLAYER);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+}
+
+test("tells a pollution criterion in the list in short, by a factory named Pollution", async ({ page }) => {
+  await storePollutedSektorAndMandate(page);
+
+  expect(await page.locator("#mandate-panel .mandate-criterion").evaluate(criterion => ({
+    picture: criterion.querySelector(".mandate-criterion-measure")!.textContent,
+    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
+    amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
+    current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
+  }))).toEqual({ picture: "🏭", tooltip: "Pollution", amount: "≤60", current: "(40)" });
+});
+
+test("tells a pollution criterion in full, and how polluted the player's sektors are now", async ({ page }) => {
+  await storePollutedSektorAndMandate(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect({
+    line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
+    current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
+  }).toEqual({ line: "Pollution at most 60", current: "Currently 40" });
 });

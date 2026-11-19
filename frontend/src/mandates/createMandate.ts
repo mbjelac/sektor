@@ -3,6 +3,7 @@ import { Mandate, MandateCriterion } from "./mandates.api";
 import { ImportsAndExports, findThroughputValue } from "../globalImportsAndExports";
 import { ResourceThroughput } from "../../../shared/sektorData";
 import { forestEcosystemSupport } from "../sektor/forest";
+import { POLLUTION_STEP, pollutionFootprint } from "../sektor/pollution";
 
 const LOWEST_AMOUNT = 5;
 const HIGHEST_AMOUNT = 50;
@@ -13,17 +14,24 @@ const NEGATIVE_IMPORT_CHANCE = 1 / 3;
 // player's lose a single forest, so it is only one of the many amounts drawn.
 const DEFORESTATION_CHANCE = 1 / 6;
 const MOST_FELLED_FORESTS = 20;
+// Some ask for the player's sektors to be polluted no more than so much, drawn in steps of pollution
+// up to the most their polluting buildings can foul. A player with no polluting building yet is asked
+// for no more than the least polluting building can foul.
+const POLLUTION_CHANCE = 1 / 6;
+const LEAST_POLLUTION_AREA = 1;
 
 // What a mandate can be made of: the resources a sektor can import and export, those doing good and
-// those doing harm, and what the whole planet brings in and sends out of them.
+// those doing harm, what the whole planet brings in and sends out of them, and the most the player's
+// polluting buildings can foul.
 export interface MandateMaterials {
   positiveResourceNames: string[];
   negativeResourceNames: string[];
   planetImportsAndExports: ImportsAndExports;
+  playerPollutionFootprint: number;
 }
 
-// A mandate asks for one of three things: to send out a positive resource, to take in a negative
-// one, or to deforest no more than so much. Nobody owns it when it is made, so nobody has completed it either.
+// A mandate asks for one of four things: to send out a positive resource, to take in a negative
+// one, or to deforest or to pollute no more than so much. Nobody owns it when it is made, so nobody has completed it either.
 export function createMandate(
   mandateNumber: number,
   mandateMaterials: MandateMaterials,
@@ -53,6 +61,9 @@ function createCriteria(mandateMaterials: MandateMaterials, randomNumber: Random
   if (strategyDraw >= NEGATIVE_IMPORT_CHANCE && strategyDraw < NEGATIVE_IMPORT_CHANCE + DEFORESTATION_CHANCE) {
     return [deforestationCriterion(randomNumber)];
   }
+  if (strategyDraw >= 1 - POLLUTION_CHANCE) {
+    return [pollutionCriterion(mandateMaterials.playerPollutionFootprint, randomNumber)];
+  }
   if (mandateMaterials.positiveResourceNames.length === 0) return [];
   return [criterion(
     "minimumExport",
@@ -81,6 +92,16 @@ function deforestationCriterion(randomNumber: RandomNumber): MandateCriterion {
   return {
     type: "maximumDeforestation",
     amount: felledForests * forestEcosystemSupport(),
+    completed: false,
+  };
+}
+
+function pollutionCriterion(playerPollutionFootprint: number, randomNumber: RandomNumber): MandateCriterion {
+  const mostPollution = playerPollutionFootprint > 0 ? playerPollutionFootprint : pollutionFootprint(LEAST_POLLUTION_AREA);
+  const pollutionSteps = Math.floor(randomNumber() * (Math.floor(mostPollution / POLLUTION_STEP) + 1));
+  return {
+    type: "maximumPollution",
+    amount: pollutionSteps * POLLUTION_STEP,
     completed: false,
   };
 }

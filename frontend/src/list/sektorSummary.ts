@@ -9,6 +9,9 @@ import { SektorEcosystem } from "../sektor/deforestation";
 // How much the sektor's ecosystem was and is supported is what the player's sektors are told
 // deforested by, between them.
 export interface SektorSummary extends SektorEcosystem {
+  // How polluted the sektor is where it does harm, and the most its polluting buildings can foul.
+  pollution: number;
+  pollutionFootprint: number;
   buildingCount: number;
   // What the sektor brings in and sends out of every resource it moves, which the sektors are added
   // up by into what the whole planet brings in and sends out.
@@ -19,11 +22,11 @@ export interface SektorSummary extends SektorEcosystem {
 }
 
 // The stored sektor is played through again so that what is shown about it — what it moves in and
-// out, and how much it supports its ecosystem — comes out of the same rules as in the sektor itself.
+// out, how much it supports its ecosystem and how polluted it is — comes out of the same rules as in the sektor itself.
 export function getSektorSummary(sektorId: string): SektorSummary {
   const sektorData = getSektorData(sektorId);
   if (!sektorData) {
-    return { buildingCount: 0, imports: [], exports: [], importTotal: 0, exportTotal: 0, initialEcosystemSupport: 0, ecosystemSupport: 0 };
+    return { buildingCount: 0, imports: [], exports: [], importTotal: 0, exportTotal: 0, initialEcosystemSupport: 0, ecosystemSupport: 0, pollution: 0, pollutionFootprint: 0 };
   }
 
   const sektor = new Sektor(
@@ -43,6 +46,8 @@ export function getSektorSummary(sektorId: string): SektorSummary {
     exportTotal: sumThroughputs(sektorState.exports),
     initialEcosystemSupport: sektorData.initialEcosystemSupport ?? 0,
     ecosystemSupport: sektorState.ecosystemSupport,
+    pollution: sektor.findPollution(),
+    pollutionFootprint: sektor.findPollutionFootprint(),
   };
 }
 

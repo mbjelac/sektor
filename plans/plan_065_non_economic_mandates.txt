@@ -61,7 +61,7 @@ Only one type of mandate:
     - "Deforestation at most <amount>"
     - with sub-row "Currently <current amount>"
 
-#2 Pollution can be mandate criteria
+#2 [done] Pollution can be mandate criteria
 - [done] mandates can have "pollution" criteria
     - pollution is at most X
     - calculate total player's sektors pollution as described in the "Pollution" preamble above
@@ -69,7 +69,7 @@ Only one type of mandate:
 - [done] pollution criteria described in mandates
     - 🏭 ≤ <amount>
     - emoji has tooltip "Pollution"
-- pollution mandate details has criteria description:
+- [done] pollution mandate details has criteria description:
     - "Pollution at most <amount>"
     - with sub-row "Currently <current amount>"
 

@@ -686,23 +686,32 @@ test("makes mandates numbered one after another, owned by nobody", async ({ page
 });
 
 // Whichever way a mandate is made, it asks for amounts between 5 and 50 of resources which can be
-// imported and exported.
-test("makes mandates asking for amounts of tradable resources", async ({ page }) => {
+// imported and exported, for deforestation of at most so many forests' worth of 5 support, or for
+// pollution of at most so many steps of 20.
+test("makes mandates asking for amounts of tradable resources, deforestation or pollution", async ({ page }) => {
   await page.goto("/?test=true");
 
   for (let mandateIndex = 0; mandateIndex < 10; mandateIndex++) await createMandateNow(page);
 
-  const mandates: { number: number; criteria: { type: string; resourceName: string; amount: number }[] }[] =
+  const mandates: { number: number; criteria: { type: string; resourceName?: string; amount: number }[] }[] =
     await getStoredMandates(page);
   expect({
     mandatesAskingNothing: mandates.filter(mandate => mandate.criteria.length === 0).map(mandate => mandate.number),
-    unfitCriteria: mandates.flatMap(mandate => mandate.criteria).filter(criterion =>
-      !["minimumExport", "maximumExport", "minimumImport", "maximumImport"].includes(criterion.type)
-      || ["Care", "Hapiness", "ImportExport"].includes(criterion.resourceName)
-      || !Number.isInteger(criterion.amount) || criterion.amount < 5 || criterion.amount > 50
-    ),
+    unfitCriteria: mandates.flatMap(mandate => mandate.criteria).filter(criterion => !isFitCriterion(criterion)),
   }).toEqual({ mandatesAskingNothing: [], unfitCriteria: [] });
 });
+
+function isFitCriterion(criterion: { type: string; resourceName?: string; amount: number }): boolean {
+  if (criterion.type === "maximumDeforestation") {
+    return Number.isInteger(criterion.amount) && criterion.amount % 5 === 0 && criterion.amount >= 0 && criterion.amount <= 100;
+  }
+  if (criterion.type === "maximumPollution") {
+    return Number.isInteger(criterion.amount) && criterion.amount % 20 === 0 && criterion.amount >= 0;
+  }
+  return ["minimumExport", "maximumExport", "minimumImport", "maximumImport"].includes(criterion.type)
+    && !["Care", "Hapiness", "ImportExport"].includes(criterion.resourceName!)
+    && Number.isInteger(criterion.amount) && criterion.amount >= 5 && criterion.amount <= 50;
+}
 
 test("stops making mandates while ten unclaimed ones are waiting", async ({ page }) => {
   await page.evaluate(() => localStorage.setItem(

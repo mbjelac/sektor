@@ -21,6 +21,11 @@ describe("criterionDescription", () => {
       .toEqual("Deforestation at most 15");
   });
 
+  it("tells pollution at most in full", () => {
+    expect(criterionDescription({ type: "maximumPollution", amount: 60, completed: false }, null))
+      .toEqual("Pollution at most 60");
+  });
+
   it("names a resource without a picture by its name alone", () => {
     expect(criterionDescription({ type: "minimumExport", resourceName: "Apples", amount: 12, completed: false }, null))
       .toEqual("Export at least 12 Apples");

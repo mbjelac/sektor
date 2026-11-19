@@ -11,9 +11,9 @@ export interface Mandate {
 }
 
 // What the player's sektors have to do, between them, for a mandate to be fulfilled: import or export
-// at least, or at most, so much of a resource, or be deforested by at most so much. Whether they do is
+// at least, or at most, so much of a resource, or be deforested or polluted by at most so much. Whether they do is
 // worked out anew along with the mandate it belongs to.
-export type MandateCriterion = ResourceCriterion | DeforestationCriterion;
+export type MandateCriterion = ResourceCriterion | DeforestationCriterion | PollutionCriterion;
 
 export interface ResourceCriterion {
   type: "minimumExport" | "maximumExport" | "minimumImport" | "maximumImport";
@@ -26,6 +26,13 @@ export interface ResourceCriterion {
 // were made.
 export interface DeforestationCriterion {
   type: "maximumDeforestation";
+  amount: number;
+  completed: boolean;
+}
+
+// The pollution of all the player's sektors, between them, where it does harm.
+export interface PollutionCriterion {
+  type: "maximumPollution";
   amount: number;
   completed: boolean;
 }

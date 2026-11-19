@@ -10,6 +10,7 @@ const MATERIALS: MandateMaterials = {
     imports: [{ name: "Apples", value: 30 }, { name: "Cloth", value: 10 }],
     exports: [{ name: "Sludge", value: 40 }],
   },
+  playerPollutionFootprint: 200,
 };
 
 // Every draw falls where the test says, one after the other.
@@ -54,6 +55,26 @@ describe("createMandate", () => {
       [{ type: "maximumDeforestation", amount: 0, completed: false }],
       [{ type: "maximumDeforestation", amount: 50, completed: false }],
       [{ type: "maximumDeforestation", amount: 100, completed: false }],
+    ]);
+  });
+
+  // The player's polluting buildings can foul 200, ten steps of pollution.
+  it("asks for pollution at most one time in six, drawn in steps of pollution up to what the player's buildings can foul", () => {
+    expect([
+      createMandate(1, MATERIALS, drawing(0.84, 0)).criteria,
+      createMandate(1, MATERIALS, drawing(0.9, 0.5)).criteria,
+      createMandate(1, MATERIALS, drawing(0.9999, 0.9999)).criteria,
+    ]).toEqual([
+      [{ type: "maximumPollution", amount: 0, completed: false }],
+      [{ type: "maximumPollution", amount: 100, completed: false }],
+      [{ type: "maximumPollution", amount: 200, completed: false }],
+    ]);
+  });
+
+  // The least polluting building can foul 80, four steps of pollution.
+  it("asks a player with no polluting building for at most what the least polluting one can foul", () => {
+    expect(createMandate(1, { ...MATERIALS, playerPollutionFootprint: 0 }, drawing(0.9, 0.9999)).criteria).toEqual([
+      { type: "maximumPollution", amount: 80, completed: false },
     ]);
   });
 

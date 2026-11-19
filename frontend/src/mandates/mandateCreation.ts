@@ -4,6 +4,7 @@ import { getNegativeTradableResources, getPositiveTradableResources } from "../r
 import { globalImportsAndExports } from "../globalImportsAndExports";
 import { getSektorList } from "../list/sektorList.api";
 import { getSektorSummary } from "../list/sektorSummary";
+import { getUsername } from "../login/login.api";
 
 const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Mandates nobody has taken up pile up if they are made faster than they are claimed, so no more are
@@ -45,14 +46,19 @@ function nextMandateNumber(): number {
   return mandateNumbers.length === 0 ? 1 : Math.max(...mandateNumbers) + 1;
 }
 
-// What the planet brings in and sends out changes as sektors are built on, so it is gathered anew
-// whenever a mandate is to be made.
+// What the planet brings in and sends out changes as sektors are built on, and so do the polluting
+// buildings of the player's sektors, so they are gathered anew whenever a mandate is to be made.
 function mandateMaterials(): MandateMaterials {
+  const playerName = getUsername();
+  const sektorListItems = getSektorList();
   return {
     positiveResourceNames: getPositiveTradableResources(),
     negativeResourceNames: getNegativeTradableResources(),
     planetImportsAndExports: globalImportsAndExports(
-      getSektorList().map(sektorListItem => getSektorSummary(sektorListItem.id)),
+      sektorListItems.map(sektorListItem => getSektorSummary(sektorListItem.id)),
     ),
+    playerPollutionFootprint: sektorListItems
+      .filter(sektorListItem => playerName !== null && sektorListItem.owner === playerName)
+      .reduce((total, sektorListItem) => total + getSektorSummary(sektorListItem.id).pollutionFootprint, 0),
   };
 }
