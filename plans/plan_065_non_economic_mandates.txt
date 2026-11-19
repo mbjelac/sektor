@@ -43,3 +43,8 @@ Total hapiness of player's sektors is sum of all player's sektors' Hapiness expo
 Take into account building function Hapiness output amounts when generating value for this criteria.
 Only one type of mandate:
 - at least X hapiness
+
+#1 Ecosystem support damage is actually deforestation
+- deforestation = initial EcosystemSupport - current EcosystemSupport
+
+#2 Deforestation percentage can be mandate criteria
