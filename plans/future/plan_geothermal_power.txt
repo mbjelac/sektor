@@ -1,0 +1,3 @@
+Planet is geologically active.
+Powerplant running on geothermal power.
+Needs geothermal location propery and also global area marks (see plan 66).
