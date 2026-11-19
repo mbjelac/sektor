@@ -5,7 +5,7 @@ Other categories & criteria:
     - deforestation
     - pollution
 - social
-    - population density
+    - population
     - hapiness
 
 Deforestation:
@@ -29,4 +29,13 @@ A sektor has:
 Total sektor pollution: 120
 Total player's pollution metric is then the sum of all player's sektors pollutions.
 
-Population density:
+Population:
+Total population of players' sektors equals number of Habitats * Habitats capacity.
+The capacity of habitats is a constant.
+This constant should be taken into account when creating criteria.
+For example, if the habitats capacity is 10, then mandate with criteria of having population at least 10 is a small & easy mandate.
+This type of mandate can come in two forms:
+- have at least X population
+- have at most X population
+
+Hapiness:
