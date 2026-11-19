@@ -1896,6 +1896,29 @@ body > main {
     cursor: pointer;
 }
 
+/* The words of a mandate message, its number and what each criterion asks for among them, stand on
+   one line of text, and only the pictures among them are held by their middle. Laid out as boxes of
+   their own instead, the badge and the criteria would sit on the bottom of their pictures, above or
+   below the words around them. */
+.message-mandate .message-mandate-number,
+.message-mandate .mandate-criterion {
+    display: inline;
+    vertical-align: baseline;
+}
+
+.message-mandate .message-mandate-number .icon,
+.message-mandate .mandate-criterion-direction {
+    vertical-align: middle;
+}
+
+.message-mandate .message-mandate-number .icon {
+    margin-right: 2px;
+}
+
+.message-mandate .mandate-criterion > * + * {
+    margin-left: 4px;
+}
+
 /* A sektor of the list of those moving a resource is double clicked to be opened. */
 .resource-sektor-item {
     cursor: pointer;

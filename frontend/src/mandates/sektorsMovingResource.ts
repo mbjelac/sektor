@@ -1,4 +1,6 @@
 import { findThroughputValue, ImportsAndExports } from "../globalImportsAndExports";
+import { MandateCriterion } from "./mandates.api";
+import { isAboutExports } from "./criterionType";
 
 // A sektor of the player, by the id it is stored under and the name it is known by, with what it
 // brings in and sends out.
@@ -62,6 +64,15 @@ export function resourceTotal(resourceMovingSektors: ResourceMovingSektor[]): Re
   if (exportedMinusImported > 0) return { direction: "export", amount: exportedMinusImported };
   if (exportedMinusImported < 0) return { direction: "import", amount: -exportedMinusImported };
   return { direction: null, amount: 0 };
+}
+
+// How far the player's sektors have got with what a criterion asks for: what they move of its
+// resource between them, the way the criterion is about, or less than nothing when they move it the
+// other way.
+export function criterionCurrentAmount(criterion: MandateCriterion, total: ResourceTotal): number {
+  if (total.direction === null) return 0;
+  const isMovedTheAskedWay = (total.direction === "export") === isAboutExports(criterion);
+  return isMovedTheAskedWay ? total.amount : -total.amount;
 }
 
 // Amounts are written with a single decimal place, so rounding to it keeps the floating point noise

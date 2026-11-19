@@ -1,6 +1,3 @@
-import { getSektorList } from "../list/sektorList.api";
-import { getSektorSummary } from "../list/sektorSummary";
-import { getUsername } from "../login/login.api";
 import { getResourceIcon } from "../resources";
 import { arrowDownTrayIcon, arrowUpTrayIcon, xMarkIcon } from "../icons";
 import { createListTitle } from "../listTitle.ui";
@@ -9,7 +6,6 @@ import { getPlanet } from "../list/planet";
 import { regionCover, regionCoverIcon } from "../list/regionLabels";
 import { TriangleCoordinate } from "../list/planetGrid";
 import {
-  PlayerSektor,
   ResourceMovingSektor,
   SektorSortOrder,
   sektorsMovingResource,
@@ -18,11 +14,9 @@ import {
   resourceTotal,
 } from "./sektorsMovingResource";
 import { formatNumber } from "../formatNumber";
+import { getPlayerSektors, LocatedPlayerSektor } from "./playerSektors";
 
 const DIALOG_ID = "resource-sektors-dialog";
-
-// A player's sektor, along with the triangle of the planet it lies on, whose biome stands beside it.
-type LocatedPlayerSektor = PlayerSektor & { location?: TriangleCoordinate };
 
 // Which of the player's sektors bring in or send out a resource a mandate asks for, and how much,
 // called up over the map so that a player sees where to do something about it. It looks as the list
@@ -52,19 +46,6 @@ export function showResourceSektorsDialog(resourceName: string) {
   dialog.appendChild(list);
 
   document.body.appendChild(overlay);
-}
-
-// Every sektor the player owns, as it stands stored, which is how the map stores it on every change.
-function getPlayerSektors(): LocatedPlayerSektor[] {
-  const playerName = getUsername();
-  return getSektorList()
-    .filter(sektorListItem => playerName !== null && sektorListItem.owner === playerName)
-    .map(sektorListItem => ({
-      sektorId: sektorListItem.id,
-      sektorName: sektorListItem.name ?? sektorListItem.id,
-      importsAndExports: getSektorSummary(sektorListItem.id),
-      location: sektorListItem.location,
-    }));
 }
 
 // Drawn again whenever the player asks for another order, so what stands there is cleared away first.

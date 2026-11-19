@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+  criterionCurrentAmount,
   PlayerSektor,
   ResourceMovingSektor,
   resourceTotal,
@@ -76,6 +77,30 @@ describe("resourceTotal", () => {
       exporting: { direction: "export", amount: 1.9 },
       importing: { direction: "import", amount: 2.5 },
       cancelledOut: { direction: null, amount: 0 },
+    });
+  });
+});
+
+describe("criterionCurrentAmount", () => {
+  it("counts what is moved the way the criterion is about, and what is moved the other way below nothing", () => {
+    const exportCriterion = { type: "minimumExport" as const, resourceName: "Wood", amount: 10, completed: false };
+    const importCriterion = { type: "maximumImport" as const, resourceName: "Wood", amount: 10, completed: false };
+    const exported = { direction: "export" as const, amount: 3 };
+    const imported = { direction: "import" as const, amount: 2 };
+    const neither = { direction: null, amount: 0 };
+
+    expect({
+      exportCriterionExported: criterionCurrentAmount(exportCriterion, exported),
+      exportCriterionImported: criterionCurrentAmount(exportCriterion, imported),
+      importCriterionImported: criterionCurrentAmount(importCriterion, imported),
+      importCriterionExported: criterionCurrentAmount(importCriterion, exported),
+      neither: criterionCurrentAmount(exportCriterion, neither),
+    }).toEqual({
+      exportCriterionExported: 3,
+      exportCriterionImported: -2,
+      importCriterionImported: 2,
+      importCriterionExported: -3,
+      neither: 0,
     });
   });
 });

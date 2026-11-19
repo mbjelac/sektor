@@ -6,10 +6,13 @@ import { checkBadgeIcon, chevronDownIcon, chevronUpIcon, eyeIcon } from "./icons
 import { selectProperty } from "./sektor/propertyToggler.ui";
 import { POLLUTION_PROPERTY } from "./sektor/pollution";
 import { selectBuildingTag } from "./sektor/buildingToolbar.ui";
-import { Mandate } from "./mandates/mandates.api";
+import { Mandate, MandateCriterion } from "./mandates/mandates.api";
 import { createCriterionAbbreviation } from "./mandates/criterionAbbreviation.ui";
 import { showMandateDetailsDialog } from "./mandates/mandateDialog.ui";
 import { showResourceSektorsDialog } from "./mandates/resourceSektorsDialog.ui";
+import { getPlayerSektors } from "./mandates/playerSektors";
+import { criterionCurrentAmount, PlayerSektor, resourceTotal, sektorsMovingResource } from "./mandates/sektorsMovingResource";
+import { formatNumber } from "./formatNumber";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -64,6 +67,7 @@ export function updateMessages(
 // no longer told of. A criterion completed or no longer completed is something new to say even
 // though the words of the message stay the same, so the message is then told anew.
 export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAbandoned: () => void) {
+  const playerSektors = getPlayerSektors();
   const uncompletedMandateIds = uncompletedMandates.map(mandate => `${MANDATE_MESSAGE_ID}${mandate.number}`);
   for (const shownMandateMessage of document.querySelectorAll(`[id^="${MANDATE_MESSAGE_ID}"]`)) {
     if (!uncompletedMandateIds.includes(shownMandateMessage.id)) shownMandateMessage.remove();
@@ -75,7 +79,7 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
     const shownMessage = document.getElementById(messageId);
     if (shownMessage && shownMessage.dataset.criteriaCompleted !== criteriaCompleted) shownMessage.remove();
 
-    showMessage(messageId, "mandate", mandateAdvice(mandate), [], [createShowMandateButton(mandate, onMandateAbandoned)]);
+    showMessage(messageId, "mandate", mandateAdvice(mandate, playerSektors), [], [createShowMandateButton(mandate, onMandateAbandoned)]);
     document.getElementById(messageId)!.dataset.criteriaCompleted = criteriaCompleted;
   }
 
@@ -85,8 +89,10 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
 // A mandate is told of on a single line: its badge and number, and then what it asks for, every
 // criterion in short, set apart from the next by a bar and on pale green once it is completed. Every
 // criterion is a resource to point at, as any other named in a message is, and clicked tells which of
-// the player's sektors bring it in or send it out.
-function mandateAdvice(mandate: Mandate): Node[] {
+// the player's sektors bring it in or send it out. Beside every criterion stands how far the player's
+// sektors have got with it, as a part of the criterion, pointed at and clicked along with it, so that
+// they need not open it to see.
+function mandateAdvice(mandate: Mandate, playerSektors: PlayerSektor[]): Node[] {
   const mandateNumber = document.createElement("span");
   mandateNumber.className = "message-mandate-number";
   mandateNumber.innerHTML = checkBadgeIcon;
@@ -101,9 +107,20 @@ function mandateAdvice(mandate: Mandate): Node[] {
       criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);
       pointAtResourceWhileHovered(criterionAbbreviation, criterion.resourceName);
       criterionAbbreviation.addEventListener("click", () => showResourceSektorsDialog(criterion.resourceName));
+      criterionAbbreviation.appendChild(createCriterionCurrentAmount(criterion, playerSektors));
       return criterionIndex === 0 ? [criterionAbbreviation] : [document.createTextNode(" | "), criterionAbbreviation];
     }),
   ];
+}
+
+// What the player's sektors move of the criterion's resource between them, in brackets, below nothing
+// where they move it the other way to the one the criterion asks for.
+function createCriterionCurrentAmount(criterion: MandateCriterion, playerSektors: PlayerSektor[]): HTMLElement {
+  const total = resourceTotal(sektorsMovingResource(playerSektors, criterion.resourceName));
+  const currentAmount = document.createElement("span");
+  currentAmount.className = "mandate-criterion-current-amount";
+  currentAmount.textContent = `(${formatNumber(criterionCurrentAmount(criterion, total))})`;
+  return currentAmount;
 }
 
 function createShowMandateButton(mandate: Mandate, onMandateAbandoned: () => void): HTMLElement {

@@ -1383,6 +1383,35 @@ test("stops telling of a mandate given up from its message", async ({ page }) =>
   }))).toEqual({ owner: null, isPopupShown: false, isMessageShown: false });
 });
 
+// Every criterion of a mandate message ends with what the player's sektors move of its resource:
+// the Wood Alpha sends out counts towards exporting Wood, and against importing it. Stone is moved by
+// none of them.
+test("tells beside every criterion of a mandate message how far the player's sektors have got with it", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
+    localStorage.setItem("mandates", JSON.stringify([
+      {
+        number: 7,
+        owner: "Tester",
+        completed: false,
+        criteria: [
+          { type: "minimumExport", resourceName: "Wood", amount: 50 },
+          { type: "minimumImport", resourceName: "Wood", amount: 5 },
+          { type: "minimumExport", resourceName: "Stone", amount: 5 },
+        ],
+      },
+    ]));
+  });
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await placeHub(page);
+  await placeBuilding(page, "TestProcessor");
+
+  expect(await page.locator("#mandate-message-7 .mandate-criterion").evaluateAll(criteria =>
+    criteria.map(criterion => criterion.querySelector(".mandate-criterion-current-amount")?.textContent ?? null)))
+    .toEqual(["(3)", "(-3)", "(0)"]);
+});
+
 // A criterion of a mandate message clicked tells which of the player's sektors move its resource:
 // Alpha, built on here, sends Wood out, while Beta, also the player's, moves none of it and Gamma is
 // another player's.
@@ -1421,6 +1450,16 @@ test("lists the player's sektors moving the resource of a mandate criterion clic
     totalDirection: "Export",
     sektors: [["Alpha 🌊", "", "3"]],
   });
+});
+
+// What the player's sektors move is a part of the criterion, so clicking it opens the list as well.
+test("lists the player's sektors moving the resource when the amount of a criterion is clicked", async ({ page }) => {
+  await openWoodSektorsOfMandateMessage(page);
+  await page.locator("#resource-sektors-close-button").click();
+
+  await page.locator("#mandate-message-7 .mandate-criterion-current-amount").click();
+
+  expect(await page.locator("#resource-sektors-dialog").getAttribute("data-resource-name")).toEqual("Wood");
 });
 
 test("shows the player's sektors moving a resource of a mandate like the planet's imports and exports", async ({ page }) => {
