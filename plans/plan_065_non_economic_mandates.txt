@@ -13,7 +13,7 @@ Current ecosystem support damage can be transformed to deforestation.
 deforestation = initial EcosystemSupport - current EcosystemSupport
 deforestationPercentage = 100 * (initial EcosystemSupport - current EcosystemSupport) / initial EcosystemSupport
 Total player's deforestation across all player's sektors can be calculated as:
-deforestationPercentageTotal = 100 *  sum(initial EcosystemSupport - current EcosystemSupport) / sum(initial EcosystemSupport))
+deforestationPercentageTotal = 100 * sum(initial EcosystemSupport - current EcosystemSupport) / sum(initial EcosystemSupport))
 
 Pollution:
 A sektor's pollution metric is a value based on number of buildings (including forests) affected by pollution on their square and the percentage of the pollution.
@@ -44,7 +44,19 @@ Take into account building function Hapiness output amounts when generating valu
 Only one type of mandate:
 - at least X hapiness
 
-#1 Ecosystem support damage is actually deforestation
-- deforestation = initial EcosystemSupport - current EcosystemSupport
-
-#2 Deforestation percentage can be mandate criteria
+#1 Deforestation percentage can be mandate criteria
+- ecosystem support damage is actually deforestation
+    - deforestation = initial EcosystemSupport - current EcosystemSupport
+    - modify tooltip "Damage to ecosystem" to be "Deforestation"
+- mandates can have a "deforestation" criteria
+    - deforestation can be at most X
+    - this takes total player's sektors' deforestation into account, summed accross all player's sektors:
+        - totalDeforestation = sum(initial EcosystemSupport) - sum(current EcosystemSupport)
+    - when creating the mandate, take into account the possible restricted deforestation amount
+        - amount 0 is very harsh, not permitting ANY deforestation on any sektor
+- deforestation criteria described in mandates
+    - 🌳🔥 ≤ <amount>
+    - emojis have tooltip "Deforestation"
+- deforestation mandate details has criteria description:
+    - "Deforestation at most <amount>"
+    - with sun-row "Currently <current amount>"
