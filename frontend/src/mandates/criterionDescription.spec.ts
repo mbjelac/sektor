@@ -33,6 +33,11 @@ describe("criterionDescription", () => {
     ]).toEqual(["Population at least 80", "Population at most 40"]);
   });
 
+  it("tells hapiness at least in full", () => {
+    expect(criterionDescription({ type: "minimumHapiness", amount: 8, completed: false }, null))
+      .toEqual("Hapiness at least 8");
+  });
+
   it("names a resource without a picture by its name alone", () => {
     expect(criterionDescription({ type: "minimumExport", resourceName: "Apples", amount: 12, completed: false }, null))
       .toEqual("Export at least 12 Apples");

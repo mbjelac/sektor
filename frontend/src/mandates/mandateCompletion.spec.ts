@@ -35,14 +35,18 @@ function housingAtMost(amount: number): MandateCriterion {
   return { type: "maximumPopulation", amount, completed: false };
 }
 
+function makingHapinessAtLeast(amount: number): MandateCriterion {
+  return { type: "minimumHapiness", amount, completed: false };
+}
+
 function exportingAtMost(resourceName: string, amount: number): MandateCriterion {
   return { type: "maximumExport", resourceName, amount, completed: false };
 }
 
-// The player's sektors move what they are given, are neither deforested nor polluted at all, and
-// house nobody.
+// The player's sektors move what they are given, are neither deforested nor polluted at all, house
+// nobody and make no Hapiness.
 function standingAt(importsAndExports: ImportsAndExports): PlayerTotals {
-  return { importsAndExports, deforestation: 0, pollution: 0, population: 0 };
+  return { importsAndExports, deforestation: 0, pollution: 0, population: 0, hapiness: 0 };
 }
 
 describe("completedMandate", () => {
@@ -142,5 +146,11 @@ describe("completedMandate", () => {
     expect([79, 80, 81].map(amount =>
       completedMandate(mandateAsking(housingAtMost(amount)), { ...standingAt(playerImportsAndExports), population: 80 }).completed
     )).toEqual([false, true, true]);
+  });
+
+  it("completes a minimum hapiness once all the player's sektors together make that much", () => {
+    expect([11, 12, 13].map(amount =>
+      completedMandate(mandateAsking(makingHapinessAtLeast(amount)), { ...standingAt(playerImportsAndExports), hapiness: 12 }).completed
+    )).toEqual([true, true, false]);
   });
 });

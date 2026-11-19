@@ -6,6 +6,7 @@ import { getMandates, replaceMandates } from "./mandates.api";
 import { totalDeforestation } from "../sektor/deforestation";
 import { totalPollution } from "../sektor/pollution";
 import { totalPopulation } from "../sektor/population";
+import { totalHapiness } from "../sektor/totalHapiness";
 
 // Whether a player's mandates, and every criterion of them, are completed is worked out anew from every sektor they own, as they
 // stand stored, whenever the player changes one of them.
@@ -16,7 +17,7 @@ export function recalculateMandates(playerName: string | null) {
   // resource is set against what another sends out of it, just as it is for the whole planet, so a
   // resource counts as imported or exported only by what is left over. The sektors are deforested by
   // all the support they started with less all they still give, are polluted by all of their
-  // pollution, and house all of their people.
+  // pollution, house all of their people, and make all of their Hapiness.
   const playerSektorSummaries = getSektorList()
     .filter(sektorListItem => sektorListItem.owner === playerName)
     .map(sektorListItem => getSektorSummary(sektorListItem.id));
@@ -25,6 +26,7 @@ export function recalculateMandates(playerName: string | null) {
     deforestation: totalDeforestation(playerSektorSummaries),
     pollution: totalPollution(playerSektorSummaries.map(sektorSummary => sektorSummary.pollution)),
     population: totalPopulation(playerSektorSummaries.map(sektorSummary => sektorSummary.population)),
+    hapiness: totalHapiness(playerSektorSummaries.map(sektorSummary => sektorSummary.hapiness)),
   };
 
   replaceMandates(

@@ -19,6 +19,7 @@ function playerSektorOf(sektorName: string, imports: [string, number][], exports
     ecosystem: { initialEcosystemSupport: 0, ecosystemSupport: 0 },
     pollution: 0,
     population: 0,
+    hapiness: 0,
   };
 }
 

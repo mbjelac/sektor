@@ -8,8 +8,14 @@ import { HABITATS_CAPACITY } from "../sektor/population";
 
 const LOWEST_AMOUNT = 5;
 const HIGHEST_AMOUNT = 50;
-// Most mandates ask for a positive resource sent out; the rest ask for a negative one taken in.
-const NEGATIVE_IMPORT_CHANCE = 1 / 3;
+// Every kind of mandate is as likely as any other. A mandate asks for a positive resource sent out, or
+// for a negative one taken in.
+const NEGATIVE_IMPORT_CHANCE = 1 / 6;
+// Some ask for the player's sektors to make at least so much Hapiness, drawn up to a little more than
+// all their habitats could make, were they given all they ask for, so that a player is sometimes
+// asked to build another habitat.
+const HAPINESS_CHANCE = 1 / 6;
+const MORE_HAPINESS = 4;
 // Some mandates ask instead for the player's sektors to be deforested by no more than so much, drawn
 // as so many forests' worth of support. None at all is a harsh thing to ask, letting no sektor of the
 // player's lose a single forest, so it is only one of the many amounts drawn.
@@ -29,17 +35,20 @@ const MORE_HABITATS = 5;
 
 // What a mandate can be made of: the resources a sektor can import and export, those doing good and
 // those doing harm, what the whole planet brings in and sends out of them, the most the player's
-// polluting buildings can foul, and how many habitats the player has.
+// polluting buildings can foul, how many habitats the player has, and how much Hapiness they could
+// make.
 export interface MandateMaterials {
   positiveResourceNames: string[];
   negativeResourceNames: string[];
   planetImportsAndExports: ImportsAndExports;
   playerPollutionFootprint: number;
   playerHabitatCount: number;
+  playerPossibleHapiness: number;
 }
 
-// A mandate asks for one of five things: to send out a positive resource, to take in a negative
-// one, to deforest or to pollute no more than so much, or to house at least or at most so many. Nobody owns it when it is made, so nobody has completed it either.
+// A mandate asks for one of six things: to send out a positive resource, to take in a negative
+// one, to deforest or to pollute no more than so much, to house at least or at most so many, or to
+// make at least so much Hapiness. Nobody owns it when it is made, so nobody has completed it either.
 export function createMandate(
   mandateNumber: number,
   mandateMaterials: MandateMaterials,
@@ -66,7 +75,11 @@ function createCriteria(mandateMaterials: MandateMaterials, randomNumber: Random
       randomNumber,
     )];
   }
-  if (strategyDraw >= NEGATIVE_IMPORT_CHANCE && strategyDraw < NEGATIVE_IMPORT_CHANCE + DEFORESTATION_CHANCE) {
+  const hapinessEnd = NEGATIVE_IMPORT_CHANCE + HAPINESS_CHANCE;
+  if (strategyDraw >= NEGATIVE_IMPORT_CHANCE && strategyDraw < hapinessEnd) {
+    return [hapinessCriterion(mandateMaterials.playerPossibleHapiness, randomNumber)];
+  }
+  if (strategyDraw >= hapinessEnd && strategyDraw < hapinessEnd + DEFORESTATION_CHANCE) {
     return [deforestationCriterion(randomNumber)];
   }
   if (strategyDraw >= 1 - POLLUTION_CHANCE) {
@@ -94,6 +107,15 @@ function criterion(
     type,
     resourceName: drawnByPlanetThroughput(resourceNames, planetThroughputs, randomNumber),
     amount: drawnAmount(randomNumber),
+    completed: false,
+  };
+}
+
+function hapinessCriterion(playerPossibleHapiness: number, randomNumber: RandomNumber): MandateCriterion {
+  const mostHapiness = Math.floor(playerPossibleHapiness) + MORE_HAPINESS;
+  return {
+    type: "minimumHapiness",
+    amount: 1 + Math.floor(randomNumber() * mostHapiness),
     completed: false,
   };
 }

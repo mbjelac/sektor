@@ -16,6 +16,10 @@ export interface SektorSummary extends SektorEcosystem {
   // How many habitats stand in the sektor, and how many people they house.
   habitatCount: number;
   population: number;
+  // How much Hapiness the sektor makes, and how much it would make were its habitats given all they
+  // ask for.
+  hapiness: number;
+  possibleHapiness: number;
   buildingCount: number;
   // What the sektor brings in and sends out of every resource it moves, which the sektors are added
   // up by into what the whole planet brings in and sends out.
@@ -26,11 +30,11 @@ export interface SektorSummary extends SektorEcosystem {
 }
 
 // The stored sektor is played through again so that what is shown about it — what it moves in and
-// out, how much it supports its ecosystem, how polluted it is and how many people it houses — comes out of the same rules as in the sektor itself.
+// out, how much it supports its ecosystem, how polluted it is, how many people it houses and how happy they are — comes out of the same rules as in the sektor itself.
 export function getSektorSummary(sektorId: string): SektorSummary {
   const sektorData = getSektorData(sektorId);
   if (!sektorData) {
-    return { buildingCount: 0, imports: [], exports: [], importTotal: 0, exportTotal: 0, initialEcosystemSupport: 0, ecosystemSupport: 0, pollution: 0, pollutionFootprint: 0, habitatCount: 0, population: 0 };
+    return { buildingCount: 0, imports: [], exports: [], importTotal: 0, exportTotal: 0, initialEcosystemSupport: 0, ecosystemSupport: 0, pollution: 0, pollutionFootprint: 0, habitatCount: 0, population: 0, hapiness: 0, possibleHapiness: 0 };
   }
 
   const sektor = new Sektor(
@@ -54,6 +58,8 @@ export function getSektorSummary(sektorId: string): SektorSummary {
     pollutionFootprint: sektor.findPollutionFootprint(),
     habitatCount: sektor.findHabitatCount(),
     population: sektorPopulation(sektor.findHabitatCount()),
+    hapiness: sektorState.hapiness,
+    possibleHapiness: sektorState.possibleHapiness,
   };
 }
 

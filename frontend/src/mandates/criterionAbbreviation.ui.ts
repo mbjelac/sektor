@@ -10,7 +10,7 @@ import { measureOf, MeasureCriterion } from "./measures";
 // as at least or at most by the sign in front of it. The pictures carry the words they stand for, to
 // be read on hovering them. It ends with how far the player's sektors have got with it, so that the
 // player need not open anything to see. A criterion about a measure, such as deforestation,
-// pollution or population, is told by its picture alone in place of a direction and a resource.
+// pollution, population or hapiness, is told by its picture alone in place of a direction and a resource.
 export function createCriterionAbbreviation(criterion: MandateCriterion, playerSektors: PlayerSektor[]): HTMLElement {
   const criterionElement = document.createElement("span");
   criterionElement.className = "mandate-criterion";

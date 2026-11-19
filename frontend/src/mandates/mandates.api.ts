@@ -12,9 +12,10 @@ export interface Mandate {
 
 // What the player's sektors have to do, between them, for a mandate to be fulfilled: import or export
 // at least, or at most, so much of a resource, be deforested or polluted by at most so much, or house
-// at least, or at most, so many people. Whether they do is
+// at least, or at most, so many people, or make at least so much Hapiness. Whether they do is
 // worked out anew along with the mandate it belongs to.
-export type MandateCriterion = ResourceCriterion | DeforestationCriterion | PollutionCriterion | PopulationCriterion;
+export type MandateCriterion =
+  ResourceCriterion | DeforestationCriterion | PollutionCriterion | PopulationCriterion | HapinessCriterion;
 
 export interface ResourceCriterion {
   type: "minimumExport" | "maximumExport" | "minimumImport" | "maximumImport";
@@ -41,6 +42,13 @@ export interface PollutionCriterion {
 // The people all the player's sektors house between them.
 export interface PopulationCriterion {
   type: "minimumPopulation" | "maximumPopulation";
+  amount: number;
+  completed: boolean;
+}
+
+// The Hapiness all the player's sektors make between them.
+export interface HapinessCriterion {
+  type: "minimumHapiness";
   amount: number;
   completed: boolean;
 }

@@ -90,7 +90,7 @@ Only one type of mandate:
     - "Population at least <amount>"
     - with sub-row "Currently <current amount>"
 
-#4 Hapiness can be mandate criteria
+#4 [done] Hapiness can be mandate criteria
 - [done] mandates can have "hapiness" criteria
     - hapiness is at least X
     - calculate total player's sektors hapiness as described in the "Hapiness" preamble above
@@ -98,7 +98,7 @@ Only one type of mandate:
 - [done] hapiness criteria described in mandates
     - ☺️ ≥ <amount>
     - emoji has tooltip "Hapiness"
-- hapiness mandate details has criteria description:
+- [done] hapiness mandate details has criteria description:
     - "Hapiness at least <amount>"
     - with sub-row "Currently <current amount>"
 

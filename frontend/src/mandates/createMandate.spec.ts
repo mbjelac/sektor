@@ -12,6 +12,7 @@ const MATERIALS: MandateMaterials = {
   },
   playerPollutionFootprint: 200,
   playerHabitatCount: 3,
+  playerPossibleHapiness: 6,
 };
 
 // Every draw falls where the test says, one after the other.
@@ -41,8 +42,8 @@ describe("createMandate", () => {
     ]);
   });
 
-  it("asks for a negative resource imported one time in three, drawn of those the planet exports", () => {
-    expect(createMandate(1, MATERIALS, drawing(0.3, 0, 0.9999)).criteria).toEqual([
+  it("asks for a negative resource imported one time in six, drawn of those the planet exports", () => {
+    expect(createMandate(1, MATERIALS, drawing(0.1, 0, 0.9999)).criteria).toEqual([
       { type: "minimumImport", resourceName: "Sludge", amount: 50, completed: false },
     ]);
   });
@@ -91,6 +92,17 @@ describe("createMandate", () => {
       [{ type: "minimumPopulation", amount: 320, completed: false }],
       [{ type: "maximumPopulation", amount: 0, completed: false }],
       [{ type: "maximumPopulation", amount: 320, completed: false }],
+    ]);
+  });
+
+  // The player's habitats could make 6 Hapiness, so they are asked for up to 10.
+  it("asks for hapiness at least one time in six, drawn up to a little more than the player's habitats could make", () => {
+    expect([
+      createMandate(1, MATERIALS, drawing(0.17, 0)).criteria,
+      createMandate(1, MATERIALS, drawing(0.33, 0.9999)).criteria,
+    ]).toEqual([
+      [{ type: "minimumHapiness", amount: 1, completed: false }],
+      [{ type: "minimumHapiness", amount: 10, completed: false }],
     ]);
   });
 

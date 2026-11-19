@@ -2,12 +2,13 @@ import { ImportsAndExports } from "../globalImportsAndExports";
 import { Mandate, MandateCriterion, ResourceCriterion } from "./mandates.api";
 
 // How the player's sektors stand between them: what they move in and out, how much they are
-// deforested and polluted, and how many people they house.
+// deforested and polluted, how many people they house, and how much Hapiness they make.
 export interface PlayerTotals {
   importsAndExports: ImportsAndExports;
   deforestation: number;
   pollution: number;
   population: number;
+  hapiness: number;
 }
 
 // The mandate as the player's sektors together leave it: every criterion completed or not, and the
@@ -26,6 +27,7 @@ function isCriterionFulfilled(criterion: MandateCriterion, playerTotals: PlayerT
     case "maximumPollution": return playerTotals.pollution <= criterion.amount;
     case "minimumPopulation": return playerTotals.population >= criterion.amount;
     case "maximumPopulation": return playerTotals.population <= criterion.amount;
+    case "minimumHapiness": return playerTotals.hapiness >= criterion.amount;
     case "minimumExport": return exportedOf(criterion, playerTotals) >= criterion.amount;
     case "maximumExport": return exportedOf(criterion, playerTotals) <= criterion.amount;
     case "minimumImport": return importedOf(criterion, playerTotals) >= criterion.amount;

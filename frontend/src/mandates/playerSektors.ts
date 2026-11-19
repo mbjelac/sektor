@@ -21,6 +21,7 @@ export function getPlayerSektors(): LocatedPlayerSektor[] {
         ecosystem: sektorSummary,
         pollution: sektorSummary.pollution,
         population: sektorSummary.population,
+        hapiness: sektorSummary.hapiness,
         location: sektorListItem.location,
       };
     });

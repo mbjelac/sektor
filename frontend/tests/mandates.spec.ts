@@ -646,3 +646,46 @@ test("tells a population criterion in full, and how many people the player's sek
     { line: "Population at most 40", current: "Currently 80" },
   ]);
 });
+
+// Alpha, the player's sektor, has a habitat given the Care it asks for by a carer running on Food
+// brought in through a hub, so it makes 5 Hapiness.
+async function storeHappySektorAndMandate(page: Page) {
+  await page.evaluate(currentPlayer => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: currentPlayer }]));
+    localStorage.setItem("sektor_Alpha", JSON.stringify({
+      locationProperties: {},
+      buildings: [
+        { type: "TestHub", location: { x: 0, y: 0 } },
+        { type: "TestCarer", location: { x: 0, y: 1 } },
+        { type: "TestHabitat", location: { x: 0, y: 2 } },
+      ],
+    }));
+    localStorage.setItem("mandates", JSON.stringify([
+      { number: 1, owner: currentPlayer, criteria: [{ type: "minimumHapiness", amount: 8 }] },
+    ]));
+  }, CURRENT_PLAYER);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+}
+
+test("tells a hapiness criterion in the list in short, by a smiling face named Hapiness", async ({ page }) => {
+  await storeHappySektorAndMandate(page);
+
+  expect(await page.locator("#mandate-panel .mandate-criterion").evaluate(criterion => ({
+    picture: criterion.querySelector(".mandate-criterion-measure")!.textContent,
+    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
+    amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
+    current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
+  }))).toEqual({ picture: "☺️", tooltip: "Hapiness", amount: "≥8", current: "(5)" });
+});
+
+test("tells a hapiness criterion in full, and how much Hapiness the player's sektors make now", async ({ page }) => {
+  await storeHappySektorAndMandate(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect({
+    line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
+    current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
+  }).toEqual({ line: "Hapiness at least 8", current: "Currently 5" });
+});

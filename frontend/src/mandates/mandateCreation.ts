@@ -47,8 +47,8 @@ function nextMandateNumber(): number {
 }
 
 // What the planet brings in and sends out changes as sektors are built on, and so do the polluting
-// buildings and the habitats of the player's sektors, so they are gathered anew whenever a mandate is
-// to be made.
+// buildings and the habitats of the player's sektors, and the Hapiness those could make, so they are
+// gathered anew whenever a mandate is to be made.
 function mandateMaterials(): MandateMaterials {
   const playerName = getUsername();
   const sektorListItems = getSektorList();
@@ -65,5 +65,7 @@ function mandateMaterials(): MandateMaterials {
       .reduce((total, sektorSummary) => total + sektorSummary.pollutionFootprint, 0),
     playerHabitatCount: playerSektorSummaries
       .reduce((total, sektorSummary) => total + sektorSummary.habitatCount, 0),
+    playerPossibleHapiness: playerSektorSummaries
+      .reduce((total, sektorSummary) => total + sektorSummary.possibleHapiness, 0),
   };
 }
