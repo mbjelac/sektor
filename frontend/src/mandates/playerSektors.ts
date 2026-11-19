@@ -20,6 +20,7 @@ export function getPlayerSektors(): LocatedPlayerSektor[] {
         importsAndExports: sektorSummary,
         ecosystem: sektorSummary,
         pollution: sektorSummary.pollution,
+        population: sektorSummary.population,
         location: sektorListItem.location,
       };
     });

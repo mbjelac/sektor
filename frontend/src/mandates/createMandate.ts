@@ -4,6 +4,7 @@ import { ImportsAndExports, findThroughputValue } from "../globalImportsAndExpor
 import { ResourceThroughput } from "../../../shared/sektorData";
 import { forestEcosystemSupport } from "../sektor/forest";
 import { POLLUTION_STEP, pollutionFootprint } from "../sektor/pollution";
+import { HABITATS_CAPACITY } from "../sektor/population";
 
 const LOWEST_AMOUNT = 5;
 const HIGHEST_AMOUNT = 50;
@@ -19,19 +20,26 @@ const MOST_FELLED_FORESTS = 20;
 // for no more than the least polluting building can foul.
 const POLLUTION_CHANCE = 1 / 6;
 const LEAST_POLLUTION_AREA = 1;
+// Some ask for the player's sektors to house at least, or at most, so many people, half of them one
+// and half the other, drawn as so many habitats' worth of people up to a few habitats more than the
+// player has. Housing at least a habitat's worth is easy; housing at most none is harsh.
+const POPULATION_CHANCE = 1 / 6;
+const MINIMUM_POPULATION_CHANCE = 1 / 2;
+const MORE_HABITATS = 5;
 
 // What a mandate can be made of: the resources a sektor can import and export, those doing good and
-// those doing harm, what the whole planet brings in and sends out of them, and the most the player's
-// polluting buildings can foul.
+// those doing harm, what the whole planet brings in and sends out of them, the most the player's
+// polluting buildings can foul, and how many habitats the player has.
 export interface MandateMaterials {
   positiveResourceNames: string[];
   negativeResourceNames: string[];
   planetImportsAndExports: ImportsAndExports;
   playerPollutionFootprint: number;
+  playerHabitatCount: number;
 }
 
-// A mandate asks for one of four things: to send out a positive resource, to take in a negative
-// one, or to deforest or to pollute no more than so much. Nobody owns it when it is made, so nobody has completed it either.
+// A mandate asks for one of five things: to send out a positive resource, to take in a negative
+// one, to deforest or to pollute no more than so much, or to house at least or at most so many. Nobody owns it when it is made, so nobody has completed it either.
 export function createMandate(
   mandateNumber: number,
   mandateMaterials: MandateMaterials,
@@ -63,6 +71,9 @@ function createCriteria(mandateMaterials: MandateMaterials, randomNumber: Random
   }
   if (strategyDraw >= 1 - POLLUTION_CHANCE) {
     return [pollutionCriterion(mandateMaterials.playerPollutionFootprint, randomNumber)];
+  }
+  if (strategyDraw >= 1 - POLLUTION_CHANCE - POPULATION_CHANCE) {
+    return [populationCriterion(mandateMaterials.playerHabitatCount, randomNumber)];
   }
   if (mandateMaterials.positiveResourceNames.length === 0) return [];
   return [criterion(
@@ -104,6 +115,16 @@ function pollutionCriterion(playerPollutionFootprint: number, randomNumber: Rand
     amount: pollutionSteps * POLLUTION_STEP,
     completed: false,
   };
+}
+
+function populationCriterion(playerHabitatCount: number, randomNumber: RandomNumber): MandateCriterion {
+  const mostHabitats = playerHabitatCount + MORE_HABITATS;
+  if (randomNumber() < MINIMUM_POPULATION_CHANCE) {
+    const leastHabitats = 1 + Math.floor(randomNumber() * mostHabitats);
+    return { type: "minimumPopulation", amount: leastHabitats * HABITATS_CAPACITY, completed: false };
+  }
+  const allowedHabitats = Math.floor(randomNumber() * (mostHabitats + 1));
+  return { type: "maximumPopulation", amount: allowedHabitats * HABITATS_CAPACITY, completed: false };
 }
 
 // A resource is drawn as likely as the planet moves it, and one it does not move at all is never

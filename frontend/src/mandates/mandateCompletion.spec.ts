@@ -27,13 +27,22 @@ function pollutingAtMost(amount: number): MandateCriterion {
   return { type: "maximumPollution", amount, completed: false };
 }
 
+function housingAtLeast(amount: number): MandateCriterion {
+  return { type: "minimumPopulation", amount, completed: false };
+}
+
+function housingAtMost(amount: number): MandateCriterion {
+  return { type: "maximumPopulation", amount, completed: false };
+}
+
 function exportingAtMost(resourceName: string, amount: number): MandateCriterion {
   return { type: "maximumExport", resourceName, amount, completed: false };
 }
 
-// The player's sektors move what they are given, and are neither deforested nor polluted at all.
+// The player's sektors move what they are given, are neither deforested nor polluted at all, and
+// house nobody.
 function standingAt(importsAndExports: ImportsAndExports): PlayerTotals {
-  return { importsAndExports, deforestation: 0, pollution: 0 };
+  return { importsAndExports, deforestation: 0, pollution: 0, population: 0 };
 }
 
 describe("completedMandate", () => {
@@ -120,6 +129,18 @@ describe("completedMandate", () => {
   it("completes a maximum pollution while all the player's sektors together are polluted no more than that", () => {
     expect([119, 120, 121].map(amount =>
       completedMandate(mandateAsking(pollutingAtMost(amount)), { ...standingAt(playerImportsAndExports), pollution: 120 }).completed
+    )).toEqual([false, true, true]);
+  });
+
+  it("completes a minimum population once all the player's sektors together house that many", () => {
+    expect([79, 80, 81].map(amount =>
+      completedMandate(mandateAsking(housingAtLeast(amount)), { ...standingAt(playerImportsAndExports), population: 80 }).completed
+    )).toEqual([true, true, false]);
+  });
+
+  it("completes a maximum population while all the player's sektors together house no more than that", () => {
+    expect([79, 80, 81].map(amount =>
+      completedMandate(mandateAsking(housingAtMost(amount)), { ...standingAt(playerImportsAndExports), population: 80 }).completed
     )).toEqual([false, true, true]);
   });
 });

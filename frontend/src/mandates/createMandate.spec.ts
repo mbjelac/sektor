@@ -11,6 +11,7 @@ const MATERIALS: MandateMaterials = {
     exports: [{ name: "Sludge", value: 40 }],
   },
   playerPollutionFootprint: 200,
+  playerHabitatCount: 3,
 };
 
 // Every draw falls where the test says, one after the other.
@@ -75,6 +76,21 @@ describe("createMandate", () => {
   it("asks a player with no polluting building for at most what the least polluting one can foul", () => {
     expect(createMandate(1, { ...MATERIALS, playerPollutionFootprint: 0 }, drawing(0.9, 0.9999)).criteria).toEqual([
       { type: "maximumPollution", amount: 80, completed: false },
+    ]);
+  });
+
+  // The player has 3 habitats, so is asked for up to 8 habitats' worth of 40 people.
+  it("asks for population at least or at most one time in six, drawn in habitats up to five more than the player has", () => {
+    expect([
+      createMandate(1, MATERIALS, drawing(0.67, 0, 0)).criteria,
+      createMandate(1, MATERIALS, drawing(0.8, 0.49, 0.9999)).criteria,
+      createMandate(1, MATERIALS, drawing(0.7, 0.5, 0)).criteria,
+      createMandate(1, MATERIALS, drawing(0.83, 0.9, 0.9999)).criteria,
+    ]).toEqual([
+      [{ type: "minimumPopulation", amount: 40, completed: false }],
+      [{ type: "minimumPopulation", amount: 320, completed: false }],
+      [{ type: "maximumPopulation", amount: 0, completed: false }],
+      [{ type: "maximumPopulation", amount: 320, completed: false }],
     ]);
   });
 

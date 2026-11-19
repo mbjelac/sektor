@@ -686,9 +686,10 @@ test("makes mandates numbered one after another, owned by nobody", async ({ page
 });
 
 // Whichever way a mandate is made, it asks for amounts between 5 and 50 of resources which can be
-// imported and exported, for deforestation of at most so many forests' worth of 5 support, or for
-// pollution of at most so many steps of 20.
-test("makes mandates asking for amounts of tradable resources, deforestation or pollution", async ({ page }) => {
+// imported and exported, for deforestation of at most so many forests' worth of 5 support, for
+// pollution of at most so many steps of 20, or for at least or at most so many habitats' worth of 40
+// people, at least one habitat's worth where it is at least.
+test("makes mandates asking for amounts of tradable resources, deforestation, pollution or population", async ({ page }) => {
   await page.goto("/?test=true");
 
   for (let mandateIndex = 0; mandateIndex < 10; mandateIndex++) await createMandateNow(page);
@@ -707,6 +708,10 @@ function isFitCriterion(criterion: { type: string; resourceName?: string; amount
   }
   if (criterion.type === "maximumPollution") {
     return Number.isInteger(criterion.amount) && criterion.amount % 20 === 0 && criterion.amount >= 0;
+  }
+  if (criterion.type === "minimumPopulation" || criterion.type === "maximumPopulation") {
+    const leastPopulation = criterion.type === "minimumPopulation" ? 40 : 0;
+    return Number.isInteger(criterion.amount) && criterion.amount % 40 === 0 && criterion.amount >= leastPopulation;
   }
   return ["minimumExport", "maximumExport", "minimumImport", "maximumImport"].includes(criterion.type)
     && !["Care", "Hapiness", "ImportExport"].includes(criterion.resourceName!)

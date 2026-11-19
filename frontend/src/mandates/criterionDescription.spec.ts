@@ -26,6 +26,13 @@ describe("criterionDescription", () => {
       .toEqual("Pollution at most 60");
   });
 
+  it("tells population at least and at most in full", () => {
+    expect([
+      criterionDescription({ type: "minimumPopulation", amount: 80, completed: false }, null),
+      criterionDescription({ type: "maximumPopulation", amount: 40, completed: false }, null),
+    ]).toEqual(["Population at least 80", "Population at most 40"]);
+  });
+
   it("names a resource without a picture by its name alone", () => {
     expect(criterionDescription({ type: "minimumExport", resourceName: "Apples", amount: 12, completed: false }, null))
       .toEqual("Export at least 12 Apples");

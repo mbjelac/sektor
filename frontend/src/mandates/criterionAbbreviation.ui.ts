@@ -9,9 +9,8 @@ import { measureOf, MeasureCriterion } from "./measures";
 // A criterion in short is whether it is about exports or imports, the resource, and the amount, told
 // as at least or at most by the sign in front of it. The pictures carry the words they stand for, to
 // be read on hovering them. It ends with how far the player's sektors have got with it, so that the
-// player need not open anything to see. A criterion about a measure, such as deforestation or
-// pollution, is told by its picture alone in place of a direction and a resource, and only ever asks
-// for at most.
+// player need not open anything to see. A criterion about a measure, such as deforestation,
+// pollution or population, is told by its picture alone in place of a direction and a resource.
 export function createCriterionAbbreviation(criterion: MandateCriterion, playerSektors: PlayerSektor[]): HTMLElement {
   const criterionElement = document.createElement("span");
   criterionElement.className = "mandate-criterion";
@@ -74,7 +73,7 @@ function appendMeasureAbbreviation(
 
   const amount = document.createElement("span");
   amount.className = "mandate-criterion-amount";
-  amount.textContent = `\u2264${formatNumber(criterion.amount)}`;
+  amount.textContent = `${measure.asksForAtLeast ? "\u2265" : "\u2264"}${formatNumber(criterion.amount)}`;
   criterionElement.appendChild(amount);
 
   criterionElement.appendChild(createCurrentAmountElement(measure.playerAmount(playerSektors)));

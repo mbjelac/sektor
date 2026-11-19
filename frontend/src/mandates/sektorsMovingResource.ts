@@ -4,14 +4,15 @@ import { isAboutExports } from "./criterionType";
 import { SektorEcosystem } from "../sektor/deforestation";
 
 // A sektor of the player, by the id it is stored under and the name it is known by, with what it
-// brings in and sends out, how much its ecosystem was and is supported, and how polluted it is where
-// it does harm.
+// brings in and sends out, how much its ecosystem was and is supported, how polluted it is where it
+// does harm, and how many people it houses.
 export interface PlayerSektor {
   sektorId: string;
   sektorName: string;
   importsAndExports: ImportsAndExports;
   ecosystem: SektorEcosystem;
   pollution: number;
+  population: number;
 }
 
 // How much of a resource a sektor of the player brings in and sends out.

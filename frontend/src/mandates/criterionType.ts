@@ -1,9 +1,9 @@
 import type { MandateCriterion, ResourceCriterion } from "./mandates.api";
 
 // A criterion is about a resource, or else about how much the player's sektors are deforested or
-// polluted.
+// polluted, or how many people they house.
 export function isAboutResource(criterion: MandateCriterion): criterion is ResourceCriterion {
-  return criterion.type !== "maximumDeforestation" && criterion.type !== "maximumPollution";
+  return ["minimumExport", "maximumExport", "minimumImport", "maximumImport"].includes(criterion.type);
 }
 
 // Every criterion about a resource is about either exports or imports, and asks for either at least

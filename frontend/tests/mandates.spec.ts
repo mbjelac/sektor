@@ -593,3 +593,56 @@ test("tells a pollution criterion in full, and how polluted the player's sektors
     current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
   }).toEqual({ line: "Pollution at most 60", current: "Currently 40" });
 });
+
+// Alpha, the player's sektor, has two habitats, housing 80 people.
+async function storePopulatedSektorAndMandate(page: Page) {
+  await page.evaluate(currentPlayer => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: currentPlayer }]));
+    localStorage.setItem("sektor_Alpha", JSON.stringify({
+      locationProperties: {},
+      buildings: [
+        { type: "TestHabitat", location: { x: 0, y: 0 } },
+        { type: "TestHabitat", location: { x: 0, y: 1 } },
+      ],
+    }));
+    localStorage.setItem("mandates", JSON.stringify([
+      { number: 1, owner: currentPlayer, criteria: [{ type: "minimumPopulation", amount: 120 }] },
+      { number: 2, owner: currentPlayer, criteria: [{ type: "maximumPopulation", amount: 40 }] },
+    ]));
+  }, CURRENT_PLAYER);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+}
+
+test("tells a population criterion in the list in short, by a baby named Population", async ({ page }) => {
+  await storePopulatedSektorAndMandate(page);
+
+  expect(await page.locator("#mandate-panel .mandate-criterion").evaluateAll(criteria => criteria.map(criterion => ({
+    picture: criterion.querySelector(".mandate-criterion-measure")!.textContent,
+    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
+    amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
+    current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
+  })))).toEqual([
+    { picture: "👶🏽", tooltip: "Population", amount: "≥120", current: "(80)" },
+    { picture: "👶🏽", tooltip: "Population", amount: "≤40", current: "(80)" },
+  ]);
+});
+
+test("tells a population criterion in full, and how many people the player's sektors house now", async ({ page }) => {
+  await storePopulatedSektorAndMandate(page);
+
+  const details = [];
+  for (const mandateNumber of [1, 2]) {
+    await page.locator(`#mandate-panel .mandate-item[data-mandate-number="${mandateNumber}"]`).click();
+    details.push({
+      line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
+      current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
+    });
+    await page.locator("#mandate-details-dialog #mandate-close-button").click();
+  }
+
+  expect(details).toEqual([
+    { line: "Population at least 120", current: "Currently 80" },
+    { line: "Population at most 40", current: "Currently 80" },
+  ]);
+});

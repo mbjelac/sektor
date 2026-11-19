@@ -453,6 +453,14 @@ export class Sektor {
     return [...disabledFunctions, ...this.findStarvedFunctions(disabledFunctions)];
   }
 
+  // How many habitats stand in the sektor, giving off Hapiness or not.
+  findHabitatCount(): number {
+    return this.buildings.filter(building => {
+      const buildingDefinition = this.findBuildingDefinition(building.type);
+      return buildingDefinition !== undefined && isHabitat(buildingDefinition);
+    }).length;
+  }
+
   // How polluted the sektor is where it does harm: the pollution of the square of every building
   // pollution makes less of what it makes. Fouled ground with nothing on it, or with a building
   // pollution does not touch, adds nothing.

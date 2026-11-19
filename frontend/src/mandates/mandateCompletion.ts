@@ -1,12 +1,13 @@
 import { ImportsAndExports } from "../globalImportsAndExports";
-import { Mandate, MandateCriterion } from "./mandates.api";
+import { Mandate, MandateCriterion, ResourceCriterion } from "./mandates.api";
 
-// How the player's sektors stand between them: what they move in and out, and how much they are
-// deforested and polluted.
+// How the player's sektors stand between them: what they move in and out, how much they are
+// deforested and polluted, and how many people they house.
 export interface PlayerTotals {
   importsAndExports: ImportsAndExports;
   deforestation: number;
   pollution: number;
+  population: number;
 }
 
 // The mandate as the player's sektors together leave it: every criterion completed or not, and the
@@ -20,17 +21,24 @@ export function completedMandate(mandate: Mandate, playerTotals: PlayerTotals): 
 }
 
 function isCriterionFulfilled(criterion: MandateCriterion, playerTotals: PlayerTotals): boolean {
-  if (criterion.type === "maximumDeforestation") return playerTotals.deforestation <= criterion.amount;
-  if (criterion.type === "maximumPollution") return playerTotals.pollution <= criterion.amount;
-
-  const exported = summedValue(playerTotals.importsAndExports.exports, criterion.resourceName);
-  const imported = summedValue(playerTotals.importsAndExports.imports, criterion.resourceName);
   switch (criterion.type) {
-    case "minimumExport": return exported >= criterion.amount;
-    case "maximumExport": return exported <= criterion.amount;
-    case "minimumImport": return imported >= criterion.amount;
-    case "maximumImport": return imported <= criterion.amount;
+    case "maximumDeforestation": return playerTotals.deforestation <= criterion.amount;
+    case "maximumPollution": return playerTotals.pollution <= criterion.amount;
+    case "minimumPopulation": return playerTotals.population >= criterion.amount;
+    case "maximumPopulation": return playerTotals.population <= criterion.amount;
+    case "minimumExport": return exportedOf(criterion, playerTotals) >= criterion.amount;
+    case "maximumExport": return exportedOf(criterion, playerTotals) <= criterion.amount;
+    case "minimumImport": return importedOf(criterion, playerTotals) >= criterion.amount;
+    case "maximumImport": return importedOf(criterion, playerTotals) <= criterion.amount;
   }
+}
+
+function exportedOf(criterion: ResourceCriterion, playerTotals: PlayerTotals): number {
+  return summedValue(playerTotals.importsAndExports.exports, criterion.resourceName);
+}
+
+function importedOf(criterion: ResourceCriterion, playerTotals: PlayerTotals): number {
+  return summedValue(playerTotals.importsAndExports.imports, criterion.resourceName);
 }
 
 function summedValue(throughputs: { name: string; value: number }[], resourceName: string): number {

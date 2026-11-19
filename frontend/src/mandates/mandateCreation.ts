@@ -47,18 +47,23 @@ function nextMandateNumber(): number {
 }
 
 // What the planet brings in and sends out changes as sektors are built on, and so do the polluting
-// buildings of the player's sektors, so they are gathered anew whenever a mandate is to be made.
+// buildings and the habitats of the player's sektors, so they are gathered anew whenever a mandate is
+// to be made.
 function mandateMaterials(): MandateMaterials {
   const playerName = getUsername();
   const sektorListItems = getSektorList();
+  const playerSektorSummaries = sektorListItems
+    .filter(sektorListItem => playerName !== null && sektorListItem.owner === playerName)
+    .map(sektorListItem => getSektorSummary(sektorListItem.id));
   return {
     positiveResourceNames: getPositiveTradableResources(),
     negativeResourceNames: getNegativeTradableResources(),
     planetImportsAndExports: globalImportsAndExports(
       sektorListItems.map(sektorListItem => getSektorSummary(sektorListItem.id)),
     ),
-    playerPollutionFootprint: sektorListItems
-      .filter(sektorListItem => playerName !== null && sektorListItem.owner === playerName)
-      .reduce((total, sektorListItem) => total + getSektorSummary(sektorListItem.id).pollutionFootprint, 0),
+    playerPollutionFootprint: playerSektorSummaries
+      .reduce((total, sektorSummary) => total + sektorSummary.pollutionFootprint, 0),
+    playerHabitatCount: playerSektorSummaries
+      .reduce((total, sektorSummary) => total + sektorSummary.habitatCount, 0),
   };
 }
