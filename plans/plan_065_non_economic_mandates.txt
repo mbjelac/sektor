@@ -44,8 +44,8 @@ Take into account building function Hapiness output amounts when generating valu
 Only one type of mandate:
 - at least X hapiness
 
-#1 Deforestation percentage can be mandate criteria
-- ecosystem support damage is actually deforestation
+#1 Deforestation can be mandate criteria
+- [done] ecosystem support damage is actually deforestation
     - deforestation = initial EcosystemSupport - current EcosystemSupport
     - modify tooltip "Damage to ecosystem" to be "Deforestation"
 - mandates can have a "deforestation" criteria
@@ -60,3 +60,4 @@ Only one type of mandate:
 - deforestation mandate details has criteria description:
     - "Deforestation at most <amount>"
     - with sun-row "Currently <current amount>"
+
