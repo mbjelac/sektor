@@ -4,27 +4,27 @@ Areas where a type of ore is high in denisty span more than one sektor.
 For example, metal ore seams span 3-4 connected areas (regardless of climate zone, biome type or land/sea) which makes metal ore of high density & amount in every sektor in those areas.
 
 #1 Planet's areas are given high-ore-density marks
-- mark: ore name
+- [done] mark: ore name
     - one of: metals, uranium, minerals
-- an area cannot have multiple marks
-- generate marks based on algorithm:
+- [done] an area cannot have multiple marks
+- [done] generate marks based on algorithm:
     - metals: "draw" curves on globe by marking neighbouring areas as metal-rich
         - a curve is a sequence of neighbouring areas
-        - length 3 to 10 areas long, randomly
+        - length 2 to 5 areas long, randomly
         - they are not linear, but have a crecent shape
-        - 110 curves globally
+        - 70 curves globally
         - 20% of curves along coastlines
         - 40% inland
         - 40% seabed
     - minerals: curvy, slightly broken or straight lines
-        - length 2 to 8 areas long
-        - 200 lines globally
+        - length 2 to 4 areas long
+        - 80 lines globally
         - random distribution across the globe
     - uranium: clusters of neighbouring areas with empty areas in between
-        - a cluster may have 3 to 7 areas randomly
-        - 80 clusters globally
+        - a cluster may have 1 to 4 areas randomly
+        - 30 clusters globally
         - random distribution across the globe
-- when generating, generate first metals, then minerals, then uranium
+- [done] when generating, generate first metals, then minerals, then uranium
     - if area already marked, replace old mark with new one
         - minerals replace metals, uranium replaces both minerals & metals
 - player can see ore density on globe
