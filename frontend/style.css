@@ -1575,6 +1575,17 @@ body > main {
     gap: 8px;
 }
 
+/* What the player's sektors move now is set in under the criterion it belongs to, further in where
+   the criterion is told behind a dot. */
+.mandate-description-current {
+    padding-left: 18px;
+    font-size: 12px;
+}
+
+.mandate-description-current-beside-completion {
+    padding-left: 36px;
+}
+
 .mandate-description::-webkit-scrollbar {
     display: none;
 }

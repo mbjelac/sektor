@@ -97,12 +97,12 @@ test("lists the player's own mandates with the one just claimed in view", async 
   })).toEqual({ selectedFilters: ["own"], isScrolled: true, isClaimedInView: true });
 });
 
-test("leaves the mandate unclaimed and closes the popup when Cancel is clicked", async ({ page }) => {
+test("leaves the mandate unclaimed and closes the popup when Close is clicked", async ({ page }) => {
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
   await page.locator("#mandate-panel .mandate-item").click();
-  await page.locator("#mandate-cancel-button").click();
+  await page.locator("#mandate-close-button").click();
 
   expect(await page.evaluate(() => ({
     owners: JSON.parse(localStorage.getItem("mandates")!).map((mandate: { owner: string | null }) => mandate.owner),
@@ -110,7 +110,7 @@ test("leaves the mandate unclaimed and closes the popup when Cancel is clicked",
   }))).toEqual({ owners: [null], isPopupShown: false });
 });
 
-test("shows Cancel on the left and Claim on the right along the bottom of the popup", async ({ page }) => {
+test("shows Close on the left and Claim on the right along the bottom of the popup", async ({ page }) => {
   await storeUnclaimedMandate(page);
   await page.goto("/?test=true");
 
@@ -406,7 +406,7 @@ test("offers no Abandon on a mandate free to claim opened in full", async ({ pag
 
   await page.locator("#mandate-panel .mandate-number").click();
 
-  expect(await page.locator("#mandate-dialog button").allTextContents()).toEqual(["Cancel", "Claim"]);
+  expect(await page.locator("#mandate-dialog button").allTextContents()).toEqual(["Close", "Claim"]);
 });
 
 // A mandate given up is nobody's: it leaves the player's list, with nothing of it completed, and the
@@ -463,4 +463,59 @@ test("works out whether a mandate is completed the moment it is claimed", async 
   await page.locator("#mandate-claim-button").click();
 
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mandates")!)[0].completed)).toEqual(true);
+});
+
+// Alpha, the player's sektor, sends out the Ore its mine digs and brings in the Energy the mine runs on.
+async function storeSektorMovingOreAndEnergy(page: Page) {
+  await page.evaluate(currentPlayer => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: currentPlayer }]));
+    localStorage.setItem("sektor_Alpha", JSON.stringify({
+      locationProperties: { ore: [[6]] },
+      buildings: [
+        { type: "TestMine", location: { x: 0, y: 0 } },
+        { type: "TestHub", location: { x: 0, y: 1 } },
+      ],
+    }));
+  }, CURRENT_PLAYER);
+}
+
+// Every criterion of the list ends with how far the player's sektors have got with it, whoever's
+// mandate it is: the Ore sent out counts towards exporting Ore, the Energy brought in counts against
+// exporting Energy, and Water is moved by no sektor of theirs.
+test("tells in the list how far the player's sektors have got with every criterion", async ({ page }) => {
+  await storeSektorMovingOreAndEnergy(page);
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, criteria: [{ type: "minimumExport", resourceName: "Ore", amount: 10 }] },
+    { number: 2, owner: null, criteria: [{ type: "minimumExport", resourceName: "Energy", amount: 5 }] },
+    { number: 3, owner: null, criteria: [{ type: "maximumImport", resourceName: "Water", amount: 5 }] },
+  ])));
+  await page.goto("/?test=true");
+
+  expect(await page.locator("#mandate-panel .mandate-criterion").evaluateAll(criteria =>
+    criteria.map(criterion => criterion.querySelector(".mandate-criterion-current-amount")?.textContent ?? null)))
+    .toEqual(["(6)", "(-4)", "(0)"]);
+});
+
+// Under every criterion of a mandate opened in full stands what the player's sektors move of its
+// resource now, and which way it goes, unless they move none of it.
+test("tells under every criterion of a mandate opened in full what the player's sektors move now", async ({ page }) => {
+  await storeSektorMovingOreAndEnergy(page);
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    {
+      number: 1,
+      owner: currentPlayer,
+      criteria: [
+        { type: "minimumExport", resourceName: "Ore", amount: 10 },
+        { type: "minimumExport", resourceName: "Energy", amount: 5 },
+        { type: "maximumImport", resourceName: "Water", amount: 5 },
+      ],
+    },
+  ])), CURRENT_PLAYER);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-details-dialog .mandate-description-current").allTextContents())
+    .toEqual(["Currently exporting 6", "Currently importing 4", "Currently 0"]);
 });

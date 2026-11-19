@@ -5,6 +5,16 @@ import { criterionDescription } from "./criterionDescription";
 import { getResourceIcon } from "../resources";
 import { createCompletionDot } from "./completionDot.ui";
 import { checkBadgeIcon } from "../icons";
+import { getPlayerSektors } from "./playerSektors";
+import { PlayerSektor, resourceTotal, sektorsMovingResource } from "./sektorsMovingResource";
+import { formatNumber } from "../formatNumber";
+
+// Which way the player's sektors move a resource, said in words, or nothing said where they move none.
+const CURRENT_DIRECTION_WORDS: Record<"import" | "export" | "none", string | null> = {
+  import: "importing",
+  export: "exporting",
+  none: null,
+};
 
 // A mandate is looked over before it is claimed, and is claimed only once the player says so.
 export function showMandateDialog({ mandate, onClaimed }: {
@@ -50,10 +60,12 @@ function createMandatePopup(dialogId: string, mandate: Mandate, description: HTM
 }
 
 // What the mandate asks for, told in full, a line for every criterion, which may be told along with
-// whether it is completed.
+// whether it is completed. Under every criterion stands what the player's sektors move of its
+// resource now.
 function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElement {
   const description = document.createElement("div");
   description.className = "mandate-description";
+  const playerSektors = getPlayerSektors();
 
   for (const criterion of mandate.criteria) {
     const line = document.createElement("div");
@@ -61,23 +73,38 @@ function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElem
     if (showsCompletion) line.appendChild(createCompletionDot(criterion.completed));
     line.appendChild(document.createTextNode(criterionDescription(criterion, getResourceIcon(criterion.resourceName))));
     description.appendChild(line);
+    description.appendChild(createCurrentLine(criterion.resourceName, playerSektors, showsCompletion));
   }
 
   return description;
 }
 
-// Backing out stands on the left and claiming on the right, where it is offered everywhere else.
-// Either way the popup goes.
+// What the player's sektors move of the resource between them, set in under the criterion it
+// belongs to, a little smaller than it: which way it goes and the amount, or the bare amount where
+// nothing goes either way.
+function createCurrentLine(resourceName: string, playerSektors: PlayerSektor[], showsCompletion: boolean): HTMLElement {
+  const total = resourceTotal(sektorsMovingResource(playerSektors, resourceName));
+  const currentLine = document.createElement("div");
+  currentLine.className = "mandate-description-current";
+  currentLine.classList.toggle("mandate-description-current-beside-completion", showsCompletion);
+  currentLine.textContent = ["Currently", CURRENT_DIRECTION_WORDS[total.direction ?? "none"], formatNumber(total.amount)]
+    .filter(segment => segment !== null)
+    .join(" ");
+  return currentLine;
+}
+
+// Closing the popup without claiming stands on the left, as it does on any other popup of a mandate,
+// and claiming on the right, where it is offered everywhere else. Either way the popup goes.
 function createClaimButtons(overlay: HTMLElement, onClaimed: () => void): HTMLElement {
   const buttons = document.createElement("div");
   buttons.className = "dialog-buttons mandate-dialog-buttons";
 
-  const cancelButton = document.createElement("button");
-  cancelButton.id = "mandate-cancel-button";
-  cancelButton.className = "dialog-button dialog-button-plain";
-  cancelButton.textContent = "Cancel";
-  cancelButton.addEventListener("click", () => overlay.remove());
-  buttons.appendChild(cancelButton);
+  const closeButton = document.createElement("button");
+  closeButton.id = "mandate-close-button";
+  closeButton.className = "dialog-button dialog-button-plain";
+  closeButton.textContent = "Close";
+  closeButton.addEventListener("click", () => overlay.remove());
+  buttons.appendChild(closeButton);
 
   const claimButton = createClaimButton(() => {
     overlay.remove();

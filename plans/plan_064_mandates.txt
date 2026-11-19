@@ -58,7 +58,7 @@ Examples:
         - style same as other Claim buttons
         - hides popup
         - sets player as owner of mandate
-    - Cancel
+    - Close
         - left-aligned
         - gray
         - hides popup
@@ -143,7 +143,7 @@ Examples:
 - [done] player can open mandate details in mandate list
     - mandate item has gray background on mouse over
     - click on mandate item (anywhere) opens mandate details popup
-    - for a mandate nobody owns, the details popup is the one described in #4 (Cancel & Claim buttons, no circles)
+    - for a mandate nobody owns, the details popup is the one described in #4 (Close & Claim buttons, no circles)
     - for the player's own mandate, the popup is similar to that one
         - title "Mandate <number>"
         - single button in bottom right: "Close"

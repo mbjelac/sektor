@@ -7,6 +7,8 @@ import { showMandateDetailsDialog, showMandateDialog } from "./mandateDialog.ui"
 import { createCompletionDot } from "./completionDot.ui";
 import { filterMandates, MandateFilter } from "./mandateFilter";
 import { recalculateMandates } from "./recalculateMandates";
+import { getPlayerSektors } from "./playerSektors";
+import { PlayerSektor } from "./sektorsMovingResource";
 
 // The list opens on the mandates waiting to be claimed.
 let mandateFilter: MandateFilter = "unclaimed";
@@ -43,9 +45,10 @@ export function renderMandateList() {
   const hasOwnMandates = filterMandates(mandates, "own", getUsername()).length > 0;
   if (!hasOwnMandates) mandateFilter = "unclaimed";
 
+  const playerSektors = getPlayerSektors();
   mandatePanel.replaceChildren(
     createHeader(hasOwnMandates),
-    ...filterMandates(mandates, mandateFilter, getUsername()).map(createMandateItem),
+    ...filterMandates(mandates, mandateFilter, getUsername()).map(mandate => createMandateItem(mandate, playerSektors)),
   );
 }
 
@@ -86,7 +89,7 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
 // A mandate is its badge and number followed by what it asks for, every criterion in short, and on
 // the player's own, whether it is completed at the end of the row. Clicking anywhere on it opens it
 // up in full, which is where a mandate nobody owns is claimed and the player's own is given up.
-function createMandateItem(mandate: Mandate): HTMLElement {
+function createMandateItem(mandate: Mandate, playerSektors: PlayerSektor[]): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
   item.dataset.mandateNumber = `${mandate.number}`;
@@ -100,7 +103,7 @@ function createMandateItem(mandate: Mandate): HTMLElement {
 
   // A criterion the player's sektors already fulfil stands on pale green.
   for (const criterion of mandate.criteria) {
-    const criterionAbbreviation = createCriterionAbbreviation(criterion);
+    const criterionAbbreviation = createCriterionAbbreviation(criterion, playerSektors);
     criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);
     item.appendChild(criterionAbbreviation);
   }

@@ -1558,6 +1558,15 @@ async function openMandateListOverMap(page: Page) {
   await page.locator("#mandate-button").click();
 }
 
+// The list over the map tells how far the player's sektors have got with every criterion, as the
+// messages do: the sektor of the test is stored nowhere, so none of the player's moves any Wood.
+test("tells in the list of mandates over the map how far the player's sektors have got with every criterion", async ({ page }) => {
+  await openMandateListOverMap(page);
+
+  expect(await page.locator("#mandate-panel .mandate-criterion .mandate-criterion-current-amount").allTextContents())
+    .toEqual(["(0)"]);
+});
+
 // The player turning to something else on the map is done with the mandates for now.
 test("closes the open list of mandates when a building is picked from the toolbar", async ({ page }) => {
   await openMandateListOverMap(page);
