@@ -3,7 +3,7 @@ import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, SektorListItem } from "./sektorList.api";
 import { getUsername } from "../login/login.api";
 import { getSektorSummary } from "./sektorSummary";
-import { globeAsiaAustraliaIcon, userIcon } from "../icons";
+import { globeAsiaAustraliaIcon, oreMining, userIcon } from "../icons";
 import { renderLeaderboard } from "./leaderboard.ui";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 import { createMandateIfNeeded, startCreatingMandates } from "../mandates/mandateCreation";
@@ -15,6 +15,7 @@ import { createListTitle } from "../listTitle.ui";
 import { showPlanetBackground } from "./planetBackground.ui";
 import { getPlanet } from "./planet";
 import { regionCover } from "./regionLabels";
+import { oreColor } from "./oreMarks.ui";
 
 const LIST_ROW_GAP_PIXELS = 8;
 
@@ -59,6 +60,12 @@ function createHeader(): HTMLElement {
   biome.title = "Biome type";
   header.appendChild(biome);
 
+  const ore = document.createElement("span");
+  ore.className = "sektor-list-ore";
+  ore.innerHTML = oreMining;
+  ore.title = "Ore deposits";
+  header.appendChild(ore);
+
   const owner = document.createElement("span");
   owner.className = "sektor-list-owner";
   owner.innerHTML = userIcon;
@@ -83,6 +90,7 @@ function createListItem(sektorListItem: SektorListItem): HTMLElement {
 
   item.appendChild(createName(sektorListItem));
   item.appendChild(createBiome(sektorListItem));
+  item.appendChild(createOre(sektorListItem));
   item.appendChild(createOwner(sektorListItem));
 
   return item;
@@ -115,16 +123,36 @@ function createName(sektorListItem: SektorListItem): HTMLElement {
   return cell;
 }
 
-// What covers the sektor's triangle of the planet, as told with the mouse over the triangle but
-// without its biome type. A sektor made before sektors were put on the planet lies nowhere on it,
-// and says nothing.
+// What covers the sektor's triangle of the planet, by its picture alone, the word for it told on
+// hovering the picture. A sektor made before sektors were put on the planet lies nowhere on it, and
+// says nothing.
 function createBiome(sektorListItem: SektorListItem): HTMLElement {
   const cell = document.createElement("span");
   cell.className = "sektor-list-biome";
   const location = sektorListItem.location;
   if (!location) return cell;
   const region = getPlanet().regionRings[location.ring]?.[location.index];
-  if (region) cell.textContent = regionCover(region);
+  if (!region) return cell;
+  const [icon, ...words] = regionCover(region).split(" ");
+  cell.textContent = icon;
+  cell.title = words.join(" ");
+  return cell;
+}
+
+// The ore the sektor's area is rich in, marked by a circle in the ore's color as the area is marked
+// on the planet, the ore named on hovering it. An area rich in no ore, or a sektor lying nowhere on
+// the planet, says nothing.
+function createOre(sektorListItem: SektorListItem): HTMLElement {
+  const cell = document.createElement("span");
+  cell.className = "sektor-list-ore";
+  const location = sektorListItem.location;
+  const richOre = location && getPlanet().regionRings[location.ring]?.[location.index]?.richOre;
+  if (!richOre) return cell;
+  const mark = document.createElement("span");
+  mark.className = "sektor-list-ore-mark";
+  mark.style.backgroundColor = oreColor(richOre);
+  mark.title = richOre.charAt(0).toUpperCase() + richOre.slice(1);
+  cell.appendChild(mark);
   return cell;
 }
 

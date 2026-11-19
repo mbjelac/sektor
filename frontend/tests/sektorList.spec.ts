@@ -42,8 +42,40 @@ test("shows the biome type of every sektor", async ({ page }) => {
   });
   await page.reload();
 
-  expect(await page.locator(".sektor-list-item .sektor-list-biome").allTextContents())
-    .toEqual(["🌳 Forest", "❄️ Polar", "🌊 Marine", ""]);
+  const biomeCells = page.locator(".sektor-list-item .sektor-list-biome");
+  expect({
+    icons: await biomeCells.allTextContents(),
+    tooltips: await biomeCells.evaluateAll(cells => cells.map(cell => (cell as HTMLElement).title)),
+  }).toEqual({
+    icons: ["🌳", "❄️", "🌊", ""],
+    tooltips: ["Forest", "Polar", "Marine", ""],
+  });
+});
+
+// The locations are areas rich in metals, minerals and uranium, and one rich in none, as planet.md
+// has them.
+test("marks the ore the area of every sektor is rich in, naming it on hovering the mark", async ({ page }) => {
+  await page.evaluate(() => {
+    localStorage.setItem("sektors", JSON.stringify([
+      { id: "Alpha", name: "Alpha", owner: null, location: { ring: 41, index: 11 } },
+      { id: "Beta", name: "Beta", owner: null, location: { ring: 21, index: 82 } },
+      { id: "Gamma", name: "Gamma", owner: null, location: { ring: 21, index: 143 } },
+      { id: "Delta", name: "Delta", owner: null, location: { ring: 21, index: 64 } },
+      { id: "Epsilon", name: "Epsilon", owner: null },
+    ]));
+  });
+  await page.reload();
+
+  expect(await page.locator(".sektor-list-item .sektor-list-ore").evaluateAll(cells => cells.map(cell => {
+    const mark = cell.querySelector<HTMLElement>(".sektor-list-ore-mark");
+    return mark ? { color: mark.style.backgroundColor, tooltip: mark.title } : null;
+  }))).toEqual([
+    { color: "rgb(133, 14, 5)", tooltip: "Metals" },
+    { color: "rgb(151, 130, 255)", tooltip: "Minerals" },
+    { color: "rgb(255, 205, 79)", tooltip: "Uranium" },
+    null,
+    null,
+  ]);
 });
 
 // Everything known about a sektor apart from what stands in it: its id, the name it was given, and

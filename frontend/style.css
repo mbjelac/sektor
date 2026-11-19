@@ -1058,7 +1058,7 @@ body > main {
     width: 100%;
     justify-self: center;
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
     align-content: start;
     gap: 8px 12px;
     /* More sektors than the window holds are scrolled through on their own, so that the standings
@@ -1128,7 +1128,7 @@ body > main {
 .sektor-list-biome {
     color: #ccc;
     font-family: sans-serif;
-    font-size: 12px;
+    font-size: 16px;
     white-space: nowrap;
 }
 
@@ -1137,6 +1137,27 @@ body > main {
     display: flex;
     align-items: center;
     color: inherit;
+}
+
+/* The ore column holds a circle as wide as the ore marks on the planet, standing in the middle of
+   the column under its header icon. */
+.sektor-list-ore {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+}
+
+/* The mining icon is filled rather than drawn in lines, so it is a lighter grey than the other
+   header icons, or it would stand out darker than them. */
+.sektor-list-header .sektor-list-ore {
+    color: #ccc;
+}
+
+.sektor-list-ore-mark {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
 }
 
 .sektor-list-owner {
