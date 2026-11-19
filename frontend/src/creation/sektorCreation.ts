@@ -60,6 +60,7 @@ function groundAt(location: TriangleCoordinate): SektorGround {
     isDesert: region.isDesert,
     isForest: region.isForest,
     coastalEdges: coastalEdges(grid, regionRings, location),
+    richOre: region.richOre,
   };
 }
 

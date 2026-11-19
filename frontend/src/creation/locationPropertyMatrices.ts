@@ -8,6 +8,7 @@ import { MODIFIER_MAX, MODIFIER_MIN } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 import { RandomNumber } from "./randomNumber";
 import { groundCover, GroundCover, SektorGround } from "./terrainMatrix";
+import { RICH_ORES } from "../list/parsePlanet";
 
 // A tile of the sektor's map which holds a lot of the property, by how far along and across it lies.
 interface Hotspot {
@@ -19,16 +20,42 @@ interface Hotspot {
 const HOTSPOT_REACH = 3;
 // The most that barren ground ever holds.
 const BACKGROUND_MAX = 2;
+// The most of an ore a sektor holds where its area is rich in that ore.
+export const ORE_RICH_MAX = 12;
+// Where the area is not rich in an ore, the sektor has only a few hotspots of it, each holding a
+// little, and the ore falls away from them by 1 a square.
+export const FEWEST_ORE_POOR_HOTSPOTS = 0;
+export const MOST_ORE_POOR_HOTSPOTS = 4;
+export const ORE_POOR_HOTSPOT_VALUES = [1, 2];
 
 // A property the game knows the shape of is laid out in that shape. One it does not — a property a
-// building asks for which was never described — simply falls where it falls.
+// building asks for which was never described — simply falls where it falls. An ore is laid out in
+// its shape only where the area is rich in it; elsewhere the sektor has just a little of it.
 export function createLocationPropertyMatrix(
   propertyName: string,
   ground: SektorGround,
   randomNumber: RandomNumber,
 ): number[][] {
+  if (RICH_ORES.includes(propertyName) && ground.richOre !== propertyName) return createOrePoorMatrix(randomNumber);
   const createMatrix = MATRIX_CREATORS[propertyName] ?? createScatteredMatrix;
-  return createMatrix(randomNumber, ground);
+  const matrix = createMatrix(randomNumber, ground);
+  return RICH_ORES.includes(propertyName) ? scaledMatrix(matrix, ORE_RICH_MAX) : matrix;
+}
+
+// A handful of hotspots, each holding 1 or 2 of the ore, and around them the ore falls away by 1 a
+// square, counting only steps along and across: a hotspot holding 2 has its four neighbours holding
+// 1, and the ground further out none. Where hotspots reach the same square, it holds the most any
+// of them gives it.
+function createOrePoorMatrix(randomNumber: RandomNumber): number[][] {
+  const hotspotCount = FEWEST_ORE_POOR_HOTSPOTS + Math.floor(randomNumber() * (MOST_ORE_POOR_HOTSPOTS - FEWEST_ORE_POOR_HOTSPOTS + 1));
+  const hotspots = pocketMiddles(hotspotCount, randomNumber).map(middle => ({
+    ...middle,
+    value: ORE_POOR_HOTSPOT_VALUES[Math.floor(randomNumber() * ORE_POOR_HOTSPOT_VALUES.length)],
+  }));
+  return Array.from({ length: SEKTOR_SIZE }, (_, x) =>
+    Array.from({ length: SEKTOR_SIZE }, (_, z) =>
+      Math.max(0, ...hotspots.map(hotspot => hotspot.value - Math.abs(hotspot.x - x) - Math.abs(hotspot.z - z))))
+  );
 }
 
 type MatrixCreator = (randomNumber: RandomNumber, ground: SektorGround) => number[][];
@@ -295,6 +322,12 @@ function distanceToNearestHotspot(x: number, z: number, hotspots: Hotspot[]): nu
 
 function distanceBetween(fromX: number, fromZ: number, toX: number, toZ: number): number {
   return Math.sqrt((fromX - toX) ** 2 + (fromZ - toZ) ** 2);
+}
+
+// A map scaled down so that the richest ground there could be holds the most given, every other
+// location in proportion, rounded.
+function scaledMatrix(matrix: number[][], most: number): number[][] {
+  return matrix.map(row => row.map(value => Math.round(value * most / MODIFIER_MAX)));
 }
 
 // Ground with no pattern to it: every location takes whatever value it likes.

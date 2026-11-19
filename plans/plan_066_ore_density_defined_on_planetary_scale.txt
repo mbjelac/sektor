@@ -40,13 +40,24 @@ For example, metal ore seams span 3-4 connected areas (regardless of climate zon
 - [done] if sektor is on an ore-rich area, pick a location for a sektor as always, but filter only ore-rich areas for picking
 - [done] if sektor is not on an ore-rich area, pick a location for a sektor as always, but filter only ore-poor areas for picking
 
-#3 Area rich in ore type has abundance of that ore in it's locations
-- use existing algorithms for generating sektor location property matrices
-- if area is not marked as rich with that ore
-    - maximum amount of that ore in sektor is 2
-    - interpolate rest of values according to existing algorithm, rounded to integer values
-- if area is marked as rich with that ore
-    - maximum amount of that ore in sektor is 12
+#3 [done] Area rich in ore type has abundance of that ore in it's locations
+- [done] when generating a sektor's location property matrix for an ore type
+    - if area is not marked as rich with that ore
+        - number of ore hotspots is 0 to 4 randomly
+        - value in hotspot is 1 to 2
+        - reduce areas around hotspots
+            - hotspot-neighboring square location property value should fall with 1 per square
+            - example: area with 2 would have 4 neighbors with 1, further surroundings 0
+    - [done] if area is marked as rich with that ore
+        - use existing algorithms for generating sektor location property matrices
+        - maximum amount of that ore in sektor is 12
 
 #4 Sektor list displays ore-rich mark
--
+- biome column contains only biome type icons
+    - move text labels to icon toolip
+- next to biome column add an ore column
+    - header icon: oreMining
+        - adjust size color to match other header icons
+    - value: ore circle mark same as on globe
+        - ore type in tooltip
+    - if area not rich in ore, display nothing

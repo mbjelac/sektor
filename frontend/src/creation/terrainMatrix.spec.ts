@@ -26,9 +26,9 @@ import {
 // happen to fall.
 const MAPS_LOOKED_AT = 200;
 
-const LAND_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false, coastalEdges: [] };
-const SEA_GROUND = { biome: "temperate", isOnLand: false, isDesert: false, isForest: false, coastalEdges: [] };
-const DESERT_GROUND = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] };
+const LAND_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false, coastalEdges: [], richOre: null };
+const SEA_GROUND = { biome: "temperate", isOnLand: false, isDesert: false, isForest: false, coastalEdges: [], richOre: null };
+const DESERT_GROUND = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false, coastalEdges: [], richOre: null };
 const NORTH_COAST_GROUND = { ...LAND_GROUND, coastalEdges: ["north" as const] };
 const SOUTH_AND_WEST_COAST_GROUND = { ...LAND_GROUND, coastalEdges: ["south" as const, "west" as const] };
 

@@ -51,13 +51,15 @@ export const MOST_SEA_SQUARES_BEHIND_COASTAL_EDGE = 3;
 export type MapEdge = "north" | "east" | "south" | "west";
 
 // What the planet is like where a sektor is made: its biome, whether it is land or sea, whether the
-// land is desert or forest, and which edges of the map of a sektor on land face the sea.
+// land is desert or forest, which edges of the map of a sektor on land face the sea, and the ore the
+// area is rich in, if any.
 export interface SektorGround {
   biome: string;
   isOnLand: boolean;
   isDesert: boolean;
   isForest: boolean;
   coastalEdges: MapEdge[];
+  richOre: string | null;
 }
 
 // What covers the ground of a sektor, which is what the forests on it and the sun reaching it go by.

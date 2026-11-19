@@ -6,9 +6,9 @@ import { SEKTOR_SIZE } from "../../../shared/sektorSize";
 // drawn from, rock is quarried, and wind and insolation are what stands over the ground.
 const LOCATION_PROPERTIES = ["soil", "groundwater", "rock", "wind", "insolation"];
 
-const LAND_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false, coastalEdges: [] };
-const FOREST_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: true, coastalEdges: [] };
-const DESERT_GROUND = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false, coastalEdges: [] };
+const LAND_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: false, coastalEdges: [], richOre: null };
+const FOREST_GROUND = { biome: "temperate", isOnLand: true, isDesert: false, isForest: true, coastalEdges: [], richOre: null };
+const DESERT_GROUND = { biome: "temperate", isOnLand: true, isDesert: true, isForest: false, coastalEdges: [], richOre: null };
 
 // Every draw lands in the middle of whatever it is choosing from, so the same sektor comes out
 // every time and the test can say exactly what it expects.
