@@ -1,13 +1,15 @@
 import { findThroughputValue, ImportsAndExports } from "../globalImportsAndExports";
-import { MandateCriterion } from "./mandates.api";
+import { ResourceCriterion } from "./mandates.api";
 import { isAboutExports } from "./criterionType";
+import { SektorEcosystem } from "../sektor/deforestation";
 
 // A sektor of the player, by the id it is stored under and the name it is known by, with what it
-// brings in and sends out.
+// brings in and sends out, and how much its ecosystem was and is supported.
 export interface PlayerSektor {
   sektorId: string;
   sektorName: string;
   importsAndExports: ImportsAndExports;
+  ecosystem: SektorEcosystem;
 }
 
 // How much of a resource a sektor of the player brings in and sends out.
@@ -69,7 +71,7 @@ export function resourceTotal(resourceMovingSektors: ResourceMovingSektor[]): Re
 // How far the player's sektors have got with what a criterion asks for: what they move of its
 // resource between them, the way the criterion is about, or less than nothing when they move it the
 // other way.
-export function criterionCurrentAmount(criterion: MandateCriterion, total: ResourceTotal): number {
+export function criterionCurrentAmount(criterion: ResourceCriterion, total: ResourceTotal): number {
   if (total.direction === null) return 0;
   const isMovedTheAskedWay = (total.direction === "export") === isAboutExports(criterion);
   return isMovedTheAskedWay ? total.amount : -total.amount;

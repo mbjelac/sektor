@@ -2,11 +2,17 @@ import { RandomNumber } from "../creation/randomNumber";
 import { Mandate, MandateCriterion } from "./mandates.api";
 import { ImportsAndExports, findThroughputValue } from "../globalImportsAndExports";
 import { ResourceThroughput } from "../../../shared/sektorData";
+import { forestEcosystemSupport } from "../sektor/forest";
 
 const LOWEST_AMOUNT = 5;
 const HIGHEST_AMOUNT = 50;
 // Most mandates ask for a positive resource sent out; the rest ask for a negative one taken in.
 const NEGATIVE_IMPORT_CHANCE = 1 / 3;
+// Some mandates ask instead for the player's sektors to be deforested by no more than so much, drawn
+// as so many forests' worth of support. None at all is a harsh thing to ask, letting no sektor of the
+// player's lose a single forest, so it is only one of the many amounts drawn.
+const DEFORESTATION_CHANCE = 1 / 6;
+const MOST_FELLED_FORESTS = 20;
 
 // What a mandate can be made of: the resources a sektor can import and export, those doing good and
 // those doing harm, and what the whole planet brings in and sends out of them.
@@ -16,8 +22,8 @@ export interface MandateMaterials {
   planetImportsAndExports: ImportsAndExports;
 }
 
-// A mandate asks for one of two things: to send out a positive resource, or to take in a negative
-// one. Nobody owns it when it is made, so nobody has completed it either.
+// A mandate asks for one of three things: to send out a positive resource, to take in a negative
+// one, or to deforest no more than so much. Nobody owns it when it is made, so nobody has completed it either.
 export function createMandate(
   mandateNumber: number,
   mandateMaterials: MandateMaterials,
@@ -44,6 +50,9 @@ function createCriteria(mandateMaterials: MandateMaterials, randomNumber: Random
       randomNumber,
     )];
   }
+  if (strategyDraw >= NEGATIVE_IMPORT_CHANCE && strategyDraw < NEGATIVE_IMPORT_CHANCE + DEFORESTATION_CHANCE) {
+    return [deforestationCriterion(randomNumber)];
+  }
   if (mandateMaterials.positiveResourceNames.length === 0) return [];
   return [criterion(
     "minimumExport",
@@ -63,6 +72,15 @@ function criterion(
     type,
     resourceName: drawnByPlanetThroughput(resourceNames, planetThroughputs, randomNumber),
     amount: drawnAmount(randomNumber),
+    completed: false,
+  };
+}
+
+function deforestationCriterion(randomNumber: RandomNumber): MandateCriterion {
+  const felledForests = Math.floor(randomNumber() * (MOST_FELLED_FORESTS + 1));
+  return {
+    type: "maximumDeforestation",
+    amount: felledForests * forestEcosystemSupport(),
     completed: false,
   };
 }

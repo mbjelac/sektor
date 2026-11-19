@@ -16,6 +16,7 @@ function playerSektorOf(sektorName: string, imports: [string, number][], exports
       imports: imports.map(([name, value]) => ({ name, value })),
       exports: exports.map(([name, value]) => ({ name, value })),
     },
+    ecosystem: { initialEcosystemSupport: 0, ecosystemSupport: 0 },
   };
 }
 

@@ -19,9 +19,16 @@ function importingAtLeast(resourceName: string, amount: number): MandateCriterio
   return { type: "minimumImport", resourceName, amount, completed: false };
 }
 
+function deforestingAtMost(amount: number): MandateCriterion {
+  return { type: "maximumDeforestation", amount, completed: false };
+}
+
 function exportingAtMost(resourceName: string, amount: number): MandateCriterion {
   return { type: "maximumExport", resourceName, amount, completed: false };
 }
+
+// The player's sektors have lost none of the support their ecosystems started with.
+const NO_DEFORESTATION = 0;
 
 describe("completedMandate", () => {
   const playerImportsAndExports = globalImportsAndExports([
@@ -31,38 +38,38 @@ describe("completedMandate", () => {
 
   it("completes a minimum export once all the player's sektors together export that much", () => {
     expect([9, 10, 11].map(amount =>
-      completedMandate(mandateAsking(exportingAtLeast("Bricks", amount)), playerImportsAndExports).completed
+      completedMandate(mandateAsking(exportingAtLeast("Bricks", amount)), playerImportsAndExports, NO_DEFORESTATION).completed
     )).toEqual([true, true, false]);
   });
 
   it("completes a maximum import while all the player's sektors together import no more than that", () => {
     expect([6, 7, 8].map(amount =>
-      completedMandate(mandateAsking(importingAtMost("Apples", amount)), playerImportsAndExports).completed
+      completedMandate(mandateAsking(importingAtMost("Apples", amount)), playerImportsAndExports, NO_DEFORESTATION).completed
     )).toEqual([false, true, true]);
   });
 
   it("completes a minimum import once all the player's sektors together import that much", () => {
     expect([6, 7, 8].map(amount =>
-      completedMandate(mandateAsking(importingAtLeast("Apples", amount)), playerImportsAndExports).completed
+      completedMandate(mandateAsking(importingAtLeast("Apples", amount)), playerImportsAndExports, NO_DEFORESTATION).completed
     )).toEqual([true, true, false]);
   });
 
   it("completes a maximum export while all the player's sektors together export no more than that", () => {
     expect([9, 10, 11].map(amount =>
-      completedMandate(mandateAsking(exportingAtMost("Bricks", amount)), playerImportsAndExports).completed
+      completedMandate(mandateAsking(exportingAtMost("Bricks", amount)), playerImportsAndExports, NO_DEFORESTATION).completed
     )).toEqual([false, true, true]);
   });
 
   it("leaves a mandate incomplete while any one of its criteria is not fulfilled", () => {
     expect([
-      completedMandate(mandateAsking(exportingAtLeast("Bricks", 10), importingAtMost("Apples", 7)), playerImportsAndExports).completed,
-      completedMandate(mandateAsking(exportingAtLeast("Bricks", 10), importingAtMost("Apples", 6)), playerImportsAndExports).completed,
-      completedMandate(mandateAsking(exportingAtLeast("Bricks", 11), importingAtMost("Apples", 7)), playerImportsAndExports).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Bricks", 10), importingAtMost("Apples", 7)), playerImportsAndExports, NO_DEFORESTATION).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Bricks", 10), importingAtMost("Apples", 6)), playerImportsAndExports, NO_DEFORESTATION).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Bricks", 11), importingAtMost("Apples", 7)), playerImportsAndExports, NO_DEFORESTATION).completed,
     ]).toEqual([true, false, false]);
   });
 
   it("tells of every criterion whether it is completed", () => {
-    expect(completedMandate(mandateAsking(exportingAtLeast("Bricks", 10), importingAtMost("Apples", 6)), playerImportsAndExports))
+    expect(completedMandate(mandateAsking(exportingAtLeast("Bricks", 10), importingAtMost("Apples", 6)), playerImportsAndExports, NO_DEFORESTATION))
       .toEqual({
         number: 1,
         owner: "Ada",
@@ -82,19 +89,25 @@ describe("completedMandate", () => {
       { imports: [{ name: "Cloth", value: 6 }], exports: [{ name: "Dyes", value: 4 }] },
     ]);
     expect([
-      completedMandate(mandateAsking(exportingAtLeast("Cloth", 4)), settledImportsAndExports).completed,
-      completedMandate(mandateAsking(exportingAtLeast("Cloth", 5)), settledImportsAndExports).completed,
-      completedMandate(mandateAsking(importingAtMost("Cloth", 0)), settledImportsAndExports).completed,
-      completedMandate(mandateAsking(importingAtLeast("Dyes", 1)), settledImportsAndExports).completed,
-      completedMandate(mandateAsking(exportingAtLeast("Dyes", 1)), settledImportsAndExports).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Cloth", 4)), settledImportsAndExports, NO_DEFORESTATION).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Cloth", 5)), settledImportsAndExports, NO_DEFORESTATION).completed,
+      completedMandate(mandateAsking(importingAtMost("Cloth", 0)), settledImportsAndExports, NO_DEFORESTATION).completed,
+      completedMandate(mandateAsking(importingAtLeast("Dyes", 1)), settledImportsAndExports, NO_DEFORESTATION).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Dyes", 1)), settledImportsAndExports, NO_DEFORESTATION).completed,
     ]).toEqual([true, false, true, false, false]);
   });
 
   // Nothing exported falls short of any minimum, and nothing imported stays under every maximum.
   it("counts a resource the player's sektors do not move as nothing", () => {
     expect([
-      completedMandate(mandateAsking(exportingAtLeast("Cloth", 1)), playerImportsAndExports).completed,
-      completedMandate(mandateAsking(importingAtMost("Cloth", 0)), playerImportsAndExports).completed,
+      completedMandate(mandateAsking(exportingAtLeast("Cloth", 1)), playerImportsAndExports, NO_DEFORESTATION).completed,
+      completedMandate(mandateAsking(importingAtMost("Cloth", 0)), playerImportsAndExports, NO_DEFORESTATION).completed,
     ]).toEqual([false, true]);
+  });
+
+  it("completes a maximum deforestation while all the player's sektors together are deforested no more than that", () => {
+    expect([9, 10, 11].map(amount =>
+      completedMandate(mandateAsking(deforestingAtMost(amount)), playerImportsAndExports, 10).completed
+    )).toEqual([false, true, true]);
   });
 });

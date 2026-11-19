@@ -170,7 +170,7 @@ test("names every stat beside the sektor name by its tooltip", async ({ page }) 
   expect(stats).toEqual([
     { tooltip: "Buildings", value: "2 %" },
     { tooltip: "Hapiness", value: "0 / 0 (0 %)" },
-    { tooltip: "Damage to ecosystem", value: "0 / 0 (0 %)" },
+    { tooltip: "Deforestation", value: "0 / 0 (0 %)" },
   ]);
 });
 
@@ -2069,7 +2069,7 @@ test("says how happy the sektor's people are", async ({ page }) => {
   })))).toEqual([
     { tooltip: "Buildings", value: "3 %" },
     { tooltip: "Hapiness", value: "5 / 5 (100 %)" },
-    { tooltip: "Damage to ecosystem", value: "0 / 0 (0 %)" },
+    { tooltip: "Deforestation", value: "0 / 0 (0 %)" },
   ]);
 });
 

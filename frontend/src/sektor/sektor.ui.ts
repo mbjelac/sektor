@@ -24,8 +24,8 @@ import { initPropertyToggler, getSelectedProperty, selectProperty } from "./prop
 import { floorColor, floorColorAlongRange, propertyValueColor } from "../properties";
 import { desertFloorFraction } from "./desertFloor";
 import { getLocalResources, getResourceIcon } from "../resources";
-import { arrowLeftIcon, buildingOfficeIcon, constructionCrane, ecosystemDamage as ecosystemDamageIcon, faceSmileIcon, pencilSquareIcon } from "../icons";
-import { ecosystemDamage } from "./ecosystemDamage";
+import { arrowLeftIcon, buildingOfficeIcon, constructionCrane, ecosystemDamage as deforestationIcon, faceSmileIcon, pencilSquareIcon } from "../icons";
+import { sektorDeforestation } from "./deforestation";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
@@ -455,7 +455,7 @@ function refreshOpenBuildingPanel() {
 }
 
 // How far along a sektor is stands beside its name: how much of it is built over, how happy its
-// people are and how much of its ecosystem is gone. How much it imports and exports is left out: the
+// people are and how much of it is deforested. How much it imports and exports is left out: the
 // panel on the right lists it resource by resource and totals it against what its hubs can carry.
 function showSektorStats(sektorState: SektorState) {
   document.getElementById("sektor-stats")?.remove();
@@ -466,7 +466,7 @@ function showSektorStats(sektorState: SektorState) {
   // it is built over.
   stats.appendChild(createStat(buildingOfficeIcon, "Buildings", `${formatNumber(sektor.getState().buildings.length)} %`));
   stats.appendChild(createStat(faceSmileIcon, "Hapiness", formatHapiness(sektorState)));
-  stats.appendChild(createStat(ecosystemDamageIcon, "Damage to ecosystem", formatEcosystemDamage(sektorState)));
+  stats.appendChild(createStat(deforestationIcon, "Deforestation", formatDeforestation(sektorState)));
 
   document.getElementById("sektor-title")!.appendChild(stats);
 }
@@ -481,9 +481,9 @@ function formatHapiness(sektorState: SektorState): string {
   return `${formatNumber(sektorState.hapiness)} / ${formatNumber(sektorState.possibleHapiness)} (${percentage} %)`;
 }
 
-function formatEcosystemDamage(sektorState: SektorState): string {
-  const damage = ecosystemDamage(initialEcosystemSupport, sektorState.ecosystemSupport);
-  return `${formatNumber(damage.damage)} / ${formatNumber(damage.initialEcosystemSupport)} (${damage.percentage} %)`;
+function formatDeforestation(sektorState: SektorState): string {
+  const deforestation = sektorDeforestation(initialEcosystemSupport, sektorState.ecosystemSupport);
+  return `${formatNumber(deforestation.deforestation)} / ${formatNumber(deforestation.initialEcosystemSupport)} (${deforestation.percentage} %)`;
 }
 
 function createStat(icon: string, tooltip: string, value: string): HTMLElement {

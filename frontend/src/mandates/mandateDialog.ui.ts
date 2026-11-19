@@ -7,6 +7,9 @@ import { createCompletionDot } from "./completionDot.ui";
 import { checkBadgeIcon } from "../icons";
 import { getPlayerSektors } from "./playerSektors";
 import { PlayerSektor, resourceTotal, sektorsMovingResource } from "./sektorsMovingResource";
+import { MandateCriterion } from "./mandates.api";
+import { isAboutResource } from "./criterionType";
+import { totalDeforestation } from "../sektor/deforestation";
 import { formatNumber } from "../formatNumber";
 
 // Which way the player's sektors move a resource, said in words, or nothing said where they move none.
@@ -61,7 +64,7 @@ function createMandatePopup(dialogId: string, mandate: Mandate, description: HTM
 
 // What the mandate asks for, told in full, a line for every criterion, which may be told along with
 // whether it is completed. Under every criterion stands what the player's sektors move of its
-// resource now.
+// resource now, or how much they are deforested now.
 function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElement {
   const description = document.createElement("div");
   description.className = "mandate-description";
@@ -71,26 +74,35 @@ function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElem
     const line = document.createElement("div");
     line.className = "mandate-description-line";
     if (showsCompletion) line.appendChild(createCompletionDot(criterion.completed));
-    line.appendChild(document.createTextNode(criterionDescription(criterion, getResourceIcon(criterion.resourceName))));
+    const resourceIcon = isAboutResource(criterion) ? getResourceIcon(criterion.resourceName) : null;
+    line.appendChild(document.createTextNode(criterionDescription(criterion, resourceIcon)));
     description.appendChild(line);
-    description.appendChild(createCurrentLine(criterion.resourceName, playerSektors, showsCompletion));
+    description.appendChild(createCurrentLine(criterion, playerSektors, showsCompletion));
   }
 
   return description;
 }
 
-// What the player's sektors move of the resource between them, set in under the criterion it
-// belongs to, a little smaller than it: which way it goes and the amount, or the bare amount where
-// nothing goes either way.
-function createCurrentLine(resourceName: string, playerSektors: PlayerSektor[], showsCompletion: boolean): HTMLElement {
-  const total = resourceTotal(sektorsMovingResource(playerSektors, resourceName));
+// Set in under the criterion it belongs to, a little smaller than it: what the player's sektors move
+// of the resource between them, which way it goes and the amount, or the bare amount where nothing
+// goes either way; or how much they are deforested between them.
+function createCurrentLine(criterion: MandateCriterion, playerSektors: PlayerSektor[], showsCompletion: boolean): HTMLElement {
   const currentLine = document.createElement("div");
   currentLine.className = "mandate-description-current";
   currentLine.classList.toggle("mandate-description-current-beside-completion", showsCompletion);
-  currentLine.textContent = ["Currently", CURRENT_DIRECTION_WORDS[total.direction ?? "none"], formatNumber(total.amount)]
+  currentLine.textContent = currentWords(criterion, playerSektors);
+  return currentLine;
+}
+
+function currentWords(criterion: MandateCriterion, playerSektors: PlayerSektor[]): string {
+  if (!isAboutResource(criterion)) {
+    const playerDeforestation = totalDeforestation(playerSektors.map(playerSektor => playerSektor.ecosystem));
+    return `Currently ${formatNumber(playerDeforestation)}`;
+  }
+  const total = resourceTotal(sektorsMovingResource(playerSektors, criterion.resourceName));
+  return ["Currently", CURRENT_DIRECTION_WORDS[total.direction ?? "none"], formatNumber(total.amount)]
     .filter(segment => segment !== null)
     .join(" ");
-  return currentLine;
 }
 
 // Closing the popup without claiming stands on the left, as it does on any other popup of a mandate,

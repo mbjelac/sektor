@@ -12,10 +12,14 @@ export function getPlayerSektors(): LocatedPlayerSektor[] {
   const playerName = getUsername();
   return getSektorList()
     .filter(sektorListItem => playerName !== null && sektorListItem.owner === playerName)
-    .map(sektorListItem => ({
-      sektorId: sektorListItem.id,
-      sektorName: sektorListItem.name ?? sektorListItem.id,
-      importsAndExports: getSektorSummary(sektorListItem.id),
-      location: sektorListItem.location,
-    }));
+    .map(sektorListItem => {
+      const sektorSummary = getSektorSummary(sektorListItem.id);
+      return {
+        sektorId: sektorListItem.id,
+        sektorName: sektorListItem.name ?? sektorListItem.id,
+        importsAndExports: sektorSummary,
+        ecosystem: sektorSummary,
+        location: sektorListItem.location,
+      };
+    });
 }

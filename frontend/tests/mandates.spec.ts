@@ -519,3 +519,39 @@ test("tells under every criterion of a mandate opened in full what the player's 
   expect(await page.locator("#mandate-details-dialog .mandate-description-current").allTextContents())
     .toEqual(["Currently exporting 6", "Currently importing 4", "Currently 0"]);
 });
+
+// Alpha, the player's sektor, started with 12 EcosystemSupport and has lost all of it, its forests
+// all gone.
+async function storeDeforestedSektorAndMandate(page: Page) {
+  await page.evaluate(currentPlayer => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: currentPlayer }]));
+    localStorage.setItem("sektor_Alpha", JSON.stringify({ locationProperties: {}, buildings: [], initialEcosystemSupport: 12 }));
+    localStorage.setItem("mandates", JSON.stringify([
+      { number: 1, owner: currentPlayer, criteria: [{ type: "maximumDeforestation", amount: 15 }] },
+    ]));
+  }, CURRENT_PLAYER);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+}
+
+test("tells a deforestation criterion in the list in short, by a burning forest named Deforestation", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+
+  expect(await page.locator("#mandate-panel .mandate-criterion").evaluate(criterion => ({
+    picture: criterion.querySelector(".mandate-criterion-deforestation")!.textContent,
+    tooltip: criterion.querySelector(".mandate-criterion-deforestation")!.getAttribute("title"),
+    amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
+    current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
+  }))).toEqual({ picture: "🌳🔥", tooltip: "Deforestation", amount: "≤15", current: "(12)" });
+});
+
+test("tells a deforestation criterion in full, and how deforested the player's sektors are now", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect({
+    line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
+    current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
+  }).toEqual({ line: "Deforestation at most 15", current: "Currently 12" });
+});

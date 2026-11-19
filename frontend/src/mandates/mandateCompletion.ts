@@ -1,17 +1,28 @@
 import { ImportsAndExports } from "../globalImportsAndExports";
 import { Mandate, MandateCriterion } from "./mandates.api";
 
-// The mandate as the player's sektors together leave it: every criterion completed or not, and the
-// mandate complete when every one of its criteria is.
-export function completedMandate(mandate: Mandate, playerImportsAndExports: ImportsAndExports): Mandate {
+// The mandate as the player's sektors together leave it, by what they move in and out between them
+// and how much they are deforested between them: every criterion completed or not, and the mandate
+// complete when every one of its criteria is.
+export function completedMandate(
+  mandate: Mandate,
+  playerImportsAndExports: ImportsAndExports,
+  playerDeforestation: number,
+): Mandate {
   const criteria = mandate.criteria.map(criterion => ({
     ...criterion,
-    completed: isCriterionFulfilled(criterion, playerImportsAndExports),
+    completed: isCriterionFulfilled(criterion, playerImportsAndExports, playerDeforestation),
   }));
   return { ...mandate, criteria, completed: criteria.every(criterion => criterion.completed) };
 }
 
-function isCriterionFulfilled(criterion: MandateCriterion, playerImportsAndExports: ImportsAndExports): boolean {
+function isCriterionFulfilled(
+  criterion: MandateCriterion,
+  playerImportsAndExports: ImportsAndExports,
+  playerDeforestation: number,
+): boolean {
+  if (criterion.type === "maximumDeforestation") return playerDeforestation <= criterion.amount;
+
   const exported = summedValue(playerImportsAndExports.exports, criterion.resourceName);
   const imported = summedValue(playerImportsAndExports.imports, criterion.resourceName);
   switch (criterion.type) {

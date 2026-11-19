@@ -12,6 +12,7 @@ import { showMandateDetailsDialog } from "./mandates/mandateDialog.ui";
 import { showResourceSektorsDialog } from "./mandates/resourceSektorsDialog.ui";
 import { getPlayerSektors } from "./mandates/playerSektors";
 import { PlayerSektor } from "./mandates/sektorsMovingResource";
+import { isAboutResource } from "./mandates/criterionType";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -87,8 +88,8 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
 
 // A mandate is told of on a single line: its badge and number, and then what it asks for, every
 // criterion in short, set apart from the next by a bar and on pale green once it is completed. Every
-// criterion is a resource to point at, as any other named in a message is, and clicked tells which of
-// the player's sektors bring it in or send it out. Beside every criterion stands how far the player's
+// criterion about a resource is one to point at, as any other named in a message is, and clicked tells
+// which of the player's sektors bring it in or send it out. Beside every criterion stands how far the player's
 // sektors have got with it, as a part of the criterion, pointed at and clicked along with it.
 function mandateAdvice(mandate: Mandate, playerSektors: PlayerSektor[]): Node[] {
   const mandateNumber = document.createElement("span");
@@ -103,8 +104,10 @@ function mandateAdvice(mandate: Mandate, playerSektors: PlayerSektor[]): Node[] 
       const criterionAbbreviation = createCriterionAbbreviation(criterion, playerSektors);
       criterionAbbreviation.classList.add("message-resource");
       criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);
-      pointAtResourceWhileHovered(criterionAbbreviation, criterion.resourceName);
-      criterionAbbreviation.addEventListener("click", () => showResourceSektorsDialog(criterion.resourceName));
+      if (isAboutResource(criterion)) {
+        pointAtResourceWhileHovered(criterionAbbreviation, criterion.resourceName);
+        criterionAbbreviation.addEventListener("click", () => showResourceSektorsDialog(criterion.resourceName));
+      }
       return criterionIndex === 0 ? [criterionAbbreviation] : [document.createTextNode(" | "), criterionAbbreviation];
     }),
   ];

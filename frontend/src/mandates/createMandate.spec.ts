@@ -45,6 +45,18 @@ describe("createMandate", () => {
     ]);
   });
 
+  it("asks for deforestation at most one time in six, drawn as so many forests' worth of support", () => {
+    expect([
+      createMandate(1, MATERIALS, drawing(0.34, 0)).criteria,
+      createMandate(1, MATERIALS, drawing(0.49, 0.5)).criteria,
+      createMandate(1, MATERIALS, drawing(0.4, 0.9999)).criteria,
+    ]).toEqual([
+      [{ type: "maximumDeforestation", amount: 0, completed: false }],
+      [{ type: "maximumDeforestation", amount: 50, completed: false }],
+      [{ type: "maximumDeforestation", amount: 100, completed: false }],
+    ]);
+  });
+
   it("draws any resource while the planet moves none of them", () => {
     expect(createMandate(1, { ...MATERIALS, planetImportsAndExports: { imports: [], exports: [] } }, drawing(0.5, 0.5, 0)).criteria).toEqual([
       { type: "minimumExport", resourceName: "Bricks", amount: 5, completed: false },
