@@ -886,3 +886,35 @@ test("keeps what the player's sektors come to as far from the right edge as from
     };
   })).toEqual({ current: { left: 18, right: 18 }, sektor: { left: 18, right: 18 } });
 });
+
+// Every mandate opened in full names its category under the title, starting where the word Mandate
+// does, in the colour of the category. The badge is held in the middle of the two.
+test("names the category of a mandate opened in full under its title, in the colour of the category", async ({ page }) => {
+  await storeMandateOfEveryCategory(page);
+  await page.goto("/?test=true");
+
+  const categories = [];
+  for (const mandateNumber of [1, 2, 3]) {
+    await page.locator(`#mandate-panel .mandate-item[data-mandate-number="${mandateNumber}"]`).click();
+    categories.push(await page.locator("#mandate-dialog").evaluate(dialog => {
+      const categoryBox = dialog.querySelector(".mandate-dialog-category")!.getBoundingClientRect();
+      const titleBox = dialog.querySelector(".mandate-dialog-title")!.getBoundingClientRect();
+      const badgeBox = dialog.querySelector(".mandate-dialog-header > .icon")!.getBoundingClientRect();
+      const category = dialog.querySelector(".mandate-dialog-category")!;
+      return {
+        name: category.textContent,
+        colour: getComputedStyle(category).color,
+        startsWithMandate: categoryBox.left === titleBox.left,
+        underTitle: categoryBox.top >= titleBox.bottom,
+        badgeInMiddle: Math.abs((badgeBox.top + badgeBox.bottom) / 2 - (titleBox.top + categoryBox.bottom) / 2) <= 1,
+      };
+    }));
+    await page.locator("#mandate-close-button").click();
+  }
+
+  expect(categories).toEqual([
+    { name: "Economy", colour: "rgb(242, 242, 242)", startsWithMandate: true, underTitle: true, badgeInMiddle: true },
+    { name: "Ecology", colour: "rgb(206, 247, 205)", startsWithMandate: true, underTitle: true, badgeInMiddle: true },
+    { name: "Society", colour: "rgb(255, 219, 244)", startsWithMandate: true, underTitle: true, badgeInMiddle: true },
+  ]);
+});

@@ -1526,15 +1526,41 @@ body > main {
     font-weight: bold;
 }
 
-.mandate-dialog-title {
+/* The badge is held in the middle of the title and the category under it, both starting past it. */
+.mandate-dialog-header {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    margin-bottom: 6px;
+    color: #fff;
 }
 
-.mandate-dialog-title .icon {
-    width: 18px;
-    height: 18px;
+.mandate-dialog-header > .icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+}
+
+.dialog-title.mandate-dialog-title {
+    margin-bottom: 0;
+}
+
+/* The category stands right under the title, in small letters of the colour its mandates stand on. */
+.mandate-dialog-category {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+.mandate-dialog-category[data-mandate-category="economic"] {
+    color: #f2f2f2;
+}
+
+.mandate-dialog-category[data-mandate-category="ecologic"] {
+    color: #cef7cd;
+}
+
+.mandate-dialog-category[data-mandate-category="social"] {
+    color: #ffdbf4;
 }
 
 /* The popup is the same height whatever the mandate asks for. */

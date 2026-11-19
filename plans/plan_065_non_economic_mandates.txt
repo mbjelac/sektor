@@ -146,8 +146,8 @@ Only one type of mandate:
     - background highlight on mose over
     - navigate to sektor map on click
 
-#7 Mandate category is visible
-- when player opens mandate details, mandate category is visible
+#7 [done] Mandate category is visible
+- [done] when player opens mandate details, mandate category is visible
     - display mandate category below mandate details title
         - horizontally aligned left, same start as "Mandate" label text
         - increase icon size a bit

@@ -1,7 +1,7 @@
 Ore density is defined on planetary scale.
 Areas where a type of ore is high in denisty span more than one sektor.
 
-For example, metal ore seams span 3-4 connected areas (regardless of climate zone or biome type) which makes metal ore of high density & amount in every sektor in those areas.
+For example, metal ore seams span 3-4 connected areas (regardless of climate zone, biome type or land/sea) which makes metal ore of high density & amount in every sektor in those areas.
 
 #1 Planet's areas are given high-ore-density marks
 - mark: ore name

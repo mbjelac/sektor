@@ -14,6 +14,7 @@ import { CriterionSektor, criterionSektors } from "./criterionSektors";
 import { createSektorNameWithBiome } from "./sektorNameWithBiome.ui";
 import { LocatedPlayerSektor } from "./playerSektors";
 import { formatNumber } from "../formatNumber";
+import { MANDATE_CATEGORY_NAMES, mandateCategory } from "./mandateCategory";
 
 // A mandate is looked over before it is claimed, and is claimed only once the player says so.
 export function showMandateDialog({ mandate, onClaimed }: {
@@ -34,8 +35,8 @@ export function showMandateDetailsDialog(mandate: Mandate, onAbandoned?: () => v
   document.body.appendChild(overlay);
 }
 
-// Every popup of a mandate is titled with its number behind the badge of a mandate, and tells what it
-// asks for under the title.
+// Every popup of a mandate is titled with its number behind the badge of a mandate, names the
+// mandate's category under the title, and tells what it asks for under both.
 function createMandatePopup(dialogId: string, mandate: Mandate, description: HTMLElement): HTMLElement {
   const overlay = document.createElement("div");
   overlay.id = `${dialogId}-overlay`;
@@ -47,15 +48,35 @@ function createMandatePopup(dialogId: string, mandate: Mandate, description: HTM
   dialog.dataset.mandateNumber = `${mandate.number}`;
   overlay.appendChild(dialog);
 
-  const title = document.createElement("div");
-  title.className = "dialog-title mandate-dialog-title";
-  title.textContent = `Mandate ${mandate.number}`;
-  title.insertAdjacentHTML("afterbegin", checkBadgeIcon);
-  dialog.appendChild(title);
+  dialog.appendChild(createMandateHeader(mandate));
 
   dialog.appendChild(description);
 
   return overlay;
+}
+
+// The badge stands beside the title and the category under it, held in the middle of the two.
+function createMandateHeader(mandate: Mandate): HTMLElement {
+  const header = document.createElement("div");
+  header.className = "mandate-dialog-header";
+  header.innerHTML = checkBadgeIcon;
+
+  const heading = document.createElement("div");
+  heading.className = "mandate-dialog-heading";
+  header.appendChild(heading);
+
+  const title = document.createElement("div");
+  title.className = "dialog-title mandate-dialog-title";
+  title.textContent = `Mandate ${mandate.number}`;
+  heading.appendChild(title);
+
+  const category = document.createElement("div");
+  category.className = "mandate-dialog-category";
+  category.dataset.mandateCategory = mandateCategory(mandate);
+  category.textContent = MANDATE_CATEGORY_NAMES[mandateCategory(mandate)];
+  heading.appendChild(category);
+
+  return header;
 }
 
 // What the mandate asks for, told in full, a line for every criterion, which may be told along with
