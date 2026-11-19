@@ -319,14 +319,16 @@ Examples:
     - display in round brackets
     - if mandate criteria is to export, and total amount is imported, display with minus sign
     - if mandate criteria is to import, and total amount is exported, display with minus sign
-- same value shown on all import/export criteria descriptions
+- [done] same value shown on all import/export criteria descriptions
     - drop-down list in map
     - mandate list in list page
-- same value shown in mandate details
+- [done] same value shown in mandate details
     - under import/export criteria display in row:
         - left indent
-        - "Current: "
-        - import/export icon
+        - "Currently"
+        - "importing"/"exporting"
             - depending if total value imported or exported
-            - if value 0, do not show icon
+            - if value 0, do not display anything
         - value
+        - separate segments with space
+            - if middle importing/exporting segment not present, do not include it's space also
