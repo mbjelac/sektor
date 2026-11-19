@@ -53,11 +53,12 @@ For example, metal ore seams span 3-4 connected areas (regardless of climate zon
         - maximum amount of that ore in sektor is 12
 
 #4 Sektor list displays ore-rich mark
-- biome column contains only biome type icons
+- [done] biome column contains only biome type icons
     - move text labels to icon toolip
-- next to biome column add an ore column
+- [done] next to biome column add an ore column
     - header icon: oreMining
         - adjust size color to match other header icons
+        - tooltip: "Ore deposits"
     - value: ore circle mark same as on globe
         - ore type in tooltip
     - if area not rich in ore, display nothing
