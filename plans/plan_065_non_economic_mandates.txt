@@ -112,4 +112,19 @@ Only one type of mandate:
 - [done] apply same background color to map mandate messages & to mandate dropdown
 
 #6 Player sees both mandate details & criteria status by sektor in same panel
-- when player opens mandate details display total criteria status
+- when player opens mandate details
+    - below currently displayed information (last row: "Currently ...")
+    - add list of sektors which affect that result
+        - import/export criteria: sektors that either import or export that resource
+            - sektor name, +/- amount depending whether sektor imports or exports and whether it's an import or export criteria
+                - sektor imports, export criteria -> negative amount
+                - sektor exports, import criteria -> negative amount
+        - pollution criteria: sektors that have pollution > 0
+            - sektor name, pollution amount
+        - deforestation criteria: sektors that have deforestation > 0
+            - sektor name, deforestation amount
+        - population criteria: sektors that have population > 0
+            - sektor name, population amount
+        - hapiness criteria: sektors that have hapiness > 0
+            - sektor name, hapiness amount
+        - all sektor names followed by their biome icon
