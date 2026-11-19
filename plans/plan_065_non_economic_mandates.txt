@@ -112,7 +112,7 @@ Only one type of mandate:
 - [done] apply same background color to map mandate messages & to mandate dropdown
 
 #6 Player sees both mandate details & criteria status by sektor in same panel
-- when player opens mandate details
+- [done] when player opens mandate details
     - below currently displayed information (last row: "Currently ...")
     - add list of sektors which affect that result
         - import/export criteria: sektors that either import or export that resource
@@ -128,6 +128,20 @@ Only one type of mandate:
         - hapiness criteria: sektors that have hapiness > 0
             - sektor name, hapiness amount
         - all sektor names followed by their biome icon
-- panel with list of resource import/export by sektor no longer needed
+- [done] panel with list of resource import/export by sektor no longer needed
     - for this information player needs to see only mandate details
     - disable highlight and click on cirteria in import/export mandate map message
+- current data aligned
+    - total row
+        - "Currently" -> "Current"
+        - label left-aligned
+        - value right-aligned
+            - bold
+        - for import/export label just "Current", without "importing" or "exporting"
+            - add negative sign if currently importing for export criteria and vice versa
+    - sektor rows
+        - name & biome icon left-aligned
+        - value right aligned
+- sektors in list active
+    - background highlight on mose over
+    - navigate to sektor map on click
