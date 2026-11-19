@@ -332,3 +332,4 @@ Examples:
         - value
         - separate segments with space
             - if middle importing/exporting segment not present, do not include it's space also
+        - text a bit smaller than row above
