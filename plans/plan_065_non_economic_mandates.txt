@@ -74,7 +74,7 @@ Only one type of mandate:
     - with sub-row "Currently <current amount>"
 
 #3 Population can be mandate criteria
-- mandates can have "population" criteria
+- [done] mandates can have "population" criteria
     - pollution is at most X
     - pollution is at least X
     - calculate total player's sektors population as described in the "Population" preamble above
@@ -88,4 +88,16 @@ Only one type of mandate:
 - population mandate details has criteria description:
     - "Population at most <amount>" or
     - "Population at least <amount>"
+    - with sub-row "Currently <current amount>"
+
+#4 Hapiness can be mandate criteria
+- mandates can have "hapiness" criteria
+    - hapiness is at least X
+    - calculate total player's sektors hapiness as described in the "Hapiness" preamble above
+    - when setting the hapiness criteria amount, take into account possible hapiness numbers corellated with possible Hapiness production
+- hapiness criteria described in mandates
+    - ☺️ ≥ <amount>
+    - emoji has tooltip "Hapiness"
+- hapiness mandate details has criteria description:
+    - "Hapiness at least <amount>"
     - with sub-row "Currently <current amount>"
