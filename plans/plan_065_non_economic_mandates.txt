@@ -128,3 +128,6 @@ Only one type of mandate:
         - hapiness criteria: sektors that have hapiness > 0
             - sektor name, hapiness amount
         - all sektor names followed by their biome icon
+- panel with list of resource import/export by sektor no longer needed
+    - for this information player needs to see only mandate details
+    - disable highlight and click on cirteria in import/export mandate map message
