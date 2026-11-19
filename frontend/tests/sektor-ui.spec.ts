@@ -1273,6 +1273,24 @@ test("tells of every mandate of the player not completed yet", async ({ page }) 
     .toEqual(["mandate-message-1", "mandate-message-4"]);
 });
 
+// A mandate message stands on the colour of the mandate's category, as the mandate does in the list.
+test("puts every mandate message on the colour of its mandate's category", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+    { number: 2, owner: "Tester", completed: false, criteria: [{ type: "maximumDeforestation", amount: 10 }] },
+    { number: 3, owner: "Tester", completed: false, criteria: [{ type: "minimumPopulation", amount: 40 }] },
+  ])));
+
+  await page.goto("/sektor.html?test=true");
+  await page.locator("#mandate-message-3").waitFor();
+  // A message just shown flashes, so its colour is read once it has stopped.
+  await page.waitForFunction(() => document.getAnimations().length === 0);
+
+  expect(await page.evaluate(() => [1, 2, 3].map(mandateNumber =>
+    getComputedStyle(document.getElementById(`mandate-message-${mandateNumber}`)!).backgroundColor)))
+    .toEqual(["rgb(242, 242, 242)", "rgb(206, 247, 205)", "rgb(255, 219, 244)"]);
+});
+
 // A mandate is told of on a single line: its number, then every criterion in short, set apart by bars.
 test("tells of a mandate by its number followed by what it asks for in short", async ({ page }) => {
   await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([

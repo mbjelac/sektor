@@ -9,6 +9,7 @@ import { filterMandates, MandateFilter } from "./mandateFilter";
 import { recalculateMandates } from "./recalculateMandates";
 import { getPlayerSektors } from "./playerSektors";
 import { PlayerSektor } from "./sektorsMovingResource";
+import { mandateCategory } from "./mandateCategory";
 
 // The list opens on the mandates waiting to be claimed.
 let mandateFilter: MandateFilter = "unclaimed";
@@ -93,6 +94,7 @@ function createMandateItem(mandate: Mandate, playerSektors: PlayerSektor[]): HTM
   const item = document.createElement("div");
   item.className = "mandate-item";
   item.dataset.mandateNumber = `${mandate.number}`;
+  item.dataset.mandateCategory = mandateCategory(mandate);
   item.addEventListener("click", () => openMandate(mandate));
 
   const mandateNumber = document.createElement("span");

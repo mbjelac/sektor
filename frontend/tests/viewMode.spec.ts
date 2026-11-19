@@ -463,6 +463,24 @@ test("opens the list of mandates under its icon when the icon is clicked", async
   expect(placing).toEqual({ panelIsUnderIcon: true, rightEdgesMeet: true });
 });
 
+// The list over the map puts every mandate on the colour of its category, as the list beside the
+// sektors does.
+test("puts every mandate of the list over the map on the colour of its category", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: false, criteria: [{ type: "minimumExport", resourceName: "Water", amount: 50 }] },
+    { number: 2, owner: currentPlayer, completed: false, criteria: [{ type: "maximumPollution", amount: 60 }] },
+    { number: 3, owner: currentPlayer, completed: false, criteria: [{ type: "minimumHapiness", amount: 4 }] },
+  ])), CURRENT_PLAYER);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+  await page.goto("/sektor.html?id=Alpha");
+
+  await page.locator("#mandate-button").click();
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items =>
+    items.map(item => getComputedStyle(item).backgroundColor)))
+    .toEqual(["rgb(242, 242, 242)", "rgb(206, 247, 205)", "rgb(255, 219, 244)"]);
+});
+
 test("shows the list of mandates over the map", async ({ page }) => {
   await storeMandatesForMap(page);
   await storeSektor(page, "Alpha", CURRENT_PLAYER);

@@ -1517,11 +1517,12 @@ body > main {
     font-size: 14px;
 }
 
+/* The number is in the dark of the rest of the mandate, to be read on the colour of its category. */
 .mandate-number {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    color: #fff;
+    color: inherit;
     font-weight: bold;
 }
 
@@ -1596,8 +1597,32 @@ body > main {
     margin-top: auto;
 }
 
+/* A mandate stands on the colour of its category, in dark to be read on it, so that the player tells
+   trade, ecology and people apart at a glance. The same colours stand behind mandate messages. */
+.mandate-item[data-mandate-category="economic"],
+.message-mandate[data-mandate-category="economic"] {
+    --message-background: #f2f2f2;
+    background: #f2f2f2;
+    color: #000;
+}
+
+.mandate-item[data-mandate-category="ecologic"],
+.message-mandate[data-mandate-category="ecologic"] {
+    --message-background: #cef7cd;
+    background: #cef7cd;
+    color: #000;
+}
+
+.mandate-item[data-mandate-category="social"],
+.message-mandate[data-mandate-category="social"] {
+    --message-background: #ffdbf4;
+    background: #ffdbf4;
+    color: #000;
+}
+
+/* Under the pointer a mandate darkens, keeping the colour of its category. */
 .mandate-item:hover {
-    background: #444;
+    filter: brightness(0.85);
     cursor: pointer;
 }
 

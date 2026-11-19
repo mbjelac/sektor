@@ -315,14 +315,14 @@ async function openOwnMandates(page: Page) {
   await page.locator('.mandate-filter-button[data-mandate-filter="own"]').click();
 }
 
-test("greys a mandate of the list under the pointer", async ({ page }) => {
+test("darkens a mandate of the list under the pointer", async ({ page }) => {
   await storeHalfCompletedMandate(page);
   await openOwnMandates(page);
 
   await page.locator("#mandate-panel .mandate-item").hover();
 
-  expect(await page.locator("#mandate-panel .mandate-item").evaluate(item => getComputedStyle(item).backgroundColor))
-    .toEqual("rgb(68, 68, 68)");
+  expect(await page.locator("#mandate-panel .mandate-item").evaluate(item => getComputedStyle(item).filter))
+    .toEqual("brightness(0.85)");
 });
 
 // Clicking a mandate anywhere opens it up in full: its number, and every criterion told in full with
@@ -688,4 +688,27 @@ test("tells a hapiness criterion in full, and how much Hapiness the player's sek
     line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
     current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
   }).toEqual({ line: "Hapiness at least 8", current: "Currently 5" });
+});
+
+// One mandate of every category, nobody's yet.
+async function storeMandateOfEveryCategory(page: Page) {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+    { number: 2, owner: null, criteria: [{ type: "maximumPollution", amount: 60 }] },
+    { number: 3, owner: null, criteria: [{ type: "minimumHapiness", amount: 4 }] },
+  ])));
+}
+
+test("puts every mandate of the list on the colour of its category, in black", async ({ page }) => {
+  await storeMandateOfEveryCategory(page);
+  await page.goto("/?test=true");
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items => items.map(item => ({
+    background: getComputedStyle(item).backgroundColor,
+    text: getComputedStyle(item).color,
+  })))).toEqual([
+    { background: "rgb(242, 242, 242)", text: "rgb(0, 0, 0)" },
+    { background: "rgb(206, 247, 205)", text: "rgb(0, 0, 0)" },
+    { background: "rgb(255, 219, 244)", text: "rgb(0, 0, 0)" },
+  ]);
 });

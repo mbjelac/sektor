@@ -13,6 +13,7 @@ import { showResourceSektorsDialog } from "./mandates/resourceSektorsDialog.ui";
 import { getPlayerSektors } from "./mandates/playerSektors";
 import { PlayerSektor } from "./mandates/sektorsMovingResource";
 import { isAboutResource } from "./mandates/criterionType";
+import { mandateCategory } from "./mandates/mandateCategory";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
 const MOST_TOLD_RESOURCE_COUNT = 3;
@@ -65,7 +66,8 @@ export function updateMessages(
 // Every mandate the player has claimed and not completed yet is a thing still to be done, so each is
 // told of in a message of its own, which offers to open the mandate in full. A mandate completed is
 // no longer told of. A criterion completed or no longer completed is something new to say even
-// though the words of the message stay the same, so the message is then told anew.
+// though the words of the message stay the same, so the message is then told anew. A message stands
+// on the colour of the mandate's category, as the mandate does in the list.
 export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAbandoned: () => void) {
   const playerSektors = getPlayerSektors();
   const uncompletedMandateIds = uncompletedMandates.map(mandate => `${MANDATE_MESSAGE_ID}${mandate.number}`);
@@ -80,7 +82,9 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
     if (shownMessage && shownMessage.dataset.criteriaCompleted !== criteriaCompleted) shownMessage.remove();
 
     showMessage(messageId, "mandate", mandateAdvice(mandate, playerSektors), [], [createShowMandateButton(mandate, onMandateAbandoned)]);
-    document.getElementById(messageId)!.dataset.criteriaCompleted = criteriaCompleted;
+    const mandateMessage = document.getElementById(messageId)!;
+    mandateMessage.dataset.criteriaCompleted = criteriaCompleted;
+    mandateMessage.dataset.mandateCategory = mandateCategory(mandate);
   }
 
   showToggleButtons();

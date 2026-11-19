@@ -102,14 +102,14 @@ Only one type of mandate:
     - "Hapiness at least <amount>"
     - with sub-row "Currently <current amount>"
 
-#5 Player can easily separate economic, ecologic & social mandates
+#5 [done] Player can easily separate economic, ecologic & social mandates
 - [done] in mandate list, apply different background colors for mandate category:
     - economic (import/export): #f2f2f2
     - ecologic (deforestation, pollution): #cef7cd
     - social (population, hapiness): #ffdbf4
     - black text in these items
         - including mandate icon & mandate number
-- apply same background color to map mandate messages & to mandate dropdown
+- [done] apply same background color to map mandate messages & to mandate dropdown
 
 #6 Player sees both mandate details & criteria status by sektor in same panel
 - when player opens mandate details display total criteria status
