@@ -30,12 +30,16 @@ Total sektor pollution: 120
 Total player's pollution metric is then the sum of all player's sektors pollutions.
 
 Population:
-Total population of players' sektors equals number of Habitats * Habitats capacity.
+Total population of player's sektors equals number of Habitats * Habitats capacity.
 The capacity of habitats is a constant.
 This constant should be taken into account when creating criteria.
 For example, if the habitats capacity is 10, then mandate with criteria of having population at least 10 is a small & easy mandate.
 This type of mandate can come in two forms:
-- have at least X population
-- have at most X population
+- at least X population
+- at most X population
 
 Hapiness:
+Total hapiness of player's sektors is sum of all player's sektors' Hapiness exports.
+Take into account building function Hapiness output amounts when generating value for this criteria.
+Only one type of mandate:
+- at least X hapiness
