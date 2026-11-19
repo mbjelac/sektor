@@ -35,10 +35,10 @@ For example, metal ore seams span 3-4 connected areas (regardless of climate zon
             - after biome, with same spacing as between climate zone & biome
             - display: "<swatch> <ore name>"
 
-#2 A portion of sektors are on ore-rich areas
-- when generating a new sektor, there is a 1 in 4 chance it is on an ore-rich area
-- if sektor is on an ore-rich area, pick a location for a sektor as always, but filter only ore-rich areas for picking
-- if sektor is not on an ore-rich area, pick a location for a sektor as always, but filter only ore-poor areas for picking
+#2 [done] A portion of sektors are on ore-rich areas
+- [done] when generating a new sektor, there is a 1 in 4 chance it is on an ore-rich area
+- [done] if sektor is on an ore-rich area, pick a location for a sektor as always, but filter only ore-rich areas for picking
+- [done] if sektor is not on an ore-rich area, pick a location for a sektor as always, but filter only ore-poor areas for picking
 
 #3 Area rich in ore type has abundance of that ore in it's locations
 - use existing algorithms for generating sektor location property matrices
@@ -47,3 +47,6 @@ For example, metal ore seams span 3-4 connected areas (regardless of climate zon
     - interpolate rest of values according to existing algorithm, rounded to integer values
 - if area is marked as rich with that ore
     - maximum amount of that ore in sektor is 12
+
+#4 Sektor list displays ore-rich mark
+-
