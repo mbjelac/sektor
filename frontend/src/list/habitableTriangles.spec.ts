@@ -4,7 +4,7 @@ import { PlanetRegion } from "./parsePlanet";
 import { habitableTriangles } from "./habitableTriangles";
 
 const grid = createPlanetGrid(2);
-const sea: PlanetRegion = { color: "#2482e0", climate: "temperate", biome: "temperate", isLand: false, isForest: false, isDesert: false };
+const sea: PlanetRegion = { color: "#2482e0", climate: "temperate", biome: "temperate", isLand: false, isForest: false, isDesert: false, richOre: null };
 
 function planetWith(land: TriangleCoordinate[], polarRings: number[] = []): PlanetRegion[][] {
   return grid.rings.map((ring, ringIndex) => ring.map(({ coordinate }) => ({

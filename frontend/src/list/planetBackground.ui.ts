@@ -7,6 +7,7 @@ import { dragRotation, facingRotation, Rotation, rotationBetween, uprightRotatio
 import { getPlanetRotation, savePlanetRotation } from "./planetRotation.api";
 import { createPlanetRegionInfo } from "./planetRegionInfo.ui";
 import { createSektorMarkers, SpotOfTriangle } from "./sektorMarkers.ui";
+import { createOreMarks } from "./oreMarks.ui";
 import { SektorListItem } from "./sektorList.api";
 
 const RADIUS_SHARE_OF_SHORTER_SIDE = 0.35;
@@ -18,17 +19,23 @@ type ColoredTriangle = { triangle: PlanetTriangle; region: PlanetRegion; color: 
 // wherever the lists leave it showing, or stood upright by a double click. Nothing on it moves of
 // itself, so it is drawn only when it is dragged or the window changes size. It is kept turned as
 // it was last drawn, so that it is turned the same way when the page is come back to. Wherever the
-// mouse is over it, what lies there is told along the bottom of the page. The sektors are marked where they
-// lie on it, and whoever shows the planet says which sektors there are, and again whenever they
+// mouse is over it, what lies there is told along the bottom of the page. The areas rich in ore and
+// the sektors are marked where they lie on it, and whoever shows the planet says which sektors there are, and again whenever they
 // change, and may turn the planet to show any triangle of it. A sektor clicked on the planet is
 // handed back to whoever shows it.
 export function showPlanetBackground(onSektorChosen: (sektorId: string) => void): {
   showSektors: (sektors: SektorListItem[]) => void;
   turnToTriangle: (location: TriangleCoordinate) => void;
 } {
+  // The areas rich in ore are marked under the sektors, so their marks come first.
+  const followPlanetWithOreMarks = createOreMarks(getPlanet());
   const sektorMarkers = createSektorMarkers(onSektorChosen);
+  const followPlanet = (spotOfTriangle: SpotOfTriangle) => {
+    followPlanetWithOreMarks(spotOfTriangle);
+    sektorMarkers.followPlanet(spotOfTriangle);
+  };
   let turnToTriangle: (location: TriangleCoordinate) => void = () => {};
-  new p5(p => { turnToTriangle = planetSketch(p, sektorMarkers.followPlanet); });
+  new p5(p => { turnToTriangle = planetSketch(p, followPlanet); });
   return { showSektors: sektorMarkers.showSektors, turnToTriangle: location => turnToTriangle(location) };
 }
 

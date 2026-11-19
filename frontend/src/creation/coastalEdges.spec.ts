@@ -4,7 +4,7 @@ import { PlanetRegion } from "../list/parsePlanet";
 import { coastalEdges } from "./coastalEdges";
 
 const grid = createPlanetGrid(2);
-const land: PlanetRegion = { color: "#00c000", climate: "temperate", biome: "temperate", isLand: true, isForest: false, isDesert: false };
+const land: PlanetRegion = { color: "#00c000", climate: "temperate", biome: "temperate", isLand: true, isForest: false, isDesert: false, richOre: null };
 
 // Around the middle of the planet every other triangle of a ring points north, starting with the first.
 const pointingSouth = { ring: 2, index: 1 };

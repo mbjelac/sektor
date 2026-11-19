@@ -20,11 +20,11 @@ describe("parsePlanet", () => {
 
     expect(parsePlanet(planetMarkdown)).toEqual([
       [
-        { color: "#ff0000", climate: "polar", biome: "polar", isLand: false, isForest: false, isDesert: false },
-        { color: "#00ff00", climate: "polar", biome: "polar", isLand: false, isForest: false, isDesert: false },
+        { color: "#ff0000", climate: "polar", biome: "polar", isLand: false, isForest: false, isDesert: false, richOre: null },
+        { color: "#00ff00", climate: "polar", biome: "polar", isLand: false, isForest: false, isDesert: false, richOre: null },
       ],
       [
-        { color: "#0000ff", climate: "tropical", biome: "tropical", isLand: false, isForest: false, isDesert: false },
+        { color: "#0000ff", climate: "tropical", biome: "tropical", isLand: false, isForest: false, isDesert: false, richOre: null },
       ],
     ]);
   });
@@ -40,9 +40,26 @@ describe("parsePlanet", () => {
     ].join("\n");
 
     expect(parsePlanet(planetMarkdown)).toEqual([[
-      { color: "#00c000", climate: "temperate", biome: "temperate", isLand: true, isForest: false, isDesert: false },
-      { color: "#0a6900", climate: "temperate", biome: "temperate", isLand: true, isForest: true, isDesert: false },
-      { color: "#f5e198", climate: "temperate", biome: "tropical", isLand: true, isForest: false, isDesert: true },
+      { color: "#00c000", climate: "temperate", biome: "temperate", isLand: true, isForest: false, isDesert: false, richOre: null },
+      { color: "#0a6900", climate: "temperate", biome: "temperate", isLand: true, isForest: true, isDesert: false, richOre: null },
+      { color: "#f5e198", climate: "temperate", biome: "tropical", isLand: true, isForest: false, isDesert: true, richOre: null },
+    ]]);
+  });
+
+  it("reads the ore a triangle is rich in", () => {
+    const planetMarkdown = [
+      "# Topology",
+      "## Ring 0",
+      "Climate: temperate",
+      "#00c000 L temperate metals",
+      "#0a6900 L F temperate minerals",
+      "#2482e0 temperate uranium",
+    ].join("\n");
+
+    expect(parsePlanet(planetMarkdown)).toEqual([[
+      { color: "#00c000", climate: "temperate", biome: "temperate", isLand: true, isForest: false, isDesert: false, richOre: "metals" },
+      { color: "#0a6900", climate: "temperate", biome: "temperate", isLand: true, isForest: true, isDesert: false, richOre: "minerals" },
+      { color: "#2482e0", climate: "temperate", biome: "temperate", isLand: false, isForest: false, isDesert: false, richOre: "uranium" },
     ]]);
   });
 
@@ -60,7 +77,7 @@ describe("parsePlanet", () => {
     ].join("\n");
 
     expect(parsePlanet(planetMarkdown)).toEqual([[
-      { color: "#ff0000", climate: "polar", biome: "polar", isLand: false, isForest: false, isDesert: false },
+      { color: "#ff0000", climate: "polar", biome: "polar", isLand: false, isForest: false, isDesert: false, richOre: null },
     ]]);
   });
 });

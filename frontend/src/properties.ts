@@ -20,16 +20,17 @@ export interface PropertyDefinition {
   color: string;
 }
 
-export const propertyDefinitions: PropertyDefinition[] = [];
+export const propertyDefinitions: PropertyDefinition[] = parsePropertyDefinitions(source);
 
-for (const line of source.split("\n")) {
-  const trimmed = line.trim();
-  if (!trimmed) continue;
-  const parts = trimmed.split(/\s+/);
-  if (parts.length < 2) continue;
-  propertyDefinitions.push({
-    name: parts[0],
-    color: parts[1],
+// The properties of the real planet, whether or not the game runs with test data: the planet is
+// the same in both, and so are the ores it is rich in.
+export const planetPropertyDefinitions: PropertyDefinition[] = parsePropertyDefinitions(propertiesMd);
+
+function parsePropertyDefinitions(propertiesMarkdown: string): PropertyDefinition[] {
+  return propertiesMarkdown.split("\n").flatMap(line => {
+    const parts = line.trim().split(/\s+/);
+    if (parts.length < 2) return [];
+    return [{ name: parts[0], color: parts[1] }];
   });
 }
 

@@ -127,6 +127,13 @@ test("tells what lies under the mouse on the planet", async ({ page }) => {
   await expect(page.locator("#planet-region-info")).toHaveScreenshot("planet-region-info.png", { maxDiffPixelRatio: 0 });
 });
 
+// The point lies on a savanna area rich in metals, as planet.md has it.
+test("tells the ore an area is rich in, after its biome", async ({ page }) => {
+  await page.mouse.move(735, 280);
+
+  await expect(page.locator("#planet-region-info")).toHaveScreenshot("planet-region-info-ore.png", { maxDiffPixelRatio: 0 });
+});
+
 // Tilting the planet towards the viewer leaves the same longitude facing them, so standing it back
 // upright brings back the page as it opened.
 test("stands a tilted planet back upright on a double click", async ({ page }) => {

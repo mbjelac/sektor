@@ -918,8 +918,8 @@ body > main {
     position: fixed;
     bottom: 16px;
     left: 50%;
-    width: 300px;
-    margin-left: -150px;
+    width: 400px;
+    margin-left: -200px;
     z-index: 2;
     display: none;
     /* Everything on the line stands on one baseline, or the emoji, taller than the letters, would
@@ -941,6 +941,30 @@ body > main {
     display: flex;
     align-items: baseline;
     gap: 30px;
+}
+
+/* The ore an area is rich in: a swatch of the ore's color, as the area is marked on the planet, then
+   its name. */
+.planet-region-ore {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.planet-region-ore-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* The areas rich in ore, marked over the planet and under the sektors' marks, taking no part in the
+   mouse. */
+#ore-marks {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
 /* The sektors marked where they lie on the planet: over it, under the lists, taking no part in the

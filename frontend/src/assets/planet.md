@@ -10,8 +10,9 @@ A triangle is pinpointed by **(ring, index)**:
 
 Every ring section starts with a `Climate: <climate zone>` line: polar, sub-polar, temperate,
 sub-tropical or tropical. A triangle line holds, space-separated: the triangle's colour, `L` if the
-triangle is land, `F` if the land is forest or `D` if it is desert, and its biome: polar, temperate
-or tropical.
+triangle is land, `F` if the land is forest or `D` if it is desert, its biome: polar, temperate
+or tropical, and the ore it is rich in, if any: metals, minerals or uranium. The ore marks are drawn
+by `tools/planet/generateOreMarks.ts`.
 
 # Topology
 
@@ -490,8 +491,8 @@ Climate: polar
 #2b86e1 polar
 #4998e8 polar
 #2683e0 polar
-#ddfeff L polar
-#2885e1 polar
+#ddfeff L polar metals
+#2885e1 polar metals
 #2784e1 polar
 #adfcff L polar
 #adfcff L polar
@@ -618,7 +619,7 @@ Climate: sub-polar
 #00c600 L temperate
 #2784e1 polar
 #00855c L F polar
-#4898e8 polar
+#4898e8 polar minerals
 #007a5d L F polar
 #3089e3 polar
 #00925a L F polar
@@ -722,7 +723,7 @@ Climate: sub-polar
 #328be3 temperate
 #2683e1 temperate
 #3089e3 temperate
-#0c7900 L F temperate
+#0c7900 L F temperate minerals
 #2884e1 temperate
 #4898e8 temperate
 #009959 L F polar
@@ -732,7 +733,7 @@ Climate: sub-polar
 #00db00 L temperate
 #00a700 L temperate
 #3d91e5 temperate
-#3d91e5 polar
+#3d91e5 polar minerals
 #00905a L F polar
 #007c5d L F polar
 #00785d L F polar
@@ -837,9 +838,9 @@ Climate: sub-polar
 #86ffcd L polar
 #6bffc2 L polar
 #00ac00 L temperate
-#98ffd4 L polar
-#42ffb0 L polar
-#97ffd4 L polar
+#98ffd4 L polar minerals
+#42ffb0 L polar minerals
+#97ffd4 L polar minerals
 #4496e7 temperate
 #2683e0 polar
 #2a86e1 polar
@@ -1113,9 +1114,9 @@ Climate: sub-polar
 #368de4 temperate
 #2b87e2 polar
 #3b90e5 polar
-#358ce4 polar
-#6cffc2 L polar
-#94ffd3 L polar
+#358ce4 polar uranium
+#6cffc2 L polar uranium
+#94ffd3 L polar uranium
 #0eff9b L polar
 #62ffbe L polar
 #00c000 L temperate
@@ -1639,8 +1640,8 @@ Climate: sub-polar
 #0d8800 L F temperate
 #00a300 L temperate
 #00a100 L temperate
-#0f9a00 L F temperate
-#0b7200 L F temperate
+#0f9a00 L F temperate minerals
+#0b7200 L F temperate minerals
 #10a300 L F temperate
 #10a100 L F temperate
 #00925a L F polar
@@ -1802,8 +1803,8 @@ Climate: sub-polar
 #00cd00 L temperate
 #0c7900 L F temperate
 #0b7200 L F temperate
-#109f00 L F temperate
-#00915a L F polar
+#109f00 L F temperate metals
+#00915a L F polar metals
 #009659 L F polar
 #02ff96 L polar
 #4696e7 polar
@@ -1817,14 +1818,14 @@ Climate: sub-polar
 #86ffcd L polar
 #2683e1 temperate
 #02ff96 L polar
-#26ffa5 L polar
-#02ff96 L polar
-#11a800 L F temperate
-#0f9700 L F temperate
-#00bf00 L temperate
+#26ffa5 L polar metals
+#02ff96 L polar metals
+#11a800 L F temperate minerals
+#0f9700 L F temperate metals
+#00bf00 L temperate metals
 #0c7f00 L F temperate
-#4affb4 L polar
-#009759 L F polar
+#4affb4 L polar minerals
+#009759 L F polar minerals
 #00785d L F polar
 #2784e1 polar
 #007e5d L F polar
@@ -1997,8 +1998,8 @@ Climate: sub-polar
 #0f9c00 L F temperate
 #0f9c00 L F temperate
 #00ce00 L temperate
-#4dffb5 L polar
-#009559 L F polar
+#4dffb5 L polar metals
+#009559 L F polar metals
 #45ffb2 L polar
 #2582e0 polar
 #4998e8 polar
@@ -2013,9 +2014,9 @@ Climate: sub-polar
 #00dc00 L temperate
 #4696e7 temperate
 #12ff9c L polar
-#3089e3 temperate
-#00db00 L temperate
-#00b100 L temperate
+#3089e3 temperate metals
+#00db00 L temperate minerals
+#00b100 L temperate minerals
 #00d600 L temperate
 #3d91e5 polar
 #4193e6 polar
@@ -2198,11 +2199,11 @@ Climate: temperate
 #0f9c00 L F temperate
 #00d800 L temperate
 #0a6a00 L F temperate
-#00cb00 L temperate
+#00cb00 L temperate minerals
 #0f9500 L F temperate
 #00b100 L temperate
 #00bf00 L temperate
-#00aa00 L temperate
+#00aa00 L temperate metals
 #00a100 L temperate
 #00d400 L temperate
 #00b800 L temperate
@@ -2411,10 +2412,10 @@ Climate: temperate
 #00a100 L temperate
 #00c200 L temperate
 #00cc00 L temperate
-#00aa00 L temperate
-#00c600 L temperate
+#00aa00 L temperate minerals
+#00c600 L temperate minerals
 #00a700 L temperate
-#00dc00 L temperate
+#00dc00 L temperate metals
 #00c100 L temperate
 #00a100 L temperate
 #00c100 L temperate
@@ -2449,8 +2450,8 @@ Climate: temperate
 #2482e0 temperate
 #328be3 temperate
 #2683e0 temperate
-#348be3 temperate
-#4294e6 temperate
+#348be3 temperate metals
+#4294e6 temperate metals
 #00df00 L temperate
 #00d900 L temperate
 #4194e6 temperate
@@ -2472,7 +2473,7 @@ Climate: temperate
 #2884e1 temperate
 #4797e7 temperate
 #348ce3 temperate
-#4797e7 temperate
+#4797e7 temperate uranium
 #4093e6 temperate
 #388ee4 temperate
 #398fe4 temperate
@@ -2637,7 +2638,7 @@ Climate: temperate
 #11a900 L F temperate
 #00bf00 L temperate
 #00ab00 L temperate
-#00c500 L temperate
+#00c500 L temperate metals
 #11aa00 L F temperate
 #00c100 L temperate
 #0a6900 L F temperate
@@ -2870,7 +2871,7 @@ Climate: temperate
 #00e000 L temperate
 #00a200 L temperate
 #00d700 L temperate
-#00ca00 L temperate
+#00ca00 L temperate metals
 #00c600 L temperate
 #00d900 L temperate
 #00c200 L temperate
@@ -2919,7 +2920,7 @@ Climate: temperate
 #0c7b00 L F temperate
 #00d000 L temperate
 #0f9a00 L F temperate
-#00b000 L temperate
+#00b000 L temperate minerals
 #00d300 L temperate
 #0d8400 L F temperate
 #00a800 L temperate
@@ -2969,7 +2970,7 @@ Climate: temperate
 #3d91e5 temperate
 #2784e1 temperate
 #3a8fe5 temperate
-#2a85e1 temperate
+#2a85e1 temperate minerals
 #0b7400 L F temperate
 #009f00 L temperate
 #00b200 L temperate
@@ -3113,10 +3114,10 @@ Climate: temperate
 #e4d2b9 L D temperate
 #0e8f00 L F temperate
 #10a100 L F temperate
-#109f00 L F temperate
-#11aa00 L F temperate
-#00d500 L temperate
-#0b6f00 L F temperate
+#109f00 L F temperate metals
+#11aa00 L F temperate metals
+#00d500 L temperate metals
+#0b6f00 L F temperate metals
 #11a700 L F temperate
 #00b700 L temperate
 #00d500 L temperate
@@ -3164,8 +3165,8 @@ Climate: temperate
 #4797e7 temperate
 #0c7700 L F temperate
 #2482e0 temperate
-#0b7500 L F temperate
-#2a85e1 temperate
+#0b7500 L F temperate minerals
+#2a85e1 temperate minerals
 #0b7400 L F temperate
 #0c8000 L F temperate
 #0e8e00 L F temperate
@@ -3218,7 +3219,7 @@ Climate: temperate
 #4697e7 temperate
 #2784e1 temperate
 #00d300 L temperate
-#3089e3 temperate
+#3089e3 temperate minerals
 #00bc00 L temperate
 #3d91e5 temperate
 #0f9900 L F temperate
@@ -3376,7 +3377,7 @@ Climate: temperate
 #0c7e00 L F temperate
 #00c200 L temperate
 #00a000 L temperate
-#4999e8 temperate
+#4999e8 temperate minerals
 #3089e2 temperate
 #2582e0 temperate
 #4093e6 temperate
@@ -3421,10 +3422,10 @@ Climate: temperate
 #0d8100 L F temperate
 #0e9100 L F temperate
 #0f9600 L F temperate
-#00a000 L temperate
-#10a200 L F temperate
-#0a6c00 L F temperate
-#00da00 L temperate
+#00a000 L temperate metals
+#10a200 L F temperate minerals
+#0a6c00 L F temperate metals
+#00da00 L temperate metals
 #0e8e00 L F temperate
 #00d100 L temperate
 #00d900 L temperate
@@ -3573,11 +3574,11 @@ Climate: temperate
 #ebd0ad L D temperate
 #00b100 L temperate
 #00a600 L temperate
-#10a100 L F temperate
-#00d900 L temperate
-#e3d2bc L D temperate
-#e1d3bf L D temperate
-#0c7900 L F temperate
+#10a100 L F temperate metals
+#00d900 L temperate metals
+#e3d2bc L D temperate metals
+#e1d3bf L D temperate metals
+#0c7900 L F temperate metals
 #0d8400 L F temperate
 #0f9a00 L F temperate
 #0f9600 L F temperate
@@ -3626,10 +3627,10 @@ Climate: temperate
 #f1cfa1 L D temperate
 #edd0a9 L D temperate
 #e3d2bc L D temperate
-#e4d2ba L D temperate
-#e4d2ba L D temperate
+#e4d2ba L D temperate metals
+#e4d2ba L D temperate metals
 #e3d2bc L D temperate
-#0e9200 L F temperate
+#0e9200 L F temperate minerals
 #0c7c00 L F temperate
 #0b6f00 L F temperate
 #00c500 L temperate
@@ -3640,7 +3641,7 @@ Climate: temperate
 #00ce00 L temperate
 #0f9900 L F temperate
 #00df00 L temperate
-#00c800 L temperate
+#00c800 L temperate minerals
 #00a700 L temperate
 #00a600 L temperate
 #00aa00 L temperate
@@ -3691,7 +3692,7 @@ Climate: temperate
 #0b7000 L F temperate
 #0e9300 L F temperate
 #11aa00 L F temperate
-#0d8a00 L F temperate
+#0d8a00 L F temperate metals
 #00c900 L temperate
 #0c7800 L F temperate
 #0a6c00 L F temperate
@@ -3903,7 +3904,7 @@ Climate: temperate
 #0d8100 L F temperate
 #0b7400 L F temperate
 #11a600 L F temperate
-#0b7400 L F temperate
+#0b7400 L F temperate minerals
 #00d500 L temperate
 #00bd00 L temperate
 #0e9100 L F temperate
@@ -3913,8 +3914,8 @@ Climate: temperate
 #00dc00 L temperate
 #00d200 L temperate
 #00df00 L temperate
-#00c500 L temperate
-#00c100 L temperate
+#00c500 L temperate minerals
+#00c100 L temperate minerals
 #00a100 L temperate
 #4797e7 temperate
 #378de4 temperate
@@ -3972,9 +3973,9 @@ Climate: temperate
 #00cd00 L temperate
 #00c700 L temperate
 #0a6b00 L F temperate
-#0e8c00 L F temperate
-#0f9700 L F temperate
-#0e8d00 L F temperate
+#0e8c00 L F temperate uranium
+#0f9700 L F temperate uranium
+#0e8d00 L F temperate uranium
 #0e8c00 L F temperate
 #0b6f00 L F temperate
 #0e8d00 L F temperate
@@ -4030,7 +4031,7 @@ Climate: temperate
 #3b90e5 temperate
 #4898e7 temperate
 #0d8a00 L F temperate
-#2582e0 temperate
+#2582e0 temperate minerals
 #0d8500 L F temperate
 #10a400 L F temperate
 #0a6a00 L F temperate
@@ -4142,8 +4143,8 @@ Climate: temperate
 #10a100 L F temperate
 #0c7700 L F temperate
 #0c7f00 L F temperate
-#0c7900 L F temperate
-#0d8600 L F temperate
+#0c7900 L F temperate uranium
+#0d8600 L F temperate uranium
 #0d8a00 L F temperate
 #0f9600 L F temperate
 #0f9a00 L F temperate
@@ -4197,8 +4198,8 @@ Climate: temperate
 #00a500 L temperate
 #00d500 L temperate
 #00ce00 L temperate
-#00b700 L temperate
-#00b700 L temperate
+#00b700 L temperate minerals
+#00b700 L temperate minerals
 #00a800 L temperate
 #00bb00 L temperate
 #3d91e5 temperate
@@ -4261,7 +4262,7 @@ Climate: temperate
 #0e9000 L F temperate
 #0f9700 L F temperate
 #0f9a00 L F temperate
-#109d00 L F temperate
+#109d00 L F temperate uranium
 #0c8000 L F temperate
 #0b7700 L F temperate
 #0b7000 L F temperate
@@ -4320,7 +4321,7 @@ Climate: temperate
 #00d700 L temperate
 #00cb00 L temperate
 #00ad00 L temperate
-#0f9b00 L F temperate
+#0f9b00 L F temperate minerals
 #00d400 L temperate
 #00db00 L temperate
 #0a6d00 L F temperate
@@ -4434,8 +4435,8 @@ Climate: temperate
 #11a700 L F temperate
 #0b6f00 L F temperate
 #0e9100 L F temperate
-#0a6a00 L F temperate
-#11a700 L F temperate
+#0a6a00 L F temperate uranium
+#11a700 L F temperate uranium
 #0f9800 L F temperate
 #0b7100 L F temperate
 #0b7200 L F temperate
@@ -4484,7 +4485,7 @@ Climate: temperate
 #0c7c00 L F temperate
 #10a600 L F temperate
 #10a300 L F temperate
-#4697e7 temperate
+#4697e7 temperate uranium
 #318ae3 temperate
 #338be3 temperate
 #00d900 L temperate
@@ -4560,7 +4561,7 @@ Climate: temperate
 #0d8300 L F temperate
 #0e8f00 L F temperate
 #0d8100 L F temperate
-#0f9400 L F temperate
+#0f9400 L F temperate minerals
 #10a400 L F temperate
 #0e9000 L F temperate
 #0e8c00 L F temperate
@@ -4643,10 +4644,10 @@ Climate: temperate
 #0e9300 L F temperate
 #0a6b00 L F temperate
 #00dc00 L temperate
-#0d8600 L F temperate
-#358ce3 temperate
-#0b6f00 L F temperate
-#00be00 L temperate
+#0d8600 L F temperate metals
+#358ce3 temperate metals
+#0b6f00 L F temperate metals
+#00be00 L temperate metals
 #4495e7 temperate
 #00db00 L temperate
 #348ce3 temperate
@@ -4700,10 +4701,10 @@ Climate: sub-tropical
 #0d8200 L F temperate
 #2683e0 tropical
 #418b00 L F tropical
-#479700 L F tropical
-#0e8f00 L F temperate
-#aae900 L tropical
-#7ed600 L tropical
+#479700 L F tropical minerals
+#0e8f00 L F temperate minerals
+#aae900 L tropical minerals
+#7ed600 L tropical minerals
 #3d91e5 tropical
 #4da400 L F tropical
 #479700 L F tropical
@@ -4867,7 +4868,7 @@ Climate: sub-tropical
 #109d00 L F temperate
 #0b7600 L F temperate
 #0c7900 L F temperate
-#0f9400 L F temperate
+#0f9400 L F temperate minerals
 #3f8600 L F tropical
 #428d00 L F tropical
 #4da500 L F tropical
@@ -4882,8 +4883,8 @@ Climate: sub-tropical
 #2583e0 temperate
 #00b600 L temperate
 #00b000 L temperate
-#00a700 L temperate
-#00cc00 L temperate
+#00a700 L temperate minerals
+#00cc00 L temperate minerals
 #348ce3 tropical
 #60c900 L tropical
 #449200 L F tropical
@@ -4944,14 +4945,14 @@ Climate: sub-tropical
 #5ac600 L tropical
 #00a300 L temperate
 #0e9000 L F temperate
-#00a600 L temperate
+#00a600 L temperate minerals
 #00ce00 L temperate
-#0c7a00 L F temperate
+#0c7a00 L F temperate minerals
 #0e8e00 L F temperate
 #0c7e00 L F temperate
 #00d300 L temperate
-#438f00 L F tropical
-#489a00 L F tropical
+#438f00 L F tropical metals
+#489a00 L F tropical metals
 #3b7e00 L F tropical
 #0c7e00 L F temperate
 #00dc00 L temperate
@@ -4987,8 +4988,8 @@ Climate: sub-tropical
 #5dc800 L tropical
 #97e100 L tropical
 #4da500 L F tropical
-#0c7a00 L F temperate
-#0a6e00 L F temperate
+#0c7a00 L F temperate minerals
+#0a6e00 L F temperate minerals
 #10a300 L F temperate
 #3a7b00 L F tropical
 #4ea800 L F tropical
@@ -5019,7 +5020,7 @@ Climate: sub-tropical
 #a2e600 L tropical
 #499c00 L F tropical
 #469500 L F tropical
-#4da400 L F tropical
+#4da400 L F tropical metals
 #4ca200 L F tropical
 #89db00 L tropical
 #a8e900 L tropical
@@ -5060,8 +5061,8 @@ Climate: sub-tropical
 #2e88e2 tropical
 #009f00 L temperate
 #00af00 L temperate
-#00d400 L temperate
-#afec00 L tropical
+#00d400 L temperate metals
+#afec00 L tropical metals
 #61c900 L tropical
 #a0e500 L tropical
 #2e88e2 tropical
@@ -5181,11 +5182,11 @@ Climate: sub-tropical
 #0b7200 L F temperate
 #479800 L F tropical
 #0c7e00 L F temperate
-#0d8a00 L F temperate
-#0c7900 L F temperate
-#0f9a00 L F temperate
-#489b00 L F tropical
-#4a9f00 L F tropical
+#0d8a00 L F temperate metals
+#0c7900 L F temperate metals
+#0f9a00 L F temperate metals
+#489b00 L F tropical metals
+#4a9f00 L F tropical metals
 #3e8500 L F tropical
 #377500 L F tropical
 #0f9a00 L F temperate
@@ -5198,8 +5199,8 @@ Climate: sub-tropical
 #00ac00 L temperate
 #00cd00 L temperate
 #00a700 L temperate
-#00c000 L temperate
-#00e000 L temperate
+#00c000 L temperate minerals
+#00e000 L temperate minerals
 #a6e800 L tropical
 #4496e7 tropical
 #2f89e2 tropical
@@ -5340,7 +5341,7 @@ Climate: sub-tropical
 #3c8000 L F tropical
 #5ac600 L tropical
 #00b600 L temperate
-#00dd00 L temperate
+#00dd00 L temperate metals
 #00c100 L temperate
 #00d000 L temperate
 #10a400 L F temperate
@@ -5606,8 +5607,8 @@ Climate: sub-tropical
 #338be3 tropical
 #f0dfa1 L D tropical
 #e7dcb4 L D tropical
-#f0dfa1 L D tropical
-#338be3 temperate
+#f0dfa1 L D tropical minerals
+#338be3 temperate minerals
 #2b86e1 temperate
 #4495e7 temperate
 #4596e7 temperate
@@ -5660,8 +5661,8 @@ Climate: sub-tropical
 #0b7000 L F temperate
 #0b7200 L F temperate
 #0f9700 L F temperate
-#0f9600 L F temperate
-#84d900 L tropical
+#0f9600 L F temperate metals
+#84d900 L tropical metals
 #0e9000 L F temperate
 #0b6f00 L F temperate
 #11a600 L F temperate
@@ -5862,8 +5863,8 @@ Climate: sub-tropical
 #3f8700 L F tropical
 #4a9e00 L F tropical
 #479700 L F tropical
-#00cf00 L temperate
-#0f9c00 L F temperate
+#00cf00 L temperate metals
+#0f9c00 L F temperate metals
 #00af00 L temperate
 #9fe500 L tropical
 #11ab00 L F temperate
@@ -5984,8 +5985,8 @@ Climate: sub-tropical
 #87da00 L tropical
 #00af00 L temperate
 #00de00 L temperate
-#0e8d00 L F temperate
-#4da400 L F tropical
+#0e8d00 L F temperate metals
+#4da400 L F tropical metals
 #387800 L F tropical
 #74d200 L tropical
 #5ec800 L tropical
@@ -6095,8 +6096,8 @@ Climate: sub-tropical
 #2e88e2 temperate
 #348ce3 temperate
 #338be3 temperate
-#368de4 temperate
-#4596e7 temperate
+#368de4 temperate minerals
+#4596e7 temperate minerals
 #00b000 L temperate
 #00d100 L temperate
 #00d900 L temperate
@@ -6265,8 +6266,8 @@ Climate: sub-tropical
 #11a900 L F temperate
 #0c8000 L F temperate
 #0d8200 L F temperate
-#0c7a00 L F temperate
-#2c87e2 temperate
+#0c7a00 L F temperate minerals
+#2c87e2 temperate minerals
 #388ee4 temperate
 #3c91e5 temperate
 
@@ -6295,7 +6296,7 @@ Climate: sub-tropical
 #78d300 L tropical
 #62ca00 L tropical
 #7cd500 L tropical
-#00df00 L temperate
+#00df00 L temperate uranium
 #81d800 L tropical
 #59c600 L tropical
 #76d200 L tropical
@@ -6309,11 +6310,11 @@ Climate: sub-tropical
 #59c600 L tropical
 #00ae00 L temperate
 #9de400 L tropical
-#6bce00 L tropical
+#6bce00 L tropical metals
 #397900 L F tropical
-#77d300 L tropical
-#a2e600 L tropical
-#66cc00 L tropical
+#77d300 L tropical metals
+#a2e600 L tropical metals
+#66cc00 L tropical metals
 #397900 L F tropical
 #0a6c00 L F temperate
 #0c8000 L F temperate
@@ -6418,8 +6419,8 @@ Climate: sub-tropical
 #3a8fe5 temperate
 #2c87e2 temperate
 #2a85e1 temperate
-#3089e3 temperate
-#00a200 L temperate
+#3089e3 temperate minerals
+#00a200 L temperate minerals
 #00d400 L temperate
 #00a000 L temperate
 #358ce4 temperate
@@ -6466,8 +6467,8 @@ Climate: sub-tropical
 #2a86e1 temperate
 #2985e1 tropical
 #4999e8 tropical
-#2c87e2 tropical
-#85d900 L tropical
+#2c87e2 tropical uranium
+#85d900 L tropical uranium
 #318ae3 tropical
 #2a86e1 tropical
 #63ca00 L tropical
@@ -6553,10 +6554,10 @@ Climate: sub-tropical
 #479700 L F tropical
 #aae900 L tropical
 #418b00 L F tropical
-#3d8300 L F tropical
-#aaea00 L tropical
-#0b7000 L F temperate
-#00ae00 L temperate
+#3d8300 L F tropical uranium
+#aaea00 L tropical uranium
+#0b7000 L F temperate uranium
+#00ae00 L temperate uranium
 #00b400 L temperate
 #00bf00 L temperate
 #6fcf00 L tropical
@@ -6605,7 +6606,7 @@ Climate: sub-tropical
 #0e9300 L F temperate
 #0b7600 L F temperate
 #2885e1 tropical
-#5dc700 L tropical
+#5dc700 L tropical metals
 #77d300 L tropical
 #2482e0 tropical
 #2885e1 tropical
@@ -6821,7 +6822,7 @@ Climate: sub-tropical
 #377500 L F tropical
 #0f9600 L F temperate
 #489a00 L F tropical
-#4a9f00 L F tropical
+#4a9f00 L F tropical minerals
 #318ae3 tropical
 #4294e6 tropical
 #348ce3 temperate
@@ -6879,9 +6880,9 @@ Climate: sub-tropical
 #469500 L F tropical
 #84d900 L tropical
 #76d300 L tropical
-#82d800 L tropical
-#88da00 L tropical
-#a3e600 L tropical
+#82d800 L tropical minerals
+#88da00 L tropical minerals
+#a3e600 L tropical minerals
 #75d200 L tropical
 #00ae00 L temperate
 #00cb00 L temperate
@@ -6929,8 +6930,8 @@ Climate: sub-tropical
 #0f9500 L F temperate
 #0d8300 L F temperate
 #11a700 L F temperate
-#328ae3 tropical
-#479700 L F tropical
+#328ae3 tropical metals
+#479700 L F tropical metals
 #2985e1 tropical
 #60c900 L tropical
 #80d700 L tropical
@@ -7008,7 +7009,7 @@ Climate: sub-tropical
 #b1ed00 L tropical
 #00da00 L temperate
 #4a99e8 temperate
-#4294e6 temperate
+#4294e6 temperate minerals
 #2784e1 temperate
 #4797e7 tropical
 #358ce4 tropical
@@ -7144,8 +7145,8 @@ Climate: sub-tropical
 #459400 L F tropical
 #348ce3 temperate
 #0b7200 L F temperate
-#00c600 L temperate
-#367300 L F tropical
+#00c600 L temperate minerals
+#367300 L F tropical minerals
 #a0e500 L tropical
 #67cc00 L tropical
 #4294e6 tropical
@@ -7206,7 +7207,7 @@ Climate: sub-tropical
 #b1ed00 L tropical
 #83d800 L tropical
 #348ce3 tropical
-#2b86e1 temperate
+#2b86e1 temperate metals
 #338be3 temperate
 #4495e7 temperate
 #348ce3 temperate
@@ -7231,7 +7232,7 @@ Climate: sub-tropical
 #479800 L F tropical
 #378de4 tropical
 #3e8500 L F tropical
-#377500 L F tropical
+#377500 L F tropical minerals
 #439000 L F tropical
 #10a200 L F temperate
 #438f00 L F tropical
@@ -7254,7 +7255,7 @@ Climate: sub-tropical
 #479800 L F tropical
 #60c900 L tropical
 #428e00 L F tropical
-#4998e8 temperate
+#4998e8 temperate metals
 #0f9b00 L F temperate
 #0a6c00 L F temperate
 #0b7500 L F temperate
@@ -7381,8 +7382,8 @@ Climate: sub-tropical
 #72d100 L tropical
 #72d100 L tropical
 #55c400 L tropical
-#00c200 L temperate
-#3d91e5 temperate
+#00c200 L temperate metals
+#3d91e5 temperate metals
 #4093e6 temperate
 #3089e2 temperate
 #9ee400 L tropical
@@ -7468,7 +7469,7 @@ Climate: sub-tropical
 #4ca200 L F tropical
 #499c00 L F tropical
 #459300 L F tropical
-#418a00 L F tropical
+#418a00 L F tropical metals
 #0b7700 L F temperate
 #0a6c00 L F temperate
 #0d8600 L F temperate
@@ -7530,8 +7531,8 @@ Climate: sub-tropical
 #00cc00 L temperate
 #00df00 L temperate
 #6fd000 L tropical
-#00d900 L temperate
-#3c91e5 temperate
+#00d900 L temperate metals
+#3c91e5 temperate metals
 #2482e0 temperate
 #00ce00 L temperate
 #2482e0 temperate
@@ -7553,8 +7554,8 @@ Climate: sub-tropical
 #377400 L F tropical
 #3c8000 L F tropical
 #3a7c00 L F tropical
-#0e8c00 L F temperate
-#2482e0 tropical
+#0e8c00 L F temperate minerals
+#2482e0 tropical minerals
 #2985e1 tropical
 #4a99e8 tropical
 #4797e7 tropical
@@ -7820,7 +7821,7 @@ Climate: sub-tropical
 #88da00 L tropical
 #6dce00 L tropical
 #00ad00 L temperate
-#a0e500 L tropical
+#a0e500 L tropical metals
 #8edd00 L tropical
 #72d100 L tropical
 #00c400 L temperate
@@ -7877,7 +7878,7 @@ Climate: sub-tropical
 #2c87e2 tropical
 #418b00 L F tropical
 #0b6f00 L F temperate
-#0b7200 L F temperate
+#0b7200 L F temperate minerals
 #3c91e5 temperate
 #377500 L F tropical
 #449100 L F tropical
@@ -7951,9 +7952,9 @@ Climate: tropical
 #2e88e2 tropical
 #3e8400 L F tropical
 #489a00 L F tropical
-#a6e800 L tropical
-#89db00 L tropical
-#4998e8 tropical
+#a6e800 L tropical minerals
+#89db00 L tropical minerals
+#4998e8 tropical minerals
 #4797e7 tropical
 #4395e6 tropical
 #3c91e5 tropical
@@ -8144,14 +8145,14 @@ Climate: tropical
 #5ec800 L tropical
 #9ee400 L tropical
 #78d300 L tropical
-#92df00 L tropical
-#7ed600 L tropical
+#92df00 L tropical metals
+#7ed600 L tropical metals
 #72d100 L tropical
 #a5e700 L tropical
 #68cc00 L tropical
 #5fc800 L tropical
-#328be3 tropical
-#2482e0 tropical
+#328be3 tropical minerals
+#2482e0 tropical metals
 #2a85e1 tropical
 #2f89e2 tropical
 #f1e0a0 L D tropical
@@ -8234,8 +8235,8 @@ Climate: tropical
 #449100 L F tropical
 #3d8300 L F tropical
 #3c8100 L F tropical
-#318ae3 tropical
-#4596e7 tropical
+#318ae3 tropical metals
+#4596e7 tropical metals
 #99e200 L tropical
 #7ed600 L tropical
 #2784e1 tropical
@@ -8248,9 +8249,9 @@ Climate: tropical
 #8adb00 L tropical
 #9ae200 L tropical
 #94e000 L tropical
-#56c400 L tropical
-#68cc00 L tropical
-#8bdc00 L tropical
+#56c400 L tropical metals
+#68cc00 L tropical metals
+#8bdc00 L tropical metals
 #5dc800 L tropical
 #8edd00 L tropical
 #438f00 L F tropical
@@ -8267,10 +8268,10 @@ Climate: tropical
 #4093e6 tropical
 #4797e7 tropical
 #338be3 tropical
-#378ee4 tropical
-#4faa00 L F tropical
-#50ab00 L F tropical
-#2885e1 tropical
+#378ee4 tropical metals
+#4faa00 L F tropical metals
+#50ab00 L F tropical metals
+#2885e1 tropical metals
 #398fe4 tropical
 #3f92e6 tropical
 #4797e7 tropical
@@ -8469,13 +8470,13 @@ Climate: tropical
 #71d100 L tropical
 #73d100 L tropical
 #9ee400 L tropical
-#aeeb00 L tropical
-#92df00 L tropical
+#aeeb00 L tropical metals
+#92df00 L tropical metals
 #6fd000 L tropical
-#3c90e5 tropical
+#3c90e5 tropical minerals
 #3f92e6 tropical
-#378ee4 tropical
-#e1dabf L D tropical
+#378ee4 tropical metals
+#e1dabf L D tropical metals
 #e0dac1 L D tropical
 #e5dcb8 L D tropical
 #e4dbba L D tropical
@@ -8558,8 +8559,8 @@ Climate: tropical
 #4797e7 tropical
 #2b86e1 tropical
 #a8e800 L tropical
-#a8e900 L tropical
-#86da00 L tropical
+#a8e900 L tropical metals
+#86da00 L tropical metals
 #92df00 L tropical
 #2683e0 tropical
 #2884e1 tropical
@@ -8570,11 +8571,11 @@ Climate: tropical
 #5fc900 L tropical
 #b0ec00 L tropical
 #a1e500 L tropical
-#8fdd00 L tropical
-#a2e600 L tropical
-#69cd00 L tropical
-#adeb00 L tropical
-#68cc00 L tropical
+#8fdd00 L tropical metals
+#a2e600 L tropical metals
+#69cd00 L tropical metals
+#adeb00 L tropical metals
+#68cc00 L tropical metals
 #a9e900 L tropical
 #92df00 L tropical
 #b2ed00 L tropical
@@ -8591,10 +8592,10 @@ Climate: tropical
 #398fe4 tropical
 #459300 L F tropical
 #4596e7 tropical
-#76d300 L tropical
-#377600 L F tropical
+#76d300 L tropical minerals
+#377600 L F tropical minerals
 #3f92e6 tropical
-#8fdd00 L tropical
+#8fdd00 L tropical metals
 #aae900 L tropical
 #4898e8 tropical
 #338be3 tropical
@@ -8654,8 +8655,8 @@ Climate: tropical
 #398ee4 tropical
 #e3dbbc L D tropical
 #2885e1 tropical
-#eaddae L D tropical
-#f2e09f L D tropical
+#eaddae L D tropical minerals
+#f2e09f L D tropical minerals
 #f3e09c L D tropical
 #e1dabf L D tropical
 #e1dabf L D tropical
@@ -8774,8 +8775,8 @@ Climate: tropical
 #67cc00 L tropical
 #59c600 L tropical
 #4495e7 tropical
-#71d100 L tropical
-#4a99e8 tropical
+#71d100 L tropical metals
+#4a99e8 tropical metals
 #2885e1 tropical
 #2884e1 tropical
 #2c87e2 tropical
@@ -8796,9 +8797,9 @@ Climate: tropical
 #94e000 L tropical
 #a5e700 L tropical
 #5cc700 L tropical
-#6ecf00 L tropical
+#6ecf00 L tropical minerals
 #94e000 L tropical
-#4596e7 tropical
+#4596e7 tropical metals
 #4294e6 tropical
 #2c87e2 tropical
 #e3dbbb L D tropical
@@ -8914,8 +8915,8 @@ Climate: tropical
 #2a85e1 tropical
 #489b00 L F tropical
 #459300 L F tropical
-#387800 L F tropical
-#418b00 L F tropical
+#387800 L F tropical minerals
+#418b00 L F tropical minerals
 #4fa900 L F tropical
 #2c87e2 tropical
 #80d700 L tropical
@@ -8980,7 +8981,7 @@ Climate: tropical
 #e0dac0 L D tropical
 #e7dcb4 L D tropical
 #eedfa6 L D tropical
-#f0dfa1 L D tropical
+#f0dfa1 L D tropical minerals
 #eedfa6 L D tropical
 #e0dac0 L D tropical
 #e5dcb8 L D tropical
@@ -8991,9 +8992,9 @@ Climate: tropical
 #489900 L F tropical
 #479800 L F tropical
 #489900 L F tropical
-#3a7c00 L F tropical
+#3a7c00 L F tropical minerals
 #408800 L F tropical
-#4a9d00 L F tropical
+#4a9d00 L F tropical minerals
 #2b86e1 tropical
 #328ae3 tropical
 #3d91e5 tropical
@@ -9229,9 +9230,9 @@ Climate: tropical
 #5ac600 L tropical
 #3c8000 L F tropical
 #64cb00 L tropical
-#7ad400 L tropical
-#a3e600 L tropical
-#68cc00 L tropical
+#7ad400 L tropical minerals
+#a3e600 L tropical minerals
+#68cc00 L tropical minerals
 #99e200 L tropical
 #67cc00 L tropical
 #2a86e1 tropical
@@ -9304,7 +9305,7 @@ Climate: tropical
 #e5dcb8 L D tropical
 #f1e09f L D tropical
 #50aa00 L F tropical
-#e4dbba L D tropical
+#e4dbba L D tropical minerals
 #e1dabe L D tropical
 #acea00 L tropical
 #4a9e00 L F tropical
@@ -10288,7 +10289,7 @@ Climate: tropical
 #4093e6 tropical
 #3b90e5 tropical
 #3c91e5 tropical
-#6bce00 L tropical
+#6bce00 L tropical minerals
 #afec00 L tropical
 #76d300 L tropical
 #aae900 L tropical
@@ -10612,8 +10613,8 @@ Climate: tropical
 #368de4 tropical
 #4395e7 tropical
 #4294e6 tropical
-#4294e6 tropical
-#358ce4 tropical
+#4294e6 tropical minerals
+#358ce4 tropical minerals
 #8fdd00 L tropical
 #318ae3 tropical
 #4898e8 tropical
@@ -10937,7 +10938,7 @@ Climate: tropical
 #2b86e2 tropical
 #4999e8 tropical
 #68cd00 L tropical
-#6ecf00 L tropical
+#6ecf00 L tropical minerals
 #61ca00 L tropical
 #4093e6 tropical
 #4a99e8 tropical
@@ -11219,7 +11220,7 @@ Climate: tropical
 #adeb00 L tropical
 #8bdc00 L tropical
 #387700 L F tropical
-#3a7c00 L F tropical
+#3a7c00 L F tropical minerals
 #397900 L F tropical
 #438f00 L F tropical
 #3c8000 L F tropical
@@ -11490,9 +11491,9 @@ Climate: tropical
 #4fa800 L F tropical
 #377400 L F tropical
 #3f8600 L F tropical
-#469600 L F tropical
-#3c8000 L F tropical
-#499c00 L F tropical
+#469600 L F tropical metals
+#3c8000 L F tropical metals
+#499c00 L F tropical metals
 #428d00 L F tropical
 #408800 L F tropical
 #3c8000 L F tropical
@@ -11543,7 +11544,7 @@ Climate: tropical
 #4093e6 tropical
 #2583e0 tropical
 #438f00 L F tropical
-#469400 L F tropical
+#469400 L F tropical minerals
 #3d8100 L F tropical
 #367400 L F tropical
 #3a7b00 L F tropical
@@ -11612,7 +11613,7 @@ Climate: tropical
 #4fa800 L F tropical
 #438f00 L F tropical
 #a2e600 L tropical
-#82d800 L tropical
+#82d800 L tropical metals
 #2985e1 tropical
 #3a8fe5 tropical
 #4395e6 tropical
@@ -11816,7 +11817,7 @@ Climate: tropical
 #449200 L F tropical
 #479800 L F tropical
 #489a00 L F tropical
-#397a00 L F tropical
+#397a00 L F tropical metals
 #469400 L F tropical
 #4ca200 L F tropical
 #489a00 L F tropical
@@ -11831,8 +11832,8 @@ Climate: tropical
 #3c7f00 L F tropical
 #469600 L F tropical
 #4ba000 L F tropical
-#4a9e00 L F tropical
-#449100 L F tropical
+#4a9e00 L F tropical metals
+#449100 L F tropical metals
 #70d000 L tropical
 #99e200 L tropical
 #4ca300 L F tropical
@@ -11866,7 +11867,7 @@ Climate: tropical
 #2c87e2 tropical
 #3f92e6 tropical
 #328ae3 tropical
-#3089e3 tropical
+#3089e3 tropical minerals
 #397900 L F tropical
 #3b7d00 L F tropical
 #479700 L F tropical
@@ -11935,8 +11936,8 @@ Climate: tropical
 #469600 L F tropical
 #3a7c00 L F tropical
 #8edd00 L tropical
-#66cb00 L tropical
-#4194e6 tropical
+#66cb00 L tropical metals
+#4194e6 tropical metals
 #2c87e2 tropical
 #4898e8 tropical
 #4496e7 tropical
@@ -12033,8 +12034,8 @@ Climate: tropical
 #368de4 tropical
 #358ce4 tropical
 #2784e1 tropical
-#4797e7 tropical
-#8cdc00 L tropical
+#4797e7 tropical minerals
+#8cdc00 L tropical minerals
 #b2ed00 L tropical
 #69cd00 L tropical
 #2f88e2 tropical
@@ -12155,7 +12156,7 @@ Climate: tropical
 #459400 L F tropical
 #449200 L F tropical
 #69cd00 L tropical
-#3d8200 L F tropical
+#3d8200 L F tropical metals
 #438f00 L F tropical
 #449100 L F tropical
 #92df00 L tropical
@@ -12258,8 +12259,8 @@ Climate: tropical
 #2683e0 tropical
 #4998e8 tropical
 #358ce4 tropical
-#8cdc00 L tropical
-#68cc00 L tropical
+#8cdc00 L tropical metals
+#68cc00 L tropical metals
 #4495e7 tropical
 #4193e6 tropical
 #4797e7 tropical
@@ -12430,7 +12431,7 @@ Climate: tropical
 #2a85e1 tropical
 #3a8fe5 tropical
 #4a99e8 tropical
-#418a00 L F tropical
+#418a00 L F tropical minerals
 #428d00 L F tropical
 #f4e19b L D tropical
 #e9ddaf L D tropical
@@ -12463,13 +12464,13 @@ Climate: tropical
 #90de00 L tropical
 #4ca100 L F tropical
 #67cc00 L tropical
-#408800 L F tropical
+#408800 L F tropical minerals
 #4fa900 L F tropical
 #3a7c00 L F tropical
 #4da500 L F tropical
 #4ea700 L F tropical
-#397a00 L F tropical
-#449100 L F tropical
+#397a00 L F tropical minerals
+#449100 L F tropical minerals
 #4ba000 L F tropical
 #408800 L F tropical
 #3e8400 L F tropical
@@ -12705,7 +12706,7 @@ Climate: tropical
 #358ce4 tropical
 #4ca300 L F tropical
 #418c00 L F tropical
-#449000 L F tropical
+#449000 L F tropical metals
 #4a9d00 L F tropical
 #2d88e2 tropical
 #358de4 tropical
@@ -12787,7 +12788,7 @@ Climate: tropical
 #328be3 tropical
 #99e200 L tropical
 #8cdc00 L tropical
-#59c600 L tropical
+#59c600 L tropical minerals
 #3a8fe5 tropical
 #4fa900 L F tropical
 #408800 L F tropical
@@ -12837,7 +12838,7 @@ Climate: tropical
 #3089e3 tropical
 #3a8fe5 tropical
 #2a86e1 tropical
-#348ce3 tropical
+#348ce3 tropical uranium
 #308ae3 tropical
 #4596e7 tropical
 #378de4 tropical
@@ -13029,7 +13030,7 @@ Climate: tropical
 #3d8200 L F tropical
 #3c8100 L F tropical
 #377500 L F tropical
-#3d8300 L F tropical
+#3d8300 L F tropical metals
 #3d8200 L F tropical
 #3b7d00 L F tropical
 #387800 L F tropical
@@ -13076,8 +13077,8 @@ Climate: tropical
 #4395e7 tropical
 #3e8500 L F tropical
 #4ba000 L F tropical
-#469700 L F tropical
-#459400 L F tropical
+#469700 L F tropical minerals
+#459400 L F tropical minerals
 #3d8300 L F tropical
 #418a00 L F tropical
 #449200 L F tropical
@@ -13119,7 +13120,7 @@ Climate: sub-tropical
 #3c90e5 tropical
 #4193e6 tropical
 #4797e7 tropical
-#3e91e5 temperate
+#3e91e5 temperate minerals
 #80d700 L tropical
 #3f93e6 tropical
 #8adb00 L tropical
@@ -13607,8 +13608,8 @@ Climate: sub-tropical
 #0b7400 L F temperate
 #10a000 L F temperate
 #418c00 L F tropical
-#418a00 L F tropical
-#387800 L F tropical
+#418a00 L F tropical uranium
+#387800 L F tropical uranium
 #4a99e8 temperate
 #2683e0 tropical
 #2784e1 tropical
@@ -13668,9 +13669,9 @@ Climate: sub-tropical
 #2482e0 tropical
 #3e8300 L F tropical
 #4da400 L F tropical
-#81d700 L tropical
-#0c7d00 L F temperate
-#0a6b00 L F temperate
+#81d700 L tropical metals
+#0c7d00 L F temperate metals
+#0a6b00 L F temperate metals
 #10a600 L F temperate
 #0e9300 L F temperate
 #4ba100 L F tropical
@@ -13932,7 +13933,7 @@ Climate: sub-tropical
 #0b7500 L F temperate
 #0b6f00 L F temperate
 #11a600 L F temperate
-#0a6d00 L F temperate
+#0a6d00 L F temperate uranium
 #2482e0 temperate
 #348be3 temperate
 #00b600 L temperate
@@ -13992,7 +13993,7 @@ Climate: sub-tropical
 #00ac00 L temperate
 #2c87e2 temperate
 #00ca00 L temperate
-#0f9500 L F temperate
+#0f9500 L F temperate metals
 #377500 L F tropical
 #3c8100 L F tropical
 #459300 L F tropical
@@ -14047,11 +14048,11 @@ Climate: sub-tropical
 #3e92e5 temperate
 #00d400 L temperate
 #4696e7 temperate
-#00aa00 L temperate
-#348be3 temperate
+#00aa00 L temperate minerals
+#348be3 temperate minerals
 #00bc00 L temperate
 #00cb00 L temperate
-#00a600 L temperate
+#00a600 L temperate minerals
 #00ce00 L temperate
 #2583e0 temperate
 #408800 L F tropical
@@ -14338,10 +14339,10 @@ Climate: sub-tropical
 #377500 L F tropical
 #e8ddb2 L D tropical
 #469500 L F tropical
-#50aa00 L F tropical
-#0b7400 L F temperate
-#4da400 L F tropical
-#398fe4 tropical
+#50aa00 L F tropical minerals
+#0b7400 L F temperate minerals
+#4da400 L F tropical minerals
+#398fe4 tropical minerals
 #348be3 tropical
 #3f92e6 tropical
 #4093e6 temperate
@@ -14374,8 +14375,8 @@ Climate: sub-tropical
 #00a500 L temperate
 #00ae00 L temperate
 #00aa00 L temperate
-#378ee4 temperate
-#2b86e1 temperate
+#378ee4 temperate minerals
+#2b86e1 temperate minerals
 #00e000 L temperate
 #4395e7 temperate
 #00c200 L temperate
@@ -14427,7 +14428,7 @@ Climate: sub-tropical
 #4da500 L F tropical
 #9ee400 L tropical
 #acea00 L tropical
-#61ca00 L tropical
+#61ca00 L tropical minerals
 #00d700 L temperate
 #3b90e5 temperate
 #3e92e5 temperate
@@ -14523,7 +14524,7 @@ Climate: sub-tropical
 #3f8600 L F tropical
 #3b90e5 tropical
 #479700 L F tropical
-#408900 L F tropical
+#408900 L F tropical minerals
 #0f9800 L F temperate
 #0d8400 L F temperate
 #0d8400 L F temperate
@@ -14752,7 +14753,7 @@ Climate: sub-tropical
 #a3e600 L tropical
 #57c500 L tropical
 #5bc700 L tropical
-#56c400 L tropical
+#56c400 L tropical minerals
 #2d88e2 temperate
 #378ee4 temperate
 #2683e1 temperate
@@ -14806,7 +14807,7 @@ Climate: sub-tropical
 #2e88e2 tropical
 #2985e1 tropical
 #2884e1 tropical
-#e3d2bc L D temperate
+#e3d2bc L D temperate minerals
 #e4d2ba L D temperate
 #3d91e5 temperate
 #4294e6 tropical
@@ -14847,8 +14848,8 @@ Climate: sub-tropical
 #10a000 L F temperate
 #348ce3 tropical
 #377500 L F tropical
-#3a7c00 L F tropical
-#397900 L F tropical
+#3a7c00 L F tropical minerals
+#397900 L F tropical minerals
 #11aa00 L F temperate
 #0c8000 L F temperate
 #0f9a00 L F temperate
@@ -14961,8 +14962,8 @@ Climate: sub-tropical
 #0c7a00 L F temperate
 #00b700 L temperate
 #00a000 L temperate
-#00d200 L temperate
-#90de00 L tropical
+#00d200 L temperate minerals
+#90de00 L tropical minerals
 #4ba000 L F tropical
 #428d00 L F tropical
 #397900 L F tropical
@@ -14978,7 +14979,7 @@ Climate: sub-tropical
 #4fa900 L F tropical
 #377400 L F tropical
 #f2e09d L D tropical
-#e2d3be L D temperate
+#e2d3be L D temperate metals
 #f1cfa2 L D temperate
 #e2d3bd L D temperate
 #e5d2b8 L D temperate
@@ -14988,7 +14989,7 @@ Climate: sub-tropical
 #e3dbbb L D tropical
 #e7d1b3 L D temperate
 #0e8a00 L F temperate
-#0b7000 L F temperate
+#0b7000 L F temperate minerals
 #4495e7 tropical
 #378de4 tropical
 #378de4 tropical
@@ -15077,7 +15078,7 @@ Climate: sub-tropical
 #00cf00 L temperate
 #00c000 L temperate
 #00b700 L temperate
-#00c200 L temperate
+#00c200 L temperate minerals
 #00db00 L temperate
 #00aa00 L temperate
 #388ee4 temperate
@@ -15131,7 +15132,7 @@ Climate: sub-tropical
 #4999e8 temperate
 #3b90e5 tropical
 #e7dcb3 L D tropical
-#2985e1 tropical
+#2985e1 tropical minerals
 #2683e0 tropical
 #2d88e2 temperate
 #ecdeaa L D tropical
@@ -15172,7 +15173,7 @@ Climate: sub-tropical
 #4495e7 temperate
 #408800 L F tropical
 #4ea700 L F tropical
-#469600 L F tropical
+#469600 L F tropical minerals
 #3e8500 L F tropical
 #3d8200 L F tropical
 #489b00 L F tropical
@@ -15301,8 +15302,8 @@ Climate: sub-tropical
 #3f8500 L F tropical
 #3c8000 L F tropical
 #489900 L F tropical
-#489a00 L F tropical
-#e7dcb4 L D tropical
+#489a00 L F tropical metals
+#e7dcb4 L D tropical metals
 #e8ddb1 L D tropical
 #e4dbba L D tropical
 #00c400 L temperate
@@ -15312,7 +15313,7 @@ Climate: sub-tropical
 #11a700 L F temperate
 #3a7c00 L F tropical
 #418b00 L F tropical
-#4a9d00 L F tropical
+#4a9d00 L F tropical minerals
 #398fe4 temperate
 #368de4 temperate
 #3a8fe5 temperate
@@ -15351,13 +15352,13 @@ Climate: sub-tropical
 #009f00 L temperate
 #479700 L F tropical
 #428d00 L F tropical
-#75d200 L tropical
+#75d200 L tropical metals
 #398fe4 tropical
 #82d800 L tropical
 #3d91e5 temperate
 #3e91e5 temperate
 #2a86e1 temperate
-#3b90e5 tropical
+#3b90e5 tropical minerals
 #4fa900 L F tropical
 #3d8200 L F tropical
 #397900 L F tropical
@@ -15401,7 +15402,7 @@ Climate: sub-tropical
 #68cc00 L tropical
 #00a200 L temperate
 #00a800 L temperate
-#009e00 L temperate
+#009e00 L temperate minerals
 #2e88e2 temperate
 #2f89e2 temperate
 #398fe4 tropical
@@ -15497,7 +15498,7 @@ Climate: sub-tropical
 #0e8a00 L F temperate
 #489a00 L F tropical
 #418a00 L F tropical
-#4ea700 L F tropical
+#4ea700 L F tropical uranium
 #4ea700 L F tropical
 #418c00 L F tropical
 #479700 L F tropical
@@ -15625,7 +15626,7 @@ Climate: sub-tropical
 #0e9000 L F temperate
 #438f00 L F tropical
 #469600 L F tropical
-#377500 L F tropical
+#377500 L F tropical metals
 #377600 L F tropical
 #79d400 L tropical
 #00c300 L temperate
@@ -15674,22 +15675,22 @@ Climate: sub-tropical
 #00cc00 L temperate
 #449100 L F tropical
 #377500 L F tropical
-#469500 L F tropical
-#398fe4 tropical
+#469500 L F tropical metals
+#398fe4 tropical metals
 #348ce3 tropical
 #2985e1 tropical
 #2f89e2 tropical
 #2683e0 temperate
 #4fa900 L F tropical
-#459300 L F tropical
-#377500 L F tropical
+#459300 L F tropical minerals
+#377500 L F tropical minerals
 #449100 L F tropical
 #0f9b00 L F temperate
 #0e8c00 L F temperate
 #109f00 L F temperate
-#489a00 L F tropical
-#87da00 L tropical
-#397900 L F tropical
+#489a00 L F tropical metals
+#87da00 L tropical metals
+#397900 L F tropical metals
 #a2e600 L tropical
 #2d88e2 tropical
 #2c87e2 tropical
@@ -15699,7 +15700,7 @@ Climate: sub-tropical
 
 Climate: sub-tropical
 
-#4395e7 tropical
+#4395e7 tropical minerals
 #7dd600 L tropical
 #58c500 L tropical
 #0f9b00 L F temperate
@@ -15796,9 +15797,9 @@ Climate: sub-tropical
 #4ca200 L F tropical
 #3a7c00 L F tropical
 #418a00 L F tropical
-#7dd500 L tropical
-#61ca00 L tropical
-#00af00 L temperate
+#7dd500 L tropical metals
+#61ca00 L tropical metals
+#00af00 L temperate metals
 #00dd00 L temperate
 #10a000 L F temperate
 #7ad400 L tropical
@@ -15921,9 +15922,9 @@ Climate: sub-tropical
 #eaddad L D tropical
 #e1d3bf L D temperate
 #00a900 L temperate
-#f2cfa0 L D temperate
-#f4ce9c L D temperate
-#00d700 L temperate
+#f2cfa0 L D temperate uranium
+#f4ce9c L D temperate uranium
+#00d700 L temperate uranium
 #00d400 L temperate
 #00c700 L temperate
 #00c100 L temperate
@@ -15992,8 +15993,8 @@ Climate: sub-tropical
 #377500 L F tropical
 #4b9f00 L F tropical
 #367300 L F tropical
-#469600 L F tropical
-#4a9e00 L F tropical
+#469600 L F tropical metals
+#4a9e00 L F tropical metals
 #0f9600 L F temperate
 #2482e0 temperate
 #4697e7 temperate
@@ -16001,7 +16002,7 @@ Climate: sub-tropical
 #397a00 L F tropical
 #418b00 L F tropical
 #4a9e00 L F tropical
-#377500 L F tropical
+#377500 L F tropical minerals
 #489b00 L F tropical
 #0e9000 L F temperate
 #109d00 L F temperate
@@ -16013,7 +16014,7 @@ Climate: sub-tropical
 #4697e7 tropical
 #2985e1 tropical
 #4a99e8 tropical
-#4797e7 tropical
+#4797e7 tropical minerals
 
 ## Ring 65
 
@@ -16024,13 +16025,13 @@ Climate: sub-tropical
 #109f00 L F temperate
 #0e8f00 L F temperate
 #0d8300 L F temperate
-#0b7200 L F temperate
+#0b7200 L F temperate metals
 #10a100 L F temperate
 #0e9100 L F temperate
 #10a300 L F temperate
 #0f9500 L F temperate
-#009f00 L temperate
-#00c500 L temperate
+#009f00 L temperate minerals
+#00c500 L temperate minerals
 #0e8e00 L F temperate
 #e5d2b8 L D temperate
 #e4d2ba L D temperate
@@ -16104,18 +16105,18 @@ Climate: sub-tropical
 #3c7f00 L F tropical
 #367300 L F tropical
 #7ad400 L tropical
-#0b6f00 L F temperate
-#0b7200 L F temperate
+#0b6f00 L F temperate minerals
+#0b7200 L F temperate minerals
 #0a6c00 L F temperate
 #109e00 L F temperate
 #4a9f00 L F tropical
 #3e8400 L F tropical
 #3f8700 L F tropical
-#3f8600 L F tropical
-#449100 L F tropical
+#3f8600 L F tropical minerals
+#449100 L F tropical minerals
 #449200 L F tropical
 #aae900 L tropical
-#5dc700 L tropical
+#5dc700 L tropical minerals
 #00bc00 L temperate
 #80d700 L tropical
 #7ed600 L tropical
@@ -16230,13 +16231,13 @@ Climate: sub-tropical
 #83d800 L tropical
 #f4e199 L D tropical
 #f2e09d L D tropical
-#f3e09c L D tropical
-#00d900 L temperate
+#f3e09c L D tropical uranium
+#00d900 L temperate uranium
 #ebd0ac L D temperate
 #00a500 L temperate
 #e4d2ba L D temperate
 #00b800 L temperate
-#00d700 L temperate
+#00d700 L temperate uranium
 #3a90e5 temperate
 #00c200 L temperate
 #2582e0 temperate
@@ -16246,10 +16247,10 @@ Climate: sub-tropical
 #4faa00 L F tropical
 #377500 L F tropical
 #4da400 L F tropical
-#397a00 L F tropical
-#0f9600 L F temperate
-#0b6f00 L F temperate
-#0d8900 L F temperate
+#397a00 L F tropical minerals
+#0f9600 L F temperate minerals
+#0b6f00 L F temperate minerals
+#0d8900 L F temperate minerals
 #0c7800 L F temperate
 #418a00 L F tropical
 #408800 L F tropical
@@ -16302,8 +16303,8 @@ Climate: sub-tropical
 #4294e6 tropical
 #397900 L F tropical
 #438e00 L F tropical
-#3f8500 L F tropical
-#449200 L F tropical
+#3f8500 L F tropical metals
+#449200 L F tropical metals
 #0c7e00 L F temperate
 #0d8400 L F temperate
 #0f9600 L F temperate
@@ -16332,8 +16333,8 @@ Climate: temperate
 #0e8c00 L F temperate
 #0f9400 L F temperate
 #0a6b00 L F temperate
-#10a400 L F temperate
-#10a200 L F temperate
+#10a400 L F temperate metals
+#10a200 L F temperate metals
 #11a600 L F temperate
 #0f9700 L F temperate
 #0c7e00 L F temperate
@@ -16639,7 +16640,7 @@ Climate: temperate
 #00dd00 L temperate
 #00c100 L temperate
 #00d700 L temperate
-#00d500 L temperate
+#00d500 L temperate minerals
 #00b400 L temperate
 #00ca00 L temperate
 #00aa00 L temperate
@@ -16943,12 +16944,12 @@ Climate: temperate
 #00ae00 L temperate
 #0a6a00 L F temperate
 #00cd00 L temperate
-#0b7300 L F temperate
-#00bf00 L temperate
+#0b7300 L F temperate minerals
+#00bf00 L temperate minerals
 #00d700 L temperate
 #0e8f00 L F temperate
-#00c100 L temperate
-#00d100 L temperate
+#00c100 L temperate minerals
+#00d100 L temperate minerals
 #2a86e1 temperate
 #3c91e5 temperate
 #348ce3 temperate
@@ -16990,8 +16991,8 @@ Climate: temperate
 #00bd00 L temperate
 #00de00 L temperate
 #00d200 L temperate
-#2784e1 temperate
-#2885e1 temperate
+#2784e1 temperate metals
+#2885e1 temperate metals
 #0e8c00 L F temperate
 #0f9400 L F temperate
 #0f9700 L F temperate
@@ -17174,8 +17175,8 @@ Climate: temperate
 #0d8100 L F temperate
 #0b7100 L F temperate
 #109e00 L F temperate
-#0a6a00 L F temperate
-#109e00 L F temperate
+#0a6a00 L F temperate uranium
+#109e00 L F temperate uranium
 #0d8100 L F temperate
 #0e8f00 L F temperate
 #0f9800 L F temperate
@@ -17199,9 +17200,9 @@ Climate: temperate
 
 Climate: temperate
 
-#00b200 L temperate
-#0f9c00 L F temperate
-#10a400 L F temperate
+#00b200 L temperate minerals
+#0f9c00 L F temperate minerals
+#10a400 L F temperate minerals
 #0b7100 L F temperate
 #00bf00 L temperate
 #00a700 L temperate
@@ -17268,8 +17269,8 @@ Climate: temperate
 #00c100 L temperate
 #00b100 L temperate
 #2a85e1 temperate
-#00cf00 L temperate
-#2d88e2 temperate
+#00cf00 L temperate metals
+#2d88e2 temperate metals
 #0e9000 L F temperate
 #00a000 L temperate
 #00c900 L temperate
@@ -17445,8 +17446,8 @@ Climate: temperate
 #0f9900 L F temperate
 #109f00 L F temperate
 #0c7b00 L F temperate
-#0c7a00 L F temperate
-#0b6f00 L F temperate
+#0c7a00 L F temperate uranium
+#0b6f00 L F temperate uranium
 #0f9500 L F temperate
 #00c100 L temperate
 #00dc00 L temperate
@@ -18910,7 +18911,7 @@ Climate: sub-polar
 #00905a L F polar
 #00745e L F polar
 #007e5d L F polar
-#0d8800 L F temperate
+#0d8800 L F temperate metals
 #00745e L F polar
 #009559 L F polar
 #007b5d L F polar
@@ -19109,8 +19110,8 @@ Climate: sub-polar
 #007b5d L F polar
 #00745e L F polar
 #109f00 L F temperate
-#10a000 L F temperate
-#11a700 L F temperate
+#10a000 L F temperate metals
+#11a700 L F temperate metals
 #00915a L F polar
 #00925a L F polar
 #00855c L F polar
@@ -19135,7 +19136,7 @@ Climate: sub-polar
 #2583e0 polar
 #2f89e2 polar
 #378de4 polar
-#4093e6 polar
+#4093e6 polar minerals
 #00915a L F polar
 #11a600 L F temperate
 #00cf00 L temperate
@@ -19472,7 +19473,7 @@ Climate: sub-polar
 #398fe5 polar
 #65ffbf L polar
 #0fff9b L polar
-#65ffbf L polar
+#65ffbf L polar uranium
 #008f5a L F polar
 #11aa00 L F temperate
 #00d200 L temperate
@@ -19640,8 +19641,8 @@ Climate: sub-polar
 #4998e8 polar
 #00a800 L temperate
 #0c8000 L F temperate
-#0d8800 L F temperate
-#00af00 L temperate
+#0d8800 L F temperate uranium
+#00af00 L temperate uranium
 #0b7600 L F temperate
 #00c100 L temperate
 #00a100 L temperate
@@ -20463,12 +20464,12 @@ Climate: polar
 #3f92e6 polar
 #9efcff L polar
 #a2fcff L polar
-#d7feff L polar
-#a0fcff L polar
+#d7feff L polar minerals
+#a0fcff L polar minerals
 #d4feff L polar
 #e5feff L polar
-#a0fcff L polar
-#a5fcff L polar
+#a0fcff L polar minerals
+#a5fcff L polar minerals
 #f2ffff L polar
 #eafeff L polar
 #b6fdff L polar
@@ -20563,7 +20564,7 @@ Climate: polar
 #eafeff L polar
 #f8ffff L polar
 #b7fdff L polar
-#ecfeff L polar
+#ecfeff L polar minerals
 #fbffff L polar
 #f8ffff L polar
 #a5fcff L polar

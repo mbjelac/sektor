@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { PlanetRegion } from "./parsePlanet";
 import { regionCover, regionLabels } from "./regionLabels";
 
-const land: PlanetRegion = { color: "#00c000", climate: "temperate", biome: "temperate", isLand: true, isForest: false, isDesert: false };
+const land: PlanetRegion = { color: "#00c000", climate: "temperate", biome: "temperate", isLand: true, isForest: false, isDesert: false, richOre: null };
 
 describe("regionLabels", () => {
   it("tells the biome type and what covers the triangle by its biome", () => {
@@ -16,14 +16,14 @@ describe("regionLabels", () => {
       subPolarForest: regionLabels({ ...land, climate: "sub-polar", isForest: true }),
       grassland: regionLabels(land),
       forest: regionLabels({ ...land, isForest: true }),
-      temperateDesert: regionLabels({ ...land, isDesert: true }),
+      temperateDesert: regionLabels({ ...land, isDesert: true, richOre: null }),
       subTropicalGrassland: regionLabels({ ...land, climate: "sub-tropical" }),
       subTropicalSavanna: regionLabels({ ...land, climate: "sub-tropical", biome: "tropical" }),
       subTropicalJungle: regionLabels({ ...land, climate: "sub-tropical", biome: "tropical", isForest: true }),
-      subTropicalDesert: regionLabels({ ...land, climate: "sub-tropical", biome: "tropical", isDesert: true }),
+      subTropicalDesert: regionLabels({ ...land, climate: "sub-tropical", biome: "tropical", isDesert: true, richOre: null }),
       tropicalSavanna: regionLabels({ ...land, climate: "tropical", biome: "tropical" }),
       tropicalJungle: regionLabels({ ...land, climate: "tropical", biome: "tropical", isForest: true }),
-      tropicalDesert: regionLabels({ ...land, climate: "tropical", biome: "tropical", isDesert: true }),
+      tropicalDesert: regionLabels({ ...land, climate: "tropical", biome: "tropical", isDesert: true, richOre: null }),
       tropicalMarine: regionLabels({ ...land, climate: "tropical", biome: "tropical", isLand: false }),
     }).toEqual({
       polarLand: ["❄️ Polar"],
@@ -53,7 +53,7 @@ describe("regionLabels", () => {
       marine: regionCover({ ...land, isLand: false }),
       tundra: regionCover({ ...land, climate: "sub-polar", biome: "polar" }),
       forest: regionCover({ ...land, isForest: true }),
-      desert: regionCover({ ...land, isDesert: true }),
+      desert: regionCover({ ...land, isDesert: true, richOre: null }),
       savanna: regionCover({ ...land, climate: "tropical", biome: "tropical" }),
     }).toEqual({
       polarLand: "❄️ Polar",
