@@ -27,7 +27,7 @@ For example, metal ore seams span 3-4 connected areas (regardless of climate zon
 - [done] when generating, generate first metals, then minerals, then uranium
     - if area already marked, replace old mark with new one
         - minerals replace metals, uranium replaces both minerals & metals
-- player can see ore density on globe
+- [done] player can see ore density on globe
     - in list view, show on globe which area has which high ore density
         - display this as a filled circle in the color of the location property (metals, uranium, minerals)
         - display circle in center of area triangle, diameter 2 pixels smaller then width of sektor square mark
@@ -35,7 +35,12 @@ For example, metal ore seams span 3-4 connected areas (regardless of climate zon
             - after biome, with same spacing as between climate zone & biome
             - display: "<swatch> <ore name>"
 
-#2 Area reich in ore type has abundance of that ore in it's locations
+#2 A portion of sektors are on ore-rich areas
+- when generating a new sektor, there is a 1 in 4 chance it is on an ore-rich area
+- if sektor is on an ore-rich area, pick a location for a sektor as always, but filter only ore-rich areas for picking
+- if sektor is not on an ore-rich area, pick a location for a sektor as always, but filter only ore-poor areas for picking
+
+#3 Area rich in ore type has abundance of that ore in it's locations
 - use existing algorithms for generating sektor location property matrices
 - if area is not marked as rich with that ore
     - maximum amount of that ore in sektor is 2
