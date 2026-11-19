@@ -497,7 +497,7 @@ test("tells in the list how far the player's sektors have got with every criteri
 });
 
 // Under every criterion of a mandate opened in full stands what the player's sektors move of its
-// resource now, and which way it goes, unless they move none of it.
+// resource now, below nothing where they move it the other way to the one the criterion asks for.
 test("tells under every criterion of a mandate opened in full what the player's sektors move now", async ({ page }) => {
   await storeSektorMovingOreAndEnergy(page);
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
@@ -516,8 +516,7 @@ test("tells under every criterion of a mandate opened in full what the player's 
 
   await page.locator("#mandate-panel .mandate-item").click();
 
-  expect(await page.locator("#mandate-details-dialog .mandate-description-current").allTextContents())
-    .toEqual(["Currently exporting 6", "Currently importing 4", "Currently 0"]);
+  expect(await readCurrentLines(page)).toEqual(["Current 6", "Current -4", "Current 0"]);
 });
 
 // Alpha, the player's sektor, started with 12 EcosystemSupport and has lost all of it, its forests
@@ -542,7 +541,7 @@ test("tells a deforestation criterion in the list in short, by a burning forest 
     tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
-  }))).toEqual({ picture: "🌳🔥", tooltip: "Deforestation", amount: "≤15", current: "(12)" });
+  }))).toEqual({ picture: "🌳🔥", tooltip: "Deforestation", amount: "≤ 15", current: "(12)" });
 });
 
 test("tells a deforestation criterion in full, and how deforested the player's sektors are now", async ({ page }) => {
@@ -552,8 +551,8 @@ test("tells a deforestation criterion in full, and how deforested the player's s
 
   expect({
     line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
-    current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
-  }).toEqual({ line: "Deforestation at most 15", current: "Currently 12" });
+    current: (await readCurrentLines(page))[0],
+  }).toEqual({ line: "Deforestation at most 15", current: "Current 12" });
 });
 
 // Alpha, the player's sektor, has a forest standing on ground fouled 40.
@@ -580,7 +579,7 @@ test("tells a pollution criterion in the list in short, by a factory named Pollu
     tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
-  }))).toEqual({ picture: "🏭", tooltip: "Pollution", amount: "≤60", current: "(40)" });
+  }))).toEqual({ picture: "🏭", tooltip: "Pollution", amount: "≤ 60", current: "(40)" });
 });
 
 test("tells a pollution criterion in full, and how polluted the player's sektors are now", async ({ page }) => {
@@ -590,8 +589,8 @@ test("tells a pollution criterion in full, and how polluted the player's sektors
 
   expect({
     line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
-    current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
-  }).toEqual({ line: "Pollution at most 60", current: "Currently 40" });
+    current: (await readCurrentLines(page))[0],
+  }).toEqual({ line: "Pollution at most 60", current: "Current 40" });
 });
 
 // Alpha, the player's sektor, has two habitats, housing 80 people.
@@ -623,8 +622,8 @@ test("tells a population criterion in the list in short, by a baby named Populat
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
   })))).toEqual([
-    { picture: "👶🏽", tooltip: "Population", amount: "≥120", current: "(80)" },
-    { picture: "👶🏽", tooltip: "Population", amount: "≤40", current: "(80)" },
+    { picture: "👶🏽", tooltip: "Population", amount: "≥ 120", current: "(80)" },
+    { picture: "👶🏽", tooltip: "Population", amount: "≤ 40", current: "(80)" },
   ]);
 });
 
@@ -636,14 +635,14 @@ test("tells a population criterion in full, and how many people the player's sek
     await page.locator(`#mandate-panel .mandate-item[data-mandate-number="${mandateNumber}"]`).click();
     details.push({
       line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
-      current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
+      current: (await readCurrentLines(page))[0],
     });
     await page.locator("#mandate-details-dialog #mandate-close-button").click();
   }
 
   expect(details).toEqual([
-    { line: "Population at least 120", current: "Currently 80" },
-    { line: "Population at most 40", current: "Currently 80" },
+    { line: "Population at least 120", current: "Current 80" },
+    { line: "Population at most 40", current: "Current 80" },
   ]);
 });
 
@@ -676,7 +675,7 @@ test("tells a hapiness criterion in the list in short, by a smiling face named H
     tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
-  }))).toEqual({ picture: "☺️", tooltip: "Hapiness", amount: "≥8", current: "(5)" });
+  }))).toEqual({ picture: "☺️", tooltip: "Hapiness", amount: "≥ 8", current: "(5)" });
 });
 
 test("tells a hapiness criterion in full, and how much Hapiness the player's sektors make now", async ({ page }) => {
@@ -686,8 +685,8 @@ test("tells a hapiness criterion in full, and how much Hapiness the player's sek
 
   expect({
     line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
-    current: await page.locator("#mandate-details-dialog .mandate-description-current").textContent(),
-  }).toEqual({ line: "Hapiness at least 8", current: "Currently 5" });
+    current: (await readCurrentLines(page))[0],
+  }).toEqual({ line: "Hapiness at least 8", current: "Current 5" });
 });
 
 // One mandate of every category, nobody's yet.
@@ -711,4 +710,179 @@ test("puts every mandate of the list on the colour of its category, in black", a
     { background: "rgb(206, 247, 205)", text: "rgb(0, 0, 0)" },
     { background: "rgb(255, 219, 244)", text: "rgb(0, 0, 0)" },
   ]);
+});
+
+// Alpha, lying on the planet, sends out 6 Ore and brings in 4 Energy; the mandate asks for both
+// exported, so Alpha counts towards the Ore and against the Energy.
+test("lists under every criterion of a mandate opened in full the sektors making it up, by name and biome", async ({ page }) => {
+  await storeSektorMovingOreAndEnergy(page);
+  await page.evaluate(currentPlayer => {
+    localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: currentPlayer, location: { ring: 40, index: 10 } }]));
+    localStorage.setItem("mandates", JSON.stringify([
+      {
+        number: 1,
+        owner: currentPlayer,
+        criteria: [
+          { type: "minimumExport", resourceName: "Ore", amount: 10 },
+          { type: "minimumExport", resourceName: "Energy", amount: 5 },
+          { type: "maximumImport", resourceName: "Water", amount: 5 },
+        ],
+      },
+    ]));
+  }, CURRENT_PLAYER);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-details-dialog .mandate-criterion-sektors").evaluateAll(sektorLists =>
+    sektorLists.map(sektorList => [...sektorList.querySelectorAll(".mandate-criterion-sektor")].map(row => ({
+      name: row.querySelector(".mandate-criterion-sektor-name")!.firstChild!.textContent,
+      hasBiome: (row.querySelector(".sektor-biome")?.getAttribute("title") ?? "") !== "",
+      amount: row.querySelector(".mandate-criterion-sektor-amount")!.textContent,
+    })))))
+    .toEqual([
+      [{ name: "Alpha", hasBiome: true, amount: "+6" }],
+      [{ name: "Alpha", hasBiome: true, amount: "-4" }],
+    ]);
+});
+
+test("lists under a deforestation criterion opened in full the sektors deforested, by how much", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-details-dialog .mandate-criterion-sektor").evaluateAll(rows => rows.map(row => ({
+    name: row.querySelector(".mandate-criterion-sektor-name")!.textContent,
+    amount: row.querySelector(".mandate-criterion-sektor-amount")!.textContent,
+  })))).toEqual([{ name: "Alpha", amount: "12" }]);
+});
+
+// The label and the amount of every line telling what the player's sektors come to now, in the mandate
+// opened in full.
+function readCurrentLines(page: Page): Promise<string[]> {
+  return page.locator("#mandate-details-dialog .mandate-description-current").evaluateAll(currentLines =>
+    currentLines.map(currentLine => [
+      currentLine.querySelector(".mandate-description-current-label")!.textContent,
+      currentLine.querySelector(".mandate-description-current-value")!.textContent,
+    ].join(" ")));
+}
+
+test("sets the label of what the player's sektors come to now on the left and its amount in bold on the right", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-details-dialog .mandate-description-current").evaluate(currentLine => {
+    const lineBox = currentLine.getBoundingClientRect();
+    const labelBox = currentLine.querySelector(".mandate-description-current-label")!.getBoundingClientRect();
+    const value = currentLine.querySelector(".mandate-description-current-value")!;
+    return {
+      labelOnLeft: labelBox.left === lineBox.left + parseFloat(getComputedStyle(currentLine).paddingLeft),
+      valueOnRight: value.getBoundingClientRect().right === lineBox.right - parseFloat(getComputedStyle(currentLine).paddingRight),
+      valueWeight: getComputedStyle(value).fontWeight,
+    };
+  })).toEqual({ labelOnLeft: true, valueOnRight: true, valueWeight: "700" });
+});
+
+test("lines up the sektors making up a criterion under what the player's sektors come to now", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-details-dialog").evaluate(dialog => {
+    const labelBox = dialog.querySelector(".mandate-description-current-label")!.getBoundingClientRect();
+    const valueBox = dialog.querySelector(".mandate-description-current-value")!.getBoundingClientRect();
+    const sektorNameBox = dialog.querySelector(".mandate-criterion-sektor-name")!.getBoundingClientRect();
+    const sektorAmountBox = dialog.querySelector(".mandate-criterion-sektor-amount")!.getBoundingClientRect();
+    return { leftEdgesMeet: sektorNameBox.left === labelBox.left, rightEdgesMeet: sektorAmountBox.right === valueBox.right };
+  })).toEqual({ leftEdgesMeet: true, rightEdgesMeet: true });
+});
+
+test("lights up a sektor making up a criterion under the pointer", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  await page.locator("#mandate-details-dialog .mandate-criterion-sektor").hover();
+
+  expect(await page.locator("#mandate-details-dialog .mandate-criterion-sektor").evaluate(row => getComputedStyle(row).backgroundColor))
+    .toEqual("rgb(68, 68, 68)");
+});
+
+test("opens a sektor making up a criterion on its map when it is clicked", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  await page.locator('#mandate-details-dialog .mandate-criterion-sektor[data-sektor-id="Alpha"]').click();
+  await page.waitForURL(/sektor\.html\?id=Alpha$/);
+
+  expect(new URL(page.url()).search).toEqual("?id=Alpha");
+});
+
+// A mandate still to be claimed tells which of the player's sektors make up what they come to of it
+// as well, lined up under it.
+test("lists the sektors making up a criterion of a mandate still to be claimed", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, criteria: [{ type: "maximumDeforestation", amount: 15 }] },
+  ])));
+  await page.goto("/?test=true");
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-dialog").evaluate(dialog => {
+    const labelBox = dialog.querySelector(".mandate-description-current-label")!.getBoundingClientRect();
+    const sektorNameBox = dialog.querySelector(".mandate-criterion-sektor-name")!.getBoundingClientRect();
+    return {
+      sektors: [...dialog.querySelectorAll(".mandate-criterion-sektor")].map(row => row.textContent),
+      leftEdgesMeet: sektorNameBox.left === labelBox.left,
+    };
+  })).toEqual({ sektors: ["Alpha12"], leftEdgesMeet: true });
+});
+
+test("holds the amount of a sektor making up a criterion level with its name, and every amount in white", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+  await page.evaluate(currentPlayer => {
+    const sektors = JSON.parse(localStorage.getItem("sektors")!);
+    localStorage.setItem("sektors", JSON.stringify(sektors.map((sektor: object) => ({ ...sektor, location: { ring: 40, index: 10 } }))));
+  }, CURRENT_PLAYER);
+  await page.reload();
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-details-dialog").evaluate(dialog => {
+    const middleOf = (element: Element) => {
+      const box = element.getBoundingClientRect();
+      return Math.round(box.top + box.height / 2);
+    };
+    const sektorName = dialog.querySelector(".mandate-criterion-sektor-name")!;
+    const sektorAmount = dialog.querySelector(".mandate-criterion-sektor-amount")!;
+    const currentValue = dialog.querySelector(".mandate-description-current-value")!;
+    return {
+      amountLevelWithName: middleOf(sektorAmount) === middleOf(sektorName),
+      colours: [
+        getComputedStyle(dialog.querySelector(".mandate-description-amount")!).color,
+        getComputedStyle(currentValue).color,
+        getComputedStyle(sektorAmount).color,
+      ],
+    };
+  })).toEqual({ amountLevelWithName: true, colours: ["rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"] });
+});
+
+test("keeps what the player's sektors come to as far from the right edge as from the left", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-details-dialog").evaluate(dialog => {
+    const descriptionBox = dialog.querySelector(".mandate-description")!.getBoundingClientRect();
+    const margins = (left: Element, right: Element) => ({
+      left: Math.round(left.getBoundingClientRect().left - descriptionBox.left),
+      right: Math.round(descriptionBox.right - right.getBoundingClientRect().right),
+    });
+    return {
+      current: margins(dialog.querySelector(".mandate-description-current-label")!, dialog.querySelector(".mandate-description-current-value")!),
+      sektor: margins(dialog.querySelector(".mandate-criterion-sektor-name")!, dialog.querySelector(".mandate-criterion-sektor-amount")!),
+    };
+  })).toEqual({ current: { left: 18, right: 18 }, sektor: { left: 18, right: 18 } });
 });

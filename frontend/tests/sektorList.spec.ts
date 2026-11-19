@@ -792,8 +792,8 @@ test("names the direction and the resource of a mandate's criteria on hovering t
     resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.title,
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
   })))).toEqual([
-    { direction: "Export", resource: "Wood", amount: "≥12" },
-    { direction: "Import", resource: "Water", amount: "≤7" },
+    { direction: "Export", resource: "Wood", amount: "≥ 12" },
+    { direction: "Import", resource: "Water", amount: "≤ 7" },
   ]);
 });
 

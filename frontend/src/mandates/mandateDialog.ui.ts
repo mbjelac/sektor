@@ -1,23 +1,19 @@
 import { abandonMandate, Mandate } from "./mandates.api";
 import { getUsername } from "../login/login.api";
 import { createClaimButton } from "../claimButton.ui";
-import { criterionDescription } from "./criterionDescription";
+import { criterionDescription, CriterionDescription } from "./criterionDescription";
 import { getResourceIcon } from "../resources";
 import { createCompletionDot } from "./completionDot.ui";
 import { checkBadgeIcon } from "../icons";
 import { getPlayerSektors } from "./playerSektors";
-import { PlayerSektor, resourceTotal, sektorsMovingResource } from "./sektorsMovingResource";
+import { criterionCurrentAmount, PlayerSektor, resourceTotal, sektorsMovingResource } from "./sektorsMovingResource";
 import { MandateCriterion } from "./mandates.api";
 import { isAboutResource } from "./criterionType";
 import { measureOf } from "./measures";
+import { CriterionSektor, criterionSektors } from "./criterionSektors";
+import { createSektorNameWithBiome } from "./sektorNameWithBiome.ui";
+import { LocatedPlayerSektor } from "./playerSektors";
 import { formatNumber } from "../formatNumber";
-
-// Which way the player's sektors move a resource, said in words, or nothing said where they move none.
-const CURRENT_DIRECTION_WORDS: Record<"import" | "export" | "none", string | null> = {
-  import: "importing",
-  export: "exporting",
-  none: null,
-};
 
 // A mandate is looked over before it is claimed, and is claimed only once the player says so.
 export function showMandateDialog({ mandate, onClaimed }: {
@@ -64,7 +60,8 @@ function createMandatePopup(dialogId: string, mandate: Mandate, description: HTM
 
 // What the mandate asks for, told in full, a line for every criterion, which may be told along with
 // whether it is completed. Under every criterion stands what the player's sektors move of its
-// resource now, or how much they come to of the measure it is about now.
+// resource now, or how much they come to of the measure it is about now, and which of their sektors
+// make that up.
 function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElement {
   const description = document.createElement("div");
   description.className = "mandate-description";
@@ -75,32 +72,90 @@ function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElem
     line.className = "mandate-description-line";
     if (showsCompletion) line.appendChild(createCompletionDot(criterion.completed));
     const resourceIcon = isAboutResource(criterion) ? getResourceIcon(criterion.resourceName) : null;
-    line.appendChild(document.createTextNode(criterionDescription(criterion, resourceIcon)));
+    line.appendChild(createCriterionText(criterionDescription(criterion, resourceIcon)));
     description.appendChild(line);
     description.appendChild(createCurrentLine(criterion, playerSektors, showsCompletion));
+    const sektorsMakingItUp = criterionSektors(criterion, playerSektors);
+    if (sektorsMakingItUp.length > 0) {
+      description.appendChild(createCriterionSektorList(criterion, sektorsMakingItUp, playerSektors, showsCompletion));
+    }
   }
 
   return description;
 }
 
-// Set in under the criterion it belongs to, a little smaller than it: what the player's sektors move
-// of the resource between them, which way it goes and the amount, or the bare amount where nothing
-// goes either way; or how much they come to of the measure, such as deforestation or pollution,
-// between them.
+// The criterion in words, its amount in white among them.
+function createCriterionText(description: CriterionDescription): HTMLElement {
+  const text = document.createElement("span");
+  text.className = "mandate-description-text";
+  const amount = document.createElement("span");
+  amount.className = "mandate-description-amount";
+  amount.textContent = description.amount;
+  text.append(description.beforeAmount, amount, description.afterAmount);
+  return text;
+}
+
+// Set in under the criterion it belongs to, a little smaller than it, and named Current on the left
+// with the amount in bold on the right, over the amounts of the sektors making it up: what the
+// player's sektors move of the resource between them, below nothing where they move it the other way
+// to the one the criterion asks for; or how much they come to of the measure, such as deforestation
+// or pollution, between them.
 function createCurrentLine(criterion: MandateCriterion, playerSektors: PlayerSektor[], showsCompletion: boolean): HTMLElement {
   const currentLine = document.createElement("div");
   currentLine.className = "mandate-description-current";
   currentLine.classList.toggle("mandate-description-current-beside-completion", showsCompletion);
-  currentLine.textContent = currentWords(criterion, playerSektors);
+
+  const label = document.createElement("span");
+  label.className = "mandate-description-current-label";
+  label.textContent = "Current";
+  currentLine.appendChild(label);
+
+  const value = document.createElement("span");
+  value.className = "mandate-description-current-value";
+  value.textContent = formatNumber(currentAmount(criterion, playerSektors));
+  currentLine.appendChild(value);
+
   return currentLine;
 }
 
-function currentWords(criterion: MandateCriterion, playerSektors: PlayerSektor[]): string {
-  if (!isAboutResource(criterion)) return `Currently ${formatNumber(measureOf(criterion).playerAmount(playerSektors))}`;
-  const total = resourceTotal(sektorsMovingResource(playerSektors, criterion.resourceName));
-  return ["Currently", CURRENT_DIRECTION_WORDS[total.direction ?? "none"], formatNumber(total.amount)]
-    .filter(segment => segment !== null)
-    .join(" ");
+function currentAmount(criterion: MandateCriterion, playerSektors: PlayerSektor[]): number {
+  if (!isAboutResource(criterion)) return measureOf(criterion).playerAmount(playerSektors);
+  return criterionCurrentAmount(criterion, resourceTotal(sektorsMovingResource(playerSektors, criterion.resourceName)));
+}
+
+// Under what the player's sektors come to between them stands every one of their sektors making it
+// up, whether the mandate is theirs or is still to be claimed, by name and the picture of its biome, and how much it
+// counts towards the criterion. A sektor counting against a criterion about a resource, moving it the
+// other way, does so below nothing, and one counting towards it is told by a plus. Where no sektor
+// makes it up there is no list at all. A sektor clicked is opened on its map.
+function createCriterionSektorList(
+  criterion: MandateCriterion,
+  sektorsMakingItUp: CriterionSektor[],
+  playerSektors: LocatedPlayerSektor[],
+  showsCompletion: boolean,
+): HTMLElement {
+  const sektorList = document.createElement("div");
+  sektorList.className = "mandate-criterion-sektors";
+  sektorList.classList.toggle("mandate-criterion-sektors-beside-completion", showsCompletion);
+  for (const criterionSektor of sektorsMakingItUp) {
+    const row = document.createElement("div");
+    row.className = "mandate-criterion-sektor";
+    row.dataset.sektorId = criterionSektor.sektorId;
+    row.addEventListener("click", () => {
+      window.location.href = `/sektor.html?id=${encodeURIComponent(criterionSektor.sektorId)}`;
+    });
+    const location = playerSektors.find(playerSektor => playerSektor.sektorId === criterionSektor.sektorId)?.location;
+    row.appendChild(createSektorNameWithBiome(criterionSektor.sektorName, location, "mandate-criterion-sektor-name"));
+
+    const amount = document.createElement("span");
+    amount.className = "mandate-criterion-sektor-amount";
+    const sign = isAboutResource(criterion) && criterionSektor.amount > 0 ? "+" : "";
+    amount.textContent = `${sign}${formatNumber(criterionSektor.amount)}`;
+    row.appendChild(amount);
+
+    sektorList.appendChild(row);
+  }
+  return sektorList;
 }
 
 // Closing the popup without claiming stands on the left, as it does on any other popup of a mandate,

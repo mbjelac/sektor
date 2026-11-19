@@ -9,10 +9,8 @@ import { selectBuildingTag } from "./sektor/buildingToolbar.ui";
 import { Mandate } from "./mandates/mandates.api";
 import { createCriterionAbbreviation } from "./mandates/criterionAbbreviation.ui";
 import { showMandateDetailsDialog } from "./mandates/mandateDialog.ui";
-import { showResourceSektorsDialog } from "./mandates/resourceSektorsDialog.ui";
 import { getPlayerSektors } from "./mandates/playerSektors";
 import { PlayerSektor } from "./mandates/sektorsMovingResource";
-import { isAboutResource } from "./mandates/criterionType";
 import { mandateCategory } from "./mandates/mandateCategory";
 
 // More than a few things to do at once is no advice at all, so only the most telling are named.
@@ -91,10 +89,9 @@ export function showMandateMessages(uncompletedMandates: Mandate[], onMandateAba
 }
 
 // A mandate is told of on a single line: its badge and number, and then what it asks for, every
-// criterion in short, set apart from the next by a bar and on pale green once it is completed. Every
-// criterion about a resource is one to point at, as any other named in a message is, and clicked tells
-// which of the player's sektors bring it in or send it out. Beside every criterion stands how far the player's
-// sektors have got with it, as a part of the criterion, pointed at and clicked along with it.
+// criterion in short, set apart from the next by a bar and on pale green once it is completed. Beside
+// every criterion stands how far the player's sektors have got with it. Which of their sektors make
+// that up is told in the mandate opened in full, so a criterion is neither pointed at nor clicked.
 function mandateAdvice(mandate: Mandate, playerSektors: PlayerSektor[]): Node[] {
   const mandateNumber = document.createElement("span");
   mandateNumber.className = "message-mandate-number";
@@ -106,12 +103,7 @@ function mandateAdvice(mandate: Mandate, playerSektors: PlayerSektor[]): Node[] 
     document.createTextNode(" "),
     ...mandate.criteria.flatMap((criterion, criterionIndex) => {
       const criterionAbbreviation = createCriterionAbbreviation(criterion, playerSektors);
-      criterionAbbreviation.classList.add("message-resource");
       criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);
-      if (isAboutResource(criterion)) {
-        pointAtResourceWhileHovered(criterionAbbreviation, criterion.resourceName);
-        criterionAbbreviation.addEventListener("click", () => showResourceSektorsDialog(criterion.resourceName));
-      }
       return criterionIndex === 0 ? [criterionAbbreviation] : [document.createTextNode(" | "), criterionAbbreviation];
     }),
   ];

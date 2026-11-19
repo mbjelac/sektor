@@ -5,7 +5,6 @@ import {
   ResourceMovingSektor,
   resourceTotal,
   sektorsMovingResource,
-  sortSektorsMovingResource,
 } from "./sektorsMovingResource";
 
 function playerSektorOf(sektorName: string, imports: [string, number][], exports: [string, number][]): PlayerSektor {
@@ -45,31 +44,6 @@ describe("sektorsMovingResource", () => {
 function resourceMovingSektorOf(sektorName: string, imported: number, exported: number): ResourceMovingSektor {
   return { sektorId: `${sektorName}-id`, sektorName, imported, exported };
 }
-
-const unsortedSektors = [
-  resourceMovingSektorOf("Gamma", 2, 1),
-  resourceMovingSektorOf("Alpha", 0, 5),
-  resourceMovingSektorOf("Delta", 2, 0),
-  resourceMovingSektorOf("Beta", 7, 1),
-];
-
-function sortedSektorNames(sortOrder: "sektor" | "imported" | "exported"): string[] {
-  return sortSektorsMovingResource(unsortedSektors, sortOrder).map(resourceMovingSektor => resourceMovingSektor.sektorName);
-}
-
-describe("sortSektorsMovingResource", () => {
-  it("puts sektors in order of their names, of most imported, or of most exported, ties by name", () => {
-    expect({
-      sektor: sortedSektorNames("sektor"),
-      imported: sortedSektorNames("imported"),
-      exported: sortedSektorNames("exported"),
-    }).toEqual({
-      sektor: ["Alpha", "Beta", "Delta", "Gamma"],
-      imported: ["Beta", "Delta", "Gamma", "Alpha"],
-      exported: ["Alpha", "Beta", "Gamma", "Delta"],
-    });
-  });
-});
 
 describe("resourceTotal", () => {
   it("tells the sektors as exporting, importing or neither by what they export less what they import", () => {

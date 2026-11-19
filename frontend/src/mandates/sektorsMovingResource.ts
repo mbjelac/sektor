@@ -37,23 +37,6 @@ export function sektorsMovingResource(playerSektors: PlayerSektor[], resourceNam
     .filter(resourceMovingSektor => resourceMovingSektor.imported > 0 || resourceMovingSektor.exported > 0);
 }
 
-// Which column of the list of sektors moving a resource its sektors are put in order by.
-export type SektorSortOrder = "sektor" | "imported" | "exported";
-
-// Sektors by name, or the one moving most of the resource the asked way first. Sektors moving equally
-// much keep the order their names put them in.
-export function sortSektorsMovingResource(
-  resourceMovingSektors: ResourceMovingSektor[],
-  sortOrder: SektorSortOrder,
-): ResourceMovingSektor[] {
-  return [...resourceMovingSektors].sort((first, second) => {
-    const byName = first.sektorName.localeCompare(second.sektorName);
-    if (sortOrder === "imported") return second.imported - first.imported || byName;
-    if (sortOrder === "exported") return second.exported - first.exported || byName;
-    return byName;
-  });
-}
-
 // What the player's sektors move of a resource between them: exported if they send out more of it than
 // they bring in, imported if they bring in more than they send out, by the difference, or neither when
 // the two cancel out.

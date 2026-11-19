@@ -45,7 +45,7 @@ function appendResourceAbbreviation(
 
   const amount = document.createElement("span");
   amount.className = "mandate-criterion-amount";
-  amount.textContent = `${asksForAtLeast(criterion) ? "\u2265" : "\u2264"}${formatNumber(criterion.amount)}`;
+  amount.textContent = `${asksForAtLeast(criterion) ? "\u2265" : "\u2264"} ${formatNumber(criterion.amount)}`;
   criterionElement.appendChild(amount);
 
   criterionElement.appendChild(createCurrentAmount(criterion, playerSektors));
@@ -73,7 +73,7 @@ function appendMeasureAbbreviation(
 
   const amount = document.createElement("span");
   amount.className = "mandate-criterion-amount";
-  amount.textContent = `${measure.asksForAtLeast ? "\u2265" : "\u2264"}${formatNumber(criterion.amount)}`;
+  amount.textContent = `${measure.asksForAtLeast ? "\u2265" : "\u2264"} ${formatNumber(criterion.amount)}`;
   criterionElement.appendChild(amount);
 
   criterionElement.appendChild(createCurrentAmountElement(measure.playerAmount(playerSektors)));

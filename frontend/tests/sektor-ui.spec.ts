@@ -1311,9 +1311,10 @@ test("tells of a mandate by its number followed by what it asks for in short", a
   await expectScreenshot(page, "mandate-message", "#mandate-message-7");
 });
 
-// A resource a mandate asks for is pointed at as any other named in a message: it is lit up, and
-// the buildings moving it are marked.
-test("highlights a resource of a mandate message and the buildings moving it when pointed at", async ({ page }) => {
+// Which of the player's sektors make up a criterion is told in the mandate opened in full, so a
+// criterion of a mandate message is not pointed at, marks no buildings when hovered, and opens
+// nothing when clicked.
+test("neither highlights nor opens anything for a criterion of a mandate message", async ({ page }) => {
   await page.evaluate(() => {
     localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: "Tester" }]));
     localStorage.setItem("mandates", JSON.stringify([
@@ -1326,10 +1327,13 @@ test("highlights a resource of a mandate message and the buildings moving it whe
   await placeBuilding(page, "TestProcessor");
   await deselectEverything(page);
 
-  await page.locator("#mandate-message-7 .message-resource").hover();
-  await page.waitForTimeout(200);
+  await page.locator("#mandate-message-7 .mandate-criterion").hover();
+  await page.locator("#mandate-message-7 .mandate-criterion").click();
 
-  await expectMapScreenshot(page, "mandate-message-resource-hover", MIDDLE_OF_MAP);
+  expect({
+    pointedAt: await page.locator("#mandate-message-7 .message-resource").count(),
+    openDialogs: await page.locator(".dialog-overlay").count(),
+  }).toEqual({ pointedAt: 0, openDialogs: 0 });
 });
 
 // The eye at the end of a mandate message opens the mandate in full, over the map.
@@ -1428,104 +1432,6 @@ test("tells beside every criterion of a mandate message how far the player's sek
   expect(await page.locator("#mandate-message-7 .mandate-criterion").evaluateAll(criteria =>
     criteria.map(criterion => criterion.querySelector(".mandate-criterion-current-amount")?.textContent ?? null)))
     .toEqual(["(3)", "(-3)", "(0)"]);
-});
-
-// A criterion of a mandate message clicked tells which of the player's sektors move its resource:
-// Alpha, built on here, sends Wood out, while Beta, also the player's, moves none of it and Gamma is
-// another player's.
-async function openWoodSektorsOfMandateMessage(page: Page) {
-  await page.evaluate(() => {
-    localStorage.setItem("sektors", JSON.stringify([
-      { id: "Alpha", name: "Alpha", owner: "Tester", location: { ring: 40, index: 0 } },
-      { id: "Beta", name: "Beta", owner: "Tester" },
-      { id: "Gamma", name: "Gamma", owner: "Ada" },
-    ]));
-    localStorage.setItem("mandates", JSON.stringify([
-      { number: 7, owner: "Tester", completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 50 }] },
-    ]));
-  });
-  await page.goto("/sektor.html?id=Alpha&test=true");
-  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
-  await placeHub(page);
-  await placeBuilding(page, "TestProcessor");
-  await deselectEverything(page);
-
-  await page.locator("#mandate-message-7 .mandate-criterion").click();
-}
-
-test("lists the player's sektors moving the resource of a mandate criterion clicked in its message", async ({ page }) => {
-  await openWoodSektorsOfMandateMessage(page);
-
-  expect(await page.locator("#resource-sektors-dialog").evaluate(dialog => ({
-    title: dialog.querySelector(".list-title")!.textContent,
-    resource: dialog.querySelector(".resource-sektors-resource")!.textContent,
-    totalDirection: dialog.querySelector(".resource-sektors-total-direction")?.getAttribute("title") ?? null,
-    sektors: [...dialog.querySelectorAll(".resource-sektor-item")].map(item =>
-      [...item.querySelectorAll(":scope > span")].map(cell => cell.textContent)),
-  }))).toEqual({
-    title: "My Imports/Exports",
-    resource: "🪵 Wood3",
-    totalDirection: "Export",
-    sektors: [["Alpha 🌊", "", "3"]],
-  });
-});
-
-// What the player's sektors move is a part of the criterion, so clicking it opens the list as well.
-test("lists the player's sektors moving the resource when the amount of a criterion is clicked", async ({ page }) => {
-  await openWoodSektorsOfMandateMessage(page);
-  await page.locator("#resource-sektors-close-button").click();
-
-  await page.locator("#mandate-message-7 .mandate-criterion-current-amount").click();
-
-  expect(await page.locator("#resource-sektors-dialog").getAttribute("data-resource-name")).toEqual("Wood");
-});
-
-test("shows the player's sektors moving a resource of a mandate like the planet's imports and exports", async ({ page }) => {
-  await openWoodSektorsOfMandateMessage(page);
-
-  await expectScreenshot(page, "resource-sektors-dialog", "#resource-sektors-dialog");
-});
-
-// The sektors stand in the order of the column whose name was last clicked, named in white.
-test("puts the sektors moving a resource of a mandate in the order of the column clicked", async ({ page }) => {
-  await openWoodSektorsOfMandateMessage(page);
-
-  await page.locator('#resource-sektors-dialog .global-state-sort[data-sort-order="exported"]').click();
-
-  expect(await page.locator("#resource-sektors-dialog .global-state-sort-selected").evaluateAll(sortButtons =>
-    sortButtons.map(sortButton => (sortButton as HTMLElement).dataset.sortOrder))).toEqual(["exported"]);
-});
-
-// Delta, another sektor of the player's, is stored as Alpha is, so it sends out Wood too.
-test("opens the sektor double clicked in the list of those moving a resource of a mandate", async ({ page }) => {
-  await openWoodSektorsOfMandateMessage(page);
-  await page.evaluate(() => {
-    const alphaSektorData = localStorage.getItem("sektor_Alpha")!;
-    localStorage.setItem("sektor_Delta", alphaSektorData);
-    localStorage.setItem("sektors", JSON.stringify([
-      ...JSON.parse(localStorage.getItem("sektors")!),
-      { id: "Delta", name: "Delta", owner: "Tester" },
-    ]));
-  });
-  await page.locator("#resource-sektors-close-button").click();
-  await page.locator("#mandate-message-7 .mandate-criterion").click();
-
-  await page.locator('.resource-sektor-item[data-sektor-id="Delta"]').dblclick();
-  await page.waitForURL(/sektor\.html\?id=Delta$/);
-
-  expect(new URL(page.url()).search).toEqual("?id=Delta");
-});
-
-// The sektor on the map is already open, so double clicking it only puts the list away to show it.
-test("hides the list of sektors moving a resource of a mandate when the sektor on the map is double clicked", async ({ page }) => {
-  await openWoodSektorsOfMandateMessage(page);
-
-  await page.locator('.resource-sektor-item[data-sektor-id="Alpha"]').dblclick();
-
-  expect({
-    url: new URL(page.url()).search,
-    isPanelShown: await page.locator("#resource-sektors-dialog").count() > 0,
-  }).toEqual({ url: "?id=Alpha&test=true", isPanelShown: false });
 });
 
 // Building on the sektor changes what the player's sektors do between them, so the open list of
