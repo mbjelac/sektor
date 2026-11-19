@@ -52,7 +52,7 @@ For example, metal ore seams span 3-4 connected areas (regardless of climate zon
         - use existing algorithms for generating sektor location property matrices
         - maximum amount of that ore in sektor is 12
 
-#4 Sektor list displays ore-rich mark
+#4 [done] Sektor list displays ore-rich mark
 - [done] biome column contains only biome type icons
     - move text labels to icon toolip
 - [done] next to biome column add an ore column
