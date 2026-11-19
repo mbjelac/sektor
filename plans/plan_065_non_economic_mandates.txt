@@ -145,3 +145,14 @@ Only one type of mandate:
 - [done] sektors in list active
     - background highlight on mose over
     - navigate to sektor map on click
+
+#7 Mandate category is visible
+- when player opens mandate details, mandate category is visible
+    - display mandate category below mandate details title
+        - horizontally aligned left, same start as "Mandate" label text
+        - increase icon size a bit
+        - small letters
+        - color of mandate category background
+        - economic: "Economy"
+        - ecologic: "Ecology"
+        - social: "Society"
