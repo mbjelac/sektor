@@ -637,15 +637,24 @@ body > main {
 /* The properties are laid out in three columns, so every name, the color it is drawn in and its
    value on this location line up with those of the properties above and below it. The columns
    are only as wide as what they hold, which keeps each value beside the name it belongs to. */
+/* The properties are split between two columns, each lining up its own names, swatches and
+   values. */
 .bp-properties {
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto;
     justify-content: center;
-    gap: 2px 6px;
+    align-items: start;
+    gap: 2px 32px;
     margin-top: 8px;
     padding: 8px 16px 0;
     border-top: 1px solid #444;
     align-self: stretch;
+}
+
+.bp-properties-column {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 2px 6px;
 }
 
 .bp-property-row {

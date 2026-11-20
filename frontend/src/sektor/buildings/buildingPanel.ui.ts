@@ -201,31 +201,20 @@ export function showBuildingPanel({ name, code, buildingFunctions, unusedPool, d
     propertiesHeader.textContent = "Geography";
     propertiesSection.appendChild(propertiesHeader);
 
-    for (const [propertyName, propertyValue] of Object.entries(locationProperties)) {
-      const row = document.createElement("div");
-      row.className = "bp-property-row";
-
-      const nameCell = document.createElement("span");
-      nameCell.className = "bp-property-name";
-      nameCell.textContent = propertyName;
-      row.appendChild(nameCell);
-
-      // The swatch says which property the row is about, so it is the property's own color,
-      // the same on every location, and not the shade the location's value is drawn in.
-      const swatch = document.createElement("span");
-      swatch.className = "bp-property-swatch";
-      const propertyDefinition = propertyDefinitions.find(definition => definition.name === propertyName);
-      if (propertyDefinition) {
-        swatch.style.backgroundColor = propertyDefinition.color;
+    // The properties are split evenly between two columns, the first taking the odd one out.
+    const propertyEntries = Object.entries(locationProperties);
+    const firstColumnSize = Math.ceil(propertyEntries.length / 2);
+    const propertyColumns = [
+      propertyEntries.slice(0, firstColumnSize),
+      propertyEntries.slice(firstColumnSize),
+    ];
+    for (const columnEntries of propertyColumns) {
+      const column = document.createElement("div");
+      column.className = "bp-properties-column";
+      for (const [propertyName, propertyValue] of columnEntries) {
+        column.appendChild(createPropertyRow(propertyName, propertyValue, locationProperties));
       }
-      row.appendChild(swatch);
-
-      const valueCell = document.createElement("span");
-      valueCell.className = "bp-property-value";
-      valueCell.textContent = propertyValueText(propertyName, propertyValue, locationProperties);
-      row.appendChild(valueCell);
-
-      propertiesSection.appendChild(row);
+      propertiesSection.appendChild(column);
     }
     panelEl.appendChild(propertiesSection);
   }
@@ -254,6 +243,33 @@ function createUsedPoolValue(poolAmount: number): HTMLElement {
   value.className = "bp-used-pool-value";
   value.textContent = String(poolAmount);
   return value;
+}
+
+function createPropertyRow(propertyName: string, propertyValue: number, locationProperties: { [_: string]: number }): HTMLElement {
+  const row = document.createElement("div");
+  row.className = "bp-property-row";
+
+  const nameCell = document.createElement("span");
+  nameCell.className = "bp-property-name";
+  nameCell.textContent = propertyName;
+  row.appendChild(nameCell);
+
+  // The swatch says which property the row is about, so it is the property's own color,
+  // the same on every location, and not the shade the location's value is drawn in.
+  const swatch = document.createElement("span");
+  swatch.className = "bp-property-swatch";
+  const propertyDefinition = propertyDefinitions.find(definition => definition.name === propertyName);
+  if (propertyDefinition) {
+    swatch.style.backgroundColor = propertyDefinition.color;
+  }
+  row.appendChild(swatch);
+
+  const valueCell = document.createElement("span");
+  valueCell.className = "bp-property-value";
+  valueCell.textContent = propertyValueText(propertyName, propertyValue, locationProperties);
+  row.appendChild(valueCell);
+
+  return row;
 }
 
 // Pollution is how much of a location is fouled rather than how much it holds, so it is a
