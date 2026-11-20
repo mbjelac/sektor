@@ -16,7 +16,6 @@ Water groundwater
 
 ## Tags
 
-food
 water
 
 # Habitats
@@ -172,7 +171,6 @@ WasteBio soil/3
 ## Tags
 
 food
-water
 
 # Extractor
 
@@ -478,6 +476,7 @@ Water 10
 ## Tags
 
 water
+industry
 
 # CoreSplitter
 
