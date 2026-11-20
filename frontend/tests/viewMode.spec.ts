@@ -160,7 +160,7 @@ test("keeps the panels under the sektor name as wide as what they hold, however 
     geography: document.getElementById("property-toggler")!.getBoundingClientRect().width,
   }));
 
-  expect(panelWidths).toEqual({ construction: 138, geography: 138 });
+  expect(panelWidths).toEqual({ construction: 166, geography: 166 });
 });
 
 test("names a sektor without a name of its own No name", async ({ page }) => {

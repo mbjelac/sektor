@@ -42,10 +42,10 @@ body > main {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
-    /* Wide enough for a building thumbnail and what it is framed by, so that the panels are as
-       wide as what they hold rather than as wide as the name of the sektor above them, which is
-       as long as the player made it. */
-    width: 138px;
+    /* Wide enough for the column of building tags beside a building thumbnail and what it is
+       framed by, so that the panels are as wide as what they hold rather than as wide as the name
+       of the sektor above them, which is as long as the player made it. */
+    width: 166px;
 }
 
 #sektor-header {
@@ -183,31 +183,49 @@ body > main {
     display: none;
 }
 
-#building-tag-filter {
+/* The building tags stand in a narrow column on the left of the buildings, so that however many
+   tags there are, each of them has room of its own. */
+#construction-content {
+    flex: 1 1 auto;
+    min-height: 0;
     display: flex;
-    justify-content: center;
-    gap: 3px;
+    gap: 8px;
 }
 
-/* Every tag keeps room for the line underneath, so selecting one does not move the icons. */
+#building-tag-filter {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#construction-buildings {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Every tag keeps room for the line beside it, so selecting one does not move the icons. */
 .building-tag {
     display: flex;
     align-items: center;
-    padding: 0 0 2px 0;
+    padding: 0 2px 0 0;
     background: none;
     border: none;
-    border-bottom: 2px solid transparent;
+    border-right: 2px solid transparent;
     color: lightgray;
     cursor: pointer;
 }
 
 .building-tag.selected {
     color: white;
-    border-bottom-color: white;
+    border-right-color: white;
 }
 
 #building-tag-name {
-    margin: 4px 0 8px 0;
+    margin: 0 0 8px 0;
     color: white;
     font-family: sans-serif;
     font-size: 11px;

@@ -49,7 +49,7 @@ test("removes highlight when selected building is clicked again", async ({ page 
   await expectScreenshot(page, "building-deselected", "#toolbar");
 });
 
-test("displays an icon for every building tag above the buildings in the toolbar", async ({ page }) => {
+test("displays an icon for every building tag in a column beside the buildings in the toolbar", async ({ page }) => {
   await expectScreenshot(page, "building-tags", "#construction-panel");
 });
 

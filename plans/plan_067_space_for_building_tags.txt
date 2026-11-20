@@ -1,6 +1,13 @@
-#1 Building tags have enough space
-- reorient building tag icons in building toolbar to be placed vertically
+#1 [done] Building tags have enough space
+- [done] reorient building tag icons in building toolbar to be placed vertically
     - increase width of construction toolbar to fit a narrow & high panel on the left side
     - panel contains building tag icons one underneath the other ordered from top to bottom
         - ordering specified by building-tags.md
-- geography panel underneath construction toolbar width increased to align with construction toolbar width
+- [done] geography panel underneath construction toolbar width increased to align with construction toolbar width
+
+#2 Tag name should be more compact
+- display name of current tag (capitalized) next to toolbar title
+    - example: "Construction: Food", "Construction: People", etc.
+    - size of title should be bigger
+        - equal to current size of tag title
+- tag icon tooltips should also be capitalized
