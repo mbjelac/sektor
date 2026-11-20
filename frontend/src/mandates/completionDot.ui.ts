@@ -2,6 +2,6 @@
 export function createCompletionDot(completed: boolean): HTMLElement {
   const completionDot = document.createElement("span");
   completionDot.className = completed ? "mandate-completion mandate-completed" : "mandate-completion";
-  completionDot.title = completed ? "Complete" : "Not complete";
+  completionDot.dataset.title = completed ? "Complete" : "Not complete";
   return completionDot;
 }

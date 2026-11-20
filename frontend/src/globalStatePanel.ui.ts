@@ -97,7 +97,7 @@ function createFilterButton(
   filterButton.className = "global-state-filter-button";
   filterButton.classList.toggle("selected", buttonFilter === importsAndExportsFilter);
   filterButton.dataset.importsAndExportsFilter = buttonFilter;
-  filterButton.title = tooltip;
+  filterButton.dataset.title = tooltip;
   filterButton.innerHTML = icon;
   filterButton.addEventListener("click", () => {
     importsAndExportsFilter = buttonFilter;
@@ -121,10 +121,10 @@ function createSortButton(
   sortButton.dataset.sortOrder = columnSortOrder;
   if (tooltip) {
     sortButton.innerHTML = nameOrIcon;
-    sortButton.title = tooltip;
+    sortButton.dataset.title = tooltip;
   } else {
     sortButton.textContent = nameOrIcon;
-    sortButton.title = nameOrIcon;
+    sortButton.dataset.title = nameOrIcon;
   }
   sortButton.addEventListener("click", () => {
     sortOrder = columnSortOrder;

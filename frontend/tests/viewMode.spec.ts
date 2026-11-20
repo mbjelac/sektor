@@ -186,7 +186,7 @@ test("tells what the button in front of the sektor name does", async ({ page }) 
 
   await page.goto("/sektor.html?id=Beta");
 
-  await expect(page.locator("#leave-button")).toHaveAttribute("title", "Back to list");
+  await expect(page.locator("#leave-button")).toHaveAttribute("data-title", "Back to list");
 });
 
 test("names the player a sektor is owned by", async ({ page }) => {

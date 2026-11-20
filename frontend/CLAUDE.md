@@ -9,5 +9,6 @@ Renders 3D scenes using shapes defined in the architect module. Uses shared rend
 - Update snapshots: `npx playwright test --update-snapshots`
 - Run unit tests: `npm run test:unit`
 - When the plan references heroicons, use inline SVG copied from the [heroicons website](https://heroicons.com/) — there is no heroicons package installed.
+- When a plan or spec mentions a tooltip (or text "told on hovering"), set `element.dataset.title = text` — never the native `title` attribute. `src/tooltip.ui.ts` (`installTooltips()`, called at page startup) shows it after a short delay. Tests read it via `dataset.title` / `getAttribute("data-title")` / `[data-title="..."]`.
 - All icons live in `src/icons.ts`. Check there first before adding a new one — it may already exist.
 - The planet on the list page is a 20480-triangle sphere (EDGE_DIVISIONS = 32, 96 rings) addressed by (ring, index) coordinates. Its colours live in `src/assets/planet.md`. The ring layout, ring lengths and neighbour rules are described in the introduction of `plans/plan_055_planet_view.txt`, written for the earlier 16-division planet: the same rules hold with 32 edge divisions (rings 0–31 northern cap, 32–63 band of 320 triangles, 64–95 southern cap). The grid is built in `src/list/planetGrid.ts`.

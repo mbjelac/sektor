@@ -38,7 +38,7 @@ function createHeaderIcon(className: string, icon: string, tooltip: string): HTM
   const cell = document.createElement("span");
   cell.className = className;
   cell.innerHTML = icon;
-  cell.title = tooltip;
+  cell.dataset.title = tooltip;
   return cell;
 }
 

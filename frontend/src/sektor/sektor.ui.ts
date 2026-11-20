@@ -1,3 +1,4 @@
+import { installTooltips } from "../tooltip.ui";
 import p5 from "p5";
 import {drawFloor, drawFloorWireframe} from "../../../shared/drawFloor";
 import {parseCommands} from "../../../shared/parseCommands";
@@ -50,6 +51,7 @@ import { showRenameDialog } from "../renameDialog.ui";
 import { hideMandatePanel, showMandateButton, showMandateCounts } from "../mandates/mandateButton.ui";
 import { onMandatesChanged, renderMandateList } from "../mandates/mandateList.ui";
 
+installTooltips();
 requireLogin();
 showUser();
 showMandateButton();
@@ -85,7 +87,7 @@ function showSektorName() {
   // The way back to the list sits in front of the name of the sektor being left.
   const leaveButton = document.createElement("button");
   leaveButton.id = "leave-button";
-  leaveButton.title = "Back to list";
+  leaveButton.dataset.title = "Back to list";
   leaveButton.innerHTML = arrowLeftIcon;
   leaveButton.addEventListener("click", () => { window.location.href = "/"; });
   title.appendChild(leaveButton);
@@ -110,7 +112,7 @@ function showSektorName() {
 function createRenameButton(): HTMLElement {
   const renameButton = document.createElement("button");
   renameButton.id = "rename-button";
-  renameButton.title = "Rename sektor";
+  renameButton.dataset.title = "Rename sektor";
   renameButton.innerHTML = pencilSquareIcon;
   renameButton.addEventListener("click", renameSektor);
   return renameButton;
@@ -493,7 +495,7 @@ function createStat(icon: string, tooltip: string, value: string): HTMLElement {
   const iconElement = document.createElement("span");
   iconElement.className = "sektor-stat-icon";
   iconElement.innerHTML = icon;
-  iconElement.title = tooltip;
+  iconElement.dataset.title = tooltip;
   stat.appendChild(iconElement);
 
   const valueElement = document.createElement("span");

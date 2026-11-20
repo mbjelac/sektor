@@ -30,17 +30,17 @@ function appendResourceAbbreviation(
   direction.className = "mandate-criterion-direction";
   if (isAboutExports(criterion)) {
     direction.innerHTML = arrowUpTrayIcon;
-    direction.title = "Export";
+    direction.dataset.title = "Export";
   } else {
     direction.innerHTML = arrowDownTrayIcon;
-    direction.title = "Import";
+    direction.dataset.title = "Import";
   }
   criterionElement.appendChild(direction);
 
   const resource = document.createElement("span");
   resource.className = "mandate-criterion-resource";
   resource.textContent = getResourceIcon(criterion.resourceName) ?? criterion.resourceName;
-  resource.title = criterion.resourceName;
+  resource.dataset.title = criterion.resourceName;
   criterionElement.appendChild(resource);
 
   const amount = document.createElement("span");
@@ -68,7 +68,7 @@ function appendMeasureAbbreviation(
   const measureElement = document.createElement("span");
   measureElement.className = "mandate-criterion-measure";
   measureElement.textContent = measure.icon;
-  measureElement.title = measure.name;
+  measureElement.dataset.title = measure.name;
   criterionElement.appendChild(measureElement);
 
   const amount = document.createElement("span");

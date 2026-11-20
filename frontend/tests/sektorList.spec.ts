@@ -45,7 +45,7 @@ test("shows the biome type of every sektor", async ({ page }) => {
   const biomeCells = page.locator(".sektor-list-item .sektor-list-biome");
   expect({
     icons: await biomeCells.allTextContents(),
-    tooltips: await biomeCells.evaluateAll(cells => cells.map(cell => (cell as HTMLElement).title)),
+    tooltips: await biomeCells.evaluateAll(cells => cells.map(cell => (cell as HTMLElement).dataset.title ?? "")),
   }).toEqual({
     icons: ["🌳", "❄️", "🌊", ""],
     tooltips: ["Forest", "Polar", "Marine", ""],
@@ -68,7 +68,7 @@ test("marks the ore the area of every sektor is rich in, naming it on hovering t
 
   expect(await page.locator(".sektor-list-item .sektor-list-ore").evaluateAll(cells => cells.map(cell => {
     const mark = cell.querySelector<HTMLElement>(".sektor-list-ore-mark");
-    return mark ? { color: mark.style.backgroundColor, tooltip: mark.title } : null;
+    return mark ? { color: mark.style.backgroundColor, tooltip: mark.dataset.title } : null;
   }))).toEqual([
     { color: "rgb(133, 14, 5)", tooltip: "Metals" },
     { color: "rgb(151, 130, 255)", tooltip: "Minerals" },
@@ -827,8 +827,8 @@ test("names the direction and the resource of a mandate's criteria on hovering t
   await page.goto("/?test=true");
 
   expect(await page.locator("#mandate-panel .mandate-criterion").evaluateAll(criteria => criteria.map(criterion => ({
-    direction: criterion.querySelector<HTMLElement>(".mandate-criterion-direction")!.title,
-    resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.title,
+    direction: criterion.querySelector<HTMLElement>(".mandate-criterion-direction")!.dataset.title,
+    resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.dataset.title,
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
   })))).toEqual([
     { direction: "Export", resource: "Wood", amount: "≥ 12" },

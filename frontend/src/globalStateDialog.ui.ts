@@ -37,7 +37,7 @@ function createCloseButton(onClosed: () => void): HTMLElement {
   const closeButton = document.createElement("button");
   closeButton.id = "global-state-close-button";
   closeButton.className = "global-state-close";
-  closeButton.title = "Hide";
+  closeButton.dataset.title = "Hide";
   closeButton.innerHTML = xMarkIcon;
   closeButton.addEventListener("click", onClosed);
   return closeButton;

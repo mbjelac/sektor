@@ -16,7 +16,7 @@ export function showMandateButton(): void {
   const mandateButton = document.createElement("button");
   mandateButton.id = "mandate-button";
   mandateButton.className = "mandate-button";
-  mandateButton.title = "Mandates";
+  mandateButton.dataset.title = "Mandates";
   mandateButton.innerHTML = clipboardDocumentCheckIcon;
   mandateButton.addEventListener("click", () => toggleMandatePanel(mandateButton));
 

@@ -78,7 +78,7 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
   filterButton.className = "mandate-filter-button";
   filterButton.classList.toggle("selected", buttonFilter === mandateFilter);
   filterButton.dataset.mandateFilter = buttonFilter;
-  filterButton.title = tooltip;
+  filterButton.dataset.title = tooltip;
   filterButton.innerHTML = icon;
   filterButton.addEventListener("click", () => {
     mandateFilter = buttonFilter;

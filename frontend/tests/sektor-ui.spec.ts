@@ -145,7 +145,7 @@ test("keeps the tool in hand while SHIFT is held, so several of the same buildin
 
   expect({
     selectedTools: await getSelectedToolNames(page),
-    buildings: await page.locator('#sektor-stats .sektor-stat:has([title="Buildings"]) .sektor-stat-value').textContent(),
+    buildings: await page.locator('#sektor-stats .sektor-stat:has([data-title="Buildings"]) .sektor-stat-value').textContent(),
   }).toEqual({ selectedTools: ["TestFactory"], buildings: "2 %" });
 });
 
@@ -163,7 +163,7 @@ test("names every stat beside the sektor name by its tooltip", async ({ page }) 
   await placeOneBuilding(page);
 
   const stats = await page.locator("#sektor-stats .sektor-stat").evaluateAll(stats => stats.map(stat => ({
-    tooltip: stat.querySelector(".sektor-stat-icon")!.getAttribute("title"),
+    tooltip: stat.querySelector(".sektor-stat-icon")!.getAttribute("data-title"),
     value: stat.querySelector(".sektor-stat-value")!.textContent,
   })));
 
@@ -1527,7 +1527,7 @@ function getListedMandates(page: Page) {
   return page.locator("#mandate-panel .mandate-item").evaluateAll(items => items.map(item => ({
     number: item.querySelector(".mandate-number")!.textContent,
     criteria: [...item.querySelectorAll(".mandate-criterion")].map(criterion => ({
-      resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.title,
+      resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.dataset.title,
       completed: criterion.classList.contains("mandate-criterion-completed"),
     })),
     completed: item.querySelector(".mandate-completion")!.classList.contains("mandate-completed"),
@@ -1988,7 +1988,7 @@ test("says how happy the sektor's people are", async ({ page }) => {
   await placeBuildingAt(page, "TestHabitat", { x: canvasBox!.width / 2 + 60, y: canvasBox!.height / 2 - 20 });
 
   expect(await page.locator("#sektor-stats .sektor-stat").evaluateAll(stats => stats.map(stat => ({
-    tooltip: stat.querySelector(".sektor-stat-icon")!.getAttribute("title"),
+    tooltip: stat.querySelector(".sektor-stat-icon")!.getAttribute("data-title"),
     value: stat.querySelector(".sektor-stat-value")!.textContent,
   })))).toEqual([
     { tooltip: "Buildings", value: "3 %" },
@@ -2006,7 +2006,7 @@ test("says the people of a sektor whose habitat goes without are happy at nothin
 
   await placeBuilding(page, "TestHabitat");
 
-  await expect(page.locator('#sektor-stats .sektor-stat-icon[title="Hapiness"]')).toHaveCount(1);
+  await expect(page.locator('#sektor-stats .sektor-stat-icon[data-title="Hapiness"]')).toHaveCount(1);
 });
 
 // How happy a sektor's people are is always said, even of a sektor nobody lives in yet.
@@ -2017,7 +2017,7 @@ test("says how happy the people of a sektor with no habitat are", async ({ page 
 
   await placeBuilding(page, "TestProcessor");
 
-  await expect(page.locator('#sektor-stats .sektor-stat:has(.sektor-stat-icon[title="Hapiness"]) .sektor-stat-value'))
+  await expect(page.locator('#sektor-stats .sektor-stat:has(.sektor-stat-icon[data-title="Hapiness"]) .sektor-stat-value'))
     .toHaveText("0 / 0 (0 %)");
 });
 

@@ -15,7 +15,7 @@ export function createSektorNameWithBiome(sektorName: string, location: Triangle
     const biome = document.createElement("span");
     biome.className = "sektor-biome";
     biome.textContent = regionCoverIcon(region);
-    biome.title = regionCover(region);
+    biome.dataset.title = regionCover(region);
     cell.append(" ", biome);
   }
 

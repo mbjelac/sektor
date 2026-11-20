@@ -538,7 +538,7 @@ test("tells a deforestation criterion in the list in short, by a burning forest 
 
   expect(await page.locator("#mandate-panel .mandate-criterion").evaluate(criterion => ({
     picture: criterion.querySelector(".mandate-criterion-measure")!.textContent,
-    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
+    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("data-title"),
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
   }))).toEqual({ picture: "🌳🔥", tooltip: "Deforestation", amount: "≤ 15", current: "(12)" });
@@ -576,7 +576,7 @@ test("tells a pollution criterion in the list in short, by a factory named Pollu
 
   expect(await page.locator("#mandate-panel .mandate-criterion").evaluate(criterion => ({
     picture: criterion.querySelector(".mandate-criterion-measure")!.textContent,
-    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
+    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("data-title"),
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
   }))).toEqual({ picture: "🏭", tooltip: "Pollution", amount: "≤ 60", current: "(40)" });
@@ -618,7 +618,7 @@ test("tells a population criterion in the list in short, by a baby named Populat
 
   expect(await page.locator("#mandate-panel .mandate-criterion").evaluateAll(criteria => criteria.map(criterion => ({
     picture: criterion.querySelector(".mandate-criterion-measure")!.textContent,
-    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
+    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("data-title"),
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
   })))).toEqual([
@@ -672,7 +672,7 @@ test("tells a hapiness criterion in the list in short, by a smiling face named H
 
   expect(await page.locator("#mandate-panel .mandate-criterion").evaluate(criterion => ({
     picture: criterion.querySelector(".mandate-criterion-measure")!.textContent,
-    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("title"),
+    tooltip: criterion.querySelector(".mandate-criterion-measure")!.getAttribute("data-title"),
     amount: criterion.querySelector(".mandate-criterion-amount")!.textContent,
     current: criterion.querySelector(".mandate-criterion-current-amount")!.textContent,
   }))).toEqual({ picture: "☺️", tooltip: "Hapiness", amount: "≥ 8", current: "(5)" });
@@ -738,7 +738,7 @@ test("lists under every criterion of a mandate opened in full the sektors making
   expect(await page.locator("#mandate-details-dialog .mandate-criterion-sektors").evaluateAll(sektorLists =>
     sektorLists.map(sektorList => [...sektorList.querySelectorAll(".mandate-criterion-sektor")].map(row => ({
       name: row.querySelector(".mandate-criterion-sektor-name")!.firstChild!.textContent,
-      hasBiome: (row.querySelector(".sektor-biome")?.getAttribute("title") ?? "") !== "",
+      hasBiome: (row.querySelector(".sektor-biome")?.getAttribute("data-title") ?? "") !== "",
       amount: row.querySelector(".mandate-criterion-sektor-amount")!.textContent,
     })))))
     .toEqual([

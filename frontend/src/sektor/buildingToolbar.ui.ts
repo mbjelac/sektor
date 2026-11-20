@@ -197,7 +197,7 @@ function showBuildingTagFilter() {
     const tagButton = document.createElement("button");
     tagButton.className = "building-tag";
     tagButton.dataset.buildingTag = buildingTag;
-    tagButton.title = buildingTag;
+    tagButton.dataset.title = buildingTag;
     tagButton.innerHTML = buildingTagIcon(buildingTag);
     if (buildingTag === selectedBuildingTag) {
       tagButton.classList.add("selected");

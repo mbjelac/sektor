@@ -1,3 +1,4 @@
+import { installTooltips } from "../tooltip.ui";
 import { requireLogin } from "../login/requireLogin";
 import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, SektorListItem } from "./sektorList.api";
@@ -57,19 +58,19 @@ function createHeader(): HTMLElement {
   const biome = document.createElement("span");
   biome.className = "sektor-list-biome";
   biome.innerHTML = globeAsiaAustraliaIcon;
-  biome.title = "Biome type";
+  biome.dataset.title = "Biome type";
   header.appendChild(biome);
 
   const ore = document.createElement("span");
   ore.className = "sektor-list-ore";
   ore.innerHTML = oreMining;
-  ore.title = "Ore deposits";
+  ore.dataset.title = "Ore deposits";
   header.appendChild(ore);
 
   const owner = document.createElement("span");
   owner.className = "sektor-list-owner";
   owner.innerHTML = userIcon;
-  owner.title = "Owned by";
+  owner.dataset.title = "Owned by";
   header.appendChild(owner);
 
   return header;
@@ -135,7 +136,7 @@ function createBiome(sektorListItem: SektorListItem): HTMLElement {
   if (!region) return cell;
   const [icon, ...words] = regionCover(region).split(" ");
   cell.textContent = icon;
-  cell.title = words.join(" ");
+  cell.dataset.title = words.join(" ");
   return cell;
 }
 
@@ -151,7 +152,7 @@ function createOre(sektorListItem: SektorListItem): HTMLElement {
   const mark = document.createElement("span");
   mark.className = "sektor-list-ore-mark";
   mark.style.backgroundColor = oreColor(richOre);
-  mark.title = richOre.charAt(0).toUpperCase() + richOre.slice(1);
+  mark.dataset.title = richOre.charAt(0).toUpperCase() + richOre.slice(1);
   cell.appendChild(mark);
   return cell;
 }
@@ -178,6 +179,7 @@ function createOwner(sektorListItem: SektorListItem): HTMLElement {
   return cell;
 }
 
+installTooltips();
 requireLogin();
 showUser();
 const planetBackground = showPlanetBackground(revealSektorInList);

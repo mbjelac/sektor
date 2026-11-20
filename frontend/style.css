@@ -2328,3 +2328,18 @@ body > main {
 .construction-title svg .cls-1 {
     stroke: #fff;
 }
+
+.tooltip {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    max-width: 300px;
+    padding: 3px 7px;
+    border-radius: 3px;
+    background: #222;
+    color: #eee;
+    font-family: sans-serif;
+    font-size: 12px;
+    pointer-events: none;
+    white-space: pre-line;
+}

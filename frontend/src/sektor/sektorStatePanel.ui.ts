@@ -47,7 +47,7 @@ function createGlobeButton(globalAndPlayerImportsAndExports: GlobalAndPlayerImpo
   const globeButton = document.createElement("button");
   globeButton.id = "global-state-button";
   globeButton.className = "sektor-state-globe";
-  globeButton.title = "Imports & exports of the whole planet";
+  globeButton.dataset.title = "Imports & exports of the whole planet";
   globeButton.innerHTML = globeAltIcon;
   globeButton.addEventListener("click", () => showGlobalStateDialog(globalAndPlayerImportsAndExports));
   return globeButton;
@@ -110,10 +110,10 @@ function createSortButton(
   sortButton.dataset.sortOrder = columnSortOrder;
   if (tooltip) {
     sortButton.innerHTML = nameOrIcon;
-    sortButton.title = tooltip;
+    sortButton.dataset.title = tooltip;
   } else {
     sortButton.textContent = nameOrIcon;
-    sortButton.title = nameOrIcon;
+    sortButton.dataset.title = nameOrIcon;
   }
   sortButton.addEventListener("click", () => {
     sortOrder = columnSortOrder;
