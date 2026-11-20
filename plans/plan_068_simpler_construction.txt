@@ -11,6 +11,6 @@ The Construction resource can be output by a specialised building, e.g. "Constru
     - replace application of construction coefficient to construction list resources
 - [done] no longer neccessary to display constructionCrane icon when marking Construction consumption on map buildings
 
-#2 Function panel Construction section can be simplified
-- remove function panel Construction section title
+#2 [done] Function panel Construction section can be simplified
+- [done] remove function panel Construction section title
     - leave just Construction as input resource with amount (effectively building size)

@@ -6,7 +6,7 @@ import { propertyDefinitions } from "../properties";
 import { isOutputAffectedByPollution } from "./pollution";
 import { pointAtResourceWhileHovered } from "../resourceHover.ui";
 import { CONSTRUCTION_RESOURCE } from "./Sektor";
-import { constructionCrane, poolUnusedIcon, poolUsedIcon, xMarkIcon } from "../icons";
+import { poolUnusedIcon, poolUsedIcon, xMarkIcon } from "../icons";
 
 // How many times over a function drawing on its building's pool is done, how much of the pool no
 // function draws on yet, and what to do when the player sets another multiplier. A function which is
@@ -75,23 +75,11 @@ export function createFunctionDisplay({ buildingFunction, outputAmounts, polluti
 }
 
 // The Construction a building takes in for its size is shown below its functions, set off from them
-// like a function from another, under a title written like a function's name. It is taken in, so it
-// stands in the inputs column, lined up with the inputs of the functions above.
+// like a function from another, but without a name. It is taken in, so it stands in the inputs
+// column, lined up with the inputs of the functions above.
 export function createConstructionDisplay(buildingSize: number): HTMLElement {
   const constructionBlock = document.createElement("div");
   constructionBlock.className = "bf-function-block bf-construction-block";
-
-  const constructionHeader = document.createElement("div");
-  constructionHeader.className = "bf-function-header";
-  const constructionTitle = document.createElement("div");
-  constructionTitle.className = "bf-function-name bf-construction-title";
-  const crane = document.createElement("span");
-  crane.className = "bf-construction-icon";
-  crane.innerHTML = constructionCrane;
-  constructionTitle.appendChild(crane);
-  constructionTitle.append("Construction");
-  constructionHeader.appendChild(constructionTitle);
-  constructionBlock.appendChild(constructionHeader);
 
   const constructionDisplay = document.createElement("div");
   constructionDisplay.className = "bf-construction";
