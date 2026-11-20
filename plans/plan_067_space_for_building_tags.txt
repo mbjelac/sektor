@@ -5,9 +5,9 @@
         - ordering specified by building-tags.md
 - [done] geography panel underneath construction toolbar width increased to align with construction toolbar width
 
-#2 Tag name should be more compact
-- display name of current tag (capitalized) next to toolbar title
+#2 [done] Tag name should be more compact
+- [done] display name of current tag (capitalized) next to toolbar title
     - example: "Construction: Food", "Construction: People", etc.
     - size of title should be bigger
         - equal to current size of tag title
-- tag icon tooltips should also be capitalized
+- [done] tag icon tooltips should also be capitalized

@@ -53,6 +53,16 @@ test("displays an icon for every building tag in a column beside the buildings i
   await expectScreenshot(page, "building-tags", "#construction-panel");
 });
 
+test("tells the capitalized name of a building tag on hovering its icon", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  const tagTooltips = await page.locator(".building-tag").evaluateAll(
+    tagButtons => tagButtons.slice(0, 3).map(tagButton => (tagButton as HTMLElement).dataset.title),
+  );
+
+  expect(tagTooltips).toEqual(["Food", "Water", "People"]);
+});
+
 test("displays a clicked building tag as selected", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-tag[data-building-tag="water"]').click();

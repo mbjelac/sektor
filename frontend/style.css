@@ -224,14 +224,6 @@ body > main {
     border-right-color: white;
 }
 
-#building-tag-name {
-    margin: 0 0 8px 0;
-    color: white;
-    font-family: sans-serif;
-    font-size: 11px;
-    text-align: center;
-}
-
 .building-tag svg {
     width: 16px;
     height: 16px;
@@ -1331,10 +1323,13 @@ body > main {
     margin-bottom: 8px;
 }
 
+/* The title also names the building tag picked, and is as big as that name was when it stood on
+   its own above the buildings. */
 .construction-title {
     display: flex;
     align-items: center;
     gap: 4px;
+    font-size: 11px;
 }
 
 #construction-title-icon {
