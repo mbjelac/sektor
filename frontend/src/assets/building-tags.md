@@ -1,7 +1,8 @@
 food
 water
 people
-energy
-industry
 education
+energy
+mining
+industry
 transport

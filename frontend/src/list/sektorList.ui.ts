@@ -4,7 +4,7 @@ import { showUser } from "../login/userDisplay.ui";
 import { getSektorList, SektorListItem } from "./sektorList.api";
 import { getUsername } from "../login/login.api";
 import { getSektorSummary } from "./sektorSummary";
-import { globeAsiaAustraliaIcon, oreMining, userIcon } from "../icons";
+import { globeAsiaAustraliaIcon, oreDeposits, userIcon } from "../icons";
 import { renderLeaderboard } from "./leaderboard.ui";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 import { createMandateIfNeeded, startCreatingMandates } from "../mandates/mandateCreation";
@@ -63,7 +63,7 @@ function createHeader(): HTMLElement {
 
   const ore = document.createElement("span");
   ore.className = "sektor-list-ore";
-  ore.innerHTML = oreMining;
+  ore.innerHTML = oreDeposits;
   ore.dataset.title = "Ore deposits";
   header.appendChild(ore);
 

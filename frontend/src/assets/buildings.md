@@ -259,7 +259,7 @@ poolSize=4
 
 ## Tags
 
-industry
+mining
 
 # WindLoop
 
@@ -346,7 +346,7 @@ pollutionArea=4
 
 ## Tags
 
-industry
+mining
 
 # Mineral Refinery
 
@@ -411,7 +411,7 @@ pollutionArea=3
 
 ## Tags
 
-industry
+mining
 
 # Uranium Mill
 
@@ -437,7 +437,7 @@ Uranium 6
 
 ## Tags
 
-industry
+mining
 
 # TownSquare
 
