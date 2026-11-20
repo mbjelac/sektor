@@ -560,24 +560,30 @@ describe("parseBuildingDefinitions", () => {
     }]);
   });
 
-  it("parses construction resources apart from the construction duration", () => {
+  it("parses building size apart from the construction duration", () => {
     const result = parseBuildingDefinitions([
       "# Tower",
       "## Construction",
       "",
       "duration=1500",
       "",
-      "Glass 5",
-      "Concrete 12",
+      "size=5",
       "",
       "## Function",
       "Energy 2",
     ], { "Tower/0.sgl": "box s(10,10,10)" });
 
-    expect(result[0].constructionResources).toEqual([
-      { name: "Glass", value: 5 },
-      { name: "Concrete", value: 12 },
-    ]);
+    expect(result[0].buildingSize).toEqual(5);
+  });
+
+  it("leaves out a building size of nothing", () => {
+    const result = parseBuildingDefinitions([
+      "# Tower",
+      "## Construction",
+      "size=0",
+    ], { "Tower/0.sgl": "box s(10,10,10)" });
+
+    expect(result[0].buildingSize).toEqual(undefined);
   });
 
   it("ignores construction render without duration", () => {

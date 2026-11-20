@@ -10,3 +10,4 @@ Stone 🧱 #ffcc88
 Care 🩺 #ff88cc local
 Hapiness 😊 #ffd1f4 local
 ImportExport 📦 #ffedc2 local
+Construction 🏗️ #d9a441

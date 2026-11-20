@@ -80,8 +80,8 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   for (const buildingFunction of building.buildingFunctions) {
     functionsContent.appendChild(createFunctionDisplay({ buildingFunction: buildingFunction }));
   }
-  if (building.constructionResources) {
-    functionsContent.appendChild(createConstructionDisplay(building.constructionResources));
+  if (building.buildingSize !== undefined) {
+    functionsContent.appendChild(createConstructionDisplay(building.buildingSize));
   }
   toolbarFunctionPanel.appendChild(functionsContent);
 

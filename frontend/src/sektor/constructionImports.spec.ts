@@ -7,48 +7,41 @@ const testDefinitions: BuildingDefinition[] = [
   {
     name: "Tower",
     renderingCodes: ["box s(1,1,1)"],
-    constructionResources: [
-      { name: "Glass", value: 5 },
-      { name: "Concrete", value: 12 },
-      { name: "Steel", value: 7 },
-    ],
+    buildingSize: 3,
     buildingFunctions: [],
     properties: {},
   },
   {
     name: "Shed",
     renderingCodes: ["box s(1,1,1)"],
-    constructionResources: [
-      { name: "Glass", value: 3 },
-      { name: "Concrete", value: 9 },
-      { name: "Steel", value: 9 },
-    ],
+    buildingSize: 1,
     buildingFunctions: [],
     properties: {},
   },
   {
-    name: "Mixer",
+    name: "Workshop",
     renderingCodes: ["box s(1,1,1)"],
-    constructionResources: [
-      { name: "Concrete", value: 20 },
-    ],
+    buildingSize: 2,
     buildingFunctions: [{
-      inputs: [{ name: "Concrete", value: 3 }],
+      inputs: [{ name: "Construction", value: 3 }],
       outputs: [{ name: "Noise", value: 1 }],
     }],
     properties: {},
   },
   {
-    name: "Kiln",
+    name: "ConstructionYard",
     renderingCodes: ["box s(1,1,1)"],
-    constructionResources: [
-      { name: "Concrete", value: 20 },
-      { name: "Glass", value: 4 },
-    ],
+    buildingSize: 2,
     buildingFunctions: [{
       inputs: [],
-      outputs: [{ name: "Concrete", value: 10 }],
+      outputs: [{ name: "Construction", value: 10 }],
     }],
+    properties: {},
+  },
+  {
+    name: "Tent",
+    renderingCodes: ["box s(1,1,1)"],
+    buildingFunctions: [],
     properties: {},
   },
 ];
@@ -69,32 +62,36 @@ function sektorWith(buildingTypes: string[]): Sektor {
 }
 
 describe("construction imports", () => {
-  it("imports a tenth of every construction resource of all buildings together, rounded", () => {
+  it("imports as much Construction as all buildings together are big", () => {
     const sektor = sektorWith(["Tower", "Shed"]);
 
     expect(sektor.getSektorState().imports).toEqual([
-      { name: "Glass", value: 1 },
-      { name: "Concrete", value: 2 },
-      { name: "Steel", value: 2 },
+      { name: "Construction", value: 4 },
     ]);
   });
 
-  it("adds construction resources to what the buildings' functions import of the same resource", () => {
-    const sektor = sektorWith(["Mixer"]);
+  it("adds Construction of the buildings' size to what their functions import of it", () => {
+    const sektor = sektorWith(["Workshop"]);
 
     expect(sektor.getSektorState().imports).toEqual([
-      { name: "Concrete", value: 5 },
+      { name: "Construction", value: 5 },
     ]);
   });
 
-  it("covers construction resources with what the sektor makes before importing them, leaving out those rounded to nothing", () => {
-    const sektor = sektorWith(["Kiln"]);
+  it("covers Construction with what the sektor makes before importing it", () => {
+    const sektor = sektorWith(["ConstructionYard"]);
 
     const sektorState = sektor.getSektorState();
 
     expect({ imports: sektorState.imports, exports: sektorState.exports }).toEqual({
-      imports: [{ name: "Concrete", value: 0 }],
-      exports: [{ name: "Concrete", value: 8 }],
+      imports: [{ name: "Construction", value: 0 }],
+      exports: [{ name: "Construction", value: 8 }],
     });
+  });
+
+  it("imports no Construction for buildings without a size", () => {
+    const sektor = sektorWith(["Tent"]);
+
+    expect(sektor.getSektorState().imports).toEqual([]);
   });
 });

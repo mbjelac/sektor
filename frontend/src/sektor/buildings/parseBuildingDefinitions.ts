@@ -75,9 +75,9 @@ export interface BuildingDefinition {
   // The code of every variant the building can be drawn as, the first variant first.
   renderingCodes: string[];
   constructionRender?: ConstructionRender;
-  // What goes into building it, from the Construction section of its definition, one resource a
-  // line. A building whose definition names none is built of nothing.
-  constructionResources?: ResourceThroughput[];
+  // How big it is, from the Construction section of its definition, which is how much Construction
+  // it takes in once built. A building whose definition names none takes in no Construction.
+  buildingSize?: number;
   buildingFunctions: BuildingFunction[];
   properties: BuildingProperties;
 }
@@ -119,8 +119,8 @@ export function parseBuildingDefinitions(lines: string[], renderingFiles: Buildi
         constructionPropertyLines,
       );
       if (constructionRender) building.constructionRender = constructionRender;
-      const constructionResources = parseConstructionResources(constructionPropertyLines);
-      if (constructionResources.length > 0) building.constructionResources = constructionResources;
+      const buildingSize = parseBuildingSize(constructionPropertyLines);
+      if (buildingSize !== undefined) building.buildingSize = buildingSize;
       buildings.push(building);
     }
   }
@@ -202,13 +202,13 @@ function parseConstructionRender(renderingCodes: (string | null)[], propertyLine
   return { renderingCodes, duration: parseInt(durationMatch[1]) };
 }
 
-// A construction resource is written as its name and its amount, which tells it apart from the
-// duration written in the same section.
-function parseConstructionResources(lines: string[]): ResourceThroughput[] {
-  return lines
-    .map(line => line.trim().match(/^(\S+)\s+(\S+)$/))
-    .filter((match): match is RegExpMatchArray => match !== null && isAmount(match[2]))
-    .map(match => ({ name: match[1], value: parseInt(match[2]) }));
+// A building of no size takes in no Construction, so it is the same as one without a size.
+function parseBuildingSize(lines: string[]): number | undefined {
+  const sizeMatch = lines
+    .map(line => line.trim().match(/^size=(.+)$/))
+    .find(match => match !== null && isAmount(match[1]));
+  if (!sizeMatch || parseInt(sizeMatch[1]) === 0) return undefined;
+  return parseInt(sizeMatch[1]);
 }
 
 function parseProperties(lines: string[]): BuildingProperties {

@@ -852,8 +852,8 @@ test("displays function panel when building tool is selected", async ({ page }) 
   });
 });
 
-// TestKiln is built of Wood, which is shown below its functions, and its functions share a pool of 5,
-// shown as its pool size under its name.
+// TestKiln has a size of 4, shown below its functions as the Construction it takes in, and its
+// functions share a pool of 5, shown as its pool size under its name.
 test("displays function panel with the building's pool size and what goes into building it", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestKiln"]').click();
@@ -1960,8 +1960,8 @@ test("highlights buildings making a resource in green and buildings taking it in
   await expectMapScreenshot(page, "output-hover-highlight", MIDDLE_OF_MAP);
 });
 
-// TestKiln is built of Wood but does nothing with it, so pointing at Wood marks it in red as a
-// building needing it, with a crane before its share of the import.
+// TestKiln takes in Construction for its size but does nothing with it, so pointing at Construction
+// marks it in red as a building needing it, with its share of the import.
 test("marks a building needing the resource pointed at for having been built", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   const canvas = page.locator("#canvas-container > canvas");
@@ -1973,7 +1973,7 @@ test("marks a building needing the resource pointed at for having been built", a
   await placeBuildingAt(page, "TestKiln", { x: centerX + 60, y: centerY - 20 });
   await deselectEverything(page);
 
-  await page.locator(".ss-row", { hasText: "Wood" }).first().hover();
+  await page.locator(".ss-row", { hasText: "Construction" }).first().hover();
   await page.waitForTimeout(200);
 
   await expectMapScreenshot(page, "construction-hover-highlight", MIDDLE_OF_MAP);

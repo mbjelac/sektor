@@ -25,7 +25,7 @@ import { initPropertyToggler, getSelectedProperty, selectProperty } from "./prop
 import { floorColor, floorColorAlongRange, propertyValueColor } from "../properties";
 import { desertFloorFraction } from "./desertFloor";
 import { getLocalResources, getResourceIcon } from "../resources";
-import { arrowLeftIcon, buildingOfficeIcon, constructionCrane, ecosystemDamage as deforestationIcon, faceSmileIcon, pencilSquareIcon } from "../icons";
+import { arrowLeftIcon, buildingOfficeIcon, ecosystemDamage as deforestationIcon, faceSmileIcon, pencilSquareIcon } from "../icons";
 import { sektorDeforestation } from "./deforestation";
 import { createClaimButton } from "../claimButton.ui";
 import { formatNumber } from "../formatNumber";
@@ -754,9 +754,6 @@ const resourceAmountLabelElements: HTMLElement[] = [];
 interface ResourceAmountLabel {
   location: BuildingLocation;
   text: string;
-  // Whether the text ends with how much of the resource went into building the building, which the
-  // crane then follows.
-  showsConstruction?: boolean;
 }
 
 function updateResourceAmountLabels(
@@ -785,18 +782,10 @@ function updateResourceAmountLabels(
 }
 
 // The labels are moved every frame, but what they say only changes with the resource pointed at, so
-// a label is filled anew only when it is to say something else, which spares rebuilding the crane
-// every frame.
+// a label is filled anew only when it is to say something else.
 function showResourceAmountLabelContent(labelElement: HTMLElement, resourceAmountLabel: ResourceAmountLabel) {
-  const content = `${resourceAmountLabel.text}|${resourceAmountLabel.showsConstruction ?? false}`;
-  if (labelElement.dataset.content === content) return;
-  labelElement.dataset.content = content;
+  if (labelElement.textContent === resourceAmountLabel.text) return;
   labelElement.textContent = resourceAmountLabel.text;
-  if (!resourceAmountLabel.showsConstruction) return;
-  const crane = document.createElement("span");
-  crane.className = "resource-amount-construction";
-  crane.innerHTML = constructionCrane;
-  labelElement.appendChild(crane);
 }
 
 // The view is orthographic, so a point lands on the screen as far from its middle as it lies from
@@ -1464,8 +1453,8 @@ const sektorUi = (p: p5) => {
     }
 
     // A building doing both with the same resource is marked as taking it in: what a sektor is short
-    // of is the more pressing of the two to find. A building needing the resource for having been
-    // built is marked as taking it in too, with how much of it went into building it and a crane. A
+    // of is the more pressing of the two to find. The Construction a building takes in for its size
+    // is taken in like any other, so it is marked together with what its functions take in. A
     // resource pointed at in the building panel leaves the selected building with its own marking,
     // and without an amount, as the panel already tells what it takes in and gives out.
     const resourceAmountLabels: ResourceAmountLabel[] = [];
@@ -1473,15 +1462,10 @@ const sektorUi = (p: p5) => {
       const resourceIcon = getResourceIcon(hoveredResource.resourceName) ?? "";
       for (const { location, inputAmount, outputAmount, constructionAmount } of hoveredResourceAmounts) {
         if (hoveredResource.fromBuildingPanel && isSelectedBuildingLocation(location)) continue;
-        if (inputAmount > 0 || constructionAmount > 0) {
+        const takenInAmount = inputAmount + constructionAmount;
+        if (takenInAmount > 0) {
           drawLocationHighlight(p, location, IMPORT_HIGHLIGHT_COLOR);
-          const inputText = inputAmount > 0 ? ` -${formatNumber(inputAmount)}` : "";
-          const constructionText = constructionAmount > 0 ? ` -${formatNumber(constructionAmount)} ` : "";
-          resourceAmountLabels.push({
-            location,
-            text: `${resourceIcon}${inputText}${constructionText}`,
-            showsConstruction: constructionAmount > 0,
-          });
+          resourceAmountLabels.push({ location, text: `${resourceIcon} -${formatNumber(takenInAmount)}` });
         } else if (outputAmount > 0) {
           drawLocationHighlight(p, location, EXPORT_HIGHLIGHT_COLOR);
           resourceAmountLabels.push({ location, text: `${resourceIcon} +${formatNumber(outputAmount)}` });

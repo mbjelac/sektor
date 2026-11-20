@@ -51,7 +51,7 @@ const testDefinitions: BuildingDefinition[] = [
   {
     name: "Tower",
     renderingCodes: ["box s(1,1,1)"],
-    constructionResources: [{ name: "Glass", value: 5 }],
+    buildingSize: 5,
     buildingFunctions: [{
       inputs: [{ name: "Glass", value: 2 }],
       outputs: [{ name: "View", value: 1 }],
@@ -121,11 +121,11 @@ describe("getBuildingResourceAmounts", () => {
     ]);
   });
 
-  it("tells how much of the resource went into building a building, even of a building disabled for want of imports", () => {
+  it("tells how much Construction a building takes in for its size, even a building disabled for want of imports", () => {
     const sektor = createSektor();
     sektor.createBuilding({ type: "Tower", location: farmLocation });
 
-    expect(sektor.getBuildingResourceAmounts("Glass", true)).toEqual([
+    expect(sektor.getBuildingResourceAmounts("Construction", true)).toEqual([
       { location: farmLocation, inputAmount: 0, outputAmount: 0, constructionAmount: 5 },
     ]);
   });

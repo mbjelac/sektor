@@ -5,6 +5,7 @@ import { formatNumber } from "../formatNumber";
 import { propertyDefinitions } from "../properties";
 import { isOutputAffectedByPollution } from "./pollution";
 import { pointAtResourceWhileHovered } from "../resourceHover.ui";
+import { CONSTRUCTION_RESOURCE } from "./Sektor";
 import { constructionCrane, poolUnusedIcon, poolUsedIcon, xMarkIcon } from "../icons";
 
 // How many times over a function drawing on its building's pool is done, how much of the pool no
@@ -73,10 +74,10 @@ export function createFunctionDisplay({ buildingFunction, outputAmounts, polluti
   return functionBlock;
 }
 
-// What goes into building a building is shown below its functions, set off from them like a function
-// from another, under a title written like a function's name. It is all taken in, so its resources
-// stand in the inputs column, lined up with the inputs of the functions above.
-export function createConstructionDisplay(constructionResources: ResourceThroughput[]): HTMLElement {
+// The Construction a building takes in for its size is shown below its functions, set off from them
+// like a function from another, under a title written like a function's name. It is taken in, so it
+// stands in the inputs column, lined up with the inputs of the functions above.
+export function createConstructionDisplay(buildingSize: number): HTMLElement {
   const constructionBlock = document.createElement("div");
   constructionBlock.className = "bf-function-block bf-construction-block";
 
@@ -94,7 +95,7 @@ export function createConstructionDisplay(constructionResources: ResourceThrough
 
   const constructionDisplay = document.createElement("div");
   constructionDisplay.className = "bf-construction";
-  constructionDisplay.appendChild(createInputsTable(constructionResources, 1, false));
+  constructionDisplay.appendChild(createInputsTable([{ name: CONSTRUCTION_RESOURCE, value: buildingSize }], 1, false));
   constructionBlock.appendChild(constructionDisplay);
 
   return constructionBlock;

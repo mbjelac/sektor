@@ -5,12 +5,7 @@
 ## Construction
 
 duration=2000
-
-StructuralAlloys 1
-Electronics 1
-Regolith 4
-Polymers 2
-Machinery 2
+size=1
 
 ## Function
 
@@ -29,14 +24,7 @@ water
 ## Construction
 
 duration=4000
-
-Glass 4
-StructuralAlloys 5
-Electronics 3
-Regolith 4
-Ceramics 2
-Composites 2
-Polymers 2
+size=2
 
 ## Function
 
@@ -159,10 +147,7 @@ poolSize=6
 
 ## Construction
 
-Glass 6
-StructuralAlloys 4
-Electronics 2
-Polymers 1
+size=1
 
 ## Function
 
@@ -181,13 +166,7 @@ people
 ## Construction
 
 duration=2200
-
-Glass 3
-StructuralAlloys 1
-Electronics 2
-Polymers 2
-Machinery 1
-Robotics 2
+size=1
 
 ## Function
 
@@ -209,13 +188,7 @@ water
 ## Construction
 
 duration=1900
-
-StructuralAlloys 10
-Electronics 3
-Ceramics 2
-Composites 2
-Machinery 4
-Robotics 1
+size=2
 
 ## Function
 
@@ -265,9 +238,7 @@ mining
 
 ## Construction
 
-StructuralAlloys 5
-Electronics 6
-Composites 4
+size=2
 
 ## Function
 
@@ -283,11 +254,7 @@ energy
 
 ## Construction
 
-Glass 4
-StructuralAlloys 3
-Electronics 8
-Ceramics 2
-Composites 1
+size=2
 
 ## Function
 
@@ -303,11 +270,7 @@ energy
 
 ## Construction
 
-Glass 2
-StructuralAlloys 4
-Electronics 3
-Regolith 1
-Polymers 1
+size=2
 
 ## Function
 
@@ -324,12 +287,7 @@ people
 
 ## Construction
 
-StructuralAlloys 6
-Electronics 2
-Regolith 4
-Ceramics 6
-Machinery 4
-Robotics 1
+size=3
 
 ## Function
 
@@ -352,13 +310,7 @@ mining
 
 ## Construction
 
-Glass 1
-StructuralAlloys 6
-Electronics 4
-Regolith 4
-Ceramics 6
-Machinery 3
-Robotics 1
+size=3
 
 ## Function
 
@@ -417,14 +369,7 @@ mining
 
 ## Construction
 
-Glass 1
-StructuralAlloys 7
-Electronics 4
-Regolith 1
-Ceramics 3
-Composites 4
-Polymers 3
-Machinery 1
+size=2
 
 ## Function
 
@@ -443,11 +388,7 @@ mining
 
 ## Construction
 
-StructuralAlloys 1
-Electronics 1
-Regolith 4
-Ceramics 1
-Polymers 1
+size=1
 
 ## Function
 
@@ -479,18 +420,14 @@ people
 ## Construction
 
 duration=2000
+size=0
 
 # Fertilizatron
 
 ## Construction
 
 duration=1500
-
-StructuralAlloys 3
-Electronics 2
-Regolith 1
-Machinery 1
-Robotics 1
+size=1
 
 ## Function
 
@@ -515,13 +452,7 @@ industry
 ## Construction
 
 duration=1800
-
-Glass 4
-StructuralAlloys 3
-Electronics 3
-Regolith 2
-Polymers 1
-Robotics 1
+size=1
 
 ## Function
 
@@ -543,13 +474,7 @@ education
 
 ## Construction
 
-StructuralAlloys 3
-Electronics 2
-Regolith 2
-Ceramics 1
-Composites 1
-Polymers 1
-Machinery 1
+size=2
 
 ## Function
 
@@ -568,16 +493,7 @@ water
 ## Construction
 
 duration=3200
-
-Glass 1
-StructuralAlloys 8
-Electronics 4
-Regolith 10
-Ceramics 6
-Composites 2
-Polymers 2
-Machinery 1
-Robotics 1
+size=3
 
 ## Function
 
@@ -597,10 +513,7 @@ energy
 
 ## Construction
 
-StructuralAlloys 6
-Electronics 1
-Regolith 10
-Composites 1
+size=3
 
 ## Function
 
@@ -619,11 +532,7 @@ energy
 ## Construction
 
 duration=3100
-
-Glass 8
-StructuralAlloys 4
-Electronics 1
-Regolith 1
+size=1
 
 ## Function
 
@@ -644,15 +553,7 @@ people
 ## Construction
 
 duration=3300
-
-Glass 1
-StructuralAlloys 6
-Electronics 4
-Regolith 2
-Ceramics 1
-Polymers 1
-Machinery 1
-Robotics 2
+size=2
 
 ## Function
 
@@ -676,12 +577,7 @@ pollutionArea=1
 
 ## Construction
 
-Glass 6
-StructuralAlloys 8
-Electronics 4
-Regolith 4
-Machinery 1
-Robotics 3
+size=2
 
 ## Function
 
@@ -704,12 +600,7 @@ transport
 
 ## Construction
 
-Glass 4
-StructuralAlloys 4
-Electronics 4
-Regolith 2
-Polymers 1
-Robotics 1
+size=2
 
 ## Function
 
@@ -730,13 +621,7 @@ education
 ## Construction
 
 duration=2700
-
-Glass 6
-StructuralAlloys 5
-Electronics 5
-Regolith 3
-Polymers 1
-Robotics 1
+size=2
 
 ## Function
 
@@ -789,11 +674,7 @@ poolSize=8
 
 ## Construction
 
-StructuralAlloys 6
-Electronics 3
-Regolith 3
-Ceramics 3
-Machinery 2
+size=3
 
 ## Function
 
@@ -818,14 +699,7 @@ energy
 ## Construction
 
 duration=3200
-
-Glass 1
-StructuralAlloys 5
-Electronics 2
-Regolith 3
-Ceramics 6
-Machinery 2
-Robotics 1
+size=3
 
 ## Function
 
@@ -870,14 +744,7 @@ industry
 
 ## Construction
 
-Glass 2
-StructuralAlloys 2
-Electronics 4
-Regolith 1
-Composites 2
-Polymers 2
-Machinery 1
-Robotics 2
+size=2
 
 ## Function
 
@@ -902,6 +769,10 @@ EnergyElectric 9
 WorkTechnical 1
 ->
 StructuralAlloys 5
+
+## Construction
+
+size=2
 
 ## Tags
 

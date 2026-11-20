@@ -85,8 +85,8 @@ export interface BuildingState {
   unusedPool: number;
 }
 
-// How much of one resource a building takes in and gives out, and how much of it went into building
-// it, as its definition says, before it is cut down to the flow the sektor imports.
+// How much of one resource a building takes in and gives out, and, of Construction, how much it takes
+// in for being as big as it is.
 export interface BuildingResourceAmounts {
   location: BuildingLocation;
   inputAmount: number;
@@ -104,8 +104,8 @@ export interface CreateBuildingResult {
   addedBuildings: Building[];
 }
 
-// How much of what went into building the sektor's buildings it imports.
-const CONSTRUCTION_COEFFICIENT = 0.1;
+// The resource every built building takes in as much of as it is big.
+export const CONSTRUCTION_RESOURCE = "Construction";
 
 export class Sektor {
   private buildings: Building[] = [];
@@ -365,21 +365,16 @@ export class Sektor {
     };
   }
 
-  // Imports are a flow of resources, so what went into building the sektor's buildings comes in as
-  // a small fraction of it: every resource of every building's construction, all buildings
-  // together, cut down by CONSTRUCTION_COEFFICIENT to a whole amount. A building goes on counting
-  // once built, and whether its functions run or not, and a resource cut down to nothing is left out.
+  // Every built building takes in as much Construction as it is big, all buildings together. A
+  // building goes on counting once built, and whether its functions run or not, and a sektor whose
+  // buildings are of no size takes in no Construction at all.
   private findConstructionInputs(): ResourceThroughput[] {
-    const constructionAmounts = this.aggregateThroughputs(this.buildings.flatMap(building =>
-      this.findBuildingDefinition(building.type)?.constructionResources ?? []
-    ));
-    return constructionAmounts
-      .map(constructionAmount => ({
-        name: constructionAmount.name,
-        value: Math.round(constructionAmount.value * CONSTRUCTION_COEFFICIENT),
-      }))
-      .filter(constructionInput => constructionInput.value > 0);
+    const constructionAmount = this.buildings
+      .map(building => this.findBuildingSize(building))
+      .reduce((total, buildingSize) => total + buildingSize, 0);
+    return constructionAmount > 0 ? [{ name: CONSTRUCTION_RESOURCE, value: constructionAmount }] : [];
   }
+
 
   // A local resource never travels far, so the functions closest to where it is made are the ones
   // which get it: the rest are starved, farthest first, enough of them to cover the shortage. A
@@ -444,8 +439,12 @@ export class Sektor {
       location: building.location,
       inputAmount: this.findThroughputValue(this.getInputs(building, stoppedFunctions), resourceType),
       outputAmount: this.findThroughputValue(this.getOutputs(building, stoppedFunctions), resourceType),
-      constructionAmount: this.findThroughputValue(this.findBuildingDefinition(building.type)?.constructionResources ?? [], resourceType),
+      constructionAmount: resourceType === CONSTRUCTION_RESOURCE ? this.findBuildingSize(building) : 0,
     }));
+  }
+
+  private findBuildingSize(building: Building): number {
+    return this.findBuildingDefinition(building.type)?.buildingSize ?? 0;
   }
 
   private findStoppedFunctions(): BuildingFunctionLocation[] {

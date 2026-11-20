@@ -2330,14 +2330,7 @@ body > main {
     pointer-events: none;
 }
 
-.resource-amount-construction svg {
-    width: 1em;
-    height: 1em;
-    vertical-align: bottom;
-}
-
-/* The crane is drawn in black lines, which on the dark label and panel are turned white. */
-.resource-amount-construction svg .cls-1,
+/* The crane is drawn in black lines, which on the dark panel are turned white. */
 .construction-title svg .cls-1 {
     stroke: #fff;
 }

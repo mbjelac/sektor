@@ -224,7 +224,7 @@ industry
 
 ## Construction
 
-Wood 4
+size=4
 
 ## Function
 
