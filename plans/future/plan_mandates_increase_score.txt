@@ -5,12 +5,34 @@ The stricter the mandate, the higher the score.
 In such way a player's score is solely dependant on mandates. No mandate is linked to a specific sektor
 - a player may use however many sektors they wish to fulfill a mandate. However, all claimed mandates have to stay fulfilled to keep their scores.
 
-#14 Completed mandates increase player's score
-- player score is visible always in front of player name in top right
-    - bold
-    - prepended by star icon
-- each mandate has points
+#1 Mandates have points
+- when creating a mandate, also create it's points
+- a mandate's points never change
+- a mandate point amount depends on the mandate's difficulty to pass
+    - examples of VERY difficult mandates:
+        - population <= 0
+        - pollution <= 0
+        - deforestation <= 0
+        - export sewage <= 0 (sewage is a negative resource)
+    - examples of somewhat difficult mandates:
+        - population >= 10000
+            - a large number required but given enough sektors, player can achieve this by building enough Habitats
+        - pollution <= 100
+            - not very strict at start but will limit player's building construction soon
+        - export X >= 1000
+            - doable but exporting so much will definitely require a lot of imports or at least very large & intricate sektors
+    - examples of medium difficulty mandates:
+        - population >= 400
+            - 10 Habitats will do it
+        -
 - in mandate list, points are displayed in bottom right of mandate list item panel
     - small
     - prepended by star icon
--
+
+#2 Completed mandates increase player's score
+- player score is visible always in front of player name in top right
+    - bold
+    - prepended by star icon
+- a player's score is the sum of all their completed mandates' points
+    - if a player abandons or no longer fulfills a mandate, their score goes down by that mandate's point amount
+    - if a player fulfills a mandate or claims a mandate they already fulfill, their score goes up by that mandate's point amount
