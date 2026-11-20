@@ -29,7 +29,6 @@ size=2
 ## Function
 
 Name: Basic needs
-Active: always
 
 Water 2
 FoodRaw 5
@@ -40,15 +39,11 @@ Sewage 6
 
 ## Function
 
-Active: always
-
 HealthPhysical 3
 ->
 Hapiness 1
 
 ## Function
-
-Active: always
 
 HealthMental 3
 ->
@@ -56,15 +51,11 @@ Hapiness 1
 
 ## Function
 
-Active: always
-
 HealthSocial 3
 ->
 Hapiness 1
 
 ## Function
-
-Active: always
 
 Childcare 2
 ->
@@ -314,7 +305,7 @@ size=3
 
 ## Function
 
-Name: System core
+Name: Basic operations
 
 WorkTechnical 2
 EnergyElectric 3
@@ -703,7 +694,7 @@ size=3
 
 ## Function
 
-Name: System core
+Name: Basic operations
 
 EnergyElectric 4
 WorkTechnical 3
