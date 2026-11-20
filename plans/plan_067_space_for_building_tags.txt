@@ -1,0 +1,6 @@
+#1 Building tags have enough space
+- reorient building tag icons in building toolbar to be placed vertically
+    - increase width of construction toolbar to fit a narrow & high panel on the left side
+    - panel contains building tag icons one underneath the other ordered from top to bottom
+        - ordering specified by building-tags.md
+- geography panel underneath construction toolbar width increased to align with construction toolbar width
