@@ -2,6 +2,6 @@ Some buildings can be built only at Sea squares.
 
 Examples (land variant in brackets):
 - ExtractionRig (Extractor)
-- Aquaculture (Agriplot)
+- Aquaplot (Agriplot)
 - Bobber (N/A, wave power plant)
-- AquaTower (FloaterTower)
+- SeaTower (FloaterTower)
