@@ -1,0 +1,34 @@
+A player's score is the number of their claimed mandates which are currently fulfilled (see plan_limit_mandate_choice).
+Fulfilling mandates gives the player a richer building palette: a new player has few building types, more are unlocked as the score grows.
+
+Levels are no longer needed:
+- currently score is turned into a level (levels.md), and a building can require a level (minLevel)
+- the score is a small, readable number (count of fulfilled mandates), so buildings can require it directly
+    - one indirection less: no table to keep in sync with the buildings
+    - the unlocking curve is tuned directly in buildings.md
+- no building in buildings.md uses minLevel yet, so nothing is lost by removing it
+- remove:
+    - levels.md & levels.test.md
+    - parseLevels.ts & its tests
+    - playerLevel.ts
+    - minLevel building property
+
+Buildings require a number of fulfilled mandates:
+- a building may have a property with the minimum number of fulfilled mandates the player needs to build it
+    - replaces minLevel
+    - a building without this property is available from the start
+- the building toolbar offers only buildings the player has enough fulfilled mandates for
+    - same as currently done with levels
+    - destruction tool always offered
+- the starting set of buildings must be enough to fulfill the first mandates
+
+Losing fulfilled mandates:
+- completion is live, so the score can drop and buildings can become locked again
+- buildings already constructed stay & keep working
+- locked buildings cannot be constructed again until the player has enough fulfilled mandates
+    - no change needed: toolbar filtering already works so
+- the player keeps what they have, but cannot expand with locked buildings
+
+Leaderboard:
+- remove "Level" & "Points to next level" columns
+- possibly replace with number of fulfilled mandates needed for the next building unlock
