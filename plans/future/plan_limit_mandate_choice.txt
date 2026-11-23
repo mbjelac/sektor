@@ -1,0 +1,40 @@
+A player's score is the number of their claimed mandates which are currently fulfilled.
+For this to measure progress, a player must not be able to collect mandates without working for them.
+
+Currently many generated mandates are already fulfilled when they appear, for example:
+- population at most (habitats + 5) * 40
+- pollution at most the player's own pollution footprint
+- deforestation at most 20 forests
+- hapiness at least 1
+Since mandates are refilled every second and any number can be claimed, a player could collect dozens of these without building anything.
+
+Mandates are kept in a shared pool:
+- the pool always has 100 unclaimed mandates
+    - whenever a mandate is claimed, a new one is created to replace it
+- the pool size does not depend on the number of players
+    - each player sees only a part of the pool (see below), and which part depends on the player's state, not on how many players there are
+    - claimed mandates are replaced right away, so many players claiming do not shrink the pool
+- the pool is shared by all players, so a mandate is not created for any particular player
+    - mandate amounts are drawn from wide ranges valid for the whole planet, not from one player's state
+        - import & export amounts already work so, based on planet's imports & exports
+        - pollution, deforestation, population & hapiness amounts need planet-wide ranges too
+    - the wide ranges mean the pool has mandates for players of all states of development
+        - "at least" mandates which a new player can reach
+        - "at most" limits which ask a developed player to clean up: destroy polluting buildings, replant forests, remove habitats
+
+No mandate is shown to a player which the player already fulfils:
+- each player sees only those mandates in the pool which their sektors do not already fulfil
+    - checked against the player's current totals
+- a player with nothing to limit sees no ecology mandates
+    - fits the game: a new player builds up an economy first, ecology mandates appear once there is damage to limit
+- a mandate shown as unfulfilled may become fulfilled before it is claimed (the player changed something meanwhile)
+    - that is fine, the player did the work
+
+A player can hold at most 3 unfulfilled mandates:
+- fulfilled mandates do not count towards the cap
+    - a fulfilled mandate frees its slot, so the player can keep claiming and their score keeps growing
+    - capping all held mandates would cap the score, blocking progression
+- since every mandate shown starts unfulfilled, the player works on at most 3 mandates at once
+- a fulfilled mandate can become unfulfilled again (completion is live) and take up a slot
+    - if this puts the player over the cap, nothing is force-abandoned
+    - new claims are blocked until the player is back under the cap, by re-fulfilling or abandoning mandates
