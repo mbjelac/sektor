@@ -1,25 +1,16 @@
-To give the player a sense of progress, they can reach achievements which then unlock additional game content.
-Content:
-- building types
-- biomes
+To give the player a sense of achievement, badges are awarded when certain conditions are met.
+The badge is stored on the player.
+If conditions are no longer met, the player does not lose the badge.
+If conditions are met again, the player does not gain the badge again.
 
 Ideas for achievements:
 - 80% happiness (then 90%, 100%)
 - 80-20 export-import ratio
 - reducing a global import by 10% (20%, 30%, ...)
 - reaching a certain number of exports (or imports, or hapiness) with a very few buildings constructed
-- in forest biomes, keeping ecosystem damage to a minimum (20%, 10%, 5%, 0%) while having imports & exports
+- in forest biomes, keeping deforestation a minimum (20%, 10%, 5%, 0%) while having imports & exports
 
-Evidently they are grouped. Each group can have sub-levels:
-1. Novice
-2. Expert
-3. Master
-
-For example, the ecosystem damage achievements can be:
-- Novice Ecologist
-- Expert Ecologist
-- Master Ecologist
-
+deforestation: Ecologist
 Hapiness: Humanist
 import/export ratios: Industrialist
 reducing global import: Benefactor
