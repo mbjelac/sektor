@@ -3,7 +3,7 @@ Also, these buildings can be automatically destroyed by constructing another bui
 
 Examples:
 - polar biome snow cover
-- desert, tropical & temperate bushes
+- desert, tropical & temperate bushes or grass thickets
 - puddles
 - small rocks
 - dead wood
