@@ -1,0 +1,18 @@
+When a player abandons a sektor, only the owner is removed: buildings, pollution & deforestation stay, and the sektor is back in the list for anybody to claim.
+The player's totals drop at once, which makes abandoning a loophole for "at most" mandates (pollution, deforestation): damage is dumped onto whoever claims the sektor next.
+
+A sektor can be abandoned only if it is not damaged:
+- damaged means it has pollution or deforestation greater than 0
+    - pollution measured the same way as for mandates
+        - only pollution which affects mandates blocks abandoning
+        - pollution on empty squares does not count for mandates, so it does not block abandoning
+    - deforestation measured the same way as for mandates (initial EcosystemSupport - current EcosystemSupport)
+- to abandon a damaged sektor, the player has to clean it up first
+    - pollution: destroy polluting buildings
+    - deforestation: replant forests (will be possible)
+    - this is the same work "at most" mandates ask for, so the loophole turns into cleaning up
+- abandoning stays possible for its legitimate purpose: leaving a sektor which did not work out
+
+Player sees why a sektor cannot be abandoned:
+- Abandon button disabled while sektor is damaged
+- tooltip explains why, e.g. "Clean up pollution & deforestation before abandoning"

@@ -1,0 +1,25 @@
+A player's score is the number of their claimed mandates which are currently fulfilled (see plan_limit_mandate_choice).
+Fulfilling mandates allows the player to own more sektors: a new player may own few sektors, the allowance grows as the score grows.
+
+Number of sektors & mandates balance each other:
+- all player's sektors count towards all player's mandates
+- more sektors make "at least" mandates easier
+    - more space & resources for exports, population, hapiness
+- more sektors make "at most" mandates harder
+    - more buildings polluting, more forests felled
+- so a larger allowance is not simply an advantage, it is a choice the player has to manage
+
+Sektor allowance depends directly on number of fulfilled mandates:
+- no levels (see plan_limit_building_choice)
+- a player cannot claim a sektor if they already own as many sektors as their allowance permits
+- a new player's allowance must be enough to fulfill the first mandates
+
+Losing fulfilled mandates:
+- completion is live, so the score can drop and with it the allowance
+- sektors already owned are kept
+- the player cannot claim new sektors until they are back within the allowance
+- the player keeps what they have, but cannot expand
+
+Abandoning sektors:
+- abandoning a polluted or deforested sektor would clean up the player's totals, a loophole for "at most" mandates
+- solved by plan_can_not_abandon_damaged_sektor
