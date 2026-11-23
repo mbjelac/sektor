@@ -1,0 +1,23 @@
+A player may claim a mandate which contradicts a mandate they already hold.
+This is allowed on purpose: it lets the player pivot their direction by abandoning an existing mandate and claiming a contradictory one.
+
+A pivot is a choice only if the player sees the conflict before claiming.
+Otherwise the player claims a mandate, later discovers it cannot be fulfilled together with the ones they hold, and feels cheated instead of having chosen.
+
+Directly conflicting mandates:
+- criteria of the same type which cannot both be fulfilled
+- examples:
+    - unclaimed "population at most 200" conflicts with held "population at least 400"
+    - unclaimed "export at most 10 Metals" conflicts with held "export at least 30 Metals"
+
+Indirectly conflicting mandates:
+- held (claimed or fulfilled) mandates which do not directly conflict, but become difficult to work with if the selected mandate is claimed
+- examples:
+    - unclaimed "pollution at most 50" makes held "export at least 40 Metals" hard, as metal production pollutes
+    - unclaimed "deforestation at most 0" makes held "population at least 400" hard, as habitats need space
+
+Idea:
+- in an unclaimed mandate's details popup, indicate held mandates which conflict with it
+    - e.g. "Conflicts with <mandate icon> 12"
+- distinguish direct conflicts (cannot be fulfilled together) from indirect ones (difficult together)
+- possibly show multiple conflicting mandates
