@@ -1,6 +1,4 @@
-A new building "Treeplot"
+A new building "Treeplot" ... or "Arboplot"
 
 Has same outputs as Forests but a bit smaller value.
 However, also has inputs - Fertilizer, Water, WorkTechnical, WorkScientific, EnergyElectric
-
-
