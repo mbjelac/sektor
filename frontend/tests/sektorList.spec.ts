@@ -781,9 +781,11 @@ function isFitCriterion(criterion: { type: string; resourceName?: string; amount
 
 // The mandates stand in the lower half of the window, below what the whole planet moves.
 test("lists the mandates in the lower half of the window", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+    { number: 2, owner: null, criteria: [{ type: "maximumPollution", amount: 60 }] },
+  ])));
   await page.goto("/?test=true");
-  await createMandateNow(page);
-  await createMandateNow(page);
 
   const mandatePanel = await page.locator("#mandate-panel").evaluate(panel => ({
     isInLowerHalf: panel.getBoundingClientRect().top >= window.innerHeight / 2,

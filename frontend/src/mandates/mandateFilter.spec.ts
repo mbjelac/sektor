@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { filterMandates, withoutFulfilledMinimumMandates } from "./mandateFilter";
+import { filterMandates, onePerCriterion, withoutFulfilledMinimumMandates } from "./mandateFilter";
 import { Mandate, MandateCriterion } from "./mandates.api";
 import { PlayerTotals } from "./mandateCompletion";
 
@@ -50,5 +50,25 @@ describe("withoutFulfilledMinimumMandates", () => {
       mandateAsking(1, { type: "maximumPollution", amount: 100, completed: false }),
       mandateAsking(2, { type: "maximumPopulation", amount: 0, completed: false }),
     ], PLAYER_TOTALS).map(mandate => mandate.number)).toEqual([1, 2]);
+  });
+});
+
+describe("onePerCriterion", () => {
+  it("keeps only the first of the mandates asking for the same, whatever their amounts", () => {
+    expect(onePerCriterion([
+      mandateAsking(1, { type: "minimumExport", resourceName: "Apples", amount: 10, completed: false }),
+      mandateAsking(2, { type: "maximumPollution", amount: 100, completed: false }),
+      mandateAsking(3, { type: "minimumExport", resourceName: "Apples", amount: 30, completed: false }),
+      mandateAsking(4, { type: "minimumExport", resourceName: "Pears", amount: 10, completed: false }),
+      mandateAsking(5, { type: "maximumPollution", amount: 60, completed: false }),
+    ]).map(mandate => mandate.number)).toEqual([1, 2, 4]);
+  });
+
+  it("keeps the oldest of the mandates asking for the same, wherever it stands among them", () => {
+    expect(onePerCriterion([
+      mandateAsking(7, { type: "minimumExport", resourceName: "Apples", amount: 10, completed: false }),
+      mandateAsking(3, { type: "minimumExport", resourceName: "Apples", amount: 30, completed: false }),
+      mandateAsking(5, { type: "minimumExport", resourceName: "Apples", amount: 20, completed: false }),
+    ]).map(mandate => mandate.number)).toEqual([3]);
   });
 });

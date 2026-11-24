@@ -176,6 +176,46 @@ test("tells in the popup of a mandate sharing a criterion with the player's whic
   });
 });
 
+// Three mandates free to claim ask for Wood exported, in different amounts, and one for Ore exported.
+async function storeThreeWoodMandatesAndOneOre(page: Page) {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+    { number: 2, owner: null, criteria: [{ type: "minimumExport", resourceName: "Ore", amount: 5 }] },
+    { number: 3, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 30 }] },
+    { number: 4, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 20 }] },
+  ])));
+}
+
+test("lists only one of the mandates free to claim asking for the same", async ({ page }) => {
+  await storeThreeWoodMandatesAndOneOre(page);
+
+  await page.goto("/?test=true");
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items =>
+    items.map(item => (item as HTMLElement).dataset.mandateNumber)))
+    .toEqual(["1", "2"]);
+});
+
+// Once the oldest mandate asking for Wood exported is claimed, the next oldest of them, 3, is listed in
+// its place, warned of, as the player now holds that criterion. The mandate made in place of the one
+// claimed is drawn at random, so only the mandates asking for Wood that were there before are looked at.
+test("lists the next oldest of the mandates asking for the same once the one listed is claimed", async ({ page }) => {
+  await storeThreeWoodMandatesAndOneOre(page);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-item[data-mandate-number="1"]').click();
+  await page.locator("#mandate-claim-button").click();
+
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items => items
+    .filter(item => ["1", "3", "4"].includes((item as HTMLElement).dataset.mandateNumber!))
+    .map(item => ({
+      mandateNumber: (item as HTMLElement).dataset.mandateNumber,
+      isWarned: item.querySelector(".mandate-held-criterion-warning") !== null,
+    }))))
+    .toEqual([{ mandateNumber: "3", isWarned: true }]);
+});
+
 // A claimed mandate is no longer waiting to be claimed, so a new one, owned by nobody, takes its place.
 test("makes a new mandate in place of one claimed", async ({ page }) => {
   await storeUnclaimedMandate(page);
