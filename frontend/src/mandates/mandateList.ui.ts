@@ -5,8 +5,9 @@ import { createCriterionAbbreviation } from "./criterionAbbreviation.ui";
 import { getUsername } from "../login/login.api";
 import { showMandateDetailsDialog, showMandateDialog } from "./mandateDialog.ui";
 import { createCompletionDot } from "./completionDot.ui";
-import { filterMandates, MandateFilter } from "./mandateFilter";
+import { filterMandates, MandateFilter, withoutFulfilledMinimumMandates } from "./mandateFilter";
 import { recalculateMandates } from "./recalculateMandates";
+import { getPlayerTotals } from "./playerTotals";
 import { getPlayerSektors } from "./playerSektors";
 import { PlayerSektor } from "./sektorsMovingResource";
 import { mandateCategory } from "./mandateCategory";
@@ -50,8 +51,16 @@ export function renderMandateList() {
   const playerSektors = getPlayerSektors();
   mandatePanel.replaceChildren(
     createHeader(hasOwnMandates),
-    ...filterMandates(mandates, mandateFilter, getUsername()).map(mandate => createMandateItem(mandate, playerSektors)),
+    ...listedMandates(mandates).map(mandate => createMandateItem(mandate, playerSektors)),
   );
+}
+
+// Of the mandates waiting to be claimed, those the player's sektors already fulfil by making at least
+// so much are not listed, worked out from the sektors as they stand whenever the list is drawn.
+function listedMandates(mandates: Mandate[]): Mandate[] {
+  const filteredMandates = filterMandates(mandates, mandateFilter, getUsername());
+  if (mandateFilter !== "unclaimed") return filteredMandates;
+  return withoutFulfilledMinimumMandates(filteredMandates, getPlayerTotals(getUsername()));
 }
 
 // The name of the list stays at the top of the mandates while they are scrolled past it, with the

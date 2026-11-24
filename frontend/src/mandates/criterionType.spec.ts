@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { asksForAtLeast, isAboutExports } from "./criterionType";
-import { ResourceCriterion } from "./mandates.api";
+import { asksForAtLeast, isAboutExports, isMinimumCriterion } from "./criterionType";
+import { MandateCriterion, ResourceCriterion } from "./mandates.api";
 
 describe("criterion types", () => {
   it("tells of every kind of criterion whether it is about exports and whether it asks for at least", () => {
@@ -15,5 +15,30 @@ describe("criterion types", () => {
         { type: "minimumImport", aboutExports: false, atLeast: true },
         { type: "maximumImport", aboutExports: false, atLeast: false },
       ]);
+  });
+
+  it("tells of every kind of criterion whether it is a minimum criterion", () => {
+    const criteria: MandateCriterion[] = [
+      { type: "minimumExport", resourceName: "Apples", amount: 5, completed: false },
+      { type: "maximumExport", resourceName: "Apples", amount: 5, completed: false },
+      { type: "minimumImport", resourceName: "Apples", amount: 5, completed: false },
+      { type: "maximumImport", resourceName: "Apples", amount: 5, completed: false },
+      { type: "maximumDeforestation", amount: 5, completed: false },
+      { type: "maximumPollution", amount: 5, completed: false },
+      { type: "minimumPopulation", amount: 5, completed: false },
+      { type: "maximumPopulation", amount: 5, completed: false },
+      { type: "minimumHapiness", amount: 5, completed: false },
+    ];
+    expect(criteria.map(criterion => ({ type: criterion.type, isMinimum: isMinimumCriterion(criterion) }))).toEqual([
+      { type: "minimumExport", isMinimum: true },
+      { type: "maximumExport", isMinimum: false },
+      { type: "minimumImport", isMinimum: true },
+      { type: "maximumImport", isMinimum: false },
+      { type: "maximumDeforestation", isMinimum: false },
+      { type: "maximumPollution", isMinimum: false },
+      { type: "minimumPopulation", isMinimum: true },
+      { type: "maximumPopulation", isMinimum: false },
+      { type: "minimumHapiness", isMinimum: true },
+    ]);
   });
 });

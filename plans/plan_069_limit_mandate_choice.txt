@@ -58,13 +58,13 @@ Which mandates a player can claim:
     - X is configurable
     - for now X = 10
 
-#3 Hide minimum criteria mandates from players who already fulfil them
-- minimum criteria are: minimum export, minimum import, minimum population, minimum hapiness
-- an unclaimed mandate with minimum criteria is hidden from a player whose sektors already fulfil it
+#3 [done] Hide minimum criteria mandates from players who already fulfil them
+- [done] minimum criteria are: minimum export, minimum import, minimum population, minimum hapiness
+- [done] an unclaimed mandate with minimum criteria is hidden from a player whose sektors already fulfil it
     - checked against the player's current totals, the same way as completion of claimed mandates
     - applies wherever unclaimed mandates are listed: mandate list in list page & mandate list in map
     - a fulfilled minimum criteria mandate would be a free point
-- hidden mandates are checked anew whenever the player's sektors change
+- [done] hidden mandates are checked anew whenever the player's sektors change
     - a mandate the player fulfils disappears from their list, even if they were working towards it
         - e.g. a player sees "export at least 30 Metals" and builds towards it without claiming; on reaching 30 the mandate disappears
     - consequence: a player has to claim a minimum criteria mandate before fulfilling it

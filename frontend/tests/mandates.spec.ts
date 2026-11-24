@@ -509,6 +509,23 @@ test("tells in the list how far the player's sektors have got with every criteri
     .toEqual(["(6)", "(-4)", "(0)"]);
 });
 
+// The player's sektors send out 6 Ore, so a mandate asking for at least 5 of it sent out would be a
+// point for nothing and is not listed, while one asking for at least 10 is. A mandate asking for at
+// most so much Water brought in is listed although no sektor of theirs brings in any.
+test("does not list a mandate free to claim which asks for at least what the player's sektors already make", async ({ page }) => {
+  await storeSektorMovingOreAndEnergy(page);
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, criteria: [{ type: "minimumExport", resourceName: "Ore", amount: 5 }] },
+    { number: 2, owner: null, criteria: [{ type: "minimumExport", resourceName: "Ore", amount: 10 }] },
+    { number: 3, owner: null, criteria: [{ type: "maximumImport", resourceName: "Water", amount: 5 }] },
+  ])));
+  await page.goto("/?test=true");
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items =>
+    items.map(item => (item as HTMLElement).dataset.mandateNumber)))
+    .toEqual(["2", "3"]);
+});
+
 // Under every criterion of a mandate opened in full stands what the player's sektors move of its
 // resource now, below nothing where they move it the other way to the one the criterion asks for.
 test("tells under every criterion of a mandate opened in full what the player's sektors move now", async ({ page }) => {

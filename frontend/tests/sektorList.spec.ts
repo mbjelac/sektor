@@ -369,6 +369,27 @@ test("shows what a building put up in a sektor does to what the planet moves", a
   ]);
 });
 
+// A mandate free to claim asking for at least 3 Wood sent out is listed while no sektor of the player
+// makes any, and no longer once the processor put up in Alpha sends out 3 Wood.
+test("stops listing a mandate free to claim once a building put up makes what it asks for", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 3 }] },
+  ])));
+  await page.goto("/?test=true");
+  const listedBefore = await page.locator("#mandate-panel .mandate-item").count();
+
+  await page.goto("/sektor.html?id=Alpha&test=true");
+  await placeHub(page);
+  await page.locator('.building-item[data-building-name="TestProcessor"]').click();
+  const canvas = page.locator("#canvas-container > canvas");
+  const canvasBox = await canvas.boundingBox();
+  await canvas.click({ position: { x: canvasBox!.width / 2, y: canvasBox!.height / 2 } });
+  await page.goto("/?test=true");
+
+  expect({ listedBefore, listedAfter: await page.locator("#mandate-panel .mandate-item").count() })
+    .toEqual({ listedBefore: 1, listedAfter: 0 });
+});
+
 // Whose imports and exports are listed is chosen by the buttons at the end of the list's name: the
 // list opens on the whole planet's, and the user button lists the player's own.
 test("lists the whole planet's imports and exports first and the player's own once asked for", async ({ page }) => {

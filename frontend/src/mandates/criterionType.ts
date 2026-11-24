@@ -15,3 +15,9 @@ export function isAboutExports(criterion: ResourceCriterion): boolean {
 export function asksForAtLeast(criterion: ResourceCriterion): boolean {
   return criterion.type === "minimumExport" || criterion.type === "minimumImport";
 }
+
+// A minimum criterion asks for at least so much of something: a resource exported or imported, people
+// housed, or Hapiness made.
+export function isMinimumCriterion(criterion: MandateCriterion): boolean {
+  return ["minimumExport", "minimumImport", "minimumPopulation", "minimumHapiness"].includes(criterion.type);
+}
