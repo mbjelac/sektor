@@ -8,33 +8,104 @@ Currently many generated mandates are already fulfilled when they appear, for ex
 - hapiness at least 1
 Since mandates are refilled every second and any number can be claimed, a player could collect dozens of these without building anything.
 
-Mandates are kept in a shared pool:
-- the pool always has 100 unclaimed mandates
-    - whenever a mandate is claimed, a new one is created to replace it
+Unclaimed mandates are kept in a shared pool:
+- the pool always has unclaimed mandates (see #2)
 - the pool size does not depend on the number of players
     - each player sees only a part of the pool (see below), and which part depends on the player's state, not on how many players there are
     - claimed mandates are replaced right away, so many players claiming do not shrink the pool
-- the pool is shared by all players, so a mandate is not created for any particular player
-    - mandate amounts are drawn from wide ranges valid for the whole planet, not from one player's state
-        - import & export amounts already work so, based on planet's imports & exports
-        - pollution, deforestation, population & hapiness amounts need planet-wide ranges too
-    - the wide ranges mean the pool has mandates for players of all states of development
-        - "at least" mandates which a new player can reach
-        - "at most" limits which ask a developed player to clean up: destroy polluting buildings, replant forests, remove habitats
+- the pool is shared by all players, so a mandate is not created for any particular player (see #1)
 
-No mandate is shown to a player which the player already fulfils:
-- each player sees only those mandates in the pool which their sektors do not already fulfil
-    - checked against the player's current totals
-- a player with nothing to limit sees no ecology mandates
-    - fits the game: a new player builds up an economy first, ecology mandates appear once there is damage to limit
-- a mandate shown as unfulfilled may become fulfilled before it is claimed (the player changed something meanwhile)
-    - that is fine, the player did the work
+Which mandates a player sees:
+- "at least" mandates are shown only while the player does not already fulfil them (see #3)
+- "at most" mandates are shown whether or not the player already fulfils them
+    - a player can take on a limit in advance, as a commitment which will constrain them later
+    - a point now, at the cost of flexibility later
+    - or a player can take on a limit they already break, and work to fix the situation
 
-A player can hold at most 3 unfulfilled mandates:
+Which mandates a player can claim:
+- a mandate the player cannot claim is still shown
+    - Claim is not possible
+    - reason shown, so the player can decide to abandon something to make room
+- a player holds at most one mandate per criterion (see #5)
+- a player holds at most 3 unfulfilled mandates (see #4)
+
+#1 Mandate criteria amounts created according to global values
+- mandate materials no longer depend on the current player
+    - replace player's pollution footprint, habitat count & possible hapiness with the same values summed over all sektors of the planet
+        - all sektors, regardless of owner
+    - mandate creation no longer needs the current player's name
+- minimum export & minimum import amounts drawn according to the planet's throughput of the chosen resource
+    - resource still chosen as now: the more the planet imports (for exports) or exports (for imports) of a resource, the more likely it is chosen
+    - amount drawn between 5 and the planet's total import (for exports) or export (for imports) of the chosen resource
+        - a mandate never asks for more than the planet needs
+        - if the planet's total is below 5, or the resource is not moved at all, draw between 5 and 50 as now
+- hapiness amounts drawn according to the planet's possible hapiness
+    - amount drawn between 1 and the planet's possible hapiness, plus a little more, so that habitats still have to be built
+- pollution amounts drawn according to the planet's pollution footprint
+    - amount drawn in pollution steps between 0 and the planet's pollution footprint
+    - if the planet has no polluting building, draw up to the footprint of the least polluting building, as now
+- population amounts drawn according to the planet's habitat count
+    - amount drawn as so many habitats' worth of people, between 0 (at most) or 1 (at least) and the planet's habitat count plus a few habitats more
+- deforestation amounts unchanged
+    - already drawn independently of the player, as 0 to 20 forests' worth of ecosystem support
+
+#2 There are always mandates to claim
+- remove current mandate generation
+    - no more creating a mandate every second until there are 10 unclaimed mandates
+- whenever a mandate is claimed, create a new one
+    - the number of unclaimed mandates stays the same
+- initially, when there are no mandates at all, create X mandates
+    - X is configurable
+    - for now X = 10
+
+#3 Hide minimum criteria mandates from players who already fulfil them
+- minimum criteria are: minimum export, minimum import, minimum population, minimum hapiness
+- an unclaimed mandate with minimum criteria is hidden from a player whose sektors already fulfil it
+    - checked against the player's current totals, the same way as completion of claimed mandates
+    - applies wherever unclaimed mandates are listed: mandate list in list page & mandate list in map
+    - a fulfilled minimum criteria mandate would be a free point
+- hidden mandates are checked anew whenever the player's sektors change
+    - a mandate the player fulfils disappears from their list, even if they were working towards it
+        - e.g. a player sees "export at least 30 Metals" and builds towards it without claiming; on reaching 30 the mandate disappears
+    - consequence: a player has to claim a minimum criteria mandate before fulfilling it
+        - a point is always earned by work done after claiming
+        - makes the cap on unfulfilled mandates meaningful: the player plans which mandates to work on
+        - mandates fulfilled by the player's growth as a side effect disappear too
+            - correct, the player was not working towards them
+        - a player who forgets to claim loses little: the pool has many similar mandates
+
+#4 A player may have at most 3 unfulfilled mandates
 - fulfilled mandates do not count towards the cap
     - a fulfilled mandate frees its slot, so the player can keep claiming and their score keeps growing
     - capping all held mandates would cap the score, blocking progression
-- since every mandate shown starts unfulfilled, the player works on at most 3 mandates at once
+- the player works on at most 3 unfulfilled mandates at once
+    - fulfilled "at most" mandates claimed in advance do not take a slot, but are limited by one mandate per criterion
+- while the player holds 3 or more unfulfilled mandates, no mandate can be claimed
 - a fulfilled mandate can become unfulfilled again (completion is live) and take up a slot
     - if this puts the player over the cap, nothing is force-abandoned
     - new claims are blocked until the player is back under the cap, by re-fulfilling or abandoning mandates
+- player sees that they cannot claim more mandates
+    - unclaimed mandates stay visible in mandate lists
+    - in an unclaimed mandate's details popup, the Claim button is not shown
+        - instead, at the same place, a red message:
+            - "You have at least 3 incomplete mandates."
+            - line break
+            - "You cannot claim any more."
+
+#5 A player may not claim a mandate with same criterion
+- criterion means the same type, and for imports & exports also the same resource
+    - e.g. one "pollution at most", one "population at least", one "export at least" of Metals
+- without this, mandates of the same criterion could be stacked for free points
+    - "pollution at most 130", "at most 140" & "at most 150" held together: only the tightest one constrains, the other two are free
+    - "export at least 10 Metals" & "at least 20 Metals": whoever fulfils the second fulfils the first for free
+    - so a fulfilled "at most" mandate claimed in advance is at most one free point per criterion
+- player sees which unclaimed mandates have a criterion they already hold
+    - in mandate list (list page & map), such mandates have a yellow warning icon
+        - right-aligned
+        - ⚠️, same as starvation warning in building function panel
+- in such mandate's details popup
+    - below the criteria display:
+        - small text, white: "Already claimed:"
+        - the same criteria from the player's mandate which has it, rendered in the same way as criteria of this mandate
+    - Claim button not shown
+        - to claim this mandate, the player first abandons their mandate with the same criterion
