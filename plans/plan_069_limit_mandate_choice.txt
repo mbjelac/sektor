@@ -109,3 +109,15 @@ Which mandates a player can claim:
         - the same criteria from the player's mandate which has it, rendered in the same way as criteria of this mandate
     - Claim button not shown
         - to claim this mandate, the player first abandons their mandate with the same criterion
+
+#6 Player sees only one unclaimed mandate per criterion
+- of unclaimed mandates with the same criterion, the player sees only one in mandate lists (list page & map)
+    - same criterion as in #5: same type, and for imports & exports also the same resource
+    - only display: the pool keeps all mandates, different players may see different ones
+    - applied after hiding minimum criteria mandates the player already fulfils (#3)
+        - so the shown mandate is one the player can see at all
+- the shown mandate is the oldest one (lowest mandate number)
+    - stable: does not change as the player builds
+    - difficulty effectively random, as drawn in the pool
+- when the shown mandate is claimed, the next oldest with the same criterion is shown
+    - the player now holds that criterion, so it is shown with the warning icon & cannot be claimed (#5)
