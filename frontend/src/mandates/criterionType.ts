@@ -21,3 +21,11 @@ export function asksForAtLeast(criterion: ResourceCriterion): boolean {
 export function isMinimumCriterion(criterion: MandateCriterion): boolean {
   return ["minimumExport", "minimumImport", "minimumPopulation", "minimumHapiness"].includes(criterion.type);
 }
+
+// Two criteria are the same criterion when they are of the same type and, where they are about a
+// resource, about the same resource, whatever amounts they ask for.
+export function isSameCriterion(criterion: MandateCriterion, otherCriterion: MandateCriterion): boolean {
+  if (criterion.type !== otherCriterion.type) return false;
+  if (!isAboutResource(criterion) || !isAboutResource(otherCriterion)) return true;
+  return criterion.resourceName === otherCriterion.resourceName;
+}

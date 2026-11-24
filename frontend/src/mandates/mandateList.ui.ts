@@ -13,6 +13,7 @@ import { PlayerSektor } from "./sektorsMovingResource";
 import { mandateCategory } from "./mandateCategory";
 import { createNewMandate } from "./mandateCreation";
 import { canClaimMandates } from "./mandateCap";
+import { heldCriteria } from "./heldCriteria";
 
 // The list opens on the mandates waiting to be claimed.
 let mandateFilter: MandateFilter = "unclaimed";
@@ -52,7 +53,7 @@ export function renderMandateList() {
   const playerSektors = getPlayerSektors();
   mandatePanel.replaceChildren(
     createHeader(hasOwnMandates),
-    ...listedMandates(mandates).map(mandate => createMandateItem(mandate, playerSektors)),
+    ...listedMandates(mandates).map(mandate => createMandateItem(mandate, mandates, playerSektors)),
   );
 }
 
@@ -99,9 +100,10 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
 }
 
 // A mandate is its badge and number followed by what it asks for, every criterion in short, and on
-// the player's own, whether it is completed at the end of the row. Clicking anywhere on it opens it
-// up in full, which is where a mandate nobody owns is claimed and the player's own is given up.
-function createMandateItem(mandate: Mandate, playerSektors: PlayerSektor[]): HTMLElement {
+// the player's own, whether it is completed at the end of the row. A mandate nobody owns which shares
+// a criterion with one of the player's own ends with a warning instead. Clicking anywhere on it opens
+// it up in full, which is where a mandate nobody owns is claimed and the player's own is given up.
+function createMandateItem(mandate: Mandate, mandates: Mandate[], playerSektors: PlayerSektor[]): HTMLElement {
   const item = document.createElement("div");
   item.className = "mandate-item";
   item.dataset.mandateNumber = `${mandate.number}`;
@@ -122,8 +124,20 @@ function createMandateItem(mandate: Mandate, playerSektors: PlayerSektor[]): HTM
   }
 
   if (mandate.owner !== null) item.appendChild(createCompletionDot(mandate.completed));
+  if (mandate.owner === null && heldCriteria(mandate, mandates, getUsername()).length > 0) {
+    item.appendChild(createHeldCriterionWarning());
+  }
 
   return item;
+}
+
+// The same warning sign as a starved building function's.
+function createHeldCriterionWarning(): HTMLElement {
+  const warning = document.createElement("span");
+  warning.className = "mandate-held-criterion-warning";
+  warning.textContent = "⚠️";
+  warning.dataset.title = "Already claimed";
+  return warning;
 }
 
 // A claimed mandate is the player's, and is no longer waiting in the list; a new one is made in its
@@ -139,7 +153,8 @@ function openMandate(mandate: Mandate) {
 
   showMandateDialog({
     mandate,
-    canClaim: canClaimMandates(getMandates(), getUsername()),
+    canClaimMore: canClaimMandates(getMandates(), getUsername()),
+    heldCriteria: heldCriteria(mandate, getMandates(), getUsername()),
     onClaimed: () => {
       setMandateOwner(mandate.number, getUsername()!);
       createNewMandate();

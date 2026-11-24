@@ -92,18 +92,18 @@ Which mandates a player can claim:
             - line break
             - "You cannot claim any more."
 
-#5 A player may not claim a mandate with same criterion
-- criterion means the same type, and for imports & exports also the same resource
+#5 [done] A player may not claim a mandate with same criterion
+- [done] criterion means the same type, and for imports & exports also the same resource
     - e.g. one "pollution at most", one "population at least", one "export at least" of Metals
-- without this, mandates of the same criterion could be stacked for free points
+- [done] without this, mandates of the same criterion could be stacked for free points
     - "pollution at most 130", "at most 140" & "at most 150" held together: only the tightest one constrains, the other two are free
     - "export at least 10 Metals" & "at least 20 Metals": whoever fulfils the second fulfils the first for free
     - so a fulfilled "at most" mandate claimed in advance is at most one free point per criterion
-- player sees which unclaimed mandates have a criterion they already hold
+- [done] player sees which unclaimed mandates have a criterion they already hold
     - in mandate list (list page & map), such mandates have a yellow warning icon
         - right-aligned
         - ⚠️, same as starvation warning in building function panel
-- in such mandate's details popup
+- [done] in such mandate's details popup
     - below the criteria display:
         - small text, white: "Already claimed:"
         - the same criteria from the player's mandate which has it, rendered in the same way as criteria of this mandate

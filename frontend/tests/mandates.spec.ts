@@ -121,6 +121,61 @@ test("tells the player in place of Claim that they cannot claim more while they 
   });
 });
 
+// The player holds a mandate exporting at least 12 Wood. Of the mandates free to claim, the one
+// exporting at least 30 Wood shares its criterion; the one exporting at least 5 Ore does not.
+async function storeHeldWoodMandateAndTwoFree(page: Page) {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: false, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+    { number: 2, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 30 }] },
+    { number: 3, owner: null, criteria: [{ type: "minimumExport", resourceName: "Ore", amount: 5 }] },
+  ])), CURRENT_PLAYER);
+}
+
+test("warns at the end of the row of a mandate free to claim sharing a criterion with one of the player's", async ({ page }) => {
+  await storeHeldWoodMandateAndTwoFree(page);
+  await page.goto("/?test=true");
+
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items => items.map(item => {
+    const warning = item.querySelector(".mandate-held-criterion-warning");
+    return {
+      mandateNumber: (item as HTMLElement).dataset.mandateNumber,
+      warning: warning?.textContent ?? null,
+      isAtEnd: warning !== null && Math.round(warning.getBoundingClientRect().right) === Math.round(item.getBoundingClientRect().right
+        - parseFloat(getComputedStyle(item).paddingRight) - parseFloat(getComputedStyle(item).borderRightWidth)),
+    };
+  }))).toEqual([
+    { mandateNumber: "2", warning: "⚠️", isAtEnd: true },
+    { mandateNumber: "3", warning: null, isAtEnd: false },
+  ]);
+});
+
+// Under what the mandate asks for stands, below a small white heading, the criterion of the player's
+// own mandate it shares, told the same way; and there is no Claim button.
+test("tells in the popup of a mandate sharing a criterion with the player's which one they hold, and offers no Claim", async ({ page }) => {
+  await storeHeldWoodMandateAndTwoFree(page);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
+
+  await page.locator('#mandate-panel .mandate-item[data-mandate-number="2"]').click();
+
+  expect(await page.locator("#mandate-dialog").evaluate(dialog => {
+    const heading = dialog.querySelector<HTMLElement>(".mandate-held-criteria-heading")!;
+    return {
+      heading: heading.textContent,
+      headingColor: getComputedStyle(heading).color,
+      criteria: [...dialog.querySelectorAll(".mandate-description-line")].map(line => line.textContent),
+      hasClaimButton: dialog.querySelector("#mandate-claim-button") !== null,
+    };
+  })).toEqual({
+    heading: "Already claimed:",
+    headingColor: "rgb(255, 255, 255)",
+    criteria: ["Export at least 30 🪵 Wood", "Export at least 12 🪵 Wood"],
+    hasClaimButton: false,
+  });
+});
+
 // A claimed mandate is no longer waiting to be claimed, so a new one, owned by nobody, takes its place.
 test("makes a new mandate in place of one claimed", async ({ page }) => {
   await storeUnclaimedMandate(page);
@@ -135,8 +190,8 @@ test("makes a new mandate in place of one claimed", async ({ page }) => {
 });
 
 // A mandate just claimed is shown among the player's own, the list turning to them and scrolling down
-// to it below the many the player already has. Those are all fulfilled, so none of them stands in the
-// way of claiming another.
+// to it below the many the player already has. Those are all fulfilled and ask for Wood, not Ore, so
+// none of them stands in the way of claiming another.
 test("lists the player's own mandates with the one just claimed in view", async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
     ...Array.from({ length: 20 }, (_, mandateIndex) => ({
@@ -145,7 +200,7 @@ test("lists the player's own mandates with the one just claimed in view", async 
       completed: true,
       criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 5 }],
     })),
-    { number: 21, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+    { number: 21, owner: null, criteria: [{ type: "minimumExport", resourceName: "Ore", amount: 12 }] },
   ])), CURRENT_PLAYER);
   await page.goto("/?test=true");
 

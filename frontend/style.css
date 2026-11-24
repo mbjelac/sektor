@@ -1649,6 +1649,20 @@ body > main {
     gap: 8px;
 }
 
+/* The criteria the player already holds stand under what the mandate asks for, below a small white
+   heading. */
+.mandate-held-criteria {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.mandate-held-criteria-heading {
+    color: #fff;
+    font-size: 11px;
+}
+
 /* What the player's sektors move now is set in under the criterion it belongs to, further in where
    the criterion is told behind a dot. */
 .mandate-description-current {
@@ -1753,6 +1767,11 @@ body > main {
 }
 
 .mandate-item .mandate-completion {
+    margin-left: auto;
+}
+
+/* A mandate sharing a criterion with one of the player's own is warned of at the end of its row. */
+.mandate-item .mandate-held-criterion-warning {
     margin-left: auto;
 }
 

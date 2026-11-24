@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { asksForAtLeast, isAboutExports, isMinimumCriterion } from "./criterionType";
+import { asksForAtLeast, isAboutExports, isMinimumCriterion, isSameCriterion } from "./criterionType";
 import { MandateCriterion, ResourceCriterion } from "./mandates.api";
 
 describe("criterion types", () => {
@@ -39,6 +39,29 @@ describe("criterion types", () => {
       { type: "minimumPopulation", isMinimum: true },
       { type: "maximumPopulation", isMinimum: false },
       { type: "minimumHapiness", isMinimum: true },
+    ]);
+  });
+
+  // Every criterion is set against exporting at least 10 Metals, and against polluting at most 100.
+  it("tells the same criterion by its type and resource, whatever its amount", () => {
+    const metalsExport: MandateCriterion = { type: "minimumExport", resourceName: "Metals", amount: 10, completed: false };
+    const pollution: MandateCriterion = { type: "maximumPollution", amount: 100, completed: false };
+    const criteria: MandateCriterion[] = [
+      { type: "minimumExport", resourceName: "Metals", amount: 30, completed: false },
+      { type: "minimumExport", resourceName: "Glass", amount: 10, completed: false },
+      { type: "maximumExport", resourceName: "Metals", amount: 10, completed: false },
+      { type: "maximumPollution", amount: 300, completed: false },
+      { type: "maximumDeforestation", amount: 100, completed: false },
+    ];
+    expect(criteria.map(criterion => ({
+      sameAsMetalsExport: isSameCriterion(criterion, metalsExport),
+      sameAsPollution: isSameCriterion(criterion, pollution),
+    }))).toEqual([
+      { sameAsMetalsExport: true, sameAsPollution: false },
+      { sameAsMetalsExport: false, sameAsPollution: false },
+      { sameAsMetalsExport: false, sameAsPollution: false },
+      { sameAsMetalsExport: false, sameAsPollution: true },
+      { sameAsMetalsExport: false, sameAsPollution: false },
     ]);
   });
 });

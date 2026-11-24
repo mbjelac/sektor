@@ -18,14 +18,18 @@ import { MANDATE_CATEGORY_NAMES, mandateCategory } from "./mandateCategory";
 import { MAXIMUM_UNFULFILLED_MANDATES } from "./mandateCap";
 
 // A mandate is looked over before it is claimed, and is claimed only once the player says so, and
-// only where the player may claim it.
-export function showMandateDialog({ mandate, canClaim, onClaimed }: {
+// only where the player may claim it: while they work on fewer mandates than they may, and hold no
+// mandate sharing a criterion with it. The criteria they hold are told under what the mandate asks for.
+export function showMandateDialog({ mandate, canClaimMore, heldCriteria, onClaimed }: {
   mandate: Mandate,
-  canClaim: boolean,
+  canClaimMore: boolean,
+  heldCriteria: MandateCriterion[],
   onClaimed: () => void
 }) {
-  const overlay = createMandatePopup("mandate-dialog", mandate, createDescription(mandate, false));
-  overlay.firstElementChild!.appendChild(createClaimButtons(overlay, canClaim, onClaimed));
+  const description = createDescription(mandate, false);
+  if (heldCriteria.length > 0) description.appendChild(createHeldCriteria(heldCriteria));
+  const overlay = createMandatePopup("mandate-dialog", mandate, description);
+  overlay.firstElementChild!.appendChild(createClaimButtons(overlay, canClaimMore, heldCriteria.length > 0, onClaimed));
   document.body.appendChild(overlay);
 }
 
@@ -92,12 +96,7 @@ function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElem
   const playerSektors = getPlayerSektors();
 
   for (const criterion of mandate.criteria) {
-    const line = document.createElement("div");
-    line.className = "mandate-description-line";
-    if (showsCompletion) line.appendChild(createCompletionDot(criterion.completed));
-    const resourceIcon = isAboutResource(criterion) ? getResourceIcon(criterion.resourceName) : null;
-    line.appendChild(createCriterionText(criterionDescription(criterion, resourceIcon)));
-    description.appendChild(line);
+    description.appendChild(createCriterionLine(criterion, showsCompletion));
     description.appendChild(createCurrentLine(criterion, playerSektors, showsCompletion));
     const sektorsMakingItUp = criterionSektors(criterion, playerSektors);
     if (sektorsMakingItUp.length > 0) {
@@ -106,17 +105,6 @@ function createDescription(mandate: Mandate, showsCompletion: boolean): HTMLElem
   }
 
   return description;
-}
-
-// The criterion in words, its amount in white among them.
-function createCriterionText(description: CriterionDescription): HTMLElement {
-  const text = document.createElement("span");
-  text.className = "mandate-description-text";
-  const amount = document.createElement("span");
-  amount.className = "mandate-description-amount";
-  amount.textContent = description.amount;
-  text.append(description.beforeAmount, amount, description.afterAmount);
-  return text;
 }
 
 // Set in under the criterion it belongs to, a little smaller than it, and named Current on the left
@@ -182,10 +170,52 @@ function createCriterionSektorList(
   return sektorList;
 }
 
+// The criteria of the player's own mandates which this one shares, told as this one's are, under a
+// small white heading, so that the player sees what they would have to give up to claim it.
+function createHeldCriteria(heldCriteria: MandateCriterion[]): HTMLElement {
+  const heldCriteriaSection = document.createElement("div");
+  heldCriteriaSection.className = "mandate-held-criteria";
+
+  const heading = document.createElement("div");
+  heading.className = "mandate-held-criteria-heading";
+  heading.textContent = "Already claimed:";
+  heldCriteriaSection.appendChild(heading);
+
+  for (const heldCriterion of heldCriteria) heldCriteriaSection.appendChild(createCriterionLine(heldCriterion, false));
+
+  return heldCriteriaSection;
+}
+
+function createCriterionLine(criterion: MandateCriterion, showsCompletion: boolean): HTMLElement {
+  const line = document.createElement("div");
+  line.className = "mandate-description-line";
+  if (showsCompletion) line.appendChild(createCompletionDot(criterion.completed));
+  const resourceIcon = isAboutResource(criterion) ? getResourceIcon(criterion.resourceName) : null;
+  line.appendChild(createCriterionText(criterionDescription(criterion, resourceIcon)));
+  return line;
+}
+
+// The criterion in words, its amount in white among them.
+function createCriterionText(description: CriterionDescription): HTMLElement {
+  const text = document.createElement("span");
+  text.className = "mandate-description-text";
+  const amount = document.createElement("span");
+  amount.className = "mandate-description-amount";
+  amount.textContent = description.amount;
+  text.append(description.beforeAmount, amount, description.afterAmount);
+  return text;
+}
+
 // Closing the popup without claiming stands on the left, as it does on any other popup of a mandate,
-// and claiming on the right, where it is offered everywhere else. Where the player may not claim it,
-// they are told why in its place. Either way the popup goes.
-function createClaimButtons(overlay: HTMLElement, canClaim: boolean, onClaimed: () => void): HTMLElement {
+// and claiming on the right, where it is offered everywhere else. A player working on as many
+// mandates as they may is told why in its place; one holding a mandate sharing a criterion with it is
+// offered nothing there, the criteria they hold being told above. Either way the popup goes.
+function createClaimButtons(
+  overlay: HTMLElement,
+  canClaimMore: boolean,
+  holdsSameCriterion: boolean,
+  onClaimed: () => void,
+): HTMLElement {
   const buttons = document.createElement("div");
   buttons.className = "dialog-buttons mandate-dialog-buttons";
 
@@ -196,10 +226,11 @@ function createClaimButtons(overlay: HTMLElement, canClaim: boolean, onClaimed: 
   closeButton.addEventListener("click", () => overlay.remove());
   buttons.appendChild(closeButton);
 
-  if (!canClaim) {
+  if (!canClaimMore) {
     buttons.appendChild(createClaimRefusal());
     return buttons;
   }
+  if (holdsSameCriterion) return buttons;
 
   const claimButton = createClaimButton(() => {
     overlay.remove();
