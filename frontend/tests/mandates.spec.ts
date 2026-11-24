@@ -999,6 +999,23 @@ test("opens a sektor making up a criterion on its map when it is clicked", async
   expect(new URL(page.url()).search).toEqual("?id=Alpha");
 });
 
+// A sektor whose map is already open is not opened again: the popup is only put away. The page is
+// marked before the click, so that loading it anew, which would also put the popup away, shows.
+test("only puts the popup away when the sektor clicked is the one whose map is open", async ({ page }) => {
+  await storeDeforestedSektorAndMandate(page);
+  await page.goto("/sektor.html?id=Alpha");
+  await page.locator("#mandate-button").click();
+  await page.locator("#mandate-panel .mandate-item").click();
+  await page.evaluate(() => (window as unknown as { isNotLoadedAnew: boolean }).isNotLoadedAnew = true);
+
+  await page.locator('#mandate-details-dialog .mandate-criterion-sektor[data-sektor-id="Alpha"]').click();
+
+  expect(await page.evaluate(() => ({
+    isNotLoadedAnew: (window as unknown as { isNotLoadedAnew?: boolean }).isNotLoadedAnew ?? false,
+    isPopupShown: document.getElementById("mandate-details-dialog") !== null,
+  }))).toEqual({ isNotLoadedAnew: true, isPopupShown: false });
+});
+
 // A mandate still to be claimed tells which of the player's sektors make up what they come to of it
 // as well, lined up under it.
 test("lists the sektors making up a criterion of a mandate still to be claimed", async ({ page }) => {

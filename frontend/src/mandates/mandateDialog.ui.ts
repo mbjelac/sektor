@@ -139,7 +139,8 @@ function currentAmount(criterion: MandateCriterion, playerSektors: PlayerSektor[
 // up, whether the mandate is theirs or is still to be claimed, by name and the picture of its biome, and how much it
 // counts towards the criterion. A sektor counting against a criterion about a resource, moving it the
 // other way, does so below nothing, and one counting towards it is told by a plus. Where no sektor
-// makes it up there is no list at all. A sektor clicked is opened on its map.
+// makes it up there is no list at all. A sektor clicked is opened on its map, unless its map is the one
+// already open, when the popup is only put away.
 function createCriterionSektorList(
   criterion: MandateCriterion,
   sektorsMakingItUp: CriterionSektor[],
@@ -154,6 +155,10 @@ function createCriterionSektorList(
     row.className = "mandate-criterion-sektor";
     row.dataset.sektorId = criterionSektor.sektorId;
     row.addEventListener("click", () => {
+      if (isSektorOnMap(criterionSektor.sektorId)) {
+        row.closest(".dialog-overlay")?.remove();
+        return;
+      }
       window.location.href = `/sektor.html?id=${encodeURIComponent(criterionSektor.sektorId)}`;
     });
     const location = playerSektors.find(playerSektor => playerSektor.sektorId === criterionSektor.sektorId)?.location;
@@ -168,6 +173,12 @@ function createCriterionSektorList(
     sektorList.appendChild(row);
   }
   return sektorList;
+}
+
+// The map of a sektor is open where the page is the sektor page of that sektor.
+function isSektorOnMap(sektorId: string): boolean {
+  return window.location.pathname.endsWith("/sektor.html")
+    && new URLSearchParams(window.location.search).get("id") === sektorId;
 }
 
 // The criteria of the player's own mandates which this one shares, told as this one's are, under a
