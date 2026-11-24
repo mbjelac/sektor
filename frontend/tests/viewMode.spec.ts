@@ -503,7 +503,7 @@ test("hides the list of mandates when its icon is clicked again", async ({ page 
 });
 
 // The list over the map does what the list beside the sektors does: a mandate claimed there becomes
-// the player's to complete, and so is told of on the map.
+// the player's to complete, and so is told of on the map, and a new one is made in its place.
 test("tells of a mandate claimed from the list of mandates over the map", async ({ page }) => {
   await storeMandatesForMap(page);
   await storeSektor(page, "Alpha", CURRENT_PLAYER);
@@ -517,7 +517,7 @@ test("tells of a mandate claimed from the list of mandates over the map", async 
   expect(await page.evaluate(() => ({
     owners: JSON.parse(localStorage.getItem("mandates")!).map((mandate: { owner: string | null }) => mandate.owner),
     messages: [...document.querySelectorAll('[id^="mandate-message-"]')].map(message => message.id).sort(),
-  }))).toEqual({ owners: [CURRENT_PLAYER, CURRENT_PLAYER], messages: ["mandate-message-1", "mandate-message-2"] });
+  }))).toEqual({ owners: [CURRENT_PLAYER, CURRENT_PLAYER, null], messages: ["mandate-message-1", "mandate-message-2"] });
 });
 
 // A mandate given up from the list over the map is the player's no longer, so it leaves both their

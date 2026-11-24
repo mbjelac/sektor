@@ -65,7 +65,20 @@ test("makes the player the owner of a mandate claimed from its popup and closes 
     owners: JSON.parse(localStorage.getItem("mandates")!).map((mandate: { owner: string | null }) => mandate.owner),
     isPopupShown: document.getElementById("mandate-dialog") !== null,
     listedMandates: document.querySelectorAll("#mandate-panel .mandate-item").length,
-  }))).toEqual({ owners: [CURRENT_PLAYER], isPopupShown: false, listedMandates: 1 });
+  }))).toEqual({ owners: [CURRENT_PLAYER, null], isPopupShown: false, listedMandates: 1 });
+});
+
+// A claimed mandate is no longer waiting to be claimed, so a new one, owned by nobody, takes its place.
+test("makes a new mandate in place of one claimed", async ({ page }) => {
+  await storeUnclaimedMandate(page);
+  await page.goto("/?test=true");
+
+  await page.locator("#mandate-panel .mandate-item").click();
+  await page.locator("#mandate-claim-button").click();
+
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mandates")!)
+    .map((mandate: { number: number; owner: string | null }) => ({ number: mandate.number, owner: mandate.owner }))))
+    .toEqual([{ number: 3, owner: "Tester" }, { number: 4, owner: null }]);
 });
 
 // A mandate just claimed is shown among the player's own, the list turning to them and scrolling down

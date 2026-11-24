@@ -10,6 +10,7 @@ import { recalculateMandates } from "./recalculateMandates";
 import { getPlayerSektors } from "./playerSektors";
 import { PlayerSektor } from "./sektorsMovingResource";
 import { mandateCategory } from "./mandateCategory";
+import { createNewMandate } from "./mandateCreation";
 
 // The list opens on the mandates waiting to be claimed.
 let mandateFilter: MandateFilter = "unclaimed";
@@ -115,10 +116,11 @@ function createMandateItem(mandate: Mandate, playerSektors: PlayerSektor[]): HTM
   return item;
 }
 
-// A claimed mandate is the player's, and is no longer waiting in the list; a mandate given up is the
-// player's no longer, so it leaves their list. A mandate just claimed may be completed already by the
-// sektors the player has, so that is worked out at once. The list then turns to the player's own
-// mandates, where the one just claimed is brought into view.
+// A claimed mandate is the player's, and is no longer waiting in the list; a new one is made in its
+// place, so that as many are waiting to be claimed as before. A mandate given up is the player's no
+// longer, so it leaves their list. A mandate just claimed may be completed already by the sektors the
+// player has, so that is worked out at once. The list then turns to the player's own mandates, where
+// the one just claimed is brought into view.
 function openMandate(mandate: Mandate) {
   if (mandate.owner !== null) {
     showMandateDetailsDialog(mandate, showChangedMandates);
@@ -129,6 +131,7 @@ function openMandate(mandate: Mandate) {
     mandate,
     onClaimed: () => {
       setMandateOwner(mandate.number, getUsername()!);
+      createNewMandate();
       recalculateMandates(getUsername());
       mandateFilter = "own";
       showChangedMandates();

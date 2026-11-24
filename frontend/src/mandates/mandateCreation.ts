@@ -5,37 +5,22 @@ import { globalImportsAndExports } from "../globalImportsAndExports";
 import { getSektorList } from "../list/sektorList.api";
 import { getSektorSummary } from "../list/sektorSummary";
 
-const CREATION_INTERVAL_MILLISECONDS = 1000;
-// Mandates nobody has taken up pile up if they are made faster than they are claimed, so no more are
-// made once there are this many waiting.
-const MAXIMUM_UNCLAIMED_MANDATES = 10;
+// So many mandates are made at once while there are none at all, so that there is something to claim
+// from the start.
+const INITIAL_MANDATE_COUNT = 10;
 
-let creationTimer: ReturnType<typeof setInterval> | null = null;
+// Returns whether any mandate was made. Once there are mandates, they are kept as many by a new one
+// being made whenever one is claimed, so none are made here again.
+export function createInitialMandates(): boolean {
+  if (getMandates().length > 0) return false;
 
-// Mandates are made in the background, as sektors are, so that there is always something to claim.
-export function startCreatingMandates(onMandateCreated: () => void) {
-  creationTimer = setInterval(() => {
-    if (createMandateIfNeeded()) onMandateCreated();
-  }, CREATION_INTERVAL_MILLISECONDS);
-}
-
-// Stopping is harmless when nothing was ever started, which is the case on a page opened by a test.
-export function stopCreatingMandates() {
-  if (creationTimer === null) return;
-  clearInterval(creationTimer);
-  creationTimer = null;
-}
-
-// Returns whether a mandate was made.
-export function createMandateIfNeeded(): boolean {
-  if (countUnclaimedMandates() >= MAXIMUM_UNCLAIMED_MANDATES) return false;
-
-  addMandate(createMandate(nextMandateNumber(), mandateMaterials()));
+  for (let mandateIndex = 0; mandateIndex < INITIAL_MANDATE_COUNT; mandateIndex++) createNewMandate();
   return true;
 }
 
-function countUnclaimedMandates(): number {
-  return getMandates().filter(mandate => mandate.owner === null).length;
+// A mandate is made only when one is asked for, never in the background.
+export function createNewMandate(): void {
+  addMandate(createMandate(nextMandateNumber(), mandateMaterials()));
 }
 
 // Mandates are numbered from 1, and the number carries on above the highest one already made so that

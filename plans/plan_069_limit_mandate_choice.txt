@@ -49,12 +49,12 @@ Which mandates a player can claim:
 - [done] deforestation amounts unchanged
     - already drawn independently of the player, as 0 to 20 forests' worth of ecosystem support
 
-#2 There are always mandates to claim
-- remove current mandate generation
+#2 [done] There are always mandates to claim
+- [done] remove current mandate generation
     - no more creating a mandate every second until there are 10 unclaimed mandates
-- whenever a mandate is claimed, create a new one
+- [done] whenever a mandate is claimed, create a new one
     - the number of unclaimed mandates stays the same
-- initially, when there are no mandates at all, create X mandates
+- [done] initially, when there are no mandates at all, create X mandates
     - X is configurable
     - for now X = 10
 

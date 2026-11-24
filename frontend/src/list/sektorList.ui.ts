@@ -7,7 +7,7 @@ import { getSektorSummary } from "./sektorSummary";
 import { globeAsiaAustraliaIcon, oreDeposits, userIcon } from "../icons";
 import { renderLeaderboard } from "./leaderboard.ui";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
-import { createMandateIfNeeded, startCreatingMandates } from "../mandates/mandateCreation";
+import { createInitialMandates, createNewMandate } from "../mandates/mandateCreation";
 import { renderMandateList } from "../mandates/mandateList.ui";
 import { showPurgeButton } from "./purgeButton.ui";
 import { globalImportsAndExports } from "../globalImportsAndExports";
@@ -185,7 +185,7 @@ showUser();
 const planetBackground = showPlanetBackground(revealSektorInList);
 // A list which fills by itself cannot be looked at, as a sektor may appear on it at any moment. A
 // test therefore lays this out before the page loads and makes the sektors and mandates it wants by
-// hand, one call at a time, rather than sitting out the second between one round of making them and
+// hand, one call at a time, rather than sitting out the second between one round of making sektors and
 // the next. Nothing in the game lays it out, so a player's list goes on filling on its own.
 const areSektorsMadeByHand = (window as unknown as { makeSektorsByHand?: boolean }).makeSektorsByHand === true;
 
@@ -194,15 +194,19 @@ planetBackground.showSektors(getSektorList());
 showPurgeButton();
 if (areSektorsMadeByHand) {
   (window as unknown as { createSektorIfNeeded: () => boolean }).createSektorIfNeeded = createSektorIfNeeded;
-  // A mandate made by hand is shown as soon as it is made, as one made in the background is.
-  (window as unknown as { createMandateIfNeeded: () => boolean }).createMandateIfNeeded = () => {
-    const isCreated = createMandateIfNeeded();
+  // A mandate made by hand is shown as soon as it is made.
+  (window as unknown as { createNewMandate: () => void }).createNewMandate = () => {
+    createNewMandate();
+    renderMandateList();
+  };
+  (window as unknown as { createInitialMandates: () => boolean }).createInitialMandates = () => {
+    const isCreated = createInitialMandates();
     renderMandateList();
     return isCreated;
   };
 } else {
   startCreatingSektors(refreshPage);
-  startCreatingMandates(renderMandateList);
+  createInitialMandates();
 }
 renderMandateList();
 renderLeaderboard();

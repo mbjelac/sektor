@@ -712,7 +712,7 @@ test("gives every sektor it makes ground to build on with nothing but forests on
   }).toEqual({ hasGround: true, buildingsOtherThanForests: [] });
 });
 
-// A mandate is made on the list page as sektors are, numbered from 1 and owned by nobody.
+// Mandates are numbered from 1, one after another, and owned by nobody when made.
 test("makes mandates numbered one after another, owned by nobody", async ({ page }) => {
   await page.goto("/?test=true");
 
@@ -757,15 +757,6 @@ function isFitCriterion(criterion: { type: string; resourceName?: string; amount
     && !["Care", "Hapiness", "ImportExport"].includes(criterion.resourceName!)
     && Number.isInteger(criterion.amount) && criterion.amount >= 5 && criterion.amount <= 50;
 }
-
-test("stops making mandates while ten unclaimed ones are waiting", async ({ page }) => {
-  await page.evaluate(() => localStorage.setItem(
-    "mandates", JSON.stringify(Array.from({ length: 10 }, (_, index) => ({ number: index + 1, owner: null, criteria: [] })))
-  ));
-  await page.goto("/?test=true");
-
-  expect(await createMandateNow(page)).toEqual(false);
-});
 
 // The mandates stand in the lower half of the window, below what the whole planet moves.
 test("lists the mandates in the lower half of the window", async ({ page }) => {
@@ -837,8 +828,32 @@ test("names the direction and the resource of a mandate's criteria on hovering t
 });
 
 
+// While there are no mandates at all, ten are made at once, owned by nobody.
+test("makes ten mandates while there are none", async ({ page }) => {
+  await page.goto("/?test=true");
+
+  await createInitialMandatesNow(page);
+
+  const mandates = await getStoredMandates(page);
+  expect(mandates.map((mandate: { number: number; owner: string | null }) => ({ number: mandate.number, owner: mandate.owner })))
+    .toEqual(Array.from({ length: 10 }, (_, index) => ({ number: index + 1, owner: null })));
+});
+
+// Once there are mandates, they are kept as many by a new one being made for every one claimed, so
+// none are made at once again.
+test("makes no mandates at once while there are some", async ({ page }) => {
+  await page.goto("/?test=true");
+  await createMandateNow(page);
+
+  expect(await createInitialMandatesNow(page)).toEqual(false);
+});
+
+function createInitialMandatesNow(page: Page) {
+  return page.evaluate(() => (window as unknown as { createInitialMandates: () => boolean }).createInitialMandates());
+}
+
 function createMandateNow(page: Page) {
-  return page.evaluate(() => (window as unknown as { createMandateIfNeeded: () => boolean }).createMandateIfNeeded());
+  return page.evaluate(() => (window as unknown as { createNewMandate: () => void }).createNewMandate());
 }
 
 function getStoredMandates(page: Page) {
