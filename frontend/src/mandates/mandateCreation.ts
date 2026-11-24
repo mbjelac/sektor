@@ -4,7 +4,6 @@ import { getNegativeTradableResources, getPositiveTradableResources } from "../r
 import { globalImportsAndExports } from "../globalImportsAndExports";
 import { getSektorList } from "../list/sektorList.api";
 import { getSektorSummary } from "../list/sektorSummary";
-import { getUsername } from "../login/login.api";
 
 const CREATION_INTERVAL_MILLISECONDS = 1000;
 // Mandates nobody has taken up pile up if they are made faster than they are claimed, so no more are
@@ -46,26 +45,21 @@ function nextMandateNumber(): number {
   return mandateNumbers.length === 0 ? 1 : Math.max(...mandateNumbers) + 1;
 }
 
-// What the planet brings in and sends out changes as sektors are built on, and so do the polluting
-// buildings and the habitats of the player's sektors, and the Hapiness those could make, so they are
-// gathered anew whenever a mandate is to be made.
+// What the planet brings in and sends out changes as sektors are built on, and so do its polluting
+// buildings and its habitats, and the Hapiness those could make, so they are gathered anew whenever a
+// mandate is to be made. A mandate is made for no player in particular, so every sektor of the planet
+// counts, whoever owns it.
 function mandateMaterials(): MandateMaterials {
-  const playerName = getUsername();
-  const sektorListItems = getSektorList();
-  const playerSektorSummaries = sektorListItems
-    .filter(sektorListItem => playerName !== null && sektorListItem.owner === playerName)
-    .map(sektorListItem => getSektorSummary(sektorListItem.id));
+  const planetSektorSummaries = getSektorList().map(sektorListItem => getSektorSummary(sektorListItem.id));
   return {
     positiveResourceNames: getPositiveTradableResources(),
     negativeResourceNames: getNegativeTradableResources(),
-    planetImportsAndExports: globalImportsAndExports(
-      sektorListItems.map(sektorListItem => getSektorSummary(sektorListItem.id)),
-    ),
-    playerPollutionFootprint: playerSektorSummaries
+    planetImportsAndExports: globalImportsAndExports(planetSektorSummaries),
+    planetPollutionFootprint: planetSektorSummaries
       .reduce((total, sektorSummary) => total + sektorSummary.pollutionFootprint, 0),
-    playerHabitatCount: playerSektorSummaries
+    planetHabitatCount: planetSektorSummaries
       .reduce((total, sektorSummary) => total + sektorSummary.habitatCount, 0),
-    playerPossibleHapiness: playerSektorSummaries
+    planetPossibleHapiness: planetSektorSummaries
       .reduce((total, sektorSummary) => total + sektorSummary.possibleHapiness, 0),
   };
 }

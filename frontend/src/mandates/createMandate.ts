@@ -6,14 +6,17 @@ import { forestEcosystemSupport } from "../sektor/forest";
 import { POLLUTION_STEP, pollutionFootprint } from "../sektor/pollution";
 import { HABITATS_CAPACITY } from "../sektor/population";
 
+// A mandate asks for a resource sent out or taken in up to as much as the planet moves of it, so that it
+// never asks for more than the planet needs. While the planet moves too little of the resource, or none
+// at all, it asks for up to a fixed amount instead.
 const LOWEST_AMOUNT = 5;
 const HIGHEST_AMOUNT = 50;
 // Every kind of mandate is as likely as any other. A mandate asks for a positive resource sent out, or
 // for a negative one taken in.
 const NEGATIVE_IMPORT_CHANCE = 1 / 6;
 // Some ask for the player's sektors to make at least so much Hapiness, drawn up to a little more than
-// all their habitats could make, were they given all they ask for, so that a player is sometimes
-// asked to build another habitat.
+// all the planet's habitats could make, were they given all they ask for, so that a mandate sometimes
+// asks for more than the planet's habitats can give.
 const HAPINESS_CHANCE = 1 / 6;
 const MORE_HAPINESS = 4;
 // Some mandates ask instead for the player's sektors to be deforested by no more than so much, drawn
@@ -22,28 +25,28 @@ const MORE_HAPINESS = 4;
 const DEFORESTATION_CHANCE = 1 / 6;
 const MOST_FELLED_FORESTS = 20;
 // Some ask for the player's sektors to be polluted no more than so much, drawn in steps of pollution
-// up to the most their polluting buildings can foul. A player with no polluting building yet is asked
-// for no more than the least polluting building can foul.
+// up to the most the planet's polluting buildings can foul. While the planet has no polluting building
+// yet, a mandate asks for no more than the least polluting building can foul.
 const POLLUTION_CHANCE = 1 / 6;
 const LEAST_POLLUTION_AREA = 1;
 // Some ask for the player's sektors to house at least, or at most, so many people, half of them one
 // and half the other, drawn as so many habitats' worth of people up to a few habitats more than the
-// player has. Housing at least a habitat's worth is easy; housing at most none is harsh.
+// planet has. Housing at least a habitat's worth is easy; housing at most none is harsh.
 const POPULATION_CHANCE = 1 / 6;
 const MINIMUM_POPULATION_CHANCE = 1 / 2;
 const MORE_HABITATS = 5;
 
 // What a mandate can be made of: the resources a sektor can import and export, those doing good and
-// those doing harm, what the whole planet brings in and sends out of them, the most the player's
-// polluting buildings can foul, how many habitats the player has, and how much Hapiness they could
-// make.
+// those doing harm, what the whole planet brings in and sends out of them, the most the planet's
+// polluting buildings can foul, how many habitats the planet has, and how much Hapiness they could
+// make. A mandate is made for no player in particular, so it is made of what the whole planet holds.
 export interface MandateMaterials {
   positiveResourceNames: string[];
   negativeResourceNames: string[];
   planetImportsAndExports: ImportsAndExports;
-  playerPollutionFootprint: number;
-  playerHabitatCount: number;
-  playerPossibleHapiness: number;
+  planetPollutionFootprint: number;
+  planetHabitatCount: number;
+  planetPossibleHapiness: number;
 }
 
 // A mandate asks for one of six things: to send out a positive resource, to take in a negative
@@ -77,16 +80,16 @@ function createCriteria(mandateMaterials: MandateMaterials, randomNumber: Random
   }
   const hapinessEnd = NEGATIVE_IMPORT_CHANCE + HAPINESS_CHANCE;
   if (strategyDraw >= NEGATIVE_IMPORT_CHANCE && strategyDraw < hapinessEnd) {
-    return [hapinessCriterion(mandateMaterials.playerPossibleHapiness, randomNumber)];
+    return [hapinessCriterion(mandateMaterials.planetPossibleHapiness, randomNumber)];
   }
   if (strategyDraw >= hapinessEnd && strategyDraw < hapinessEnd + DEFORESTATION_CHANCE) {
     return [deforestationCriterion(randomNumber)];
   }
   if (strategyDraw >= 1 - POLLUTION_CHANCE) {
-    return [pollutionCriterion(mandateMaterials.playerPollutionFootprint, randomNumber)];
+    return [pollutionCriterion(mandateMaterials.planetPollutionFootprint, randomNumber)];
   }
   if (strategyDraw >= 1 - POLLUTION_CHANCE - POPULATION_CHANCE) {
-    return [populationCriterion(mandateMaterials.playerHabitatCount, randomNumber)];
+    return [populationCriterion(mandateMaterials.planetHabitatCount, randomNumber)];
   }
   if (mandateMaterials.positiveResourceNames.length === 0) return [];
   return [criterion(
@@ -103,16 +106,17 @@ function criterion(
   planetThroughputs: ResourceThroughput[],
   randomNumber: RandomNumber,
 ): MandateCriterion {
+  const resourceName = drawnByPlanetThroughput(resourceNames, planetThroughputs, randomNumber);
   return {
     type,
-    resourceName: drawnByPlanetThroughput(resourceNames, planetThroughputs, randomNumber),
-    amount: drawnAmount(randomNumber),
+    resourceName,
+    amount: drawnAmount(Math.floor(findThroughputValue(planetThroughputs, resourceName)), randomNumber),
     completed: false,
   };
 }
 
-function hapinessCriterion(playerPossibleHapiness: number, randomNumber: RandomNumber): MandateCriterion {
-  const mostHapiness = Math.floor(playerPossibleHapiness) + MORE_HAPINESS;
+function hapinessCriterion(planetPossibleHapiness: number, randomNumber: RandomNumber): MandateCriterion {
+  const mostHapiness = Math.floor(planetPossibleHapiness) + MORE_HAPINESS;
   return {
     type: "minimumHapiness",
     amount: 1 + Math.floor(randomNumber() * mostHapiness),
@@ -129,8 +133,8 @@ function deforestationCriterion(randomNumber: RandomNumber): MandateCriterion {
   };
 }
 
-function pollutionCriterion(playerPollutionFootprint: number, randomNumber: RandomNumber): MandateCriterion {
-  const mostPollution = playerPollutionFootprint > 0 ? playerPollutionFootprint : pollutionFootprint(LEAST_POLLUTION_AREA);
+function pollutionCriterion(planetPollutionFootprint: number, randomNumber: RandomNumber): MandateCriterion {
+  const mostPollution = planetPollutionFootprint > 0 ? planetPollutionFootprint : pollutionFootprint(LEAST_POLLUTION_AREA);
   const pollutionSteps = Math.floor(randomNumber() * (Math.floor(mostPollution / POLLUTION_STEP) + 1));
   return {
     type: "maximumPollution",
@@ -139,8 +143,8 @@ function pollutionCriterion(playerPollutionFootprint: number, randomNumber: Rand
   };
 }
 
-function populationCriterion(playerHabitatCount: number, randomNumber: RandomNumber): MandateCriterion {
-  const mostHabitats = playerHabitatCount + MORE_HABITATS;
+function populationCriterion(planetHabitatCount: number, randomNumber: RandomNumber): MandateCriterion {
+  const mostHabitats = planetHabitatCount + MORE_HABITATS;
   if (randomNumber() < MINIMUM_POPULATION_CHANCE) {
     const leastHabitats = 1 + Math.floor(randomNumber() * mostHabitats);
     return { type: "minimumPopulation", amount: leastHabitats * HABITATS_CAPACITY, completed: false };
@@ -169,6 +173,7 @@ function drawnByPlanetThroughput(
   return movedResourceNames[movedResourceNames.length - 1];
 }
 
-function drawnAmount(randomNumber: RandomNumber): number {
-  return LOWEST_AMOUNT + Math.floor(randomNumber() * (HIGHEST_AMOUNT - LOWEST_AMOUNT + 1));
+function drawnAmount(planetThroughput: number, randomNumber: RandomNumber): number {
+  const highestAmount = planetThroughput >= LOWEST_AMOUNT ? planetThroughput : HIGHEST_AMOUNT;
+  return LOWEST_AMOUNT + Math.floor(randomNumber() * (highestAmount - LOWEST_AMOUNT + 1));
 }

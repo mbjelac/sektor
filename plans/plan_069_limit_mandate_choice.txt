@@ -29,24 +29,24 @@ Which mandates a player can claim:
 - a player holds at most one mandate per criterion (see #5)
 - a player holds at most 3 unfulfilled mandates (see #4)
 
-#1 Mandate criteria amounts created according to global values
-- mandate materials no longer depend on the current player
+#1 [done] Mandate criteria amounts created according to global values
+- [done] mandate materials no longer depend on the current player
     - replace player's pollution footprint, habitat count & possible hapiness with the same values summed over all sektors of the planet
         - all sektors, regardless of owner
     - mandate creation no longer needs the current player's name
-- minimum export & minimum import amounts drawn according to the planet's throughput of the chosen resource
+- [done] minimum export & minimum import amounts drawn according to the planet's throughput of the chosen resource
     - resource still chosen as now: the more the planet imports (for exports) or exports (for imports) of a resource, the more likely it is chosen
     - amount drawn between 5 and the planet's total import (for exports) or export (for imports) of the chosen resource
         - a mandate never asks for more than the planet needs
         - if the planet's total is below 5, or the resource is not moved at all, draw between 5 and 50 as now
-- hapiness amounts drawn according to the planet's possible hapiness
+- [done] hapiness amounts drawn according to the planet's possible hapiness
     - amount drawn between 1 and the planet's possible hapiness, plus a little more, so that habitats still have to be built
-- pollution amounts drawn according to the planet's pollution footprint
+- [done] pollution amounts drawn according to the planet's pollution footprint
     - amount drawn in pollution steps between 0 and the planet's pollution footprint
     - if the planet has no polluting building, draw up to the footprint of the least polluting building, as now
-- population amounts drawn according to the planet's habitat count
+- [done] population amounts drawn according to the planet's habitat count
     - amount drawn as so many habitats' worth of people, between 0 (at most) or 1 (at least) and the planet's habitat count plus a few habitats more
-- deforestation amounts unchanged
+- [done] deforestation amounts unchanged
     - already drawn independently of the player, as 0 to 20 forests' worth of ecosystem support
 
 #2 There are always mandates to claim

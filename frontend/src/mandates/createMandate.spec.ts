@@ -10,9 +10,9 @@ const MATERIALS: MandateMaterials = {
     imports: [{ name: "Apples", value: 30 }, { name: "Cloth", value: 10 }],
     exports: [{ name: "Sludge", value: 40 }],
   },
-  playerPollutionFootprint: 200,
-  playerHabitatCount: 3,
-  playerPossibleHapiness: 6,
+  planetPollutionFootprint: 200,
+  planetHabitatCount: 3,
+  planetPossibleHapiness: 6,
 };
 
 // Every draw falls where the test says, one after the other.
@@ -25,9 +25,28 @@ describe("createMandate", () => {
     expect(createMandate(7, MATERIALS, drawing(0.5, 0, 0.5))).toEqual({
       number: 7,
       owner: null,
-      criteria: [{ type: "minimumExport", resourceName: "Apples", amount: 28, completed: false }],
+      criteria: [{ type: "minimumExport", resourceName: "Apples", amount: 18, completed: false }],
       completed: false,
     });
+  });
+
+  // The planet brings in 30 Apples, so a mandate asks for from 5 up to 30 of them sent out.
+  it("asks for a resource exported up to as much as the planet imports of it", () => {
+    expect([
+      createMandate(1, MATERIALS, drawing(0.5, 0, 0)).criteria,
+      createMandate(1, MATERIALS, drawing(0.5, 0, 0.9999)).criteria,
+    ]).toEqual([
+      [{ type: "minimumExport", resourceName: "Apples", amount: 5, completed: false }],
+      [{ type: "minimumExport", resourceName: "Apples", amount: 30, completed: false }],
+    ]);
+  });
+
+  // The planet brings in only 3 Apples, too few to ask at least 5 of, so up to 50 are asked for.
+  it("asks for a resource exported up to a fixed amount while the planet imports too little of it", () => {
+    const planetImportsAndExports = { imports: [{ name: "Apples", value: 3 }], exports: [] };
+    expect(createMandate(1, { ...MATERIALS, planetImportsAndExports }, drawing(0.5, 0, 0.9999)).criteria).toEqual([
+      { type: "minimumExport", resourceName: "Apples", amount: 50, completed: false },
+    ]);
   });
 
   // Apples are brought in three times as much as Cloth, so take up the first three quarters of the
@@ -42,9 +61,10 @@ describe("createMandate", () => {
     ]);
   });
 
+  // The planet sends out 40 Sludge, so a mandate asks for up to 40 of it taken in.
   it("asks for a negative resource imported one time in six, drawn of those the planet exports", () => {
     expect(createMandate(1, MATERIALS, drawing(0.1, 0, 0.9999)).criteria).toEqual([
-      { type: "minimumImport", resourceName: "Sludge", amount: 50, completed: false },
+      { type: "minimumImport", resourceName: "Sludge", amount: 40, completed: false },
     ]);
   });
 
@@ -60,8 +80,8 @@ describe("createMandate", () => {
     ]);
   });
 
-  // The player's polluting buildings can foul 200, ten steps of pollution.
-  it("asks for pollution at most one time in six, drawn in steps of pollution up to what the player's buildings can foul", () => {
+  // The planet's polluting buildings can foul 200, ten steps of pollution.
+  it("asks for pollution at most one time in six, drawn in steps of pollution up to what the planet's buildings can foul", () => {
     expect([
       createMandate(1, MATERIALS, drawing(0.84, 0)).criteria,
       createMandate(1, MATERIALS, drawing(0.9, 0.5)).criteria,
@@ -74,14 +94,14 @@ describe("createMandate", () => {
   });
 
   // The least polluting building can foul 80, four steps of pollution.
-  it("asks a player with no polluting building for at most what the least polluting one can foul", () => {
-    expect(createMandate(1, { ...MATERIALS, playerPollutionFootprint: 0 }, drawing(0.9, 0.9999)).criteria).toEqual([
+  it("asks a planet with no polluting building for at most what the least polluting one can foul", () => {
+    expect(createMandate(1, { ...MATERIALS, planetPollutionFootprint: 0 }, drawing(0.9, 0.9999)).criteria).toEqual([
       { type: "maximumPollution", amount: 80, completed: false },
     ]);
   });
 
-  // The player has 3 habitats, so is asked for up to 8 habitats' worth of 40 people.
-  it("asks for population at least or at most one time in six, drawn in habitats up to five more than the player has", () => {
+  // The planet has 3 habitats, so is asked for up to 8 habitats' worth of 40 people.
+  it("asks for population at least or at most one time in six, drawn in habitats up to five more than the planet has", () => {
     expect([
       createMandate(1, MATERIALS, drawing(0.67, 0, 0)).criteria,
       createMandate(1, MATERIALS, drawing(0.8, 0.49, 0.9999)).criteria,
@@ -95,8 +115,8 @@ describe("createMandate", () => {
     ]);
   });
 
-  // The player's habitats could make 6 Hapiness, so they are asked for up to 10.
-  it("asks for hapiness at least one time in six, drawn up to a little more than the player's habitats could make", () => {
+  // The planet's habitats could make 6 Hapiness, so they are asked for up to 10.
+  it("asks for hapiness at least one time in six, drawn up to a little more than the planet's habitats could make", () => {
     expect([
       createMandate(1, MATERIALS, drawing(0.17, 0)).criteria,
       createMandate(1, MATERIALS, drawing(0.33, 0.9999)).criteria,
