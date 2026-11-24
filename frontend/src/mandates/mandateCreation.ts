@@ -5,17 +5,20 @@ import { globalImportsAndExports } from "../globalImportsAndExports";
 import { getSektorList } from "../list/sektorList.api";
 import { getSektorSummary } from "../list/sektorSummary";
 
-// So many mandates are made at once while there are none at all, so that there is something to claim
-// from the start.
-const INITIAL_MANDATE_COUNT = 10;
+// So many mandates are kept waiting to be claimed, so that there is always something to claim.
+const MANDATE_POOL_SIZE = 50;
 
-// Returns whether any mandate was made. Once there are mandates, they are kept as many by a new one
-// being made whenever one is claimed, so none are made here again.
-export function createInitialMandates(): boolean {
-  if (getMandates().length > 0) return false;
+// When the game loads, mandates are made until as many are waiting to be claimed as the pool holds.
+// Between loads, the pool is kept full by a new mandate being made whenever one is claimed. Returns
+// whether any mandate was made.
+export function fillMandatePool(): boolean {
+  const missingMandateCount = MANDATE_POOL_SIZE - countUnclaimedMandates();
+  for (let mandateIndex = 0; mandateIndex < missingMandateCount; mandateIndex++) createNewMandate();
+  return missingMandateCount > 0;
+}
 
-  for (let mandateIndex = 0; mandateIndex < INITIAL_MANDATE_COUNT; mandateIndex++) createNewMandate();
-  return true;
+function countUnclaimedMandates(): number {
+  return getMandates().filter(mandate => mandate.owner === null).length;
 }
 
 // A mandate is made only when one is asked for, never in the background.

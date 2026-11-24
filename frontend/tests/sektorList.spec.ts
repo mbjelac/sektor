@@ -849,28 +849,47 @@ test("names the direction and the resource of a mandate's criteria on hovering t
 });
 
 
-// While there are no mandates at all, ten are made at once, owned by nobody.
-test("makes ten mandates while there are none", async ({ page }) => {
+// While there are no mandates at all, fifty are made at once, owned by nobody.
+test("fills the pool with fifty mandates while there are none", async ({ page }) => {
   await page.goto("/?test=true");
 
-  await createInitialMandatesNow(page);
+  await fillMandatePoolNow(page);
 
   const mandates = await getStoredMandates(page);
   expect(mandates.map((mandate: { number: number; owner: string | null }) => ({ number: mandate.number, owner: mandate.owner })))
-    .toEqual(Array.from({ length: 10 }, (_, index) => ({ number: index + 1, owner: null })));
+    .toEqual(Array.from({ length: 50 }, (_, index) => ({ number: index + 1, owner: null })));
 });
 
-// Once there are mandates, they are kept as many by a new one being made for every one claimed, so
-// none are made at once again.
-test("makes no mandates at once while there are some", async ({ page }) => {
+// Mandates the player has claimed are not waiting in the pool, so beside the 2 waiting, 48 more are
+// made, numbered on from the 3 there already are.
+test("fills the pool up to fifty mandates waiting to be claimed", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, criteria: [] },
+    { number: 2, owner: null, criteria: [] },
+    { number: 3, owner: null, criteria: [] },
+  ])), CURRENT_PLAYER);
   await page.goto("/?test=true");
-  await createMandateNow(page);
 
-  expect(await createInitialMandatesNow(page)).toEqual(false);
+  await fillMandatePoolNow(page);
+
+  const mandates: { number: number; owner: string | null }[] = await getStoredMandates(page);
+  expect({
+    waiting: mandates.filter(mandate => mandate.owner === null).length,
+    lastNumber: mandates[mandates.length - 1]!.number,
+  }).toEqual({ waiting: 50, lastNumber: 51 });
 });
 
-function createInitialMandatesNow(page: Page) {
-  return page.evaluate(() => (window as unknown as { createInitialMandates: () => boolean }).createInitialMandates());
+test("makes no mandates while fifty are waiting to be claimed", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify(
+    Array.from({ length: 50 }, (_, index) => ({ number: index + 1, owner: null, criteria: [] }))
+  )));
+  await page.goto("/?test=true");
+
+  expect(await fillMandatePoolNow(page)).toEqual(false);
+});
+
+function fillMandatePoolNow(page: Page) {
+  return page.evaluate(() => (window as unknown as { fillMandatePool: () => boolean }).fillMandatePool());
 }
 
 function createMandateNow(page: Page) {

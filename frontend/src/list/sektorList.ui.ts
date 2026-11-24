@@ -7,7 +7,7 @@ import { getSektorSummary } from "./sektorSummary";
 import { globeAsiaAustraliaIcon, oreDeposits, userIcon } from "../icons";
 import { renderLeaderboard } from "./leaderboard.ui";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
-import { createInitialMandates, createNewMandate } from "../mandates/mandateCreation";
+import { createNewMandate, fillMandatePool } from "../mandates/mandateCreation";
 import { renderMandateList } from "../mandates/mandateList.ui";
 import { showPurgeButton } from "./purgeButton.ui";
 import { globalImportsAndExports } from "../globalImportsAndExports";
@@ -199,14 +199,14 @@ if (areSektorsMadeByHand) {
     createNewMandate();
     renderMandateList();
   };
-  (window as unknown as { createInitialMandates: () => boolean }).createInitialMandates = () => {
-    const isCreated = createInitialMandates();
+  (window as unknown as { fillMandatePool: () => boolean }).fillMandatePool = () => {
+    const isCreated = fillMandatePool();
     renderMandateList();
     return isCreated;
   };
 } else {
   startCreatingSektors(refreshPage);
-  createInitialMandates();
+  fillMandatePool();
 }
 renderMandateList();
 renderLeaderboard();
