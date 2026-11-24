@@ -68,6 +68,59 @@ test("makes the player the owner of a mandate claimed from its popup and closes 
   }))).toEqual({ owners: [CURRENT_PLAYER, null], isPopupShown: false, listedMandates: 1 });
 });
 
+// The player works on 3 mandates not yet fulfilled, as many as they may, so the mandate free to claim
+// cannot be claimed.
+async function storeThreeUnfulfilledMandatesAndOneFree(page: Page) {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    ...[1, 2, 3].map(mandateNumber => ({
+      number: mandateNumber,
+      owner: currentPlayer,
+      completed: false,
+      criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }],
+    })),
+    { number: 4, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
+  ])), CURRENT_PLAYER);
+}
+
+test("offers no Claim button on a mandate while the player works on 3 mandates not yet fulfilled", async ({ page }) => {
+  await storeThreeUnfulfilledMandatesAndOneFree(page);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-dialog").evaluate(dialog => ({
+    isShown: dialog.checkVisibility(),
+    hasClaimButton: dialog.querySelector("#mandate-claim-button") !== null,
+  }))).toEqual({ isShown: true, hasClaimButton: false });
+});
+
+// Where Claim would stand, the player is told in red why they cannot claim the mandate.
+test("tells the player in place of Claim that they cannot claim more while they work on 3 mandates", async ({ page }) => {
+  await storeThreeUnfulfilledMandatesAndOneFree(page);
+  await page.goto("/?test=true");
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
+
+  await page.locator("#mandate-panel .mandate-item").click();
+
+  expect(await page.locator("#mandate-dialog").evaluate(dialog => {
+    const refusal = dialog.querySelector<HTMLElement>("#mandate-claim-refusal")!;
+    const closeBox = dialog.querySelector("#mandate-close-button")!.getBoundingClientRect();
+    const refusalBox = refusal.getBoundingClientRect();
+    return {
+      lines: refusal.innerText.split("\n"),
+      color: getComputedStyle(refusal).color,
+      isRightOfClose: refusalBox.left > closeBox.right,
+      rightEdgesMeet: Math.round(refusalBox.right) === Math.round(dialog.querySelector(".mandate-dialog-buttons")!.getBoundingClientRect().right),
+    };
+  })).toEqual({
+    lines: ["You have at least 3 incomplete mandates.", "You cannot claim any more."],
+    color: "rgb(255, 107, 107)",
+    isRightOfClose: true,
+    rightEdgesMeet: true,
+  });
+});
+
 // A claimed mandate is no longer waiting to be claimed, so a new one, owned by nobody, takes its place.
 test("makes a new mandate in place of one claimed", async ({ page }) => {
   await storeUnclaimedMandate(page);
@@ -82,12 +135,14 @@ test("makes a new mandate in place of one claimed", async ({ page }) => {
 });
 
 // A mandate just claimed is shown among the player's own, the list turning to them and scrolling down
-// to it below the many the player already has.
+// to it below the many the player already has. Those are all fulfilled, so none of them stands in the
+// way of claiming another.
 test("lists the player's own mandates with the one just claimed in view", async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
     ...Array.from({ length: 20 }, (_, mandateIndex) => ({
       number: mandateIndex + 1,
       owner: currentPlayer,
+      completed: true,
       criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 5 }],
     })),
     { number: 21, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },

@@ -74,17 +74,17 @@ Which mandates a player can claim:
             - correct, the player was not working towards them
         - a player who forgets to claim loses little: the pool has many similar mandates
 
-#4 A player may have at most 3 unfulfilled mandates
-- fulfilled mandates do not count towards the cap
+#4 [done] A player may have at most 3 unfulfilled mandates
+- [done] fulfilled mandates do not count towards the cap
     - a fulfilled mandate frees its slot, so the player can keep claiming and their score keeps growing
     - capping all held mandates would cap the score, blocking progression
-- the player works on at most 3 unfulfilled mandates at once
+- [done] the player works on at most 3 unfulfilled mandates at once
     - fulfilled "at most" mandates claimed in advance do not take a slot, but are limited by one mandate per criterion
-- while the player holds 3 or more unfulfilled mandates, no mandate can be claimed
-- a fulfilled mandate can become unfulfilled again (completion is live) and take up a slot
+- [done] while the player holds 3 or more unfulfilled mandates, no mandate can be claimed
+- [done] a fulfilled mandate can become unfulfilled again (completion is live) and take up a slot
     - if this puts the player over the cap, nothing is force-abandoned
     - new claims are blocked until the player is back under the cap, by re-fulfilling or abandoning mandates
-- player sees that they cannot claim more mandates
+- [done] player sees that they cannot claim more mandates
     - unclaimed mandates stay visible in mandate lists
     - in an unclaimed mandate's details popup, the Claim button is not shown
         - instead, at the same place, a red message:

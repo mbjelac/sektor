@@ -12,6 +12,7 @@ import { getPlayerSektors } from "./playerSektors";
 import { PlayerSektor } from "./sektorsMovingResource";
 import { mandateCategory } from "./mandateCategory";
 import { createNewMandate } from "./mandateCreation";
+import { canClaimMandates } from "./mandateCap";
 
 // The list opens on the mandates waiting to be claimed.
 let mandateFilter: MandateFilter = "unclaimed";
@@ -138,6 +139,7 @@ function openMandate(mandate: Mandate) {
 
   showMandateDialog({
     mandate,
+    canClaim: canClaimMandates(getMandates(), getUsername()),
     onClaimed: () => {
       setMandateOwner(mandate.number, getUsername()!);
       createNewMandate();

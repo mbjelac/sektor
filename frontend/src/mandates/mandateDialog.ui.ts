@@ -15,14 +15,17 @@ import { createSektorNameWithBiome } from "./sektorNameWithBiome.ui";
 import { LocatedPlayerSektor } from "./playerSektors";
 import { formatNumber } from "../formatNumber";
 import { MANDATE_CATEGORY_NAMES, mandateCategory } from "./mandateCategory";
+import { MAXIMUM_UNFULFILLED_MANDATES } from "./mandateCap";
 
-// A mandate is looked over before it is claimed, and is claimed only once the player says so.
-export function showMandateDialog({ mandate, onClaimed }: {
+// A mandate is looked over before it is claimed, and is claimed only once the player says so, and
+// only where the player may claim it.
+export function showMandateDialog({ mandate, canClaim, onClaimed }: {
   mandate: Mandate,
+  canClaim: boolean,
   onClaimed: () => void
 }) {
   const overlay = createMandatePopup("mandate-dialog", mandate, createDescription(mandate, false));
-  overlay.firstElementChild!.appendChild(createClaimButtons(overlay, onClaimed));
+  overlay.firstElementChild!.appendChild(createClaimButtons(overlay, canClaim, onClaimed));
   document.body.appendChild(overlay);
 }
 
@@ -180,8 +183,9 @@ function createCriterionSektorList(
 }
 
 // Closing the popup without claiming stands on the left, as it does on any other popup of a mandate,
-// and claiming on the right, where it is offered everywhere else. Either way the popup goes.
-function createClaimButtons(overlay: HTMLElement, onClaimed: () => void): HTMLElement {
+// and claiming on the right, where it is offered everywhere else. Where the player may not claim it,
+// they are told why in its place. Either way the popup goes.
+function createClaimButtons(overlay: HTMLElement, canClaim: boolean, onClaimed: () => void): HTMLElement {
   const buttons = document.createElement("div");
   buttons.className = "dialog-buttons mandate-dialog-buttons";
 
@@ -192,6 +196,11 @@ function createClaimButtons(overlay: HTMLElement, onClaimed: () => void): HTMLEl
   closeButton.addEventListener("click", () => overlay.remove());
   buttons.appendChild(closeButton);
 
+  if (!canClaim) {
+    buttons.appendChild(createClaimRefusal());
+    return buttons;
+  }
+
   const claimButton = createClaimButton(() => {
     overlay.remove();
     onClaimed();
@@ -200,6 +209,18 @@ function createClaimButtons(overlay: HTMLElement, onClaimed: () => void): HTMLEl
   buttons.appendChild(claimButton);
 
   return buttons;
+}
+
+// A player working on as many mandates as they may is told so, in red, where Claim would stand.
+function createClaimRefusal(): HTMLElement {
+  const claimRefusal = document.createElement("div");
+  claimRefusal.id = "mandate-claim-refusal";
+  claimRefusal.append(
+    `You have at least ${MAXIMUM_UNFULFILLED_MANDATES} incomplete mandates.`,
+    document.createElement("br"),
+    "You cannot claim any more.",
+  );
+  return claimRefusal;
 }
 
 // A popup only looked at has nothing to do but go, from the bottom right. Giving the mandate up, where

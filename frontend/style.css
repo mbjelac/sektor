@@ -1715,6 +1715,14 @@ body > main {
     margin-top: auto;
 }
 
+/* Where the player may not claim a mandate, why stands in red where Claim would, to the right. */
+#mandate-claim-refusal {
+    color: #ff6b6b;
+    font-family: sans-serif;
+    font-size: 12px;
+    text-align: right;
+}
+
 /* A mandate stands on the colour of its category, in dark to be read on it, so that the player tells
    trade, ecology and people apart at a glance. The same colours stand behind mandate messages. */
 .mandate-item[data-mandate-category="economic"],
