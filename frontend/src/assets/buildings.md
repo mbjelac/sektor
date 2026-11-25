@@ -777,12 +777,11 @@ size=1
 
 ## Function
 
-WasteBio 10
+WasteBio 5
 EnergyElectric 1
-Water 1
 WorkTechnical 1
 ->
-Fertilizer 10
+Fertilizer 5
 
 ## Tags
 
