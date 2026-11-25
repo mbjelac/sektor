@@ -33,6 +33,7 @@ Water 2
 FoodRaw 5
 FoodProcessed 3
 EnergyElectric 4
+EducationGeneral 3
 ->
 Sewage 6
 
@@ -65,7 +66,6 @@ Hapiness 1
 Name: Maintainers
 Pool: true
 
-EducationGeneral 2
 EducationTechnical 1
 ->
 WorkMaintenance 6
@@ -75,7 +75,6 @@ WorkMaintenance 6
 Name: Technicians
 Pool: true
 
-EducationGeneral 2
 EducationTechnical 2
 EducationMathematical 1
 ->
@@ -86,7 +85,6 @@ WorkTechnical 6
 Name: Administrators
 Pool: true
 
-EducationGeneral 2
 EducationSocial 1
 EducationMathematical 1
 ->
@@ -97,7 +95,6 @@ WorkAdministrative 6
 Name: Engineers
 Pool: true
 
-EducationGeneral 3
 EducationTechnical 4
 EducationMathematical 2
 -> 
@@ -108,7 +105,6 @@ WorkEngineering 6
 Name: Educators
 Pool: true
 
-EducationGeneral 3
 EducationMathematical 2
 EducationSocial 4
 ->
@@ -119,7 +115,6 @@ WorkEducational 6
 Name: Scientists
 Pool: true
 
-EducationGeneral 4
 EducationMathematical 4
 EducationTechnical 3
 ->
@@ -599,7 +594,7 @@ EnergyElectric 4
 Water 4
 WorkMaintenance 1
 ->
-EducationGeneral 10
+EducationGeneral 12
 Sewage 2
 
 ## Tags
