@@ -28,12 +28,6 @@ export function parseResources(lines: string[]): ResourceDefinition[] {
   return resourceDefinitions;
 }
 
-export function negativeScoringResourceNames(resourceDefinitions: ResourceDefinition[]): string[] {
-  return resourceDefinitions
-    .filter(resourceDefinition => resourceDefinition.negativeScoring)
-    .map(resourceDefinition => resourceDefinition.name);
-}
-
 // A resource which is not local can be imported and exported. One which does harm is negative, and
 // every other one positive.
 export function tradableResourceNames(resourceDefinitions: ResourceDefinition[], negative: boolean): string[] {

@@ -1,6 +1,4 @@
-import { ImportsAndExports, mostImportedScarceResourceNames } from "./globalImportsAndExports";
 import { resourceNameText } from "./throughputDisplay.ui";
-import { getNegativeScoringResources } from "./resources";
 import { pointAtResourceWhileHovered } from "./resourceHover.ui";
 import { checkBadgeIcon, chevronDownIcon, chevronUpIcon, eyeIcon } from "./icons";
 import { selectProperty } from "./sektor/propertyToggler.ui";
@@ -13,9 +11,6 @@ import { getPlayerSektors } from "./mandates/playerSektors";
 import { PlayerSektor } from "./mandates/sektorsMovingResource";
 import { mandateCategory } from "./mandates/mandateCategory";
 
-// More than a few things to do at once is no advice at all, so only the most telling are named.
-const MOST_TOLD_RESOURCE_COUNT = 3;
-
 // A message either tells the player something worth knowing or warns them of something they are
 // doing, and says which it is before it says anything else. A mandate still to be done is a kind of
 // its own, told apart by its colour and its badge rather than by anything said in front of it.
@@ -27,7 +22,6 @@ const MESSAGE_EMOJI: Record<MessageKind, string | null> = {
   mandate: null,
 };
 
-const MOST_IMPORTED_SCARCE_MESSAGE_ID = "most-imported-scarce-message";
 // One complaint to a resource, each named after the resource it complains of.
 const HABITAT_SHORTAGE_MESSAGE_ID = "habitat-shortage-message-";
 const POLLUTION_MESSAGE_ID = "pollution-message";
@@ -42,17 +36,14 @@ const COLLAPSE_BUTTON_ID = "messages-collapse-button";
 const EXPAND_BUTTON_ID = "messages-expand-button";
 
 // What a player should know about this sektor, told to them as the map opens and whenever anything
-// changes what this sektor or the planet moves. What the planet wants of anybody is not told: what a
-// player works towards is their mandates.
+// changes in it. What the planet wants of anybody is not told: what a player works towards is their
+// mandates.
 export function updateMessages(
-  sektorImportsAndExports: ImportsAndExports,
-  planetImportsAndExports: ImportsAndExports,
   habitatShortages: string[],
   anyBuildingAffectedByPollution: boolean,
   disabledBuildingCount: number,
   wastedExportAmount: number,
 ) {
-  showMostImportedScarceMessage(sektorImportsAndExports, planetImportsAndExports);
   showHabitatShortageMessages(habitatShortages);
   showPollutionMessage(anyBuildingAffectedByPollution);
   showDisabledBuildingsMessage(disabledBuildingCount);
@@ -222,41 +213,6 @@ function createTransportHubsLink(): HTMLElement {
   transportHubsLink.textContent = "\u{1f4e6} transport hubs";
   transportHubsLink.addEventListener("click", () => selectBuildingTag(TRANSPORT_BUILDING_TAG));
   return transportHubsLink;
-}
-
-// Bringing in what the planet is short of takes it from everybody else, so a sektor doing it is
-// told which of its own imports those are.
-function showMostImportedScarceMessage(
-  sektorImportsAndExports: ImportsAndExports,
-  planetImportsAndExports: ImportsAndExports,
-) {
-  showOrHideMessage(
-    MOST_IMPORTED_SCARCE_MESSAGE_ID,
-    "warning",
-    "Avoid importing scarse resources",
-    mostImportedScarceResourceNames(
-      sektorImportsAndExports,
-      planetImportsAndExports,
-      getNegativeScoringResources(),
-      MOST_TOLD_RESOURCE_COUNT,
-    ),
-  );
-}
-
-// Advice with no resources left to name has nothing to say, so it is taken off the screen rather
-// than left standing empty.
-function showOrHideMessage(
-  messageId: string,
-  kind: MessageKind,
-  advice: string,
-  resourceNames: string[],
-) {
-  if (resourceNames.length === 0) {
-    hideMessage(messageId);
-    return;
-  }
-
-  showMessage(messageId, kind, advice, resourceNames);
 }
 
 // A message of a kind the player is already being told is written over rather than stood beside, so

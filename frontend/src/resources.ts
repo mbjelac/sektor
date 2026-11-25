@@ -1,6 +1,6 @@
 import resourcesMd from "./assets/resources.md?raw";
 import testResourcesMd from "./assets/resources.test.md?raw";
-import { localResourceNames, negativeScoringResourceNames, parseResources, tradableResourceNames } from "./parseResources";
+import { localResourceNames, parseResources, tradableResourceNames } from "./parseResources";
 import { isTestMode } from "./testMode";
 
 const source = isTestMode ? testResourcesMd : resourcesMd;
@@ -13,10 +13,6 @@ export function getResourceIcon(name: string): string | null {
 
 export function getResourceColor(name: string): string {
   return resourceDefinitions.find(resourceDefinition => resourceDefinition.name === name)?.color ?? "#ffffff";
-}
-
-export function getNegativeScoringResources(): string[] {
-  return negativeScoringResourceNames(resourceDefinitions);
 }
 
 export function getLocalResources(): string[] {

@@ -427,8 +427,6 @@ function updateSektorState() {
   pointAtResource(hoveredResource);
   const buildingsWithOutputDecreasedByPollution = sektor.findBuildingsWithOutputDecreasedByPollution();
   updateMessages(
-    sektorState,
-    planetImportsAndExports,
     sektorState.habitatShortages,
     buildingsWithOutputDecreasedByPollution.length > 0,
     sektorState.disabledBuildings.length,
@@ -1539,8 +1537,6 @@ if (!isTestMode) {
 // they have built anything at all.
 const openedSektorState = sektor.getSektorState();
 updateMessages(
-  openedSektorState,
-  getPlanetImportsAndExportsWhileBuilding(sektorId, openedSektorState),
   openedSektorState.habitatShortages,
   sektor.findBuildingsWithOutputDecreasedByPollution().length > 0,
   openedSektorState.disabledBuildings.length,
