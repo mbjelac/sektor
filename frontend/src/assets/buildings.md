@@ -767,3 +767,24 @@ size=2
 ## Tags
 
 industry
+
+# Composter
+
+## Construction
+
+duration=2200
+size=1
+
+## Function
+
+WasteBio 10
+EnergyElectric 1
+Water 1
+WorkTechnical 1
+->
+Fertilizer 10
+
+## Tags
+
+food
+industry

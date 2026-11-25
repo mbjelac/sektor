@@ -116,6 +116,23 @@ is there.
   levels 15–35% dealt at random), and 2–5 random sections are rows of `s(4)` spheres instead of
   half-sunk cylinders. Constructions raise each section 2.05 at its fixed start (last 1800, so
   `duration=2200` fits all). Seeded by the variant number; rerunning reproduces the files.
+- `tools/sgl/generator/composter/composter.py` — writes Composter variants `1`–`9` (`<n>.sgl`);
+  `0` is left alone. A 3×3 grid of cells (centres at −31.5, 0, 31.5): one random cell holds the
+  silo (Fertilizatron's small one, green band under the dome, green `#0dc200` `pri3` panel facing east), the
+  others are sections of 6 half-sunk rows 30 long, 5 apart, north-south or east-west at random.
+  3 random sections are blue `#2f80d8` pipes 4.6 across with `#2569b5` rings 5.2×0.6 every 5; the
+  rest are rows 4 across, dark brown or dark gray, each with a yellow `pri4 s(4,4,2.5)` box 1.2 to
+  a random side, standing on the floor, gliding end to end in 16 s, waiting 3 s, and back
+  (`at(…,16000,3000,−lead)`), stopping 2.5 short of the row's ends. A **negative `at` start** runs
+  the glide ahead by that much, so each box begins at a random point of its trip (`lead` random in
+  0–38000, the whole cycle). Seeded by the variant number.
+- `tools/sgl/generator/composter/composter_constructions.py` — writes `<n>.construction.sgl` next
+  to every Composter variant (0–9) from its `<n>.sgl`; all starts at 0. The silo rises as on
+  Fertilizatron (hollow cylinder only, base and scaffolding from the start; dome, band, panel
+  left out); brown-gray sections lie 2.5 lower and rise in 640 ms, 340 ms apart in random order (boxes
+  left out); each blue pipe is split into 6 cylinders 5 long, ring centre to ring centre, each
+  shown with the ring at its far end, 400 ms apart along the row, all rows together; all done at
+  2000, 1 s after the silo. `duration=2200`. Seeded by the variant number; rerun it after `composter.py` or any edit.
 
 ## The working file
 
