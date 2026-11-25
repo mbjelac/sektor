@@ -121,3 +121,6 @@ Which mandates a player can claim:
     - difficulty effectively random, as drawn in the pool
 - [done] when the shown mandate is claimed, the next oldest with the same criterion is shown
     - the player now holds that criterion, so it is shown with the warning icon & cannot be claimed (#5)
+
+#7 Message to avoid scarse resource import not needed
+- remove logic & display of message "Avoid importing scarse resources"
