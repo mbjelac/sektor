@@ -307,7 +307,7 @@ test("leaves the sektor unclaimed when claiming from the map is cancelled", asyn
   expect(sektors).toEqual([{ id: "Gamma", name: "Sunset Flats", owner: null }]);
 });
 
-// The player owns Alpha already and has fulfilled no mandate, which allows them no sektor more.
+// The player owns Alpha already and has completed no mandate, which allows them no sektor more.
 test("offers no Claim button on a sektor nobody holds while the player owns as many sektors as they are allowed", async ({ page }) => {
   await storeSektorsOwnedByPlayerAndNobody(page, 0);
 
@@ -316,8 +316,8 @@ test("offers no Claim button on a sektor nobody holds while the player owns as m
   await expect(page.locator("#map-claim-button")).toHaveCount(0);
 });
 
-// The player owns Alpha already and has fulfilled 5 mandates, which allows them one sektor more.
-test("offers the Claim button on a sektor nobody holds once the player's fulfilled mandates allow one more", async ({ page }) => {
+// The player owns Alpha already and has completed 5 mandates, which allows them one sektor more.
+test("offers the Claim button on a sektor nobody holds once the player's completed mandates allow one more", async ({ page }) => {
   await storeSektorsOwnedByPlayerAndNobody(page, 5);
 
   await page.goto("/sektor.html?id=Gamma");
@@ -325,15 +325,15 @@ test("offers the Claim button on a sektor nobody holds once the player's fulfill
   await expect(page.locator("#map-claim-button")).toHaveCount(1);
 });
 
-async function storeSektorsOwnedByPlayerAndNobody(page: Page, fulfilledMandateCount: number) {
+async function storeSektorsOwnedByPlayerAndNobody(page: Page, completedMandateCount: number) {
   await storeSektor(page, "Gamma", null);
-  await page.evaluate(([currentPlayer, fulfilledMandateCount]) => {
+  await page.evaluate(([currentPlayer, completedMandateCount]) => {
     const sektors = JSON.parse(localStorage.getItem("sektors")!);
     localStorage.setItem("sektors", JSON.stringify([{ id: "Alpha", name: "Alpha", owner: currentPlayer }, ...sektors]));
-    localStorage.setItem("mandates", JSON.stringify(Array.from({ length: fulfilledMandateCount as number }, (_, mandateIndex) => (
+    localStorage.setItem("mandates", JSON.stringify(Array.from({ length: completedMandateCount as number }, (_, mandateIndex) => (
       { number: mandateIndex + 1, owner: currentPlayer, completed: true, criteria: [] }
     ))));
-  }, [CURRENT_PLAYER, fulfilledMandateCount] as [string, number]);
+  }, [CURRENT_PLAYER, completedMandateCount] as [string, number]);
 }
 
 test("offers the whole toolbar for building once the sektor is claimed", async ({ page }) => {
@@ -585,7 +585,7 @@ test("counts the player's mandates beside the icon of the list of mandates", asy
 });
 
 // Three mandates of the player not completed yet, as many as they may work on: no more can be claimed.
-test("borders the count of unfulfilled mandates while the player can claim no more", async ({ page }) => {
+test("borders the count of incomplete mandates while the player can claim no more", async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
     { number: 1, owner: currentPlayer, completed: false, criteria: [] },
     { number: 2, owner: currentPlayer, completed: false, criteria: [] },

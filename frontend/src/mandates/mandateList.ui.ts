@@ -5,7 +5,7 @@ import { createCriterionAbbreviation } from "./criterionAbbreviation.ui";
 import { getUsername } from "../login/login.api";
 import { showMandateDetailsDialog, showMandateDialog } from "./mandateDialog.ui";
 import { createCompletionDot } from "./completionDot.ui";
-import { filterMandates, MandateFilter, onePerCriterion, withoutFulfilledMinimumMandates } from "./mandateFilter";
+import { filterMandates, MandateFilter, onePerCriterion, withoutCompletedMinimumMandates } from "./mandateFilter";
 import { recalculateMandates } from "./recalculateMandates";
 import { getPlayerTotals } from "./playerTotals";
 import { getPlayerSektors } from "./playerSektors";
@@ -57,13 +57,13 @@ export function renderMandateList() {
   );
 }
 
-// Of the mandates waiting to be claimed, those the player's sektors already fulfil by making at least
+// Of the mandates waiting to be claimed, those the player's sektors already complete by making at least
 // so much are not listed, worked out from the sektors as they stand whenever the list is drawn. Of
 // those left, only one of every criterion is listed.
 function listedMandates(mandates: Mandate[]): Mandate[] {
   const filteredMandates = filterMandates(mandates, mandateFilter, getUsername());
   if (mandateFilter !== "unclaimed") return filteredMandates;
-  return onePerCriterion(withoutFulfilledMinimumMandates(filteredMandates, getPlayerTotals(getUsername())));
+  return onePerCriterion(withoutCompletedMinimumMandates(filteredMandates, getPlayerTotals(getUsername())));
 }
 
 // The name of the list stays at the top of the mandates while they are scrolled past it, with the
@@ -117,7 +117,7 @@ function createMandateItem(mandate: Mandate, mandates: Mandate[], playerSektors:
   mandateNumber.append(`${mandate.number}`);
   item.appendChild(mandateNumber);
 
-  // A criterion the player's sektors already fulfil stands on pale green.
+  // A criterion the player's sektors already complete stands on pale green.
   for (const criterion of mandate.criteria) {
     const criterionAbbreviation = createCriterionAbbreviation(criterion, playerSektors);
     criterionAbbreviation.classList.toggle("mandate-criterion-completed", criterion.completed);

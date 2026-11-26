@@ -16,12 +16,12 @@ export interface PlayerTotals {
 export function completedMandate(mandate: Mandate, playerTotals: PlayerTotals): Mandate {
   const criteria = mandate.criteria.map(criterion => ({
     ...criterion,
-    completed: isCriterionFulfilled(criterion, playerTotals),
+    completed: isCriterionCompleted(criterion, playerTotals),
   }));
   return { ...mandate, criteria, completed: criteria.every(criterion => criterion.completed) };
 }
 
-function isCriterionFulfilled(criterion: MandateCriterion, playerTotals: PlayerTotals): boolean {
+function isCriterionCompleted(criterion: MandateCriterion, playerTotals: PlayerTotals): boolean {
   switch (criterion.type) {
     case "maximumDeforestation": return playerTotals.deforestation <= criterion.amount;
     case "maximumPollution": return playerTotals.pollution <= criterion.amount;

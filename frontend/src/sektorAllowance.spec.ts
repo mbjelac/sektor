@@ -6,18 +6,18 @@ function mandateOf(owner: string | null, completed: boolean): Mandate {
   return { number: 1, owner, criteria: [], completed };
 }
 
-function fulfilledMandatesOf(owner: string, count: number): Mandate[] {
+function completedMandatesOf(owner: string, count: number): Mandate[] {
   return Array.from({ length: count }, () => mandateOf(owner, true));
 }
 
 describe("sektorAllowance", () => {
-  // Ada owns 1 sektor and fulfilled 4 mandates, then 2 sektors and fulfilled 5, then 2 sektors and 4.
-  it("lets the player claim only while they own fewer sektors than their fulfilled mandates allow", () => {
+  // Ada owns 1 sektor and completed 4 mandates, then 2 sektors and completed 5, then 2 sektors and 4.
+  it("lets the player claim only while they own fewer sektors than their completed mandates allow", () => {
     expect([
-      sektorAllowance(["Ada"], fulfilledMandatesOf("Ada", 4), "Ada"),
-      sektorAllowance(["Ada", "Bea"], fulfilledMandatesOf("Ada", 5), "Ada"),
-      sektorAllowance(["Ada", "Ada"], fulfilledMandatesOf("Ada", 5), "Ada"),
-      sektorAllowance(["Ada", "Ada"], fulfilledMandatesOf("Ada", 4), "Ada"),
+      sektorAllowance(["Ada"], completedMandatesOf("Ada", 4), "Ada"),
+      sektorAllowance(["Ada", "Bea"], completedMandatesOf("Ada", 5), "Ada"),
+      sektorAllowance(["Ada", "Ada"], completedMandatesOf("Ada", 5), "Ada"),
+      sektorAllowance(["Ada", "Ada"], completedMandatesOf("Ada", 4), "Ada"),
     ]).toEqual([
       { canClaimSektors: false, mandatesToNextAllowance: 1 },
       { canClaimSektors: true, mandatesToNextAllowance: 5 },
@@ -26,9 +26,9 @@ describe("sektorAllowance", () => {
     ]);
   });
 
-  it("counts only the player's fulfilled mandates", () => {
+  it("counts only the player's completed mandates", () => {
     expect(sektorAllowance([null], [
-      ...fulfilledMandatesOf("Bea", 5),
+      ...completedMandatesOf("Bea", 5),
       mandateOf("Ada", false),
       mandateOf("Ada", true),
     ], "Ada")).toEqual({ canClaimSektors: true, mandatesToNextAllowance: 4 });
@@ -36,13 +36,13 @@ describe("sektorAllowance", () => {
 });
 
 describe("allowedSektorCount", () => {
-  it("allows one sektor more for every 5 fulfilled mandates", () => {
+  it("allows one sektor more for every 5 completed mandates", () => {
     expect([0, 4, 5, 9, 10, 14].map(allowedSektorCount)).toEqual([1, 1, 2, 2, 3, 3]);
   });
 });
 
 describe("mandatesToNextAllowance", () => {
-  it("counts the mandates still to fulfill until one sektor more is allowed", () => {
+  it("counts the mandates still to complete until one sektor more is allowed", () => {
     expect([0, 14, 23].map(mandatesToNextAllowance)).toEqual([5, 1, 2]);
   });
 });

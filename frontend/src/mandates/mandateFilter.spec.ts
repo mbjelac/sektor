@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { filterMandates, onePerCriterion, withoutFulfilledMinimumMandates } from "./mandateFilter";
+import { filterMandates, onePerCriterion, withoutCompletedMinimumMandates } from "./mandateFilter";
 import { Mandate, MandateCriterion } from "./mandates.api";
 import { PlayerTotals } from "./mandateCompletion";
 
@@ -35,9 +35,9 @@ const PLAYER_TOTALS: PlayerTotals = {
   hapiness: 3,
 };
 
-describe("withoutFulfilledMinimumMandates", () => {
+describe("withoutCompletedMinimumMandates", () => {
   it("leaves out the mandates asking for at least what the player's sektors already make", () => {
-    expect(withoutFulfilledMinimumMandates([
+    expect(withoutCompletedMinimumMandates([
       mandateAsking(1, { type: "minimumExport", resourceName: "Apples", amount: 10, completed: false }),
       mandateAsking(2, { type: "minimumExport", resourceName: "Apples", amount: 30, completed: false }),
       mandateAsking(3, { type: "minimumPopulation", amount: 40, completed: false }),
@@ -46,7 +46,7 @@ describe("withoutFulfilledMinimumMandates", () => {
   });
 
   it("keeps the mandates asking for at most, whether or not the player's sektors already keep to them", () => {
-    expect(withoutFulfilledMinimumMandates([
+    expect(withoutCompletedMinimumMandates([
       mandateAsking(1, { type: "maximumPollution", amount: 100, completed: false }),
       mandateAsking(2, { type: "maximumPopulation", amount: 0, completed: false }),
     ], PLAYER_TOTALS).map(mandate => mandate.number)).toEqual([1, 2]);

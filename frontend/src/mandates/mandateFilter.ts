@@ -13,11 +13,11 @@ export function filterMandates(mandates: Mandate[], mandateFilter: MandateFilter
 // A mandate waiting to be claimed which asks for at least so much of something the player's sektors
 // already make would be a point for nothing, so the player is not shown it. A mandate which asks only
 // for at most so much is shown whether or not they already keep to it.
-export function withoutFulfilledMinimumMandates(mandates: Mandate[], playerTotals: PlayerTotals): Mandate[] {
-  return mandates.filter(mandate => !isFulfilledMinimumMandate(mandate, playerTotals));
+export function withoutCompletedMinimumMandates(mandates: Mandate[], playerTotals: PlayerTotals): Mandate[] {
+  return mandates.filter(mandate => !isCompletedMinimumMandate(mandate, playerTotals));
 }
 
-function isFulfilledMinimumMandate(mandate: Mandate, playerTotals: PlayerTotals): boolean {
+function isCompletedMinimumMandate(mandate: Mandate, playerTotals: PlayerTotals): boolean {
   const minimumCriteria = completedMandate(mandate, playerTotals).criteria.filter(isMinimumCriterion);
   return minimumCriteria.length > 0 && minimumCriteria.every(criterion => criterion.completed);
 }

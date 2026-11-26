@@ -100,8 +100,8 @@ export function showMandateCounts() {
     : "mandate-count-incomplete mandate-count-at-cap";
 
   counts.replaceChildren(
-    ...(incomplete > 0 ? [createCount(incompleteClassName, incomplete, "Unfulfilled mandates")] : []),
-    ...(complete > 0 ? [createCount("mandate-count-complete", complete, "Fulfilled mandates")] : []),
+    ...(incomplete > 0 ? [createCount(incompleteClassName, incomplete, "Incomplete mandates")] : []),
+    ...(complete > 0 ? [createCount("mandate-count-complete", complete, "Complete mandates")] : []),
   );
 }
 

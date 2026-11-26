@@ -32,7 +32,7 @@ export function showMandateDialog({ mandate, canClaimMore, heldCriteria, onClaim
   document.body.appendChild(overlay);
 }
 
-// A mandate is looked into to see which of its criteria the player's sektors already fulfil, each
+// A mandate is looked into to see which of its criteria the player's sektors already complete, each
 // told with a dot in front of it, as the mandate as a whole is in the list. A mandate of the player's
 // own can be given up from here, and whoever opened it is told once it is.
 export function showMandateDetailsDialog(mandate: Mandate, onAbandoned?: () => void) {

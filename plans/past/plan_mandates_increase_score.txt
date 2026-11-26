@@ -3,7 +3,7 @@ Completed mandates bring points to the player.
 The stricter the mandate, the higher the score.
 
 In such way a player's score is solely dependant on mandates. No mandate is linked to a specific sektor
-- a player may use however many sektors they wish to fulfill a mandate. However, all claimed mandates have to stay fulfilled to keep their scores.
+- a player may use however many sektors they wish to complete a mandate. However, all claimed mandates have to stay completed to keep their scores.
 
 #1 Mandates have points
 - when creating a mandate, also create it's points
@@ -34,5 +34,5 @@ In such way a player's score is solely dependant on mandates. No mandate is link
     - bold
     - prepended by star icon
 - a player's score is the sum of all their completed mandates' points
-    - if a player abandons or no longer fulfills a mandate, their score goes down by that mandate's point amount
-    - if a player fulfills a mandate or claims a mandate they already fulfill, their score goes up by that mandate's point amount
+    - if a player abandons or no longer completes a mandate, their score goes down by that mandate's point amount
+    - if a player completes a mandate or claims a mandate they already complete, their score goes up by that mandate's point amount

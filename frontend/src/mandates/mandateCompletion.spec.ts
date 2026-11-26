@@ -79,7 +79,7 @@ describe("completedMandate", () => {
     )).toEqual([false, true, true]);
   });
 
-  it("leaves a mandate incomplete while any one of its criteria is not fulfilled", () => {
+  it("leaves a mandate incomplete while any one of its criteria is not completed", () => {
     expect([
       completedMandate(mandateAsking(exportingAtLeast("Bricks", 10), importingAtMost("Apples", 7)), standingAt(playerImportsAndExports)).completed,
       completedMandate(mandateAsking(exportingAtLeast("Bricks", 10), importingAtMost("Apples", 6)), standingAt(playerImportsAndExports)).completed,

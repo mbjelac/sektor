@@ -29,13 +29,13 @@ test("shows the owner of every sektor", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-owners.png", { maxDiffPixelRatio: 0 });
 });
 
-// The player owns Alpha and has fulfilled no mandate, which allows them no sektor more, and 5 more
-// mandates fulfilled would allow them one.
+// The player owns Alpha and has completed no mandate, which allows them no sektor more, and 5 more
+// mandates completed would allow them one.
 test("tells the player below the name of the list that they can claim no more, and how many mandates would allow one more", async ({ page }) => {
   await expect(page.locator("#sektor-allowance-notice")).toHaveScreenshot("sektor-allowance-notice.png", { maxDiffPixelRatio: 0 });
 });
 
-test("tells nothing of the allowance once the player's fulfilled mandates allow one sektor more", async ({ page }) => {
+test("tells nothing of the allowance once the player's completed mandates allow one sektor more", async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify(Array.from({ length: 5 }, (_, mandateIndex) => (
     { number: mandateIndex + 1, owner: currentPlayer, completed: true, criteria: [] }
   )))), CURRENT_PLAYER);
@@ -74,7 +74,7 @@ test("names the player's counts of mandates on hovering them", async ({ page }) 
   await page.reload();
 
   expect(await page.locator("#mandate-stats .mandate-count").evaluateAll(counts => counts.map(count => count.getAttribute("data-title"))))
-    .toEqual(["Unfulfilled mandates", "Fulfilled mandates"]);
+    .toEqual(["Incomplete mandates", "Complete mandates"]);
 });
 
 async function storeMandatesOfPlayerAndAna(page: Page) {

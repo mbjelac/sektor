@@ -82,15 +82,15 @@ function createHeader(sektors: SektorListItem[]): HTMLElement {
   return header;
 }
 
-// A player owning as many sektors as their fulfilled mandates allow is told, below the name of the
-// list, that they can claim no more, and how many more mandates to fulfill before they can.
+// A player owning as many sektors as their completed mandates allow is told, below the name of the
+// list, that they can claim no more, and how many more mandates to complete before they can.
 function createAllowanceNotice(sektors: SektorListItem[]): HTMLElement | null {
   const allowance = sektorAllowance(sektors.map(sektor => sektor.owner), getMandates(), getUsername());
   if (allowance.canClaimSektors) return null;
 
   const notice = document.createElement("div");
   notice.id = "sektor-allowance-notice";
-  notice.innerHTML = `No more sektors allowed.<br>Fulfill <b>${allowance.mandatesToNextAllowance}</b> more mandates to increase allowance.`;
+  notice.innerHTML = `No more sektors allowed.<br>Complete <b>${allowance.mandatesToNextAllowance}</b> more mandates to increase allowance.`;
   return notice;
 }
 

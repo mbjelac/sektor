@@ -1,5 +1,5 @@
-A player's score is the number of their claimed mandates which are currently fulfilled (see plan_limit_mandate_choice).
-Fulfilling mandates allows the player to own more sektors: a new player may own few sektors, the allowance grows as the score grows.
+A player's score is the number of their claimed mandates which are currently completed (see plan_limit_mandate_choice).
+Completing mandates allows the player to own more sektors: a new player may own few sektors, the allowance grows as the score grows.
 
 Number of sektors & mandates balance each other:
 - all player's sektors count towards all player's mandates
@@ -9,21 +9,21 @@ Number of sektors & mandates balance each other:
     - more buildings polluting, more forests felled
 - so a larger allowance is not simply an advantage, it is a choice the player has to manage
 
-Sektor allowance depends directly on number of fulfilled mandates:
+Sektor allowance depends directly on number of completed mandates:
 - no levels (see plan_limit_building_choice)
 - a player cannot claim a sektor if they already own as many sektors as their allowance permits
-- a new player's allowance must be enough to fulfill the first mandates
+- a new player's allowance must be enough to complete the first mandates
 
-Losing fulfilled mandates:
+Losing completed mandates:
 - completion is live, so the score can drop and with it the allowance
 - sektors already owned are kept
 - the player cannot claim new sektors until they are back within the allowance
 - the player keeps what they have, but cannot expand
 
-#1 [done] Player cannot claim more sektors than their number of fulfilled mandates allow
-- [done] number of fulfilled mandates limits how many sektors a player can own/claim
-    - allowed number of owned sektors equals every 5 fulfilled mandates
-    - example (fulfilled mandates: allowed sektors):
+#1 [done] Player cannot claim more sektors than their number of completed mandates allow
+- [done] number of completed mandates limits how many sektors a player can own/claim
+    - allowed number of owned sektors equals every 5 completed mandates
+    - example (completed mandates: allowed sektors):
         - 0-4: 1
         - 5-9: 2
         - 10-14: 3
@@ -31,9 +31,9 @@ Losing fulfilled mandates:
     - if limit exceeded, Claim button not visible in un-claimed sektor map
 - [done] when limit exceeded, player is notified
     - if limit exceeded, top of sektor list panel in list page contains message
-        - text: "No more sektors allowed.<br>Fulfill <X> more mandates to increase allowance."
+        - text: "No more sektors allowed.<br>Complete <X> more mandates to increase allowance."
             - X is number of mandates until next allowance limit
-                - example (fulfilled mandates: X):
+                - example (completed mandates: X):
                     - 0: 5
                     - 14: 1
                     - 23: 2
@@ -42,11 +42,11 @@ Losing fulfilled mandates:
         - X bold
 
 #2 [done] Player can se their mandate stats in list page
-- [done] display same mandate stats (unfulfilled, fulfilled, total) in list page on same location (in front of username in top right)
+- [done] display same mandate stats (incomplete, complete, total) in list page on same location (in front of username in top right)
     - not clickable - mandate list is already shown on list page
     - tooltips:
-        - unfulfilled mandates: "Unfulfilled mandates"
-        - fulfilled mandates: "Fulfilled mandates"
+        - incomplete mandates: "Incomplete mandates"
+        - complete mandates: "Complete mandates"
 - [done] number of total mandates not neccessary
     - remove " / <total>" from mandate stats
         - in map

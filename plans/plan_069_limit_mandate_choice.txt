@@ -1,7 +1,7 @@
-A player's score is the number of their claimed mandates which are currently fulfilled.
+A player's score is the number of their claimed mandates which are currently completed.
 For this to measure progress, a player must not be able to collect mandates without working for them.
 
-Currently many generated mandates are already fulfilled when they appear, for example:
+Currently many generated mandates are already completed when they appear, for example:
 - population at most (habitats + 5) * 40
 - pollution at most the player's own pollution footprint
 - deforestation at most 20 forests
@@ -16,8 +16,8 @@ Unclaimed mandates are kept in a shared pool:
 - the pool is shared by all players, so a mandate is not created for any particular player (see #1)
 
 Which mandates a player sees:
-- "at least" mandates are shown only while the player does not already fulfil them (see #3)
-- "at most" mandates are shown whether or not the player already fulfils them
+- "at least" mandates are shown only while the player does not already complete them (see #3)
+- "at most" mandates are shown whether or not the player already completes them
     - a player can take on a limit in advance, as a commitment which will constrain them later
     - a point now, at the cost of flexibility later
     - or a player can take on a limit they already break, and work to fix the situation
@@ -27,7 +27,7 @@ Which mandates a player can claim:
     - Claim is not possible
     - reason shown, so the player can decide to abandon something to make room
 - a player holds at most one mandate per criterion (see #5)
-- a player holds at most 3 unfulfilled mandates (see #4)
+- a player holds at most 3 incomplete mandates (see #4)
 
 #1 [done] Mandate criteria amounts created according to global values
 - [done] mandate materials no longer depend on the current player
@@ -58,32 +58,32 @@ Which mandates a player can claim:
     - X is configurable
     - for now X = 10
 
-#3 [done] Hide minimum criteria mandates from players who already fulfil them
+#3 [done] Hide minimum criteria mandates from players who already complete them
 - [done] minimum criteria are: minimum export, minimum import, minimum population, minimum hapiness
-- [done] an unclaimed mandate with minimum criteria is hidden from a player whose sektors already fulfil it
+- [done] an unclaimed mandate with minimum criteria is hidden from a player whose sektors already complete it
     - checked against the player's current totals, the same way as completion of claimed mandates
     - applies wherever unclaimed mandates are listed: mandate list in list page & mandate list in map
-    - a fulfilled minimum criteria mandate would be a free point
+    - a completed minimum criteria mandate would be a free point
 - [done] hidden mandates are checked anew whenever the player's sektors change
-    - a mandate the player fulfils disappears from their list, even if they were working towards it
+    - a mandate the player completes disappears from their list, even if they were working towards it
         - e.g. a player sees "export at least 30 Metals" and builds towards it without claiming; on reaching 30 the mandate disappears
-    - consequence: a player has to claim a minimum criteria mandate before fulfilling it
+    - consequence: a player has to claim a minimum criteria mandate before completing it
         - a point is always earned by work done after claiming
-        - makes the cap on unfulfilled mandates meaningful: the player plans which mandates to work on
-        - mandates fulfilled by the player's growth as a side effect disappear too
+        - makes the cap on incomplete mandates meaningful: the player plans which mandates to work on
+        - mandates completed by the player's growth as a side effect disappear too
             - correct, the player was not working towards them
         - a player who forgets to claim loses little: the pool has many similar mandates
 
-#4 [done] A player may have at most 3 unfulfilled mandates
-- [done] fulfilled mandates do not count towards the cap
-    - a fulfilled mandate frees its slot, so the player can keep claiming and their score keeps growing
+#4 [done] A player may have at most 3 incomplete mandates
+- [done] completed mandates do not count towards the cap
+    - a completed mandate frees its slot, so the player can keep claiming and their score keeps growing
     - capping all held mandates would cap the score, blocking progression
-- [done] the player works on at most 3 unfulfilled mandates at once
-    - fulfilled "at most" mandates claimed in advance do not take a slot, but are limited by one mandate per criterion
-- [done] while the player holds 3 or more unfulfilled mandates, no mandate can be claimed
-- [done] a fulfilled mandate can become unfulfilled again (completion is live) and take up a slot
+- [done] the player works on at most 3 incomplete mandates at once
+    - completed "at most" mandates claimed in advance do not take a slot, but are limited by one mandate per criterion
+- [done] while the player holds 3 or more incomplete mandates, no mandate can be claimed
+- [done] a completed mandate can become incomplete again (completion is live) and take up a slot
     - if this puts the player over the cap, nothing is force-abandoned
-    - new claims are blocked until the player is back under the cap, by re-fulfilling or abandoning mandates
+    - new claims are blocked until the player is back under the cap, by re-completing or abandoning mandates
 - [done] player sees that they cannot claim more mandates
     - unclaimed mandates stay visible in mandate lists
     - in an unclaimed mandate's details popup, the Claim button is not shown
@@ -97,8 +97,8 @@ Which mandates a player can claim:
     - e.g. one "pollution at most", one "population at least", one "export at least" of Metals
 - [done] without this, mandates of the same criterion could be stacked for free points
     - "pollution at most 130", "at most 140" & "at most 150" held together: only the tightest one constrains, the other two are free
-    - "export at least 10 Metals" & "at least 20 Metals": whoever fulfils the second fulfils the first for free
-    - so a fulfilled "at most" mandate claimed in advance is at most one free point per criterion
+    - "export at least 10 Metals" & "at least 20 Metals": whoever completes the second completes the first for free
+    - so a completed "at most" mandate claimed in advance is at most one free point per criterion
 - [done] player sees which unclaimed mandates have a criterion they already hold
     - in mandate list (list page & map), such mandates have a yellow warning icon
         - right-aligned
@@ -114,7 +114,7 @@ Which mandates a player can claim:
 - [done] of unclaimed mandates with the same criterion, the player sees only one in mandate lists (list page & map)
     - same criterion as in #5: same type, and for imports & exports also the same resource
     - only display: the pool keeps all mandates, different players may see different ones
-    - applied after hiding minimum criteria mandates the player already fulfils (#3)
+    - applied after hiding minimum criteria mandates the player already completes (#3)
         - so the shown mandate is one the player can see at all
 - [done] the shown mandate is the oldest one (lowest mandate number)
     - stable: does not change as the player builds
@@ -126,14 +126,14 @@ Which mandates a player can claim:
 - [done] remove logic & display of message "Avoid importing scarse resources"
 
 #8 [done] Player sees they cannot claim more mandates on mandate stats
-- [done] mandate stats display number of unfulfilled mandates with dark red background
-- [done] if maximum unfulfilled mandates reached, add bright red border
+- [done] mandate stats display number of incomplete mandates with dark red background
+- [done] if maximum incomplete mandates reached, add bright red border
 
 #9 Mandate completion status is more intuitive
 - replace mandate icon with checkbox icon
-    - show empty checkbox icon for unfulfilled mandates
+    - show empty checkbox icon for incomplete mandates
         - emoji for now: ⬜
-    - show checked checkbox icon for fulfilled mandates
+    - show checked checkbox icon for completed mandates
         - emoji for now: ✅
 - remove red/green circle indicators
 - apply for all display of mandates

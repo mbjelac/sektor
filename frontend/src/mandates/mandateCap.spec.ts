@@ -7,18 +7,18 @@ function mandateOf(owner: string | null, completed: boolean): Mandate {
 }
 
 describe("canClaimMandates", () => {
-  // Ada works on 2, 3 and 4 mandates, and has 3 fulfilled besides in every case.
+  // Ada works on 2, 3 and 4 mandates, and has 3 completed besides in every case.
   it("lets the player claim only while they work on fewer than 3 mandates", () => {
-    const fulfilledMandates = [mandateOf("Ada", true), mandateOf("Ada", true), mandateOf("Ada", true)];
-    expect([2, 3, 4].map(unfulfilledCount => canClaimMandates([
-      ...fulfilledMandates,
-      ...Array.from({ length: unfulfilledCount }, () => mandateOf("Ada", false)),
+    const completedMandates = [mandateOf("Ada", true), mandateOf("Ada", true), mandateOf("Ada", true)];
+    expect([2, 3, 4].map(incompleteCount => canClaimMandates([
+      ...completedMandates,
+      ...Array.from({ length: incompleteCount }, () => mandateOf("Ada", false)),
     ], "Ada"))).toEqual([true, false, false]);
   });
 });
 
 describe("countMandatesTakingSlot", () => {
-  it("counts only the player's mandates not yet fulfilled", () => {
+  it("counts only the player's mandates not yet completed", () => {
     expect(countMandatesTakingSlot([
       mandateOf("Ada", false),
       mandateOf("Ada", true),

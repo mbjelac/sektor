@@ -1,7 +1,7 @@
 import { abandonedMandate } from "./abandonedMandate";
 
 // A set of criteria a player can claim, and which brings them points while every sektor they own
-// fulfils it. A mandate is made with nobody owning it, and is known by its number. Whether it is
+// completes it. A mandate is made with nobody owning it, and is known by its number. Whether it is
 // completed is worked out anew whenever its owner changes one of their sektors.
 export interface Mandate {
   number: number;
@@ -10,7 +10,7 @@ export interface Mandate {
   completed: boolean;
 }
 
-// What the player's sektors have to do, between them, for a mandate to be fulfilled: import or export
+// What the player's sektors have to do, between them, for a mandate to be completed: import or export
 // at least, or at most, so much of a resource, be deforested or polluted by at most so much, or house
 // at least, or at most, so many people, or make at least so much Hapiness. Whether they do is
 // worked out anew along with the mandate it belongs to.

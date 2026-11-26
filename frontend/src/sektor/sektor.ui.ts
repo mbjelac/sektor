@@ -133,7 +133,7 @@ function renameSektor() {
 }
 
 // Taking a sektor up and giving it up stand beside its name: a sektor nobody holds is offered to the
-// player looking at it, unless they already own as many sektors as their fulfilled mandates allow,
+// player looking at it, unless they already own as many sektors as their completed mandates allow,
 // and the player's own sektor can be given up. A sektor somebody else holds offers neither.
 function createClaimOrAbandonButton(): HTMLElement | null {
   const owner = getSektorOwnerName();

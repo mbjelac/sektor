@@ -68,9 +68,9 @@ test("makes the player the owner of a mandate claimed from its popup and closes 
   }))).toEqual({ owners: [CURRENT_PLAYER, null], isPopupShown: false, listedMandates: 1 });
 });
 
-// The player works on 3 mandates not yet fulfilled, as many as they may, so the mandate free to claim
+// The player works on 3 mandates not yet completed, as many as they may, so the mandate free to claim
 // cannot be claimed.
-async function storeThreeUnfulfilledMandatesAndOneFree(page: Page) {
+async function storeThreeIncompleteMandatesAndOneFree(page: Page) {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
     ...[1, 2, 3].map(mandateNumber => ({
       number: mandateNumber,
@@ -82,8 +82,8 @@ async function storeThreeUnfulfilledMandatesAndOneFree(page: Page) {
   ])), CURRENT_PLAYER);
 }
 
-test("offers no Claim button on a mandate while the player works on 3 mandates not yet fulfilled", async ({ page }) => {
-  await storeThreeUnfulfilledMandatesAndOneFree(page);
+test("offers no Claim button on a mandate while the player works on 3 mandates not yet completed", async ({ page }) => {
+  await storeThreeIncompleteMandatesAndOneFree(page);
   await page.goto("/?test=true");
   await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
 
@@ -97,7 +97,7 @@ test("offers no Claim button on a mandate while the player works on 3 mandates n
 
 // Where Claim would stand, the player is told in red why they cannot claim the mandate.
 test("tells the player in place of Claim that they cannot claim more while they work on 3 mandates", async ({ page }) => {
-  await storeThreeUnfulfilledMandatesAndOneFree(page);
+  await storeThreeIncompleteMandatesAndOneFree(page);
   await page.goto("/?test=true");
   await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="unclaimed"]').click();
 
@@ -230,7 +230,7 @@ test("makes a new mandate in place of one claimed", async ({ page }) => {
 });
 
 // A mandate just claimed is shown among the player's own, the list turning to them and scrolling down
-// to it below the many the player already has. Those are all fulfilled and ask for Wood, not Ore, so
+// to it below the many the player already has. Those are all completed and ask for Wood, not Ore, so
 // none of them stands in the way of claiming another.
 test("lists the player's own mandates with the one just claimed in view", async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
@@ -438,7 +438,7 @@ test("marks the player's completed mandates green and the others red", async ({ 
   await expect(page.locator("#mandate-panel")).toHaveScreenshot("own-mandates.png", { maxDiffPixelRatio: 0 });
 });
 
-// A criterion the player's sektors already fulfil stands on pale green, the others are left as they are.
+// A criterion the player's sektors already complete stands on pale green, the others are left as they are.
 test("puts the completed criteria of the player's mandates on pale green", async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
     {
