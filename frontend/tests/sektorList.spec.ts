@@ -29,6 +29,22 @@ test("shows the owner of every sektor", async ({ page }) => {
   await expect(page.locator("#sektor-list")).toHaveScreenshot("sektor-list-owners.png", { maxDiffPixelRatio: 0 });
 });
 
+// The player owns Alpha and has fulfilled no mandate, which allows them no sektor more, and 5 more
+// mandates fulfilled would allow them one.
+test("tells the player below the name of the list that they can claim no more, and how many mandates would allow one more", async ({ page }) => {
+  await expect(page.locator("#sektor-allowance-notice")).toHaveScreenshot("sektor-allowance-notice.png", { maxDiffPixelRatio: 0 });
+});
+
+test("tells nothing of the allowance once the player's fulfilled mandates allow one sektor more", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify(Array.from({ length: 5 }, (_, mandateIndex) => (
+    { number: mandateIndex + 1, owner: currentPlayer, completed: true, criteria: [] }
+  )))), CURRENT_PLAYER);
+
+  await page.reload();
+
+  await expect(page.locator("#sektor-allowance-notice")).toHaveCount(0);
+});
+
 // Every sektor tells what covers its triangle of the planet, as the planet tells it with the mouse
 // over the triangle but without the biome type. A sektor lying nowhere on the planet says nothing.
 test("shows the biome type of every sektor", async ({ page }) => {

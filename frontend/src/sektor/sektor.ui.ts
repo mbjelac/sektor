@@ -19,7 +19,7 @@ import { playerLevel } from "../playerLevel";
 import { scoreOfPlayer } from "../players";
 import { recalculateMandates } from "../mandates/recalculateMandates";
 import { getMandates } from "../mandates/mandates.api";
-import { getGivenSektorName, getSektorLocation, getSektorOwner, getTakenSektorNames, removeSektorOwner, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
+import { getGivenSektorName, getSektorList, getSektorLocation, getSektorOwner, getTakenSektorNames, removeSektorOwner, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
 import { locationPropertiesToLocations } from "./locationProperties";
 import { initPropertyToggler, getSelectedProperty, selectProperty } from "./propertyToggler.ui";
 import { floorColor, floorColorAlongRange, propertyValueColor } from "../properties";
@@ -28,6 +28,7 @@ import { getLocalResources, getResourceIcon } from "../resources";
 import { arrowLeftIcon, buildingOfficeIcon, ecosystemDamage as deforestationIcon, faceSmileIcon, pencilSquareIcon } from "../icons";
 import { sektorDeforestation } from "./deforestation";
 import { createClaimButton } from "../claimButton.ui";
+import { sektorAllowance } from "../sektorAllowance";
 import { formatNumber } from "../formatNumber";
 import { MODIFIER_MIN, MODIFIER_MAX } from "../../../shared/modifierLimits";
 import { SEKTOR_SIZE } from "../../../shared/sektorSize";
@@ -132,17 +133,23 @@ function renameSektor() {
 }
 
 // Taking a sektor up and giving it up stand beside its name: a sektor nobody holds is offered to the
-// player looking at it, and the player's own sektor can be given up. A sektor somebody else holds
-// offers neither.
+// player looking at it, unless they already own as many sektors as their fulfilled mandates allow,
+// and the player's own sektor can be given up. A sektor somebody else holds offers neither.
 function createClaimOrAbandonButton(): HTMLElement | null {
   const owner = getSektorOwnerName();
   if (!owner) {
+    if (!canCurrentPlayerClaimSektors()) return null;
     const claimButton = createClaimButton(claimSektor);
     claimButton.id = "map-claim-button";
     return claimButton;
   }
   if (owner === getUsername()) return createAbandonButton();
   return null;
+}
+
+function canCurrentPlayerClaimSektors(): boolean {
+  const sektorOwnerNames = getSektorList().map(sektorListItem => sektorListItem.owner);
+  return sektorAllowance(sektorOwnerNames, getMandates(), getUsername()).canClaimSektors;
 }
 
 // A sektor carries the name it was made with, so the player is only asked whether they want it.

@@ -20,7 +20,7 @@ Losing fulfilled mandates:
 - the player cannot claim new sektors until they are back within the allowance
 - the player keeps what they have, but cannot expand
 
-#1 Player cannot claim more sektors than their number of fulfilled mandates allow
+#1 [done] Player cannot claim more sektors than their number of fulfilled mandates allow
 - [done] number of fulfilled mandates limits how many sektors a player can own/claim
     - allowed number of owned sektors equals every 5 fulfilled mandates
     - example (fulfilled mandates: allowed sektors):

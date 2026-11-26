@@ -17,6 +17,8 @@ import { showPlanetBackground } from "./planetBackground.ui";
 import { getPlanet } from "./planet";
 import { regionCover } from "./regionLabels";
 import { oreColor } from "./oreMarks.ui";
+import { getMandates } from "../mandates/mandates.api";
+import { sektorAllowance } from "../sektorAllowance";
 
 const LIST_ROW_GAP_PIXELS = 8;
 
@@ -35,7 +37,7 @@ function renderList() {
     summaries.filter((summary, sektorIndex) => sektors[sektorIndex].owner === getUsername()),
   );
 
-  container.appendChild(createHeader());
+  container.appendChild(createHeader(sektors));
 
   for (const sektor of sektors) {
     container.appendChild(createListItem(sektor));
@@ -44,11 +46,14 @@ function renderList() {
   updateGlobalStatePanel({ globalImportsAndExports: planetImportsAndExports, playerImportsAndExports });
 }
 
-function createHeader(): HTMLElement {
+function createHeader(sektors: SektorListItem[]): HTMLElement {
   const header = document.createElement("div");
   header.className = "sektor-list-header";
 
   header.appendChild(createListTitle("Sektors"));
+
+  const allowanceNotice = createAllowanceNotice(sektors);
+  if (allowanceNotice) header.appendChild(allowanceNotice);
 
   const name = document.createElement("span");
   name.className = "sektor-list-name";
@@ -74,6 +79,18 @@ function createHeader(): HTMLElement {
   header.appendChild(owner);
 
   return header;
+}
+
+// A player owning as many sektors as their fulfilled mandates allow is told, below the name of the
+// list, that they can claim no more, and how many more mandates to fulfill before they can.
+function createAllowanceNotice(sektors: SektorListItem[]): HTMLElement | null {
+  const allowance = sektorAllowance(sektors.map(sektor => sektor.owner), getMandates(), getUsername());
+  if (allowance.canClaimSektors) return null;
+
+  const notice = document.createElement("div");
+  notice.id = "sektor-allowance-notice";
+  notice.innerHTML = `No more sektors allowed.<br>Fulfill <b>${allowance.mandatesToNextAllowance}</b> more mandates to increase allowance.`;
+  return notice;
 }
 
 function createListItem(sektorListItem: SektorListItem): HTMLElement {

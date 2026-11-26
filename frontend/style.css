@@ -1072,6 +1072,19 @@ body > main {
     display: none;
 }
 
+/* Told below the name of the list, across every column of it, when the player can claim no more. */
+#sektor-allowance-notice {
+    grid-column: 1 / -1;
+    margin-bottom: 18px;
+    color: white;
+    border: 1px solid #ff6b6b;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 .sektor-list-header,
 .sektor-list-item {
     display: grid;
