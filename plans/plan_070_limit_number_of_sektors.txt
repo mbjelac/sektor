@@ -21,15 +21,15 @@ Losing fulfilled mandates:
 - the player keeps what they have, but cannot expand
 
 #1 Player cannot claim more sektors than their number of fulfilled mandates allow
-- number of fulfilled mandates limits how many sektors a player can own/claim
+- [done] number of fulfilled mandates limits how many sektors a player can own/claim
     - allowed number of owned sektors equals every 5 fulfilled mandates
     - example (fulfilled mandates: allowed sektors):
         - 0-4: 1
         - 5-9: 2
         - 10-14: 3
-- when limit exceeded, player can not claim sektors
+- [done] when limit exceeded, player can not claim sektors
     - if limit exceeded, Claim button not visible in un-claimed sektor map
-- when limit exceeded, player is notified
+- [done] when limit exceeded, player is notified
     - if limit exceeded, top of sektor list panel in list page contains message
         - text: "No more sektors allowed.<br>Fulfill <X> more mandates to increase allowance."
             - X is number of mandates until next allowance limit
@@ -39,3 +39,4 @@ Losing fulfilled mandates:
                     - 23: 2
         - color: white
         - border: thin red
+        - X bold
