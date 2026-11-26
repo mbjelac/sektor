@@ -124,3 +124,18 @@ Which mandates a player can claim:
 
 #7 [done] Message to avoid scarse resource import not needed
 - [done] remove logic & display of message "Avoid importing scarse resources"
+
+#8 Player sees they cannot claim more mandates on mandate stats
+- mandate stats display number of unfulfilled mandates with dark red background
+- if maximum unfulfilled mandates reached, add bright red border
+
+#9 Mandate completion status is more intuitive
+- replace mandate icon with checkbox icon
+    - show empty checkbox icon for unfulfilled mandates
+    - show checked checkbox icon for fulfilled mandates
+- remove red/green circle indicators
+- apply for all display of mandates
+    - in list page mandate list
+    - in map page mandate dropdown list
+    - in mandate details
+        - replace big mandate icon with big checkbox
