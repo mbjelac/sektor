@@ -88,9 +88,7 @@ Which mandates a player can claim:
     - unclaimed mandates stay visible in mandate lists
     - in an unclaimed mandate's details popup, the Claim button is not shown
         - instead, at the same place, a red message:
-            - "You have at least 3 incomplete mandates."
-            - line break
-            - "You cannot claim any more."
+            - "Incomplete mandate limit reached."
 
 #5 [done] A player may not claim a mandate with same criterion
 - [done] criterion means the same type, and for imports & exports also the same resource
@@ -126,8 +124,8 @@ Which mandates a player can claim:
 - [done] remove logic & display of message "Avoid importing scarse resources"
 
 #8 Player sees they cannot claim more mandates on mandate stats
-- mandate stats display number of unfulfilled mandates with dark red background
-- if maximum unfulfilled mandates reached, add bright red border
+- [done] mandate stats display number of unfulfilled mandates with dark red background
+- [done] if maximum unfulfilled mandates reached, add bright red border
 
 #9 Mandate completion status is more intuitive
 - replace mandate icon with checkbox icon
