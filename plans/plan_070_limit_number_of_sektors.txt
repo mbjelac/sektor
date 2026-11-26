@@ -42,5 +42,12 @@ Losing fulfilled mandates:
         - X bold
 
 #2 Player can se their mandate stats in list page
-- display same mandate stats (unfulfilled, fulfilled, total) in list page on same location (in front of username in top right)
+- [done] display same mandate stats (unfulfilled, fulfilled, total) in list page on same location (in front of username in top right)
     - not clickable - mandate list is already shown on list page
+    - tooltips:
+        - unfulfilled mandates: "Unfulfilled mandates"
+        - fulfilled mandates: "Fulfilled mandates"
+- number of total mandates not neccessary
+    - remove " / <total>" from mandate stats
+        - in map
+        - in list
