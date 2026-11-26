@@ -88,7 +88,9 @@ Which mandates a player can claim:
     - unclaimed mandates stay visible in mandate lists
     - in an unclaimed mandate's details popup, the Claim button is not shown
         - instead, at the same place, a red message:
-            - "Incomplete mandate limit reached."
+            - "Too many"
+            - line break
+            - "incomplete mandates!"
 
 #5 [done] A player may not claim a mandate with same criterion
 - [done] criterion means the same type, and for imports & exports also the same resource
