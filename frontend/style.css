@@ -1972,12 +1972,18 @@ body > main {
     color: #fff;
 }
 
+/* The same counts on the list page, where nothing opens from them. */
+.mandate-stats,
+.mandate-stats:hover {
+    color: #ccc;
+    cursor: default;
+}
+
 .mandate-counts {
     display: flex;
     align-items: center;
     gap: 3px;
     color: #fff;
-    white-space: pre;
 }
 
 /* With nothing to count, the counts take up no room beside the icon. */
@@ -1997,10 +2003,6 @@ body > main {
 
 .mandate-count-complete {
     background: #1e6b2e;
-}
-
-.mandate-count-claimed {
-    padding: 0;
 }
 
 .user-icon {

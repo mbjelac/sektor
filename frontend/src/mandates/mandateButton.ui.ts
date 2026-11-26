@@ -13,20 +13,41 @@ export function showMandateButton(): void {
   const userDisplay = document.getElementById("user-display");
   if (!userDisplay) return;
 
-  const mandateButton = document.createElement("button");
+  const mandateButton = createMandateStats("button");
   mandateButton.id = "mandate-button";
-  mandateButton.className = "mandate-button";
   mandateButton.dataset.title = "Mandates";
-  mandateButton.innerHTML = clipboardDocumentCheckIcon;
   mandateButton.addEventListener("click", () => toggleMandatePanel(mandateButton));
+
+  userDisplay.prepend(mandateButton);
+  showMandateCounts();
+}
+
+// On the list page the player reads the same counts in the same place, but nothing opens from them,
+// the list of mandates standing on the page already.
+export function showMandateStats(): void {
+  const userDisplay = document.getElementById("user-display");
+  if (!userDisplay) return;
+
+  const mandateStats = createMandateStats("span");
+  mandateStats.id = "mandate-stats";
+  mandateStats.classList.add("mandate-stats");
+
+  userDisplay.prepend(mandateStats);
+  showMandateCounts();
+}
+
+// The icon of the list of mandates, with the player's counts of mandates beside it.
+function createMandateStats(tagName: "button" | "span"): HTMLElement {
+  const mandateStats = document.createElement(tagName);
+  mandateStats.className = "mandate-button";
+  mandateStats.innerHTML = clipboardDocumentCheckIcon;
 
   const counts = document.createElement("span");
   counts.id = "mandate-counts";
   counts.className = "mandate-counts";
-  mandateButton.appendChild(counts);
+  mandateStats.appendChild(counts);
 
-  userDisplay.prepend(mandateButton);
-  showMandateCounts();
+  return mandateStats;
 }
 
 // The icon opens the panel, and closes it again.
@@ -62,30 +83,25 @@ function showMandatePanel(mandateButton: HTMLElement) {
   renderMandateList();
 }
 
-// Beside the icon the player reads how many of their mandates are not completed yet, on red, how many
-// are, on green, and how many they have claimed altogether. A count of nothing is left out, and a
-// player who has claimed nothing is shown the icon alone.
+// Beside the icon the player reads how many of their mandates are not completed yet, on red, and how
+// many are, on green. A count of nothing is left out, and a player who has claimed nothing is shown the
+// icon alone.
 export function showMandateCounts() {
   const counts = document.getElementById("mandate-counts");
   if (!counts) return;
 
-  const { incomplete, complete, claimed } = mandateCounts(getMandates(), getUsername());
-  if (claimed === 0) {
-    counts.replaceChildren();
-    return;
-  }
+  const { incomplete, complete } = mandateCounts(getMandates(), getUsername());
 
   counts.replaceChildren(
-    ...(incomplete > 0 ? [createCount("mandate-count-incomplete", incomplete)] : []),
-    ...(complete > 0 ? [createCount("mandate-count-complete", complete)] : []),
-    document.createTextNode(" / "),
-    createCount("mandate-count-claimed", claimed),
+    ...(incomplete > 0 ? [createCount("mandate-count-incomplete", incomplete, "Unfulfilled mandates")] : []),
+    ...(complete > 0 ? [createCount("mandate-count-complete", complete, "Fulfilled mandates")] : []),
   );
 }
 
-function createCount(className: string, count: number): HTMLElement {
+function createCount(className: string, count: number, tooltip: string): HTMLElement {
   const countElement = document.createElement("span");
   countElement.className = `mandate-count ${className}`;
   countElement.textContent = `${count}`;
+  countElement.dataset.title = tooltip;
   return countElement;
 }

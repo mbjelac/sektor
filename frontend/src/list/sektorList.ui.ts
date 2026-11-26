@@ -8,7 +8,8 @@ import { globeAsiaAustraliaIcon, oreDeposits, userIcon } from "../icons";
 import { renderLeaderboard } from "./leaderboard.ui";
 import { createSektorIfNeeded, startCreatingSektors } from "../creation/sektorCreation";
 import { createNewMandate, fillMandatePool } from "../mandates/mandateCreation";
-import { renderMandateList } from "../mandates/mandateList.ui";
+import { onMandatesChanged, renderMandateList } from "../mandates/mandateList.ui";
+import { showMandateCounts, showMandateStats } from "../mandates/mandateButton.ui";
 import { showPurgeButton } from "./purgeButton.ui";
 import { globalImportsAndExports } from "../globalImportsAndExports";
 import { updateGlobalStatePanel } from "../globalStatePanel.ui";
@@ -199,6 +200,9 @@ function createOwner(sektorListItem: SektorListItem): HTMLElement {
 installTooltips();
 requireLogin();
 showUser();
+showMandateStats();
+// A mandate claimed or given up from the list of mandates changes the player's counts of them.
+onMandatesChanged(showMandateCounts);
 const planetBackground = showPlanetBackground(revealSektorInList);
 // A list which fills by itself cannot be looked at, as a sektor may appear on it at any moment. A
 // test therefore lays this out before the page loads and makes the sektors and mandates it wants by

@@ -45,6 +45,47 @@ test("tells nothing of the allowance once the player's fulfilled mandates allow 
   await expect(page.locator("#sektor-allowance-notice")).toHaveCount(0);
 });
 
+// The player has 2 mandates not yet completed and 1 completed, of 3 claimed; Ana's mandate is not theirs.
+test("shows the player's counts of mandates in front of their name", async ({ page }) => {
+  await storeMandatesOfPlayerAndAna(page);
+
+  await page.reload();
+
+  await expect(page.locator("#mandate-stats")).toHaveScreenshot("list-mandate-stats.png", { maxDiffPixelRatio: 0 });
+});
+
+// The list of mandates stands on the list page already, so the counts open nothing.
+test("opens nothing from the player's counts of mandates", async ({ page }) => {
+  await storeMandatesOfPlayerAndAna(page);
+  await page.reload();
+  const mandatePanelChildrenBeforeClicking = await page.locator("#mandate-panel > *").count();
+
+  await page.locator("#mandate-stats").click();
+
+  expect({
+    tagName: await page.locator("#mandate-stats").evaluate(mandateStats => mandateStats.tagName),
+    mandatePanelChildren: await page.locator("#mandate-panel > *").count(),
+  }).toEqual({ tagName: "SPAN", mandatePanelChildren: mandatePanelChildrenBeforeClicking });
+});
+
+test("names the player's counts of mandates on hovering them", async ({ page }) => {
+  await storeMandatesOfPlayerAndAna(page);
+
+  await page.reload();
+
+  expect(await page.locator("#mandate-stats .mandate-count").evaluateAll(counts => counts.map(count => count.getAttribute("data-title"))))
+    .toEqual(["Unfulfilled mandates", "Fulfilled mandates"]);
+});
+
+async function storeMandatesOfPlayerAndAna(page: Page) {
+  await page.evaluate(([currentPlayer, otherPlayer]) => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: false, criteria: [] },
+    { number: 2, owner: currentPlayer, completed: true, criteria: [] },
+    { number: 3, owner: currentPlayer, completed: false, criteria: [] },
+    { number: 4, owner: otherPlayer, completed: false, criteria: [] },
+  ])), [CURRENT_PLAYER, OTHER_PLAYER]);
+}
+
 // Every sektor tells what covers its triangle of the planet, as the planet tells it with the mouse
 // over the triangle but without the biome type. A sektor lying nowhere on the planet says nothing.
 test("shows the biome type of every sektor", async ({ page }) => {

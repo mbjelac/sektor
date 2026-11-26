@@ -606,7 +606,7 @@ test("counts a mandate claimed from the list of mandates over the map", async ({
   await page.locator("#mandate-panel .mandate-item").click();
   await page.locator("#mandate-claim-button").click();
 
-  expect(await page.locator("#mandate-counts").textContent()).toEqual("2 / 2");
+  expect(await page.locator("#mandate-counts").textContent()).toEqual("2");
 });
 
 // Over the map the player is building towards their own mandates, so the list opens on those.
