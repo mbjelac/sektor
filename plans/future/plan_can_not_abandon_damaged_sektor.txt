@@ -13,6 +13,8 @@ A sektor can be abandoned only if it is not damaged:
     - this is the same work "at most" mandates ask for, so the loophole turns into cleaning up
 - abandoning stays possible for its legitimate purpose: leaving a sektor which did not work out
 
-Player sees why a sektor cannot be abandoned:
-- Abandon button disabled while sektor is damaged
-- tooltip explains why, e.g. "Clean up pollution & deforestation before abandoning"
+#1 Player is notified why a sektor cannot be abandoned
+- when player clicks abandon on sektor which cannot be abandoned
+    - instead of "Are you sure..." message display popup
+        - message: "Sektor <sektor name> can not be abandoned at this time:"
+        -
