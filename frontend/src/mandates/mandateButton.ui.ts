@@ -3,6 +3,7 @@ import { renderMandateList, showOwnMandates } from "./mandateList.ui";
 import { getMandates } from "./mandates.api";
 import { getUsername } from "../login/login.api";
 import { mandateCounts } from "./mandateCounts";
+import { canClaimMandates } from "./mandateCap";
 
 // The space between the icon and the panel of mandates under it.
 const PANEL_GAP_PIXELS = 6;
@@ -85,15 +86,21 @@ function showMandatePanel(mandateButton: HTMLElement) {
 
 // Beside the icon the player reads how many of their mandates are not completed yet, on red, and how
 // many are, on green. A count of nothing is left out, and a player who has claimed nothing is shown the
-// icon alone.
+// icon alone. A player who works on as many mandates as they may sees the red count bordered in bright
+// red, as they cannot claim any more.
 export function showMandateCounts() {
   const counts = document.getElementById("mandate-counts");
   if (!counts) return;
 
-  const { incomplete, complete } = mandateCounts(getMandates(), getUsername());
+  const mandates = getMandates();
+  const playerName = getUsername();
+  const { incomplete, complete } = mandateCounts(mandates, playerName);
+  const incompleteClassName = canClaimMandates(mandates, playerName)
+    ? "mandate-count-incomplete"
+    : "mandate-count-incomplete mandate-count-at-cap";
 
   counts.replaceChildren(
-    ...(incomplete > 0 ? [createCount("mandate-count-incomplete", incomplete, "Unfulfilled mandates")] : []),
+    ...(incomplete > 0 ? [createCount(incompleteClassName, incomplete, "Unfulfilled mandates")] : []),
     ...(complete > 0 ? [createCount("mandate-count-complete", complete, "Fulfilled mandates")] : []),
   );
 }

@@ -584,6 +584,21 @@ test("counts the player's mandates beside the icon of the list of mandates", asy
   await expect(page.locator("#mandate-button")).toHaveScreenshot("mandate-counts.png", { maxDiffPixelRatio: 0 });
 });
 
+// Three mandates of the player not completed yet, as many as they may work on: no more can be claimed.
+test("borders the count of unfulfilled mandates while the player can claim no more", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: false, criteria: [] },
+    { number: 2, owner: currentPlayer, completed: false, criteria: [] },
+    { number: 3, owner: currentPlayer, completed: false, criteria: [] },
+    { number: 4, owner: currentPlayer, completed: true, criteria: [] },
+  ])), CURRENT_PLAYER);
+  await storeSektor(page, "Alpha", CURRENT_PLAYER);
+
+  await page.goto("/sektor.html?id=Alpha");
+
+  await expect(page.locator("#mandate-button")).toHaveScreenshot("mandate-counts-at-cap.png", { maxDiffPixelRatio: 0 });
+});
+
 test("counts nothing beside the icon while the player has claimed no mandate", async ({ page }) => {
   await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
     { number: 1, owner: null, completed: false, criteria: [] },

@@ -2001,6 +2001,11 @@ body > main {
     font-weight: bold;
 }
 
+/* At the most unfulfilled mandates a player may have, no more can be claimed. */
+.mandate-count-at-cap {
+    box-shadow: 0 0 0 2px #ff2020;
+}
+
 .mandate-count-complete {
     background: #1e6b2e;
 }

@@ -123,7 +123,7 @@ Which mandates a player can claim:
 #7 [done] Message to avoid scarse resource import not needed
 - [done] remove logic & display of message "Avoid importing scarse resources"
 
-#8 Player sees they cannot claim more mandates on mandate stats
+#8 [done] Player sees they cannot claim more mandates on mandate stats
 - [done] mandate stats display number of unfulfilled mandates with dark red background
 - [done] if maximum unfulfilled mandates reached, add bright red border
 
