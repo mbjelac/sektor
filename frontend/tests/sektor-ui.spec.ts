@@ -1365,7 +1365,7 @@ test("opens a mandate in full when the eye of its message is clicked", async ({ 
 
   expect(await page.locator("#mandate-details-dialog").evaluate(dialog => ({
     title: dialog.querySelector(".dialog-title")!.textContent,
-    criteria: [...dialog.querySelectorAll(".mandate-description-line")].map(line => line.textContent),
+    criteria: [...dialog.querySelectorAll(".mandate-description-text")].map(text => text.textContent),
   }))).toEqual({
     title: "Mandate 7",
     criteria: ["Export at least 12 🪵 Wood", "Import at most 4 💧 Water"],
@@ -1540,7 +1540,7 @@ function getListedMandates(page: Page) {
       resource: criterion.querySelector<HTMLElement>(".mandate-criterion-resource")!.dataset.title,
       completed: criterion.classList.contains("mandate-criterion-completed"),
     })),
-    completed: item.querySelector(".mandate-completion")!.classList.contains("mandate-completed"),
+    completed: item.querySelector(".mandate-checkbox")!.classList.contains("mandate-checkbox-checked"),
   })));
 }
 

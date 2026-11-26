@@ -1,10 +1,10 @@
 import { getMandates, Mandate, setMandateOwner } from "./mandates.api";
 import { createListTitle } from "../listTitle.ui";
-import { checkBadgeIcon, clipboardDocumentCheckIcon, sparklesIcon, userIcon } from "../icons";
+import { clipboardDocumentCheckIcon, sparklesIcon, userIcon } from "../icons";
 import { createCriterionAbbreviation } from "./criterionAbbreviation.ui";
 import { getUsername } from "../login/login.api";
 import { showMandateDetailsDialog, showMandateDialog } from "./mandateDialog.ui";
-import { createCompletionDot } from "./completionDot.ui";
+import { createMandateCheckbox } from "./completionCheckbox.ui";
 import { filterMandates, MandateFilter, onePerCriterion, withoutCompletedMinimumMandates } from "./mandateFilter";
 import { recalculateMandates } from "./recalculateMandates";
 import { getPlayerTotals } from "./playerTotals";
@@ -100,9 +100,8 @@ function createFilterButton(buttonFilter: MandateFilter, icon: string, tooltip: 
   return filterButton;
 }
 
-// A mandate is its badge and number followed by what it asks for, every criterion in short, and on
-// the player's own, whether it is completed at the end of the row. A mandate nobody owns which shares
-// a criterion with one of the player's own ends with a warning instead. Clicking anywhere on it opens
+// A mandate is its checkbox and number followed by what it asks for, every criterion in short. A
+// mandate nobody owns which shares a criterion with one of the player's own ends with a warning. Clicking anywhere on it opens
 // it up in full, which is where a mandate nobody owns is claimed and the player's own is given up.
 function createMandateItem(mandate: Mandate, mandates: Mandate[], playerSektors: PlayerSektor[]): HTMLElement {
   const item = document.createElement("div");
@@ -111,11 +110,14 @@ function createMandateItem(mandate: Mandate, mandates: Mandate[], playerSektors:
   item.dataset.mandateCategory = mandateCategory(mandate);
   item.addEventListener("click", () => openMandate(mandate));
 
+  const mandateHeading = document.createElement("span");
+  mandateHeading.className = "mandate-heading";
+  mandateHeading.appendChild(createMandateCheckbox(mandate));
   const mandateNumber = document.createElement("span");
   mandateNumber.className = "mandate-number";
-  mandateNumber.innerHTML = checkBadgeIcon;
-  mandateNumber.append(`${mandate.number}`);
-  item.appendChild(mandateNumber);
+  mandateNumber.textContent = `${mandate.number}`;
+  mandateHeading.appendChild(mandateNumber);
+  item.appendChild(mandateHeading);
 
   // A criterion the player's sektors already complete stands on pale green.
   for (const criterion of mandate.criteria) {
@@ -124,7 +126,6 @@ function createMandateItem(mandate: Mandate, mandates: Mandate[], playerSektors:
     item.appendChild(criterionAbbreviation);
   }
 
-  if (mandate.owner !== null) item.appendChild(createCompletionDot(mandate.completed));
   if (mandate.owner === null && heldCriteria(mandate, mandates, getUsername()).length > 0) {
     item.appendChild(createHeldCriterionWarning());
   }

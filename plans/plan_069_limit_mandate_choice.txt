@@ -129,14 +129,14 @@ Which mandates a player can claim:
 - [done] mandate stats display number of incomplete mandates with dark red background
 - [done] if maximum incomplete mandates reached, add bright red border
 
-#9 Mandate completion status is more intuitive
-- replace mandate icon with checkbox icon
+#9 [done] Mandate completion status is more intuitive
+- [done] replace mandate icon with checkbox icon
     - show empty checkbox icon for incomplete mandates
         - emoji for now: ⬜
     - show checked checkbox icon for completed mandates
         - emoji for now: ✅
-- remove red/green circle indicators
-- apply for all display of mandates
+- [done] remove red/green circle indicators
+- [done] apply for all display of mandates
     - in list page mandate list
     - in map page mandate dropdown list
     - in mandate details

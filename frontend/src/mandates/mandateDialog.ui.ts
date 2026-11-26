@@ -3,8 +3,7 @@ import { getUsername } from "../login/login.api";
 import { createClaimButton } from "../claimButton.ui";
 import { criterionDescription, CriterionDescription } from "./criterionDescription";
 import { getResourceIcon } from "../resources";
-import { createCompletionDot } from "./completionDot.ui";
-import { checkBadgeIcon } from "../icons";
+import { createCompletionCheckbox, createMandateCheckbox } from "./completionCheckbox.ui";
 import { getPlayerSektors } from "./playerSektors";
 import { criterionCurrentAmount, PlayerSektor, resourceTotal, sektorsMovingResource } from "./sektorsMovingResource";
 import { MandateCriterion } from "./mandates.api";
@@ -33,7 +32,7 @@ export function showMandateDialog({ mandate, canClaimMore, heldCriteria, onClaim
 }
 
 // A mandate is looked into to see which of its criteria the player's sektors already complete, each
-// told with a dot in front of it, as the mandate as a whole is in the list. A mandate of the player's
+// told with a checkbox in front of it, as the mandate as a whole is in the list. A mandate of the player's
 // own can be given up from here, and whoever opened it is told once it is.
 export function showMandateDetailsDialog(mandate: Mandate, onAbandoned?: () => void) {
   const overlay = createMandatePopup("mandate-details-dialog", mandate, createDescription(mandate, true));
@@ -41,7 +40,7 @@ export function showMandateDetailsDialog(mandate: Mandate, onAbandoned?: () => v
   document.body.appendChild(overlay);
 }
 
-// Every popup of a mandate is titled with its number behind the badge of a mandate, names the
+// Every popup of a mandate is titled with its number behind a big checkbox telling whether it is completed, names the
 // mandate's category under the title, and tells what it asks for under both.
 function createMandatePopup(dialogId: string, mandate: Mandate, description: HTMLElement): HTMLElement {
   const overlay = document.createElement("div");
@@ -61,11 +60,11 @@ function createMandatePopup(dialogId: string, mandate: Mandate, description: HTM
   return overlay;
 }
 
-// The badge stands beside the title and the category under it, held in the middle of the two.
+// The checkbox stands beside the title and the category under it, held in the middle of the two.
 function createMandateHeader(mandate: Mandate): HTMLElement {
   const header = document.createElement("div");
   header.className = "mandate-dialog-header";
-  header.innerHTML = checkBadgeIcon;
+  header.appendChild(createMandateCheckbox(mandate));
 
   const heading = document.createElement("div");
   heading.className = "mandate-dialog-heading";
@@ -199,7 +198,7 @@ function createHeldCriteria(heldCriteria: MandateCriterion[]): HTMLElement {
 function createCriterionLine(criterion: MandateCriterion, showsCompletion: boolean): HTMLElement {
   const line = document.createElement("div");
   line.className = "mandate-description-line";
-  if (showsCompletion) line.appendChild(createCompletionDot(criterion.completed));
+  if (showsCompletion) line.appendChild(createCompletionCheckbox(criterion.completed));
   const resourceIcon = isAboutResource(criterion) ? getResourceIcon(criterion.resourceName) : null;
   line.appendChild(createCriterionText(criterionDescription(criterion, resourceIcon)));
   return line;

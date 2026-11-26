@@ -1577,16 +1577,26 @@ body > main {
     font-size: 14px;
 }
 
-/* The number is in the dark of the rest of the mandate, to be read on the colour of its category. */
-.mandate-number {
+/* An empty box for a mandate or criterion not completed, a checked one for a completed one. */
+.mandate-checkbox {
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* The checkbox stands right in front of the number. */
+.mandate-heading {
     display: inline-flex;
     align-items: center;
     gap: 4px;
+}
+
+/* The number is in the dark of the rest of the mandate, to be read on the colour of its category. */
+.mandate-number {
     color: inherit;
     font-weight: bold;
 }
 
-/* The badge is held in the middle of the title and the category under it, both starting past it. */
+/* The checkbox is held in the middle of the title and the category under it, both starting past it. */
 .mandate-dialog-header {
     display: flex;
     align-items: center;
@@ -1595,10 +1605,10 @@ body > main {
     color: #fff;
 }
 
-.mandate-dialog-header > .icon {
+.mandate-dialog-header > .mandate-checkbox {
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    font-size: 28px;
+    line-height: 1;
 }
 
 .dialog-title.mandate-dialog-title {
@@ -1655,11 +1665,16 @@ body > main {
     margin-left: auto;
 }
 
-/* The dot telling whether a criterion is completed stands in front of it. */
+/* The checkbox telling whether a criterion is completed stands in front of it. */
 .mandate-description-line {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.mandate-description-line > .mandate-checkbox {
+    width: 16px;
+    text-align: center;
 }
 
 /* The criteria the player already holds stand under what the mandate asks for, below a small white
@@ -1700,7 +1715,7 @@ body > main {
 
 /* What is set in under a criterion keeps as far from the right edge as from the left. */
 .mandate-description-current-beside-completion {
-    padding: 0 18px;
+    padding: 0 24px;
 }
 
 /* The sektors making up what the player's sektors come to are set in under it, as far in, a sektor
@@ -1714,7 +1729,7 @@ body > main {
 }
 
 .mandate-criterion-sektors-beside-completion {
-    padding: 0 18px;
+    padding: 0 24px;
 }
 
 /* A sektor is clicked to be opened on its map, and lights up under the pointer to show it can be. */
@@ -1779,25 +1794,9 @@ body > main {
     cursor: pointer;
 }
 
-.mandate-item .mandate-completion {
-    margin-left: auto;
-}
-
 /* A mandate sharing a criterion with one of the player's own is warned of at the end of its row. */
 .mandate-item .mandate-held-criterion-warning {
     margin-left: auto;
-}
-
-.mandate-completion {
-    flex-shrink: 0;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #c70000;
-}
-
-.mandate-completed {
-    background: var(--color-good);
 }
 
 .mandate-criterion {

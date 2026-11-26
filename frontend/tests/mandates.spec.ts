@@ -425,8 +425,8 @@ test("shows the buttons once the player has claimed a mandate", async ({ page })
   expect(await page.locator("#mandate-panel .mandate-filter-button").count()).toEqual(2);
 });
 
-// The player's own mandates say at the end of their rows whether they are completed.
-test("marks the player's completed mandates green and the others red", async ({ page }) => {
+// The player's own mandates say by the checkbox in front of their numbers whether they are completed.
+test("checks the boxes of the player's completed mandates and leaves the others empty", async ({ page }) => {
   await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
     { number: 1, owner: currentPlayer, completed: true, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 12 }] },
     { number: 2, owner: currentPlayer, completed: false, criteria: [{ type: "maximumImport", resourceName: "Water", amount: 7 }] },
@@ -499,8 +499,8 @@ test("opens a mandate in full when it is clicked in the list", async ({ page }) 
   expect(await page.locator("#mandate-details-dialog").evaluate(dialog => ({
     title: dialog.querySelector(".dialog-title")!.textContent,
     criteria: [...dialog.querySelectorAll(".mandate-description-line")].map(line => ({
-      text: line.textContent,
-      completed: line.querySelector(".mandate-completion")!.classList.contains("mandate-completed"),
+      text: line.querySelector(".mandate-description-text")!.textContent,
+      completed: line.querySelector(".mandate-checkbox")!.classList.contains("mandate-checkbox-checked"),
     })),
     buttons: [...dialog.querySelectorAll("button")].map(button => button.textContent),
   }))).toEqual({
@@ -553,7 +553,7 @@ async function storeTwoOwnMandates(page: Page) {
   ])), CURRENT_PLAYER);
 }
 
-test("shows the player's own mandate in full, a dot in front of every criterion, Abandon in red in the bottom left and Close in the bottom right", async ({ page }) => {
+test("shows the player's own mandate in full, a checkbox in front of every criterion, Abandon in red in the bottom left and Close in the bottom right", async ({ page }) => {
   await storeHalfCompletedMandate(page);
   await openOwnMandates(page);
 
@@ -730,7 +730,7 @@ test("tells a deforestation criterion in full, and how deforested the player's s
   await page.locator("#mandate-panel .mandate-item").click();
 
   expect({
-    line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
+    line: await page.locator("#mandate-details-dialog .mandate-description-text").textContent(),
     current: (await readCurrentLines(page))[0],
   }).toEqual({ line: "Deforestation at most 15", current: "Current 12" });
 });
@@ -768,7 +768,7 @@ test("tells a pollution criterion in full, and how polluted the player's sektors
   await page.locator("#mandate-panel .mandate-item").click();
 
   expect({
-    line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
+    line: await page.locator("#mandate-details-dialog .mandate-description-text").textContent(),
     current: (await readCurrentLines(page))[0],
   }).toEqual({ line: "Pollution at most 60", current: "Current 40" });
 });
@@ -814,7 +814,7 @@ test("tells a population criterion in full, and how many people the player's sek
   for (const mandateNumber of [1, 2]) {
     await page.locator(`#mandate-panel .mandate-item[data-mandate-number="${mandateNumber}"]`).click();
     details.push({
-      line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
+      line: await page.locator("#mandate-details-dialog .mandate-description-text").textContent(),
       current: (await readCurrentLines(page))[0],
     });
     await page.locator("#mandate-details-dialog #mandate-close-button").click();
@@ -864,7 +864,7 @@ test("tells a hapiness criterion in full, and how much Hapiness the player's sek
   await page.locator("#mandate-panel .mandate-item").click();
 
   expect({
-    line: await page.locator("#mandate-details-dialog .mandate-description-line").textContent(),
+    line: await page.locator("#mandate-details-dialog .mandate-description-text").textContent(),
     current: (await readCurrentLines(page))[0],
   }).toEqual({ line: "Hapiness at least 8", current: "Current 5" });
 });
@@ -1081,11 +1081,11 @@ test("keeps what the player's sektors come to as far from the right edge as from
       current: margins(dialog.querySelector(".mandate-description-current-label")!, dialog.querySelector(".mandate-description-current-value")!),
       sektor: margins(dialog.querySelector(".mandate-criterion-sektor-name")!, dialog.querySelector(".mandate-criterion-sektor-amount")!),
     };
-  })).toEqual({ current: { left: 18, right: 18 }, sektor: { left: 18, right: 18 } });
+  })).toEqual({ current: { left: 24, right: 24 }, sektor: { left: 24, right: 24 } });
 });
 
 // Every mandate opened in full names its category under the title, starting where the word Mandate
-// does, in the colour of the category. The badge is held in the middle of the two.
+// does, in the colour of the category. The checkbox is held in the middle of the two.
 test("names the category of a mandate opened in full under its title, in the colour of the category", async ({ page }) => {
   await storeMandateOfEveryCategory(page);
   await page.goto("/?test=true");
@@ -1096,22 +1096,22 @@ test("names the category of a mandate opened in full under its title, in the col
     categories.push(await page.locator("#mandate-dialog").evaluate(dialog => {
       const categoryBox = dialog.querySelector(".mandate-dialog-category")!.getBoundingClientRect();
       const titleBox = dialog.querySelector(".mandate-dialog-title")!.getBoundingClientRect();
-      const badgeBox = dialog.querySelector(".mandate-dialog-header > .icon")!.getBoundingClientRect();
+      const checkboxBox = dialog.querySelector(".mandate-dialog-header > .mandate-checkbox")!.getBoundingClientRect();
       const category = dialog.querySelector(".mandate-dialog-category")!;
       return {
         name: category.textContent,
         colour: getComputedStyle(category).color,
         startsWithMandate: categoryBox.left === titleBox.left,
         underTitle: categoryBox.top >= titleBox.bottom,
-        badgeInMiddle: Math.abs((badgeBox.top + badgeBox.bottom) / 2 - (titleBox.top + categoryBox.bottom) / 2) <= 1,
+        checkboxInMiddle: Math.abs((checkboxBox.top + checkboxBox.bottom) / 2 - (titleBox.top + categoryBox.bottom) / 2) <= 1,
       };
     }));
     await page.locator("#mandate-close-button").click();
   }
 
   expect(categories).toEqual([
-    { name: "Economy", colour: "rgb(242, 242, 242)", startsWithMandate: true, underTitle: true, badgeInMiddle: true },
-    { name: "Ecology", colour: "rgb(206, 247, 205)", startsWithMandate: true, underTitle: true, badgeInMiddle: true },
-    { name: "Society", colour: "rgb(255, 219, 244)", startsWithMandate: true, underTitle: true, badgeInMiddle: true },
+    { name: "Economy", colour: "rgb(242, 242, 242)", startsWithMandate: true, underTitle: true, checkboxInMiddle: true },
+    { name: "Ecology", colour: "rgb(206, 247, 205)", startsWithMandate: true, underTitle: true, checkboxInMiddle: true },
+    { name: "Society", colour: "rgb(255, 219, 244)", startsWithMandate: true, underTitle: true, checkboxInMiddle: true },
   ]);
 });
