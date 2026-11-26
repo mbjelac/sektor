@@ -6,6 +6,7 @@
 # On success prints the one-line markdown report, e.g. "Moved to [plans/plan_064_foo.txt](...)."
 #
 # Also accepts "plan_foo", "plan_foo.txt" or a path to the file.
+# The name is converted to snake_case, so "Limit number of sektors" finds plan_limit_number_of_sektors.txt.
 # Exits non-zero with a message on stderr if the name is missing, the source file does not exist
 # or the target already exists.
 
@@ -26,6 +27,7 @@ else
   planName="$(basename "$planArgument")"
   planName="${planName%.txt}"
   planName="${planName#plan_}"
+  planName="$(printf '%s' "$planName" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/_/g; s/^_+//; s/_+$//')"
   sourcePlanFile="$plansDirectory/future/plan_${planName}.txt"
 fi
 
