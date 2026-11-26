@@ -19,7 +19,3 @@ Losing fulfilled mandates:
 - sektors already owned are kept
 - the player cannot claim new sektors until they are back within the allowance
 - the player keeps what they have, but cannot expand
-
-Abandoning sektors:
-- abandoning a polluted or deforested sektor would clean up the player's totals, a loophole for "at most" mandates
-- solved by plan_can_not_abandon_damaged_sektor
