@@ -132,7 +132,9 @@ Which mandates a player can claim:
 #9 Mandate completion status is more intuitive
 - replace mandate icon with checkbox icon
     - show empty checkbox icon for unfulfilled mandates
+        - emoji for now: ⬜
     - show checked checkbox icon for fulfilled mandates
+        - emoji for now: ✅
 - remove red/green circle indicators
 - apply for all display of mandates
     - in list page mandate list
