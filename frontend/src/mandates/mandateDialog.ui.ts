@@ -15,7 +15,6 @@ import { createSektorNameWithBiome } from "./sektorNameWithBiome.ui";
 import { LocatedPlayerSektor } from "./playerSektors";
 import { formatNumber } from "../formatNumber";
 import { MANDATE_CATEGORY_NAMES, mandateCategory } from "./mandateCategory";
-import { MAXIMUM_UNFULFILLED_MANDATES } from "./mandateCap";
 
 // A mandate is looked over before it is claimed, and is claimed only once the player says so, and
 // only where the player may claim it: while they work on fewer mandates than they may, and hold no
@@ -257,11 +256,7 @@ function createClaimButtons(
 function createClaimRefusal(): HTMLElement {
   const claimRefusal = document.createElement("div");
   claimRefusal.id = "mandate-claim-refusal";
-  claimRefusal.append(
-    `You have at least ${MAXIMUM_UNFULFILLED_MANDATES} incomplete mandates.`,
-    document.createElement("br"),
-    "You cannot claim any more.",
-  );
+  claimRefusal.append("Too many", document.createElement("br"), "incomplete mandates!");
   return claimRefusal;
 }
 

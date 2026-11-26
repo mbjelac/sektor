@@ -114,7 +114,7 @@ test("tells the player in place of Claim that they cannot claim more while they 
       rightEdgesMeet: Math.round(refusalBox.right) === Math.round(dialog.querySelector(".mandate-dialog-buttons")!.getBoundingClientRect().right),
     };
   })).toEqual({
-    lines: ["You have at least 3 incomplete mandates.", "You cannot claim any more."],
+    lines: ["Too many", "incomplete mandates!"],
     color: "rgb(255, 107, 107)",
     isRightOfClose: true,
     rightEdgesMeet: true,
