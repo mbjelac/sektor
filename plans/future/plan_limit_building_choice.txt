@@ -32,3 +32,22 @@ Losing completed mandates:
 Leaderboard:
 - remove "Level" & "Points to next level" columns
 - possibly replace with number of completed mandates needed for the next building unlock
+
+#1 Player does not see mandates which require unproducable resources
+- mandate criteria are drawn from what the whole planet imports & exports, not from what a player can build
+    - e.g. a new player sees "export at least 20 Glass" with no building producing Glass available to them
+    - such a mandate is impossible for that player
+- an unclaimed mandate is hidden from a player if any of its criteria cannot be served by buildings available to the player:
+    - minimum export of a resource: no available building outputs that resource
+    - minimum import of a negative resource: no available building consumes that resource
+    - minimum population: Habitats not available
+    - minimum hapiness: no available building outputs Hapiness
+- "at most" criteria (pollution, deforestation, population at most, import/export at most) are never hidden by this rule
+    - they can always be completed by building less
+- available buildings are those unlocked for the player
+    - until unlocking by completed mandates is implemented, all buildings are available
+- applies wherever unclaimed mandates are listed (list page & map)
+    - applied before choosing the one mandate shown per criterion, so the shown one is one the player can work towards
+- mandates already claimed are not affected
+    - e.g. a building becomes locked again because the score dropped: its mandates stay claimed, the player may abandon them
+- consequence: as buildings are unlocked, mandates for their outputs appear, so unlocking widens the mandates a player can attempt
