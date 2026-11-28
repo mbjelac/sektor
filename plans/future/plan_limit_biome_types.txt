@@ -1,16 +1,15 @@
 A player's score is the number of their claimed mandates which are currently completed (see plan_limit_mandate_choice).
 Completing mandates allows the player to claim sektors of more biome types: a new player may claim sektors of few biome types, more are unlocked as the score grows.
 
-Biome types are those shown in sektor list biome column:
+Biome types by ascending difficulty:
 - 🌾 Grassland
-- 🌳 Forest
-- 🏜 Desert
 - 🌿 Savanna
+- 🌳 Forest
 - 🌴 Jungle
+- 🌊 Marine
 - 🌱 Tundra
 - 🌲 Taiga
-- ❄️ Polar
-- 🌊 Marine
+- 🏜 Desert
 
 Biome types require a number of completed mandates:
 - each biome type may have a minimum number of completed mandates the player needs to claim a sektor of that biome type
@@ -18,7 +17,7 @@ Biome types require a number of completed mandates:
     - no levels (see plan_limit_building_choice)
 - starting biome types should be the easiest to work with, e.g. Grassland & Forest
     - must be enough to complete the first mandates
-- harder biome types unlocked later, e.g. Desert, Polar, Marine
+- harder biome types unlocked later, e.g. Desert, Marine
 
 Sektors of all biome types are still created:
 - sektors are shared by all players, so a sektor is not created for any particular player
