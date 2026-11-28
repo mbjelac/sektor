@@ -100,6 +100,8 @@ Leaderboard:
                         - display both icon & name
                         - items separated by spacing (20px)
                         - wrap to new line (wrap icon & name together)
+                        - above list is label "Produces:"
+                            - small, white
             - Close button in bottom right corner
                 - clicking hides popup
             - list scrolls in list container, title & close button visible
