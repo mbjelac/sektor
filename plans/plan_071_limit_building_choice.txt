@@ -63,7 +63,7 @@ Leaderboard:
         - building name clearly visible
 - [done] when unavailable building selected, clicking on map square does nothing
 
-#3 Player informed of needed mandates for an unavailable building
+#3 [done] Player informed of needed mandates for an unavailable building
 - [done] if player clicks unavailable building
     - display building function panel normally
     - below building title in function panel display message
