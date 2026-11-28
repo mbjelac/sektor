@@ -64,15 +64,15 @@ Leaderboard:
 - [done] when unavailable building selected, clicking on map square does nothing
 
 #3 Player informed of needed mandates for an unavailable building
-- if player clicks unavailable building
+- [done] if player clicks unavailable building
     - display building function panel normally
-    - on top of function panel display message
+    - below building title in function panel display message
         - white text
         - thin red border
         - text: "Unavailable. <X> more mandates needed."
         - X = mandatesNeeded - current player completed mandates
         - X is bold
-- building overlay in toolbar also displays X
+- [done] building overlay in toolbar also displays X
     - next to padlock icon
     - white, bold
 

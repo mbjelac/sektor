@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { isUnlockedFor } from "./buildings/mandatesNeeded";
+import { isUnlockedFor, mandatesStillNeeded } from "./buildings/mandatesNeeded";
 import { buildingDefinitions } from "./buildings/buildings";
 import { createColumnHeaders, createConstructionDisplay, createFunctionDisplay } from "./buildingFunctionDisplay.ui";
 import { parseCommands } from "../../../shared/parseCommands";
@@ -24,6 +24,9 @@ let selectedBuilding: string | null = null;
 // The buildings the player has not completed enough mandates for, which can be picked to be looked
 // at but not put up.
 let unavailableBuildingNames = new Set<string>();
+// How many mandates the player building on the sektor has completed, which says how many more each
+// unavailable building needs.
+let toolbarCompletedMandateCount = 0;
 // The code of a building's variants is needed to draw it on the map, also when the map is shown
 // without the toolbar, so it is looked up straight from the definitions.
 const buildingCodesMap = new Map(buildingDefinitions.map(building => [building.name, building.renderingCodes]));
@@ -75,6 +78,12 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   buildingTitle.textContent = building.name;
   toolbarFunctionPanel.appendChild(buildingTitle);
 
+  // A building the player cannot put up yet is still looked at in full, with a word under its name of
+  // how far they are from it.
+  if (unavailableBuildingNames.has(building.name)) {
+    toolbarFunctionPanel.appendChild(createUnavailableMessage(mandatesStillNeeded(building, toolbarCompletedMandateCount)));
+  }
+
   if (building.properties.poolSize) {
     toolbarFunctionPanel.appendChild(createPoolSizeRow(building.properties.poolSize));
   }
@@ -101,6 +110,15 @@ function showToolbarFunctionPanel(building: BuildingDefinition) {
   const constructionPanelRect = constructionPanel.getBoundingClientRect();
   toolbarFunctionPanel.style.left = `${constructionPanelRect.right + TOOLBAR_FUNCTION_PANEL_MARGIN}px`;
   toolbarFunctionPanel.style.top = `${constructionPanelRect.top}px`;
+}
+
+function createUnavailableMessage(mandatesStillNeededCount: number): HTMLElement {
+  const unavailableMessage = document.createElement("div");
+  unavailableMessage.id = "toolbar-unavailable-message";
+  const count = document.createElement("b");
+  count.textContent = String(mandatesStillNeededCount);
+  unavailableMessage.append("Unavailable. ", count, " more mandates needed.");
+  return unavailableMessage;
 }
 
 function createPoolSizeRow(poolSize: number): HTMLElement {
@@ -136,6 +154,7 @@ export function initToolbar(completedMandateCount: number, isViewMode = false) {
   // buildings selectable, so whatever it held before is taken out of it first.
   toolbar.innerHTML = "";
   selectedBuilding = null;
+  toolbarCompletedMandateCount = completedMandateCount;
   unavailableBuildingNames = new Set(buildingDefinitions
     .filter(building => !isAvailable(building, completedMandateCount))
     .map(building => building.name));
@@ -157,7 +176,9 @@ export function initToolbar(completedMandateCount: number, isViewMode = false) {
     canvasContainer.className = "building-image";
     canvasContainer.style.height = "70px";
     item.appendChild(canvasContainer);
-    if (unavailableBuildingNames.has(building.name)) canvasContainer.appendChild(createBuildingLock());
+    if (unavailableBuildingNames.has(building.name)) {
+      canvasContainer.appendChild(createBuildingLock(mandatesStillNeeded(building, completedMandateCount)));
+    }
 
     const label = document.createElement("div");
     label.className = "building-name";
@@ -197,11 +218,15 @@ export function initToolbar(completedMandateCount: number, isViewMode = false) {
 }
 
 // A building the player has not completed enough mandates for carries a padlock in the corner of its
-// picture.
-function createBuildingLock(): HTMLElement {
+// picture, followed by how many more mandates it needs.
+function createBuildingLock(mandatesStillNeededCount: number): HTMLElement {
   const lock = document.createElement("span");
   lock.className = "building-lock";
   lock.innerHTML = icons.lockClosedSolidIcon;
+  const count = document.createElement("span");
+  count.className = "building-lock-count";
+  count.textContent = String(mandatesStillNeededCount);
+  lock.append(count);
   return lock;
 }
 

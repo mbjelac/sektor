@@ -305,6 +305,17 @@ body > main {
     color: #fff;
     pointer-events: none;
     display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* How many more mandates the building needs stands beside the padlock, outlined in black as it is. */
+.building-lock-count {
+    font-family: sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    -webkit-text-stroke: 3px #000;
+    paint-order: stroke fill;
 }
 
 .building-lock .icon {
@@ -352,6 +363,18 @@ body > main {
     font-weight: bold;
     text-align: center;
     margin-bottom: 6px;
+}
+
+/* A building the player cannot put up yet is told so under its name in its panel, in white within a
+   thin red border. */
+#toolbar-unavailable-message {
+    color: #fff;
+    border: 1px solid #ff3030;
+    font-family: sans-serif;
+    font-size: 12px;
+    text-align: center;
+    padding: 4px 6px;
+    margin-bottom: 8px;
 }
 
 .fp-pool-size {

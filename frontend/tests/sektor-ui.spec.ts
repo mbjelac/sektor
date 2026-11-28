@@ -34,7 +34,7 @@ test("shows a building as available once the player has completed as many mandat
 });
 
 // An unavailable building carries a small white padlock, outlined in black, in the bottom right corner
-// of its picture, its name clear beneath.
+// of its picture, followed by how many more mandates it needs, its name clear beneath.
 test("puts a padlock on an unavailable building in the toolbar", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
   await page.locator('.building-item[data-building-name="TestTower"]').scrollIntoViewIfNeeded();
@@ -57,6 +57,53 @@ test("puts nothing up when the map is clicked with an unavailable building picke
     selectedTools: await getSelectedToolNames(page),
     buildings: await page.locator('#sektor-stats .sektor-stat:has([data-title="Buildings"]) .sektor-stat-value').textContent(),
   }).toEqual({ selectedTools: ["TestTower"], buildings: "0 %" });
+});
+
+// An unavailable building picked shows its panel as any other, with a word under its name of how many
+// more mandates it needs: TestTower needs 5, and the player has completed 2.
+test("tells under the name in the panel of an unavailable building how many more mandates it needs", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify(
+    Array.from({ length: 2 }, (_, index) => ({ number: index + 1, owner: "Tester", completed: true, criteria: [] }))
+  )));
+  await page.reload();
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.locator('.building-item[data-building-name="TestTower"]').click();
+
+  expect(await page.locator("#toolbar-function-panel").evaluate(panel => ({
+    afterTitle: panel.querySelector(".fp-title")!.nextElementSibling!.id,
+    message: panel.querySelector("#toolbar-unavailable-message")!.textContent,
+    boldCount: panel.querySelector("#toolbar-unavailable-message b")!.textContent,
+    title: panel.querySelector(".fp-title")!.textContent,
+  }))).toEqual({
+    afterTitle: "toolbar-unavailable-message",
+    message: "Unavailable. 3 more mandates needed.",
+    boldCount: "3",
+    title: "TestTower",
+  });
+});
+
+test("shows the panel of an unavailable building with the word of how many more mandates it needs", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  await page.locator('.building-item[data-building-name="TestTower"]').click();
+
+  await expectScreenshot(page, "unavailable-building-panel", "#toolbar-function-panel");
+});
+
+// TestTower needs 5 mandates and the player has completed 2, so 3 more stand beside its padlock.
+test("tells beside the padlock of an unavailable building how many more mandates it needs", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify(
+    Array.from({ length: 2 }, (_, index) => ({ number: index + 1, owner: "Tester", completed: true, criteria: [] }))
+  )));
+  await page.reload();
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  expect(await page.locator('.building-item[data-building-name="TestTower"] .building-lock-count').evaluate(count => ({
+    text: count.textContent,
+    color: getComputedStyle(count).color,
+    weight: getComputedStyle(count).fontWeight,
+  }))).toEqual({ text: "3", color: "rgb(255, 255, 255)", weight: "700" });
 });
 
 // Whether each building named stands in the toolbar as unavailable.

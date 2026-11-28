@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isUnlockedFor, mandatesNeededFor } from "./mandatesNeeded";
+import { isUnlockedFor, mandatesNeededFor, mandatesStillNeeded } from "./mandatesNeeded";
 import { BuildingDefinition } from "./parseBuildingDefinitions";
 
 function buildingNeeding(mandatesNeeded?: number): BuildingDefinition {
@@ -21,5 +21,13 @@ describe("isUnlockedFor", () => {
 
   it("unlocks a building needing no mandates for a player who has completed none", () => {
     expect(isUnlockedFor(buildingNeeding(undefined), 0)).toEqual(true);
+  });
+});
+
+describe("mandatesStillNeeded", () => {
+  // The mine needs 5 mandates completed; the player has completed 2, 5 and 7.
+  it("gives how many more mandates the player has to complete, and none once they have enough", () => {
+    expect([2, 5, 7].map(completedMandateCount => mandatesStillNeeded(buildingNeeding(5), completedMandateCount)))
+      .toEqual([3, 0, 0]);
   });
 });
