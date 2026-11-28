@@ -59,8 +59,7 @@ Leaderboard:
 - [done] a building is normally visible in the construction toolbar only if the player's number of completed mandates is equal to or greater than the building's mandatesNeeded
 - [done] if number of completed mandates is less than a building's mandagtesNeeded, toolbar displays building as unavailable
     - with overlay
-        - black recangle covering entire building image, transparency 50%
-        - red thin lines crossing the entire overlay diagonally (as X)
+        - padlock icon: heroicons lock-closed, solid, white with black outline, small, in bottom right corner of building image
         - building name clearly visible
 - [done] when unavailable building selected, clicking on map square does nothing
 
@@ -73,6 +72,9 @@ Leaderboard:
         - text: "Unavailable. <X> more mandates needed."
         - X = mandatesNeeded - current player completed mandates
         - X is bold
+- building overlay in toolbar also displays X
+    - next to padlock icon
+    - white, bold
 
 #4 Player is notified when a building is unlocked by change in map
 - when a player constructs a building, destroys a buildings, modifies building multipliers or performs any change to sektor state
