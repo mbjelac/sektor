@@ -14,6 +14,8 @@ import { mandateCategory } from "./mandateCategory";
 import { createNewMandate } from "./mandateCreation";
 import { canClaimMandates } from "./mandateCap";
 import { heldCriteria } from "./heldCriteria";
+import { withoutUnproducibleMandates } from "./producibleMandates";
+import { getAvailableBuildings } from "../sektor/buildings/availableBuildings";
 
 // The list opens on the mandates waiting to be claimed.
 let mandateFilter: MandateFilter = "unclaimed";
@@ -58,12 +60,14 @@ export function renderMandateList() {
 }
 
 // Of the mandates waiting to be claimed, those the player's sektors already complete by making at least
-// so much are not listed, worked out from the sektors as they stand whenever the list is drawn. Of
-// those left, only one of every criterion is listed.
+// so much are not listed, worked out from the sektors as they stand whenever the list is drawn, and
+// nor are those asking for what no building available to the player can make. Of those left, only
+// one of every criterion is listed, so that the one listed is one the player can work towards.
 function listedMandates(mandates: Mandate[]): Mandate[] {
   const filteredMandates = filterMandates(mandates, mandateFilter, getUsername());
   if (mandateFilter !== "unclaimed") return filteredMandates;
-  return onePerCriterion(withoutCompletedMinimumMandates(filteredMandates, getPlayerTotals(getUsername())));
+  const uncompletedMandates = withoutCompletedMinimumMandates(filteredMandates, getPlayerTotals(getUsername()));
+  return onePerCriterion(withoutUnproducibleMandates(uncompletedMandates, getAvailableBuildings()));
 }
 
 // The name of the list stays at the top of the mandates while they are scrolled past it, with the

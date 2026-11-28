@@ -216,6 +216,37 @@ test("lists the next oldest of the mandates asking for the same once the one lis
     .toEqual([{ mandateNumber: "3", isWarned: true }]);
 });
 
+// No building there is makes Stone, so a mandate asking for Stone sent out cannot be completed and is
+// not listed; Wood is made by the processor, and at most so much pollution can always be kept to.
+test("does not list a mandate free to claim asking for what no available building makes", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: null, criteria: [{ type: "minimumExport", resourceName: "Stone", amount: 5 }] },
+    { number: 2, owner: null, criteria: [{ type: "minimumExport", resourceName: "Wood", amount: 5 }] },
+    { number: 3, owner: null, criteria: [{ type: "maximumPollution", amount: 60 }] },
+  ])));
+
+  await page.goto("/?test=true");
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items =>
+    items.map(item => (item as HTMLElement).dataset.mandateNumber)))
+    .toEqual(["2", "3"]);
+});
+
+// A mandate the player has claimed stays theirs to see, even when no available building makes what it
+// asks for; they may give it up.
+test("lists a mandate of the player's own asking for what no available building makes", async ({ page }) => {
+  await page.evaluate(currentPlayer => localStorage.setItem("mandates", JSON.stringify([
+    { number: 1, owner: currentPlayer, completed: false, criteria: [{ type: "minimumExport", resourceName: "Stone", amount: 5 }] },
+  ])), CURRENT_PLAYER);
+  await page.goto("/?test=true");
+
+  await page.locator('#mandate-panel .mandate-filter-button[data-mandate-filter="own"]').click();
+
+  expect(await page.locator("#mandate-panel .mandate-item").evaluateAll(items =>
+    items.map(item => (item as HTMLElement).dataset.mandateNumber)))
+    .toEqual(["1"]);
+});
+
 // A claimed mandate is no longer waiting to be claimed, so a new one, owned by nobody, takes its place.
 test("makes a new mandate in place of one claimed", async ({ page }) => {
   await storeUnclaimedMandate(page);
