@@ -1,0 +1,6 @@
+Building panel of building with a lot of functions has a lot of data.
+Most of it is hidden and has to be scrolled to.
+Buildings with multiplier blocks have this even worse.
+
+Solutions:
+- collapse function details (input & output) and show only title, starvation warning & multiplier controls (if any)
