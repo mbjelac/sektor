@@ -53,16 +53,16 @@ Leaderboard:
 - [done] consequence: as buildings are unlocked, mandates for their outputs appear, so unlocking widens the mandates a player can attempt
 
 #2 Construction toolbar shows unavailable buildings as locked
-- buildings.md building Properties section has optional variable mandatesNeeded with an integer value
+- [done] buildings.md building Properties section has optional variable mandatesNeeded with an integer value
     - e.g. mandatesNeeded=7
     - if absent, assume 0
-- a building is normally visible in the construction toolbar only if the player's number of completed mandates is equal to or greater than the building's mandatesNeeded
-- if number of completed mandates is less than a building's mandagtesNeeded, toolbar displays building as unavailable
+- [done] a building is normally visible in the construction toolbar only if the player's number of completed mandates is equal to or greater than the building's mandatesNeeded
+- [done] if number of completed mandates is less than a building's mandagtesNeeded, toolbar displays building as unavailable
     - with overlay
         - black recangle covering entire building image, transparency 50%
         - red thin lines crossing the entire overlay diagonally (as X)
         - building name clearly visible
-- when unavailable building selected, clicking on map square does nothing
+- [done] when unavailable building selected, clicking on map square does nothing
 
 #3 Player informed of needed mandates for an unavailable building
 - if player clicks unavailable building
@@ -73,3 +73,25 @@ Leaderboard:
         - text: "Unavailable. <X> more mandates needed."
         - X = mandatesNeeded - current player completed mandates
         - X is bold
+
+#4 Player is notified when a building is unlocked by change in map
+- when a player constructs a building, destroys a buildings, modifies building multipliers or performs any change to sektor state
+    - if that change triggers completing mandates
+    - if completing those mandates triggers some buildings becoming available
+        - toolbar displays those buildings as available
+        - show popup
+            - size:
+                - height 50% screen height
+                - width: 400px
+            - title: "Buildings unlocked!"
+            - list newly available buildings
+                - list item
+                    - building image, same as used in toolbar
+                    - building name next (to the right) of building image
+                        - large, bold, white
+                    - building tags, capitalised, comma-separated, underneath building name
+                        - small, white
+            - Close button in bottom right corner
+                - clicking hides popup
+            - list scrolls in list container, title & close button visible
+                - hide scrollbar
