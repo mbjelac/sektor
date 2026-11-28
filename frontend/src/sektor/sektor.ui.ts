@@ -5,7 +5,7 @@ import {parseCommands} from "../../../shared/parseCommands";
 import {BakedBodies, bakeCommands, drawBakedBodies} from "../../../shared/bakeCommands";
 import {withoutDepthWrites} from "../../../shared/applyCommands";
 import {BLOCK_SIZE} from "../../../shared/constants";
-import {initToolbar, getSelectedBuilding, onBuildingSelected, deselectBuilding, getBuildingCode, getBuildingVariantNumber, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
+import {initToolbar, getSelectedBuilding, isSelectedBuildingUnavailable, onBuildingSelected, deselectBuilding, getBuildingCode, getBuildingVariantNumber, DESTRUCTION_TOOL} from "./buildingToolbar.ui";
 import { BuildingLocation, BuildingResourceAmounts, Location, Sektor, SektorState } from "./Sektor";
 import { buildingDefinitions, everyBuildingDefinition } from "./buildings/buildings";
 import {showBuildingPanel, hideBuildingPanel} from "./buildings/buildingPanel.ui";
@@ -15,8 +15,7 @@ import { onResourceHover, ResourcePointing } from "../resourceHover.ui";
 import { getSektorData, saveSektorData } from "./sektor.api";
 import { getPlanetImportsAndExportsWhileBuilding, getPlayerImportsAndExportsWhileBuilding } from "../planetImportsAndExports";
 import { showMandateMessages, updateMessages } from "../messages.ui";
-import { playerLevel } from "../playerLevel";
-import { scoreOfPlayer } from "../players";
+import { mandateCounts } from "../mandates/mandateCounts";
 import { recalculateMandates } from "../mandates/recalculateMandates";
 import { getMandates } from "../mandates/mandates.api";
 import { getGivenSektorName, getSektorList, getSektorLocation, getSektorOwner, getTakenSektorNames, removeSektorOwner, setGivenSektorName, setSektorOwner } from "../list/sektorList.api";
@@ -182,7 +181,7 @@ function enterEditMode() {
 function showToolbarToOwner() {
   const constructionPanel = document.getElementById("construction-panel")!;
   constructionPanel.hidden = !isSektorOwnedByCurrentPlayer();
-  if (!constructionPanel.hidden) initToolbar(builderLevel, isViewMode);
+  if (!constructionPanel.hidden) initToolbar(builderCompletedMandateCount, isViewMode);
 }
 
 // What the messages tell is advice to whoever builds on the sektor, so nobody else is shown them: not
@@ -332,7 +331,7 @@ function createTestTerrain(): number[][] {
   return TEST_TERRAIN_ROWS.map(row => [...row].map(square => TEST_TERRAIN_SQUARES[square]));
 }
 
-const builderLevel = getBuilderLevel();
+const builderCompletedMandateCount = getBuilderCompletedMandateCount();
 const terrain = getTerrain();
 const sektorRegion = getSektorRegion();
 const terrainStyle = terrainStyleOfRegion(sektorRegion);
@@ -400,11 +399,11 @@ function showPlayerMandates() {
   );
 }
 
-// Which buildings a toolbar offers depends on how far the player building on this sektor has come.
-// A sektor nobody has claimed is there for whoever is looking at it to claim, so until somebody
-// does, it is the level of the player looking at it which says what its toolbar holds.
-function getBuilderLevel(): number {
-  return playerLevel(scoreOfPlayer(getSektorOwnerName() ?? getUsername()));
+// Which buildings a toolbar offers depends on how many mandates the player building on this sektor
+// has completed. A sektor nobody has claimed is there for whoever is looking at it to claim, so
+// until somebody does, it is the player looking at it whose mandates say what its toolbar holds.
+function getBuilderCompletedMandateCount(): number {
+  return mandateCounts(getMandates(), getSektorOwnerName() ?? getUsername()).complete;
 }
 
 // How much the ecosystem was supported when the sektor was made is settled then and never changes,
@@ -1374,6 +1373,10 @@ const sektorUi = (p: p5) => {
       }
       return;
     }
+
+    // A building the player has not completed enough mandates for can be picked to be looked at, but
+    // does not go up.
+    if (isSelectedBuildingUnavailable()) return;
 
     // The buildings of a sektor belonging to somebody else are there to be looked at, so a
     // player without the sektor is told why the one they picked does not go up.

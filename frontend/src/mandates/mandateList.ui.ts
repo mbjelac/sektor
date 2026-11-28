@@ -67,7 +67,7 @@ function listedMandates(mandates: Mandate[]): Mandate[] {
   const filteredMandates = filterMandates(mandates, mandateFilter, getUsername());
   if (mandateFilter !== "unclaimed") return filteredMandates;
   const uncompletedMandates = withoutCompletedMinimumMandates(filteredMandates, getPlayerTotals(getUsername()));
-  return onePerCriterion(withoutUnproducibleMandates(uncompletedMandates, getAvailableBuildings()));
+  return onePerCriterion(withoutUnproducibleMandates(uncompletedMandates, getAvailableBuildings(getUsername())));
 }
 
 // The name of the list stays at the top of the mandates while they are scrolled past it, with the

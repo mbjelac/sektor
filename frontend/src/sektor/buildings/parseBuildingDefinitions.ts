@@ -43,9 +43,9 @@ const OUTPUT_SEPARATOR = "->";
 
 export interface BuildingProperties {
   showFloor?: boolean;
-  // The level a player has to have reached before the building is offered to them. A building
-  // whose definition names none is offered to every player from the start.
-  minLevel?: number;
+  // How many mandates a player has to have completed before the building is offered to them. A
+  // building whose definition names none needs none, so is offered to every player from the start.
+  mandatesNeeded?: number;
   // What the building is about, so the player can find it among the others in the toolbar. They
   // come from the Tags section of the definition, not from its Properties section.
   tags?: string[];
@@ -221,8 +221,8 @@ function parseProperties(lines: string[]): BuildingProperties {
     if (match[1] === "showFloor" && match[2] === "false") {
       props.showFloor = false;
     }
-    if (match[1] === "minLevel" && isAmount(match[2])) {
-      props.minLevel = parseInt(match[2]);
+    if (match[1] === "mandatesNeeded" && isAmount(match[2])) {
+      props.mandatesNeeded = parseInt(match[2]);
     }
     if (match[1] === "pollutionArea" && isAmount(match[2])) {
       const pollutionArea = parseInt(match[2]);

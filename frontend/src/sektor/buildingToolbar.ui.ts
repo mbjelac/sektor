@@ -1,4 +1,5 @@
 import p5 from "p5";
+import { isUnlockedFor } from "./buildings/mandatesNeeded";
 import { buildingDefinitions } from "./buildings/buildings";
 import { createColumnHeaders, createConstructionDisplay, createFunctionDisplay } from "./buildingFunctionDisplay.ui";
 import { parseCommands } from "../../../shared/parseCommands";
@@ -20,6 +21,9 @@ const THUMBNAIL_HEIGHT = 70;
 export const DESTRUCTION_TOOL = "Destroy";
 
 let selectedBuilding: string | null = null;
+// The buildings the player has not completed enough mandates for, which can be picked to be looked
+// at but not put up.
+let unavailableBuildingNames = new Set<string>();
 // The code of a building's variants is needed to draw it on the map, also when the map is shown
 // without the toolbar, so it is looked up straight from the definitions.
 const buildingCodesMap = new Map(buildingDefinitions.map(building => [building.name, building.renderingCodes]));
@@ -28,6 +32,10 @@ let selectionCallback: ((buildingName: string | null) => void) | null = null;
 
 export function getSelectedBuilding(): string | null {
   return selectedBuilding;
+}
+
+export function isSelectedBuildingUnavailable(): boolean {
+  return selectedBuilding !== null && unavailableBuildingNames.has(selectedBuilding);
 }
 
 export function onBuildingSelected(callback: (buildingName: string | null) => void) {
@@ -120,29 +128,36 @@ function hideToolbarFunctionPanel() {
 }
 
 // The buildings are shown whether or not the player may build them, so that everybody looking at a
-// sektor sees what can stand in it.
-export function initToolbar(playerLevel: number, isViewMode = false) {
+// sektor sees what can stand in it. A building the player has not completed enough mandates for is
+// shown as unavailable.
+export function initToolbar(completedMandateCount: number, isViewMode = false) {
   const toolbar = document.getElementById("toolbar")!;
   // Claiming a sektor while looking at it builds the toolbar a second time, now with the
   // buildings selectable, so whatever it held before is taken out of it first.
   toolbar.innerHTML = "";
   selectedBuilding = null;
+  unavailableBuildingNames = new Set(buildingDefinitions
+    .filter(building => !isAvailable(building, completedMandateCount))
+    .map(building => building.name));
   hideToolbarFunctionPanel();
   showConstructionTitleIcon();
   showBuildingTagFilter();
   const thumbnails: Thumbnail[] = [];
 
-  for (const building of offeredBuildings(playerLevel)) {
+  for (const building of buildingDefinitions) {
     const item = document.createElement("div");
     item.className = "building-item";
     if (building.name === DESTRUCTION_TOOL) {
       item.classList.add("destruction-tool");
     }
+    item.classList.toggle("building-unavailable", unavailableBuildingNames.has(building.name));
     item.dataset.buildingName = building.name;
 
     const canvasContainer = document.createElement("div");
+    canvasContainer.className = "building-image";
     canvasContainer.style.height = "70px";
     item.appendChild(canvasContainer);
+    if (unavailableBuildingNames.has(building.name)) canvasContainer.appendChild(createBuildingLock());
 
     const label = document.createElement("div");
     label.className = "building-name";
@@ -179,6 +194,15 @@ export function initToolbar(playerLevel: number, isViewMode = false) {
 
   showBuildingsHavingSelectedTag();
   showBuildingThumbnails(thumbnails);
+}
+
+// A building the player has not completed enough mandates for carries a padlock in the corner of its
+// picture.
+function createBuildingLock(): HTMLElement {
+  const lock = document.createElement("span");
+  lock.className = "building-lock";
+  lock.innerHTML = icons.lockClosedSolidIcon;
+  return lock;
 }
 
 // The crane in front of the panel's title is the one marking, on the map, the buildings which need a
@@ -247,19 +271,10 @@ function capitalized(text: string): string {
 }
 
 // Every building the player has unlocked is theirs to place in any sektor. The destruction tool is
-// no building and asks for no level, so it is always offered — without it the player could not take
-// back a building they misplaced.
-function offeredBuildings(playerLevel: number): BuildingDefinition[] {
-  return buildingDefinitions.filter(building =>
-    building.name === DESTRUCTION_TOOL || isUnlockedAt(building, playerLevel)
-  );
-}
-
-// A building the player has not yet climbed high enough for is no part of their toolbar. A building
-// whose definition asks for no level is there for everybody from the start.
-function isUnlockedAt(building: BuildingDefinition, playerLevel: number): boolean {
-  const minLevel = building.properties.minLevel;
-  return minLevel === undefined || playerLevel >= minLevel;
+// no building and needs no mandates, so it is always available — without it the player could not
+// take back a building they misplaced.
+function isAvailable(building: BuildingDefinition, completedMandateCount: number): boolean {
+  return building.name === DESTRUCTION_TOOL || isUnlockedFor(building, completedMandateCount);
 }
 
 interface Thumbnail {

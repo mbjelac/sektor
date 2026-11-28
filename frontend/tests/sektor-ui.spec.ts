@@ -13,18 +13,59 @@ test("renders empty grid of floors", async ({ page }) => {
   await expectMapScreenshot(page, "empty-grid");
 });
 
-// A building a player has not climbed high enough for is kept out of their toolbar, while every
-// building asking for no level at all stands in it from the start.
-test("leaves out a building the player has not reached the level of", async ({ page }) => {
+// A building needing more mandates completed than the player has completed stands in their toolbar
+// as unavailable, while every building needing none stands in it as available. TestTower needs 5.
+test("shows a building needing more mandates than the player has completed as unavailable", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
 
-  const toolbar = await page.evaluate(() => ({
-    lockedBuildings: document.querySelectorAll('.building-item[data-building-name="TestTower"]').length,
-    unlockedBuildings: document.querySelectorAll('.building-item[data-building-name="TestHouse"]').length,
-  }));
-
-  expect(toolbar).toEqual({ lockedBuildings: 0, unlockedBuildings: 1 });
+  expect(await getBuildingAvailability(page, ["TestTower", "TestHouse"]))
+    .toEqual([{ name: "TestTower", isUnavailable: true }, { name: "TestHouse", isUnavailable: false }]);
 });
+
+// Once the player has completed the 5 mandates TestTower needs, it stands in their toolbar as available.
+test("shows a building as available once the player has completed as many mandates as it needs", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("mandates", JSON.stringify(
+    Array.from({ length: 5 }, (_, index) => ({ number: index + 1, owner: "Tester", completed: true, criteria: [] }))
+  )));
+  await page.reload();
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+
+  expect(await getBuildingAvailability(page, ["TestTower"])).toEqual([{ name: "TestTower", isUnavailable: false }]);
+});
+
+// An unavailable building carries a small white padlock, outlined in black, in the bottom right corner
+// of its picture, its name clear beneath.
+test("puts a padlock on an unavailable building in the toolbar", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestTower"]').scrollIntoViewIfNeeded();
+
+  await expectScreenshot(page, "building-unavailable", '.building-item[data-building-name="TestTower"]');
+});
+
+// An unavailable building can be picked, but clicking the map with it puts nothing up: the sektor
+// still has no building, and the tool stays in hand.
+test("puts nothing up when the map is clicked with an unavailable building picked", async ({ page }) => {
+  await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
+  await page.locator('.building-item[data-building-name="TestTower"]').click();
+  const canvas = page.locator("#canvas-container > canvas");
+  const box = await canvas.boundingBox();
+
+  await canvas.click({ position: { x: box!.width / 2, y: box!.height / 2 } });
+  await page.waitForTimeout(200);
+
+  expect({
+    selectedTools: await getSelectedToolNames(page),
+    buildings: await page.locator('#sektor-stats .sektor-stat:has([data-title="Buildings"]) .sektor-stat-value').textContent(),
+  }).toEqual({ selectedTools: ["TestTower"], buildings: "0 %" });
+});
+
+// Whether each building named stands in the toolbar as unavailable.
+function getBuildingAvailability(page: Page, buildingNames: string[]) {
+  return page.evaluate(names => names.map(name => ({
+    name,
+    isUnavailable: document.querySelector(`.building-item[data-building-name="${name}"]`)!.classList.contains("building-unavailable"),
+  })), buildingNames);
+}
 
 test("highlights selected building in toolbar", async ({ page }) => {
   await page.locator('#canvas-container[data-rendered="true"]').waitFor({ timeout: 5000 });
@@ -106,7 +147,7 @@ test("selects the first building tag at the start, displaying only buildings hav
 
   expect({ selectedBuildingTags, shownBuildingNames }).toEqual({
     selectedBuildingTags: ["food"],
-    shownBuildingNames: ["Destroy", "TestFactory", "TestMine", "TestHouse", "TestProcessor", "TestRefinery", "TestWorkshop", "TestClinic", "TestCarer", "TestReactor", "TestHabitat", "TestHub", "TestKiln"],
+    shownBuildingNames: ["Destroy", "TestFactory", "TestMine", "TestHouse", "TestProcessor", "TestRefinery", "TestWorkshop", "TestClinic", "TestCarer", "TestReactor", "TestTower", "TestHabitat", "TestHub", "TestKiln"],
   });
 });
 

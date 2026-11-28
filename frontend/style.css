@@ -291,6 +291,33 @@ body > main {
     display: block;
 }
 
+/* A building the player has not completed enough mandates for carries a small white padlock, outlined
+   in black to stand out against any picture, in the bottom right corner of its picture, its name left
+   clear beneath. */
+.building-image {
+    position: relative;
+}
+
+.building-lock {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    color: #fff;
+    pointer-events: none;
+    display: flex;
+}
+
+.building-lock .icon {
+    width: 18px;
+    height: 18px;
+}
+
+.building-lock .icon path {
+    stroke: #000;
+    stroke-width: 4px;
+    paint-order: stroke fill;
+}
+
 .building-name {
     color: #ccc;
     font-family: sans-serif;

@@ -148,7 +148,7 @@ Work 1
 
 ## Properties
 
-minLevel=5
+mandatesNeeded=5
 
 ## Tags
 

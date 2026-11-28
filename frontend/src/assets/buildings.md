@@ -142,6 +142,10 @@ WorkAdministrative 1
 ->
 HealthMental 6
 
+## Properties
+
+mandatesNeeded=2
+
 ## Tags
 
 people
@@ -210,6 +214,7 @@ OreUranium uranium
 
 ## Properties
 
+mandatesNeeded=7
 showFloor=false
 pollutionArea=3
 poolSize=4
@@ -246,6 +251,10 @@ WorkTechnical 1
 ->
 EnergyElectric insolation
 
+## Properties
+
+mandatesNeeded=2
+
 ## Tags
 
 energy
@@ -262,6 +271,10 @@ EnergyElectric 10
 WorkAdministrative 2
 ->
 HealthSocial 20
+
+## Properties
+
+mandatesNeeded=4
 
 ## Tags
 
@@ -284,6 +297,7 @@ Metals 10
 
 ## Properties
 
+mandatesNeeded=7
 pollutionArea=4
 
 ## Tags
@@ -342,6 +356,7 @@ Clay 2
 
 ## Properties
 
+mandatesNeeded=7
 poolSize=9
 pollutionArea=3
 
@@ -364,6 +379,10 @@ OreUranium 5
 ->
 Uranium 6
 
+## Properties
+
+mandatesNeeded=7
+
 ## Tags
 
 mining
@@ -381,6 +400,10 @@ EnergyElectric 1
 Water 2
 ->
 HealthSocial 8 pollution
+
+## Properties
+
+mandatesNeeded=2
 
 ## Tags
 
@@ -424,6 +447,7 @@ Fertilizer 12
 
 ## Properties
 
+mandatesNeeded=10
 pollutionArea=1
 
 ## Tags
@@ -450,6 +474,10 @@ WorkMaintenance 1
 Childcare 10 pollution
 Sewage 6
 
+## Properties
+
+mandatesNeeded=4
+
 ## Tags
 
 education
@@ -467,6 +495,10 @@ EnergyElectric 8
 WorkTechnical 2
 ->
 Water 10
+
+## Properties
+
+mandatesNeeded=2
 
 ## Tags
 
@@ -490,6 +522,10 @@ Water 2
 EnergyElectric 20
 WasteNuclear 2
 
+## Properties
+
+mandatesNeeded=18
+
 ## Tags
 
 energy
@@ -507,6 +543,10 @@ WorkMaintenance 5
 WorkTechnical 1
 EnergyElectric 1
 ->
+
+## Properties
+
+mandatesNeeded=18
 
 ## Tags
 
@@ -528,6 +568,10 @@ WorkAdministrative 1
 ->
 HealthSocial 4
 HealthPhysical 8
+
+## Properties
+
+mandatesNeeded=7
 
 ## Tags
 
@@ -556,6 +600,7 @@ food
 
 ## Properties
 
+mandatesNeeded=2
 pollutionArea=1
 
 # SkyTower
@@ -596,6 +641,10 @@ WorkMaintenance 1
 ->
 EducationGeneral 12
 Sewage 2
+
+## Properties
+
+mandatesNeeded=4
 
 ## Tags
 
@@ -653,6 +702,7 @@ education
 
 ## Properties
 
+mandatesNeeded=10
 poolSize=8
 
 # BioFurnace
@@ -672,6 +722,7 @@ EnergyElectric 20
 
 ## Properties
 
+mandatesNeeded=14
 pollutionArea=3
 
 ## Tags
@@ -719,6 +770,7 @@ Ceramics 1
 
 ## Properties
 
+mandatesNeeded=14
 poolSize=8
 
 ## Tags
@@ -740,6 +792,10 @@ WorkTechnical 1
 ->
 Polymers 5
 
+## Properties
+
+mandatesNeeded=10
+
 ## Tags
 
 industry
@@ -758,6 +814,10 @@ StructuralAlloys 5
 ## Construction
 
 size=2
+
+## Properties
+
+mandatesNeeded=14
 
 ## Tags
 

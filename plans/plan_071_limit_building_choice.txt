@@ -52,7 +52,7 @@ Leaderboard:
     - e.g. a building becomes locked again because the score dropped: its mandates stay claimed, the player may abandon them
 - [done] consequence: as buildings are unlocked, mandates for their outputs appear, so unlocking widens the mandates a player can attempt
 
-#2 Construction toolbar shows unavailable buildings as locked
+#2 [done] Construction toolbar shows unavailable buildings as locked
 - [done] buildings.md building Properties section has optional variable mandatesNeeded with an integer value
     - e.g. mandatesNeeded=7
     - if absent, assume 0

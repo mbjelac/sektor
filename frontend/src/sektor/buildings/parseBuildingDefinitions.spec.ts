@@ -189,14 +189,14 @@ describe("parseBuildingDefinitions", () => {
     expect(result[0].properties).toEqual({ showFloor: false });
   });
 
-  it("parses minLevel property", () => {
+  it("parses mandatesNeeded property", () => {
     const result = parseBuildingDefinitions([
       "# Mine",
       "## Properties",
-      "minLevel=4",
+      "mandatesNeeded=7",
     ], { "Mine/0.sgl": "box s(10,10,10)" });
 
-    expect(result[0].properties).toEqual({ minLevel: 4 });
+    expect(result[0].properties).toEqual({ mandatesNeeded: 7 });
   });
 
   it("parses an output marked as affected by pollution", () => {
