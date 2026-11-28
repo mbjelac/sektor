@@ -77,7 +77,7 @@ Leaderboard:
     - white, bold
 
 #4 Player is notified when a building is unlocked by change in map
-- when a player constructs a building, destroys a buildings, modifies building multipliers or performs any change to sektor state
+- [done] when a player constructs a building, destroys a buildings, modifies building multipliers or performs any change to sektor state
     - if that change triggers completing mandates
     - if completing those mandates triggers some buildings becoming available
         - toolbar displays those buildings as available
@@ -86,13 +86,20 @@ Leaderboard:
                 - height 50% screen height
                 - width: 400px
             - title: "Buildings unlocked!"
+                - centered horizontally
             - list newly available buildings
                 - list item
                     - building image, same as used in toolbar
                     - building name next (to the right) of building image
                         - large, bold, white
-                    - building tags, capitalised, comma-separated, underneath building name
+                    - building tags, capitalised, comma-separated
+                        - next to building name
                         - small, white
+                    - list of building output resources
+                        - beneath building name as left-to-right list
+                        - display both icon & name
+                        - items separated by spacing (20px)
+                        - wrap to new line (wrap icon & name together)
             - Close button in bottom right corner
                 - clicking hides popup
             - list scrolls in list container, title & close button visible
