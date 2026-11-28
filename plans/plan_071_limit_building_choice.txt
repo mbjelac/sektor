@@ -52,8 +52,24 @@ Leaderboard:
     - e.g. a building becomes locked again because the score dropped: its mandates stay claimed, the player may abandon them
 - [done] consequence: as buildings are unlocked, mandates for their outputs appear, so unlocking widens the mandates a player can attempt
 
-#2 Construction toolbar offers only available buildings
+#2 Construction toolbar shows unavailable buildings as locked
 - buildings.md building Properties section has optional variable mandatesNeeded with an integer value
     - e.g. mandatesNeeded=7
     - if absent, assume 0
-- a building is visible in the construction toolbar only if the player's number of completed mandates is equal to or greater than the building's mandatesNeeded
+- a building is normally visible in the construction toolbar only if the player's number of completed mandates is equal to or greater than the building's mandatesNeeded
+- if number of completed mandates is less than a building's mandagtesNeeded, toolbar displays building as unavailable
+    - with overlay
+        - black recangle covering entire building image, transparency 50%
+        - red thin lines crossing the entire overlay diagonally (as X)
+        - building name clearly visible
+- when unavailable building selected, clicking on map square does nothing
+
+#3 Player informed of needed mandates for an unavailable building
+- if player clicks unavailable building
+    - display building function panel normally
+    - on top of function panel display message
+        - white text
+        - thin red border
+        - text: "Unavailable. <X> more mandates needed."
+        - X = mandatesNeeded - current player completed mandates
+        - X is bold
